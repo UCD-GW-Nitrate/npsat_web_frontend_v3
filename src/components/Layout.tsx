@@ -10,6 +10,14 @@ const theme = createTheme({
     background: {
       default: '#F1F2F5',
     },
+    primary: {
+      main: '#022851',
+      contrastText: '#FFFFFF',
+    },
+    secondary: {
+      main: '#FFFFFF',
+      contrastText: '#000000',
+    },
   },
 });
 
@@ -18,7 +26,7 @@ const Layout = ({ children }: PropsWithChildren) => {
     <ThemeProvider theme={theme}>
       <GlobalStyles
         styles={{
-          body: { backgroundColor: '#F1F2F5' },
+          body: { backgroundColor: theme.palette.background.default },
         }}
       />
       <Navbar>{children}</Navbar>
