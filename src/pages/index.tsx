@@ -1,7 +1,6 @@
 import { Box } from '@mui/material';
 import type { GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import { useRouter } from 'next/router';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -37,8 +36,6 @@ const rows = [
 ];
 
 const Index = () => {
-  const router = useRouter();
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <DataGrid

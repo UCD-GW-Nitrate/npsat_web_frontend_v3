@@ -1,5 +1,6 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import {
+  alpha,
   AppBar,
   Avatar,
   Box,
@@ -10,7 +11,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { deepPurple } from '@mui/material/colors';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 
@@ -63,7 +63,11 @@ const TopBar = ({ toggleDrawer }: TopBarProps) => {
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar sx={{ bgcolor: deepPurple[500] }}>C</Avatar>
+              <Avatar
+                sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.15) }}
+              >
+                C
+              </Avatar>
             </IconButton>
           </Tooltip>
           <Menu
