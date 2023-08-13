@@ -3,7 +3,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-import Navbar from './Navbar';
+import Navbar from '../Navbar';
 
 const theme = createTheme({
   palette: {

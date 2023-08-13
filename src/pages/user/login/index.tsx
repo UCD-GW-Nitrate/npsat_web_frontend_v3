@@ -1,6 +1,6 @@
-import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import LoginForm from '@/components/Login/LoginForm';
 
@@ -18,10 +18,15 @@ const Background = styled('div')(({ theme }) => ({
 
 const LoginPage = () => {
   return (
-    <Box>
+    <HelmetProvider>
+      <Helmet>
+        <title>Login - NPSAT</title>
+        <meta name="description" content="Login - NPSAT" />
+      </Helmet>
+
       <Background />
       <LoginForm />
-    </Box>
+    </HelmetProvider>
   );
 };
 

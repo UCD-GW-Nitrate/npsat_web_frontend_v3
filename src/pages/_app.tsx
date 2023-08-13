@@ -2,7 +2,6 @@ import '../styles/global.css';
 
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import Layout from 'src/components/Layout';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -37,9 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/images/favicon.ico" key="favicon" />
       </Head>
 
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Component {...pageProps} />
     </main>
   );
 }
