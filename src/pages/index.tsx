@@ -2,6 +2,8 @@ import { Box } from '@mui/material';
 import type { GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 
+import Layout from '@/components/Layout/Layout';
+
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
   { field: 'firstName', headerName: 'First name', width: 130 },
@@ -37,20 +39,22 @@ const rows = [
 
 const Index = () => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <DataGrid
-        sx={{ marginTop: 10, backgroundColor: 'white' }}
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-      />
-    </Box>
+    <Layout>
+      <Box>
+        <DataGrid
+          sx={{ marginTop: 10, backgroundColor: 'white' }}
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+        />
+      </Box>
+    </Layout>
   );
 };
 
