@@ -11,8 +11,7 @@ const Main = styled('main', {
 })<{
   open?: boolean;
 }>(({ theme, open }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
+  flex: 1,
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -35,7 +34,7 @@ export default function Navbar({ children }: PropsWithChildren) {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <SideDrawer open={open} />
       <TopBar toggleDrawer={toggleDrawer} />
 
