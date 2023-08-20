@@ -30,6 +30,7 @@ export default function SignIn() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          backgroundColor: 'white',
         }}
       >
         <Typography component="h1" variant="h5">
