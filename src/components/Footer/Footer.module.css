@@ -1,0 +1,12 @@
+.links {
+  margin: auto;
+  width: fit-content;
+  margin-bottom: 8px;
+}
+
+.container {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-end;
+  padding-bottom: 30px;
+}
