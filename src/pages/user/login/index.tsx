@@ -1,19 +1,21 @@
 import { styled } from '@mui/material/styles';
+import Image from 'next/image';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import LoginForm from '@/components/Login/LoginForm';
+import logo from '@/public/images/logo.svg';
+
+import styles from './login.module.css';
 
 const imageURL =
   'https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg';
 const Background = styled('div')(({ theme }) => ({
   backgroundImage: `url(${imageURL})`,
-  backgroundPosition: 'center',
-  backgroundSize: '100%',
-  backgroundRepeat: 'no-repeat',
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
+  margin: 0,
+  height: '100vh',
+  paddingTop: theme.spacing(4),
+  backgroundColor: 'rgba(0,0,0,.05)',
 }));
 
 const LoginPage = () => {
@@ -23,9 +25,17 @@ const LoginPage = () => {
         <title>Login - NPSAT</title>
         <meta name="description" content="Login - NPSAT" />
       </Helmet>
-
-      <Background />
-      <LoginForm />
+      <Background>
+        <div className={styles.content}>
+          <div className={styles.top}>
+            <div className={styles.header}>
+              <Image src={logo} alt="NPSAT Logo" className={styles.logo} />
+            </div>
+            <p className={styles.desc}>Non Point Source Assessment Tool</p>
+          </div>
+        </div>
+        <LoginForm />
+      </Background>
     </HelmetProvider>
   );
 };
