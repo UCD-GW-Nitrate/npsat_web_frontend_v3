@@ -9,14 +9,18 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import type { FormEvent } from 'react';
 
+import { userLogin } from '@/services/login';
+
 export default function SignIn() {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const username: string = data.get('username')?.toString() ?? '';
+    const password: string = data.get('password')?.toString() ?? '';
+
+    const response = await userLogin(username, password);
+
+    console.log(response);
   };
 
   return (
@@ -41,10 +45,10 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
           />
           <TextField
