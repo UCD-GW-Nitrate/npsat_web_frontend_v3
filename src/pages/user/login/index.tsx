@@ -3,6 +3,7 @@ import Image from 'next/image';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
+import Footer from '@/components/Footer/Footer';
 import LoginForm from '@/components/Login/LoginForm';
 import logo from '@/public/images/logo.svg';
 
@@ -16,6 +17,8 @@ const Background = styled('div')(({ theme }) => ({
   height: '100vh',
   paddingTop: theme.spacing(4),
   backgroundColor: 'rgba(0,0,0,.05)',
+  display: 'flex',
+  flexFlow: 'column',
 }));
 
 const LoginPage = () => {
@@ -35,6 +38,7 @@ const LoginPage = () => {
           </div>
         </div>
         <LoginForm />
+        <Footer />
       </Background>
     </HelmetProvider>
   );
