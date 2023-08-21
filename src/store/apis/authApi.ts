@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import type { RootState } from '..';
+import getAuth from '../getAuth';
 
 export interface UserResponse {
   token: string;
@@ -33,12 +33,7 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8010',
     prepareHeaders: (headers, { getState }) => {
-      // By default, if we have a token in the store, let's use that for authenticated requests
-      const { token } = (getState() as RootState).auth;
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
+      return getAuth(headers, getState);
     },
   }),
   endpoints: (builder) => ({
@@ -49,7 +44,6 @@ export const authApi = createApi({
         body: credentials,
       }),
       transformResponse: (response: UserResponse) => {
-        console.log(response);
         return {
           token: response.token,
           user: {

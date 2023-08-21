@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/router';
 import type { FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -15,6 +16,7 @@ import { setCredentials } from '@/store/slices/authSlice';
 
 export default function SignIn() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [login] = useLoginMutation();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -25,6 +27,7 @@ export default function SignIn() {
 
     const user = await login({ username, password }).unwrap();
     dispatch(setCredentials(user));
+    router.push('/');
   };
 
   return (
