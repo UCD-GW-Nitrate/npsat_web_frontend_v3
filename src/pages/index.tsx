@@ -3,6 +3,7 @@ import type { GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 
 import Layout from '@/components/Layout/Layout';
+import { useFetchFeedQuery } from '@/store';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -38,6 +39,15 @@ const rows = [
 ];
 
 const Index = () => {
+  const { data, error, isFetching } = useFetchFeedQuery({});
+
+  if (!isFetching) {
+    console.log('log data');
+    console.log(data);
+  } else if (error) {
+    console.log(error);
+  }
+
   return (
     <Layout>
       <Box>
