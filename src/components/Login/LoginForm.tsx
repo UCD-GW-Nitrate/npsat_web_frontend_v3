@@ -8,19 +8,23 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import type { FormEvent } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { userLogin } from '@/services/login';
+import { useLoginMutation } from '@/store';
+import { setCredentials } from '@/store/slices/authSlice';
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const [login] = useLoginMutation();
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const username: string = data.get('username')?.toString() ?? '';
     const password: string = data.get('password')?.toString() ?? '';
 
-    const response = await userLogin(username, password);
-
-    console.log(response);
+    const user = await login({ username, password }).unwrap();
+    dispatch(setCredentials(user));
   };
 
   return (
