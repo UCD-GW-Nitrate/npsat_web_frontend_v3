@@ -6,7 +6,7 @@ import React from 'react';
 
 import Navbar from '../Navbar';
 
-const theme = createTheme({
+export const theme = createTheme({
   palette: {
     background: {
       default: '#F1F2F5',
