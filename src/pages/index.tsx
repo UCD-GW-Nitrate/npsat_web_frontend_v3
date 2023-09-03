@@ -63,7 +63,18 @@ const Index = () => {
 
   return (
     <Layout>
-      <Paper sx={{ mx: 4, mt: 5, overflow: 'hidden' }}>
+      {/* <Typography variant="h4" sx={{ mt: 4 }}>
+        Home
+      </Typography>
+      <Box sx={{ flexDirection: 'row', display: 'flex' }}>
+        <Typography variant="body1" sx={{ mt: 1, mr: 3 }}>
+          Opened by you
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          All scenarios
+        </Typography>
+      </Box> */}
+      <Paper sx={{ mt: 4, overflow: 'hidden' }}>
         <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -102,7 +113,7 @@ const Index = () => {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={0}
+          count={(data?.recentCompletedModels ?? []).length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
