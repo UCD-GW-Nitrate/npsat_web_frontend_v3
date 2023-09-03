@@ -13,7 +13,7 @@ const Logo = () => {
       disableRipple
     >
       <Image
-        src="/images/logo.svg"
+        src="/images/logo-white.svg"
         height={35}
         width={(88 / 35) * 35}
         alt="NPSAT logo"
