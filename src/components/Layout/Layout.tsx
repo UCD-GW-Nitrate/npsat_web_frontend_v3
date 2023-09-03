@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import type { PropsWithChildren } from 'react';
@@ -29,7 +30,9 @@ const Layout = ({ children }: PropsWithChildren) => {
           body: { backgroundColor: theme.palette.background.default },
         }}
       />
-      <Navbar>{children}</Navbar>
+      <Navbar>
+        <Box sx={{ mx: 4 }}>{children}</Box>
+      </Navbar>
     </ThemeProvider>
   );
 };
