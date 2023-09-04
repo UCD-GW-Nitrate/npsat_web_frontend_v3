@@ -1,35 +1,29 @@
-import { Paper } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import type { GridColDef } from '@mui/x-data-grid';
+import { Box } from '@mui/material';
 import React, { useState } from 'react';
 
+import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
+import { CoreTable } from '@/components/core/CoreTable/CoreTable';
+import { CoreText } from '@/components/core/CoreText/CoreText';
 import Layout from '@/components/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
-import type { PlotModel } from '@/store/apis/feedApi';
 
-const columns: GridColDef[] = [
-  { field: 'name', headerName: 'Scenario Name', width: 200 },
-  { field: 'description', headerName: 'Description', width: 200 },
-  { field: 'status', headerName: 'Status', width: 100 },
+const columns: CoreTableColumn[] = [
+  { field: 'name', label: 'Scenario Name', width: 200 },
+  { field: 'description', label: 'Description', width: 200 },
+  { field: 'status', label: 'Status', width: 100 },
   {
     field: 'dateCreated',
-    headerName: 'Date Created',
+    label: 'Date Created',
     width: 150,
   },
   {
     field: 'dateCompleted',
-    headerName: 'Date Completed',
+    label: 'Date Completed',
     width: 150,
   },
   {
     field: 'types',
-    headerName: 'Types',
+    label: 'Types',
     width: 150,
   },
 ];
@@ -63,63 +57,26 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* <Typography variant="h4" sx={{ mt: 4 }}>
+      <CoreText variant="h1" sx={{ mt: 4 }}>
         Home
-      </Typography>
+      </CoreText>
       <Box sx={{ flexDirection: 'row', display: 'flex' }}>
-        <Typography variant="body1" sx={{ mt: 1, mr: 3 }}>
+        <CoreText variant="body1" sx={{ mt: 1, mr: 3 }}>
           Opened by you
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>
+        </CoreText>
+        <CoreText variant="body1" sx={{ mt: 1 }}>
           All scenarios
-        </Typography>
-      </Box> */}
-      <Paper sx={{ mt: 4, overflow: 'hidden' }}>
-        <TableContainer>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.field}
-                    align={column.align}
-                    style={{ minWidth: column.width, backgroundColor: 'white' }}
-                  >
-                    {column.headerName}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(data?.recentCompletedModels ?? [])
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                      {columns.map((column) => {
-                        const value = row[column.field as keyof PlotModel];
-                        return (
-                          <TableCell key={column.field}>
-                            {value as string}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={(data?.recentCompletedModels ?? []).length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
+        </CoreText>
+      </Box>
+      <CoreTable
+        columns={columns}
+        data={data?.recentCompletedModels ?? []}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+        sx={{ mt: 4 }}
+      />
     </Layout>
   );
 };
