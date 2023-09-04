@@ -2,7 +2,8 @@ import { ThemeProvider } from '@emotion/react';
 import WbCloudy from '@mui/icons-material/WbCloudy';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { theme } from '../../Layout/Layout';
+import theme from '@/components/theme';
+
 import type { CoreIconButtonProps } from './CoreIconButton';
 import { CoreIconButton } from './CoreIconButton';
 

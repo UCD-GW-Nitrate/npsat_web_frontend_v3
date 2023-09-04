@@ -2,7 +2,8 @@ import { ThemeProvider } from '@emotion/react';
 import SendIcon from '@mui/icons-material/Send';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { theme } from '../../Layout/Layout';
+import theme from '@/components/theme';
+
 import type { CoreMenuProps } from './CoreMenu';
 import { CoreMenu } from './CoreMenu';
 

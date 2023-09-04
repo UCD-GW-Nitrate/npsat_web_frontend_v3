@@ -2,7 +2,8 @@ import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { theme } from '../../Layout/Layout';
+import theme from '@/components/theme';
+
 import type { CoreContainerProps } from './CoreContainer';
 import { CoreContainer } from './CoreContainer';
 
