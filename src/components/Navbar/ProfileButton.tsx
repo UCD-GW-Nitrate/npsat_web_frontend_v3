@@ -1,17 +1,11 @@
-import {
-  alpha,
-  Avatar,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { alpha, Avatar, Box, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { CoreIconButton } from '../core/CoreIconButton/CoreIconButton';
+import { CoreMenu } from '../core/CoreMenu/CoreMenu';
+
+const settings = [{ label: 'Logout' }];
 
 const ProfileButton = () => {
   const theme = useTheme();
@@ -30,34 +24,28 @@ const ProfileButton = () => {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+        <CoreIconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.15) }}>
             C
           </Avatar>
-        </IconButton>
+        </CoreIconButton>
       </Tooltip>
-      <Menu
-        sx={{ mt: '45px' }}
+      <CoreMenu
         id="menu-appbar"
+        sx={{ mt: 2 }}
+        options={settings}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
         anchorEl={anchorElUser}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        keepMounted
         transformOrigin={{
           vertical: 'top',
           horizontal: 'right',
         }}
-        open={Boolean(anchorElUser)}
-        onClose={handleCloseUserMenu}
-      >
-        {settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography textAlign="center">{setting}</Typography>
-          </MenuItem>
-        ))}
-      </Menu>
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      />
     </Box>
   );
 };

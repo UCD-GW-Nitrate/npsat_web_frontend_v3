@@ -1,4 +1,4 @@
-import type { TableContainerProps } from '@mui/material';
+import type { PaperProps } from '@mui/material';
 import {
   Paper,
   Table,
@@ -19,7 +19,7 @@ export interface CoreTableColumn {
   field: string;
 }
 
-export interface CoreTableProps extends TableContainerProps {
+export interface CoreTableProps extends PaperProps {
   columns: CoreTableColumn[];
   data: any[];
   page: number;
@@ -38,10 +38,11 @@ export const CoreTable = ({
   rowsPerPage,
   handleChangePage,
   handleChangeRowsPerPage,
+  sx,
   ...rest
 }: CoreTableProps) => (
-  <Paper sx={{ mt: 4, overflow: 'hidden' }}>
-    <TableContainer {...rest}>
+  <Paper {...rest} sx={{ ...sx, overflow: 'hidden' }}>
+    <TableContainer>
       <Table stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
