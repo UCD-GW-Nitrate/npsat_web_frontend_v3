@@ -1,7 +1,8 @@
 import { ThemeProvider } from '@emotion/react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { theme } from '../../Layout/Layout';
+import theme from '@/components/theme';
+
 import type { CoreTextProps } from './CoreText';
 import { CoreText } from './CoreText';
 

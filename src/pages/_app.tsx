@@ -1,8 +1,12 @@
 import '../styles/global.css';
 
+import GlobalStyles from '@mui/material/GlobalStyles';
+import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
+
+import theme from '@/components/theme';
 
 import { store } from '../store';
 
@@ -39,7 +43,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/images/favicon.ico" key="favicon" />
       </Head>
       <Provider store={store}>
-        <Component {...pageProps} />
+        <ThemeProvider theme={theme}>
+          <GlobalStyles
+            styles={{
+              body: { backgroundColor: theme.palette.background.default },
+            }}
+          />
+          <Component {...pageProps} />
+        </ThemeProvider>
       </Provider>
     </main>
   );
