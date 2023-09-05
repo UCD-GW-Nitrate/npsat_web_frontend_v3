@@ -9,7 +9,7 @@ import {
 import type { ReactNode } from 'react';
 import React from 'react';
 
-interface CoreMenuOption {
+export interface CoreMenuOption {
   icon?: ReactNode;
   label: string;
 }
@@ -23,7 +23,7 @@ export const CoreMenu = ({ options, ...rest }: CoreMenuProps) => (
     slotProps={{
       paper: {
         style: {
-          width: 230,
+          width: 250,
         },
       },
     }}
