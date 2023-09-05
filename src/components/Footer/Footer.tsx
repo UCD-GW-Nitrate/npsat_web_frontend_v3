@@ -1,14 +1,17 @@
-import { Container, Link, Typography } from '@mui/material';
+import { Link } from '@mui/material';
 import React from 'react';
 
+import { CoreContainer } from '../core/CoreContainer/CoreContainer';
+import { CoreText } from '../core/CoreText/CoreText';
+import { HBox } from '../HBox/Hbox';
 import styles from './Footer.module.css';
 
 const Footer = () => {
   return (
     <div className={styles.container}>
-      <Container maxWidth="lg">
+      <CoreContainer maxWidth="lg">
         <footer>
-          <div className={styles.links}>
+          <HBox spacing={2} sx={{ justifyContent: 'center' }}>
             <Link
               href="http://ucanr.edu/"
               marginRight={4}
@@ -24,13 +27,13 @@ const Footer = () => {
             >
               Groundwater
             </Link>
-          </div>
-          <Typography align="center">
+          </HBox>
+          <CoreText align="center">
             Copywrite &copy;{' '}
             {` ${new Date().getFullYear()} Regents of the University of California`}
-          </Typography>
+          </CoreText>
         </footer>
-      </Container>
+      </CoreContainer>
     </div>
   );
 };

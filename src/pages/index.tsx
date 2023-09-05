@@ -7,6 +7,7 @@ import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMul
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
 import { CoreTable } from '@/components/core/CoreTable/CoreTable';
 import { CoreText } from '@/components/core/CoreText/CoreText';
+import Footer from '@/components/Footer/Footer';
 import { HBox } from '@/components/HBox/Hbox';
 import Layout from '@/components/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
@@ -17,7 +18,7 @@ const columns: CoreTableColumn[] = [
   { field: 'flowScenario', label: 'Flow Scenario', width: 150 },
   { field: 'loadScenario', label: 'Load Scenario', width: 150 },
   { field: 'unsatScenario', label: 'Unsat Scenario', width: 200 },
-  { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 300 },
+  { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 200 },
   { field: 'statusMessage', label: 'Status', width: 100 },
   { field: 'simEndYear', label: 'Year Range', width: 150 },
   {
@@ -156,6 +157,8 @@ const Index = () => {
         handleChangeRowsPerPage={handleChangeRowsPerPage}
         sx={{ mt: 4 }}
       />
+      <Box sx={{ mt: 30 }} />
+      <Footer />
     </Layout>
   );
 };
