@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import React, { useState } from 'react';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
+import { CoreMenuButton } from '@/components/core/CoreMenuButton/CoreMenuButton';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
@@ -135,7 +136,18 @@ const Index = () => {
       >
         <CoreText variant="h1">Home</CoreText>
         <HBox spacing={2}>
-          <CoreButton label="Compare Scenario" variant="outlined" />
+          <CoreMenuButton
+            label="Compare Scenario"
+            variant="outlined"
+            options={[
+              {
+                label: 'Compare with BAU',
+              },
+              {
+                label: 'Compare with other scenarios',
+              },
+            ]}
+          />
           <CoreButton label="Create Scenario" variant="contained" />
         </HBox>
       </Box>
