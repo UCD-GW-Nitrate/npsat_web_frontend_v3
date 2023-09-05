@@ -9,8 +9,8 @@ interface Result {
 }
 
 export interface PlotModel {
-  dateCompleted: Date;
-  dateCreated: Date;
+  dateCompleted: string;
+  dateCreated: string;
   description: string;
   id: number;
   isBase: boolean;
@@ -19,17 +19,21 @@ export interface PlotModel {
   public: boolean;
   reductionEndYear: number;
   reductionStartYear: number;
-  simEndYear: number;
+  simEndYear: string;
   status: number;
   statusMessage: string;
   unsatZoneTravelTime: number;
   user: number;
   waterContent: string;
+  loadScenario: string;
+  flowScenario: string;
+  unsatScenario: string;
+  wellTypeScenario: string;
 }
 
 interface PlotModelResponse {
-  date_completed: Date;
-  date_submitted: Date;
+  date_completed: string;
+  date_submitted: string;
   description: string;
   id: number;
   is_base: boolean;
@@ -45,6 +49,15 @@ interface PlotModelResponse {
   unsaturated_zone_travel_time: number;
   user: number;
   water_content: string;
+  load_scenario: Scenario;
+  flow_scenario: Scenario;
+  unsat_scenario: Scenario;
+  welltype_scenario: Scenario;
+}
+
+interface Scenario {
+  name: string;
+  description: string;
 }
 
 export interface Feed {
@@ -76,8 +89,12 @@ const feedApi = createApi({
           const plotModels: PlotModel[] = response.recent_completed_models.map(
             (model) => {
               return {
-                dateCompleted: model.date_completed,
-                dateCreated: model.date_submitted,
+                dateCompleted: new Date(model.date_completed)
+                  .toISOString()
+                  .substring(0, 10),
+                dateCreated: new Date(model.date_submitted)
+                  .toISOString()
+                  .substring(0, 10),
                 description: model.description,
                 id: model.id,
                 isBase: model.is_base,
@@ -86,12 +103,16 @@ const feedApi = createApi({
                 public: model.public,
                 reductionEndYear: model.reduction_end_year,
                 reductionStartYear: model.reduction_start_year,
-                simEndYear: model.sim_end_year,
+                simEndYear: `1945 - ${model.sim_end_year}`,
                 status: model.status,
                 statusMessage: model.status_message,
                 unsatZoneTravelTime: model.unsaturated_zone_travel_time,
                 user: model.user,
-                waterContent: model.water_content,
+                waterContent: `${Number(model.water_content) * 100}%`,
+                loadScenario: model.load_scenario.name,
+                flowScenario: model.flow_scenario.name,
+                wellTypeScenario: model.welltype_scenario.name,
+                unsatScenario: model.unsat_scenario.name,
               };
             },
           );

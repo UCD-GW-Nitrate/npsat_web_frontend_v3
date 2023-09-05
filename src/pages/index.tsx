@@ -13,8 +13,24 @@ import { useFetchFeedQuery } from '@/store';
 
 const columns: CoreTableColumn[] = [
   { field: 'name', label: 'Scenario Name', width: 200 },
-  { field: 'description', label: 'Description', width: 200 },
-  { field: 'status', label: 'Status', width: 100 },
+  { field: 'description', label: 'Description', width: 300 },
+  { field: 'flowScenario', label: 'Flow Scenario', width: 150 },
+  { field: 'loadScenario', label: 'Load Scenario', width: 150 },
+  { field: 'unsatScenario', label: 'Unsat Scenario', width: 200 },
+  { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 300 },
+  { field: 'statusMessage', label: 'Status', width: 100 },
+  { field: 'simEndYear', label: 'Year Range', width: 150 },
+  {
+    field: 'reductionStartYear',
+    label: 'Implementation Start Year',
+    width: 100,
+  },
+  {
+    field: 'reductionEndYear',
+    label: 'Implementation Complete Year',
+    width: 100,
+  },
+  { field: 'waterContent', label: 'Water Content', width: 100 },
   {
     field: 'dateCreated',
     label: 'Date Created',
@@ -23,11 +39,6 @@ const columns: CoreTableColumn[] = [
   {
     field: 'dateCompleted',
     label: 'Date Completed',
-    width: 150,
-  },
-  {
-    field: 'types',
-    label: 'Types',
     width: 150,
   },
 ];
