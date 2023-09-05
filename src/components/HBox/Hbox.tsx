@@ -1,7 +1,7 @@
 import type { BoxProps } from '@mui/material';
 import { Box } from '@mui/material';
 import type { PropsWithChildren } from 'react';
-import React, { Children } from 'react';
+import React from 'react';
 
 interface HBoxProps extends BoxProps {
   spacing: number;
@@ -15,17 +15,14 @@ export const HBox = ({
   return (
     <Box
       sx={{
-        flexDirection: 'row',
         display: 'flex',
+        flexWrap: 'wrap',
+        gap: spacing,
         alignItems: 'center',
         ...sx,
       }}
     >
-      {Children.map(children, (child, index) => (
-        <Box sx={{ mr: index !== Children.count(children) - 1 ? spacing : 0 }}>
-          {child}
-        </Box>
-      ))}
+      {children}
     </Box>
   );
 };
