@@ -2,8 +2,8 @@ import { Box } from '@mui/material';
 import React, { useState } from 'react';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
+import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
-import type { CoreSelectOption } from '@/components/core/CoreSelect/CoreSelect';
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
 import { CoreTable } from '@/components/core/CoreTable/CoreTable';
 import { CoreText } from '@/components/core/CoreText/CoreText';
@@ -32,12 +32,55 @@ const columns: CoreTableColumn[] = [
   },
 ];
 
-const filterOptions: CoreSelectOption[] = [
+const filterOptions: CoreMultipleSelectOption[] = [
   {
     label: 'C2Vsim',
+    group: 'Flow Scenario',
   },
   {
     label: 'CVHM',
+    group: 'Flow Scenario',
+  },
+  {
+    label: 'Baseline',
+    group: 'Load Scenario',
+  },
+  {
+    label: 'GNLM',
+    group: 'Load Scenario',
+  },
+  {
+    label: 'High Irrigation',
+    group: 'Load Scenario',
+  },
+  {
+    label: 'High Fertilization',
+    group: 'Load Scenario',
+  },
+  {
+    label: 'High Irrigation and High Fertilization',
+    group: 'Load Scenario',
+  },
+  {
+    label: 'Drought vadose zone thickness (spring 2015)',
+    group: 'Unsat Scenario',
+  },
+  {
+    label: 'Typical vadose zone thickness (spring 2000)',
+    group: 'Unsat Scenario',
+  },
+  {
+    label: 'Domestic Wells',
+    group: 'Well Type Scenario',
+  },
+  {
+    label: 'Public Supply and Irrigation Wells',
+    group: 'Well Type Scenario',
+  },
+  {
+    label:
+      'Virtual Shallow Monitoring Well Network Grid (Currently Unavailable)',
+    group: 'Well Type Scenario',
   },
 ];
 
@@ -86,7 +129,12 @@ const Index = () => {
       </Box>
       <HBox spacing={1} sx={{ mt: 4 }}>
         <CoreText variant="body1">Scenario Type:</CoreText>
-        <CoreMultipleSelect options={filterOptions} sx={{ minWidth: 500 }} />
+        <CoreMultipleSelect
+          options={filterOptions}
+          sx={{ minWidth: 600 }}
+          placeholder="Filter Scenarios"
+          group
+        />
       </HBox>
       <CoreTable
         columns={columns}
