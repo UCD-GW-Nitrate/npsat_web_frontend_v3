@@ -33,6 +33,13 @@ const ProfileButton = () => {
       <CoreMenu
         id="menu-appbar"
         sx={{ mt: 2 }}
+        slotProps={{
+          paper: {
+            style: {
+              width: 150,
+            },
+          },
+        }}
         options={settings}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
