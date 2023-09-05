@@ -1,9 +1,13 @@
 import { Box } from '@mui/material';
 import React, { useState } from 'react';
 
+import { CoreButton } from '@/components/core/CoreButton/CoreButton';
+import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
+import type { CoreSelectOption } from '@/components/core/CoreSelect/CoreSelect';
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
 import { CoreTable } from '@/components/core/CoreTable/CoreTable';
 import { CoreText } from '@/components/core/CoreText/CoreText';
+import { HBox } from '@/components/HBox/Hbox';
 import Layout from '@/components/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
 
@@ -25,6 +29,15 @@ const columns: CoreTableColumn[] = [
     field: 'types',
     label: 'Types',
     width: 150,
+  },
+];
+
+const filterOptions: CoreSelectOption[] = [
+  {
+    label: 'C2Vsim',
+  },
+  {
+    label: 'CVHM',
   },
 ];
 
@@ -57,17 +70,24 @@ const Index = () => {
 
   return (
     <Layout>
-      <CoreText variant="h1" sx={{ mt: 4 }}>
-        Home
-      </CoreText>
-      <Box sx={{ flexDirection: 'row', display: 'flex' }}>
-        <CoreText variant="body1" sx={{ mt: 1, mr: 3 }}>
-          Opened by you
-        </CoreText>
-        <CoreText variant="body1" sx={{ mt: 1 }}>
-          All scenarios
-        </CoreText>
+      <Box
+        sx={{
+          flexDirection: 'row',
+          display: 'flex',
+          mt: 4,
+          justifyContent: 'space-between',
+        }}
+      >
+        <CoreText variant="h1">Home</CoreText>
+        <HBox spacing={2}>
+          <CoreButton label="Compare Scenario" variant="outlined" />
+          <CoreButton label="Create Scenario" variant="contained" />
+        </HBox>
       </Box>
+      <HBox spacing={1} sx={{ mt: 4 }}>
+        <CoreText variant="body1">Scenario Type:</CoreText>
+        <CoreMultipleSelect options={filterOptions} sx={{ minWidth: 500 }} />
+      </HBox>
       <CoreTable
         columns={columns}
         data={data?.recentCompletedModels ?? []}
