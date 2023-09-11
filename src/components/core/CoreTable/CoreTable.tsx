@@ -69,7 +69,7 @@ export const CoreTable = ({
         <div
           style={{
             boxShadow: `15px 0 12px -12px ${
-              !left ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0)'
+              !left ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0)'
             } inset`,
             position: 'absolute',
             top: 0,
@@ -82,7 +82,7 @@ export const CoreTable = ({
         <div
           style={{
             boxShadow: `-15px 0 12px -12px ${
-              !right ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0)'
+              !right ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0)'
             } inset`,
             position: 'absolute',
             top: 0,
