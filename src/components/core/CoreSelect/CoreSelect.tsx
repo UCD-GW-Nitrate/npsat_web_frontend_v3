@@ -1,13 +1,16 @@
-import type { FormControlProps, SelectChangeEvent } from '@mui/material';
-import { FormControl, MenuItem, Select } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { MenuItem, Select } from '@mui/material';
 import React from 'react';
+
+import type { CoreInputProps } from '../CoreInput/CoreInput';
+import { CoreInput } from '../CoreInput/CoreInput';
 
 export interface CoreSelectOption {
   label: string;
   value?: any | undefined;
 }
 
-export interface CoreSelectProps extends FormControlProps {
+export interface CoreSelectProps extends CoreInputProps {
   options: CoreSelectOption[];
 }
 
@@ -19,7 +22,7 @@ export const CoreSelect = ({ options, sx, ...rest }: CoreSelectProps) => {
   };
 
   return (
-    <FormControl sx={{ minWidth: 200 }} {...rest}>
+    <CoreInput sx={{ minWidth: 200, ...sx }} {...rest}>
       <Select
         value={inputValue}
         onChange={handleChange}
@@ -32,6 +35,6 @@ export const CoreSelect = ({ options, sx, ...rest }: CoreSelectProps) => {
           </MenuItem>
         ))}
       </Select>
-    </FormControl>
+    </CoreInput>
   );
 };
