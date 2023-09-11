@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
@@ -96,6 +97,7 @@ const Index = () => {
   const { data, error, isFetching } = useFetchFeedQuery();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const router = useRouter();
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
@@ -143,7 +145,13 @@ const Index = () => {
               },
             ]}
           />
-          <CoreButton label="Create Scenario" variant="contained" />
+          <CoreButton
+            label="Create Scenario"
+            variant="contained"
+            onClick={() => {
+              router.push('/model/create');
+            }}
+          />
         </HBox>
       </Box>
       <HBox spacing={1} sx={{ mt: 4 }}>
