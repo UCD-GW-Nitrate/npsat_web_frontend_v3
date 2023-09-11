@@ -14,14 +14,14 @@ import Layout from '@/components/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
 
 const columns: CoreTableColumn[] = [
-  { field: 'name', label: 'Scenario Name', width: 200 },
+  { field: 'name', label: 'Scenario Name', width: 150 },
   { field: 'description', label: 'Description', width: 300 },
-  { field: 'flowScenario', label: 'Flow Scenario', width: 150 },
-  { field: 'loadScenario', label: 'Load Scenario', width: 150 },
-  { field: 'unsatScenario', label: 'Unsat Scenario', width: 200 },
-  { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 200 },
+  { field: 'flowScenario', label: 'Flow Scenario', width: 130 },
+  { field: 'loadScenario', label: 'Load Scenario', width: 130 },
+  { field: 'unsatScenario', label: 'Unsat Scenario', width: 150 },
+  { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 130 },
   { field: 'statusMessage', label: 'Status', width: 100 },
-  { field: 'simEndYear', label: 'Year Range', width: 150 },
+  { field: 'simEndYear', label: 'Year Range', width: 130 },
   {
     field: 'reductionStartYear',
     label: 'Implementation Start Year',
@@ -32,16 +32,11 @@ const columns: CoreTableColumn[] = [
     label: 'Implementation Complete Year',
     width: 100,
   },
-  { field: 'waterContent', label: 'Water Content', width: 100 },
+  { field: 'waterContent', label: 'Water Content', width: 80 },
   {
     field: 'dateCreated',
     label: 'Date Created',
-    width: 150,
-  },
-  {
-    field: 'dateCompleted',
-    label: 'Date Completed',
-    width: 150,
+    width: 120,
   },
 ];
 
