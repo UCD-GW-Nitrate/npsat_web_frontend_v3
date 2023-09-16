@@ -1,13 +1,21 @@
-import { TextField } from '@mui/material';
+import type { FormControlProps } from '@mui/material';
+import { FormControl, TextField } from '@mui/material';
 import React from 'react';
 
 import type { CoreInputProps } from '../CoreInput/CoreInput';
 import { CoreInput } from '../CoreInput/CoreInput';
 
-export interface CoreTextFieldProps extends CoreInputProps {}
+export interface CoreTextFieldProps extends CoreInputProps, FormControlProps {}
 
-export const CoreTextField = ({ ...rest }: CoreTextFieldProps) => (
-  <CoreInput {...rest}>
-    <TextField size="small" />
+export const CoreTextField = ({
+  displayLabel,
+  fieldLabel,
+  sx,
+  ...rest
+}: CoreTextFieldProps) => (
+  <CoreInput displayLabel={displayLabel} fieldLabel={fieldLabel}>
+    <FormControl sx={{ minWidth: 200, ...sx }} {...rest}>
+      <TextField size="small" />
+    </FormControl>
   </CoreInput>
 );
