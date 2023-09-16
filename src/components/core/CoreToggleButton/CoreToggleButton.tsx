@@ -20,6 +20,7 @@ export const CoreToggleButton = ({
   options,
   fieldLabel,
   displayLabel,
+  labelStyle,
   ...rest
 }: CoreToggleButtonProps) => {
   const [alignment, setAlignment] = useState('');
@@ -32,7 +33,11 @@ export const CoreToggleButton = ({
   };
 
   return (
-    <CoreInput fieldLabel={fieldLabel} displayLabel={displayLabel}>
+    <CoreInput
+      fieldLabel={fieldLabel}
+      displayLabel={displayLabel}
+      labelStyle={labelStyle}
+    >
       <ToggleButtonGroup
         size="small"
         exclusive
