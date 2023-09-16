@@ -1,7 +1,7 @@
-import { Box } from '@mui/material';
 import React from 'react';
 
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
+import { VBox } from '@/components/VBox/VBox';
 
 const flowScenarioOptions = [
   { label: 'C2Vsim' },
@@ -29,40 +29,42 @@ const unsatZoneDepthScenario = [
 
 const Step1 = () => {
   return (
-    <Box
+    <VBox
+      spacing={2}
       sx={{
         mt: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        width: '100%',
+        alignItems: 'flex-start',
       }}
     >
       <CoreSelect
         options={flowScenarioOptions}
         fieldLabel="Flow scenario:"
         displayLabel="left"
-        sx={{ minWidth: '60vw' }}
+        labelStyle={{ minWidth: '30vw' }}
+        sx={{ flexGrow: 1 }}
       />
       <CoreSelect
         options={loadScenario}
         fieldLabel="Load scenario:"
         displayLabel="left"
-        sx={{ minWidth: '60vw', mt: 2 }}
+        labelStyle={{ minWidth: '30vw' }}
+        sx={{ flexGrow: 1 }}
       />
       <CoreSelect
         options={wellTypeScenario}
         fieldLabel="Well Type scenario:"
         displayLabel="left"
-        sx={{ minWidth: '60vw', mt: 2 }}
+        labelStyle={{ minWidth: '30vw' }}
+        sx={{ flexGrow: 1 }}
       />
       <CoreSelect
         options={unsatZoneDepthScenario}
         fieldLabel="Unsaturated zone depth scenario:"
         displayLabel="left"
-        sx={{ minWidth: '60vw', mt: 2 }}
+        labelStyle={{ minWidth: '30vw' }}
+        sx={{ flexGrow: 1 }}
       />
-    </Box>
+    </VBox>
   );
 };
 
