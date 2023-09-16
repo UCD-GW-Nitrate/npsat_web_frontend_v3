@@ -18,6 +18,7 @@ export const CoreSelect = ({
   options,
   fieldLabel,
   displayLabel,
+  labelStyle,
   sx,
   ...rest
 }: CoreSelectProps) => {
@@ -28,8 +29,12 @@ export const CoreSelect = ({
   };
 
   return (
-    <CoreInput fieldLabel={fieldLabel} displayLabel={displayLabel}>
-      <FormControl sx={{ minWidth: 200, ...sx }} {...rest}>
+    <CoreInput
+      fieldLabel={fieldLabel}
+      displayLabel={displayLabel}
+      labelStyle={labelStyle}
+    >
+      <FormControl sx={{ margin: 'auto', ...sx }} {...rest}>
         <Select
           value={inputValue}
           onChange={handleChange}
