@@ -19,6 +19,7 @@ export const HBox = ({
         flexWrap: 'wrap',
         gap: spacing,
         alignItems: 'center',
+        flexDirection: 'row',
         ...sx,
       }}
     >

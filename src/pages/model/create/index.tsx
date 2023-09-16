@@ -6,6 +6,8 @@ import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreStepper } from '@/components/core/CoreStepper/CoreStepper';
 import Layout from '@/components/Layout/Layout';
 
+import Step1 from '../steps/Step1';
+
 const steps = [
   'Select Settings',
   'Select Regions',
@@ -31,6 +33,7 @@ const CreateModelPage = () => {
           }}
         >
           <CoreStepper steps={steps} />
+          <Step1 />
         </CoreContainer>
       </Layout>
     </HelmetProvider>

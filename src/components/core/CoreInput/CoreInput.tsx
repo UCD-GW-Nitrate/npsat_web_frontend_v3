@@ -1,5 +1,5 @@
 import type { FormControlProps } from '@mui/material';
-import { FormControl } from '@mui/material';
+import { Box, FormControl } from '@mui/material';
 import React from 'react';
 
 import { HBox } from '@/components/HBox/Hbox';
@@ -15,21 +15,30 @@ export const CoreInput = ({
   children,
   displayLabel,
   fieldLabel,
+  sx,
   ...rest
 }: CoreInputProps) => (
-  <FormControl {...rest}>
+  <Box sx={{ ...sx }}>
     {displayLabel === 'top' && (
       <>
         <CoreText>{fieldLabel ?? ''}</CoreText>
-        {children}
+        <FormControl sx={{ width: '60vw' }} {...rest}>
+          {children}
+        </FormControl>
       </>
     )}
     {displayLabel === 'left' && (
       <HBox spacing={2}>
         <CoreText>{fieldLabel ?? ''}</CoreText>
-        {children}
+        <FormControl sx={{ width: '60vw' }} {...rest}>
+          {children}
+        </FormControl>
       </HBox>
     )}
-    {(displayLabel === 'none' || displayLabel === null) && <>{children}</>}
-  </FormControl>
+    {(displayLabel === 'none' || displayLabel === null) && (
+      <FormControl sx={{ width: '60vw' }} {...rest}>
+        {children}
+      </FormControl>
+    )}
+  </Box>
 );
