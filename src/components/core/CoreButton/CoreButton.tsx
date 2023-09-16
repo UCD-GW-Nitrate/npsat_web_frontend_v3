@@ -7,7 +7,5 @@ export interface CoreButtonProps extends ButtonProps {
 }
 
 export const CoreButton = ({ label, ...rest }: CoreButtonProps) => (
-  <Button color="primary" {...rest}>
-    {label}
-  </Button>
+  <Button {...rest}>{label}</Button>
 );

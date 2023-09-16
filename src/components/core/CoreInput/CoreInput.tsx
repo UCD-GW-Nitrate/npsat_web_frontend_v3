@@ -1,44 +1,38 @@
-import type { FormControlProps } from '@mui/material';
-import { Box, FormControl } from '@mui/material';
+import { Box } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import { HBox } from '@/components/HBox/Hbox';
 
 import { CoreText } from '../CoreText/CoreText';
 
-export interface CoreInputProps extends FormControlProps {
-  fieldLabel?: string | null;
-  displayLabel?: 'none' | 'left' | 'top' | null;
+export interface CoreInputProps {
+  fieldLabel?: string;
+  displayLabel?: 'none' | 'left' | 'top';
 }
+
+export interface CoreInputPropsComponent
+  extends CoreInputProps,
+    PropsWithChildren {}
 
 export const CoreInput = ({
   children,
   displayLabel,
   fieldLabel,
-  sx,
-  ...rest
-}: CoreInputProps) => (
-  <Box sx={{ ...sx }}>
+}: CoreInputPropsComponent) => (
+  <Box>
     {displayLabel === 'top' && (
       <>
         <CoreText>{fieldLabel ?? ''}</CoreText>
-        <FormControl sx={{ width: '60vw' }} {...rest}>
-          {children}
-        </FormControl>
+        {children}
       </>
     )}
     {displayLabel === 'left' && (
       <HBox spacing={2}>
         <CoreText>{fieldLabel ?? ''}</CoreText>
-        <FormControl sx={{ width: '60vw' }} {...rest}>
-          {children}
-        </FormControl>
+        {children}
       </HBox>
     )}
-    {(displayLabel === 'none' || displayLabel === null) && (
-      <FormControl sx={{ width: '60vw' }} {...rest}>
-        {children}
-      </FormControl>
-    )}
+    {(displayLabel === 'none' || displayLabel === undefined) && <>{children}</>}
   </Box>
 );
