@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-interface HBoxProps extends BoxProps {
+export interface HBoxProps extends BoxProps {
   spacing?: number;
 }
 

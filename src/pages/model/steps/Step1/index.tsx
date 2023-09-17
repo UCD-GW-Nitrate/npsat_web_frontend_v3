@@ -2,9 +2,11 @@ import React from 'react';
 
 import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
 import { CoreDateRangeField } from '@/components/core/CoreDateRangeField/CoreDateRangeField';
+import { CoreInput } from '@/components/core/CoreInput/CoreInput';
 import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
+import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { VBox } from '@/components/custom/VBox/VBox';
 
 const flowScenarioOptions = [
@@ -95,6 +97,9 @@ const Step1 = () => {
         displayLabel="left"
         labelStyle={{ minWidth: '30vw' }}
       />
+      <CoreInput displayLabel="left" labelStyle={{ minWidth: '30vw' }}>
+        <PageAdvancementButtons />
+      </CoreInput>
     </VBox>
   );
 };
