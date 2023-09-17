@@ -13,7 +13,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
 
-import { CoreIconButton } from '../core/CoreIconButton/CoreIconButton';
+import { CoreIconButton } from '../../core/CoreIconButton/CoreIconButton';
 
 const ProfileButton = () => {
   const theme = useTheme();

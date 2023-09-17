@@ -2,7 +2,7 @@ import type { BoxProps } from '@mui/material';
 import type { DateView } from '@mui/x-date-pickers';
 import React from 'react';
 
-import { HBox } from '@/components/HBox/Hbox';
+import { HBox } from '@/components/custom/HBox/Hbox';
 
 import { CoreDateField } from '../CoreDateField/CoreDateField';
 import type { CoreInputProps } from '../CoreInput/CoreInput';
