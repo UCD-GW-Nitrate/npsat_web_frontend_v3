@@ -9,9 +9,9 @@ import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMul
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
 import { CoreTable } from '@/components/core/CoreTable/CoreTable';
 import { CoreText } from '@/components/core/CoreText/CoreText';
-import Footer from '@/components/Footer/Footer';
-import { HBox } from '@/components/HBox/Hbox';
-import Layout from '@/components/Layout/Layout';
+import Footer from '@/components/custom/Footer/Footer';
+import { HBox } from '@/components/custom/HBox/Hbox';
+import Layout from '@/components/custom/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
 
 const columns: CoreTableColumn[] = [
