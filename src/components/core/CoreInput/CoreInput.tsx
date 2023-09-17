@@ -12,6 +12,7 @@ export interface CoreInputProps {
   fieldLabel?: string;
   displayLabel?: 'none' | 'left' | 'top';
   labelStyle?: SxProps<Theme>;
+  fullWidth?: boolean;
 }
 
 export interface CoreInputPropsComponent
@@ -23,8 +24,9 @@ export const CoreInput = ({
   displayLabel,
   fieldLabel,
   labelStyle,
+  fullWidth = true,
 }: CoreInputPropsComponent) => (
-  <Box sx={{ width: '100%' }}>
+  <Box sx={fullWidth ? { width: '100%' } : {}}>
     {displayLabel === 'top' && (
       <>
         <VBox sx={{ alignItems: 'flex-end', ...labelStyle }}>

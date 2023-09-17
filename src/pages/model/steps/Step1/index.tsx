@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
+import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
 import { VBox } from '@/components/VBox/VBox';
 
 const flowScenarioOptions = [
@@ -25,6 +26,10 @@ const wellTypeScenario = [
 const unsatZoneDepthScenario = [
   { label: 'Drought vadose zone thickness (spring 2015)' },
   { label: 'Typical vadose zone thickness (spring 2000)' },
+];
+const transiptionPeriodOptions = [
+  { label: 'Custom scenario' },
+  { label: 'BAU scenario' },
 ];
 
 const Step1 = () => {
@@ -63,6 +68,12 @@ const Step1 = () => {
         displayLabel="left"
         labelStyle={{ minWidth: '30vw' }}
         sx={{ flexGrow: 1 }}
+      />
+      <CoreToggleButton
+        options={transiptionPeriodOptions}
+        fieldLabel="Scenario type:"
+        displayLabel="left"
+        labelStyle={{ minWidth: '30vw' }}
       />
     </VBox>
   );

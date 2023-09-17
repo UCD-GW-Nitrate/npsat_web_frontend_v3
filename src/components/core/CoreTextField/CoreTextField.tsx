@@ -11,6 +11,7 @@ export const CoreTextField = ({
   displayLabel,
   fieldLabel,
   labelStyle,
+  fullWidth,
   sx,
   ...rest
 }: CoreTextFieldProps) => (
@@ -18,6 +19,7 @@ export const CoreTextField = ({
     displayLabel={displayLabel}
     fieldLabel={fieldLabel}
     labelStyle={labelStyle}
+    fullWidth={fullWidth}
   >
     <FormControl sx={{ minWidth: 200, ...sx }} {...rest}>
       <TextField size="small" />

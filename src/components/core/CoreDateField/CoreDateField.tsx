@@ -14,14 +14,30 @@ export interface CoreDateFieldProps
 export const CoreDateField = ({
   displayLabel,
   fieldLabel,
+  labelStyle,
+  fullWidth,
   sx,
   ...rest
-}: CoreDateFieldProps) => (
-  <CoreInput displayLabel={displayLabel} fieldLabel={fieldLabel}>
-    <FormControl sx={{ minWidth: 200, ...sx }}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker slotProps={{ textField: { size: 'small' } }} {...rest} />
-      </LocalizationProvider>
-    </FormControl>
-  </CoreInput>
-);
+}: CoreDateFieldProps) => {
+  return (
+    <CoreInput
+      displayLabel={displayLabel}
+      fieldLabel={fieldLabel}
+      labelStyle={labelStyle}
+      fullWidth={fullWidth}
+    >
+      <FormControl sx={{ minWidth: 200, ...sx }}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            slotProps={{
+              textField: {
+                size: 'small',
+              },
+            }}
+            {...rest}
+          />
+        </LocalizationProvider>
+      </FormControl>
+    </CoreInput>
+  );
+};
