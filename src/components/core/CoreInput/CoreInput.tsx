@@ -3,8 +3,8 @@ import { Box } from '@mui/material';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-import { HBox } from '@/components/HBox/Hbox';
-import { VBox } from '@/components/VBox/VBox';
+import { HBox } from '@/components/custom/HBox/Hbox';
+import { VBox } from '@/components/custom/VBox/VBox';
 
 import { CoreText } from '../CoreText/CoreText';
 

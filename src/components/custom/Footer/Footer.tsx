@@ -1,8 +1,8 @@
 import { Link } from '@mui/material';
 import React from 'react';
 
-import { CoreContainer } from '../core/CoreContainer/CoreContainer';
-import { CoreText } from '../core/CoreText/CoreText';
+import { CoreContainer } from '../../core/CoreContainer/CoreContainer';
+import { CoreText } from '../../core/CoreText/CoreText';
 import { HBox } from '../HBox/Hbox';
 import styles from './Footer.module.css';
 

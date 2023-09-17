@@ -5,7 +5,7 @@ import { CoreDateRangeField } from '@/components/core/CoreDateRangeField/CoreDat
 import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
-import { VBox } from '@/components/VBox/VBox';
+import { VBox } from '@/components/custom/VBox/VBox';
 
 const flowScenarioOptions = [
   { label: 'C2Vsim' },
