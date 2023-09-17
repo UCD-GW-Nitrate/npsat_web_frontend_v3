@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
+import { CoreDateRangeField } from '@/components/core/CoreDateRangeField/CoreDateRangeField';
+import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
 import { VBox } from '@/components/VBox/VBox';
@@ -35,9 +38,9 @@ const transiptionPeriodOptions = [
 const Step1 = () => {
   return (
     <VBox
-      spacing={2}
+      spacing={4}
       sx={{
-        mt: 4,
+        mt: 6,
         alignItems: 'flex-start',
       }}
     >
@@ -69,9 +72,26 @@ const Step1 = () => {
         labelStyle={{ minWidth: '30vw' }}
         sx={{ flexGrow: 1 }}
       />
+      <CoreNumberField
+        fieldLabel="Unsaturated zone effective water content:"
+        displayLabel="left"
+        labelStyle={{ minWidth: '30vw' }}
+        sx={{ width: 100 }}
+        units="%"
+      />
+      <CoreDateField
+        fieldLabel="Simulation ending year:"
+        displayLabel="left"
+        labelStyle={{ minWidth: '30vw' }}
+      />
       <CoreToggleButton
         options={transiptionPeriodOptions}
         fieldLabel="Scenario type:"
+        displayLabel="left"
+        labelStyle={{ minWidth: '30vw' }}
+      />
+      <CoreDateRangeField
+        fieldLabel="Transition period:"
         displayLabel="left"
         labelStyle={{ minWidth: '30vw' }}
       />
