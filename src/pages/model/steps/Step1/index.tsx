@@ -54,10 +54,22 @@ const Step1 = () => {
         mt: 6,
       }}
     >
-      <CoreSelect options={flowScenarioOptions} sx={{ flexGrow: 1 }} />
-      <CoreSelect options={loadScenario} sx={{ flexGrow: 1 }} />
-      <CoreSelect options={wellTypeScenario} sx={{ flexGrow: 1 }} />
-      <CoreSelect options={unsatZoneDepthScenario} sx={{ flexGrow: 1 }} />
+      <CoreSelect
+        options={flowScenarioOptions}
+        sx={{ display: 'flex', flexGrow: 1 }}
+      />
+      <CoreSelect
+        options={loadScenario}
+        sx={{ display: 'flex', flexGrow: 1 }}
+      />
+      <CoreSelect
+        options={wellTypeScenario}
+        sx={{ display: 'flex', flexGrow: 1 }}
+      />
+      <CoreSelect
+        options={unsatZoneDepthScenario}
+        sx={{ display: 'flex', flexGrow: 1 }}
+      />
       <CoreNumberField sx={{ width: 100 }} units="%" />
       <CoreDateField />
       <CoreToggleButton options={transiptionPeriodOptions} />
