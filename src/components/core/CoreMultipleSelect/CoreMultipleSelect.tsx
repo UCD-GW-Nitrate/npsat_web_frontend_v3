@@ -1,5 +1,5 @@
-import type { FormControlProps } from '@mui/material';
-import { Autocomplete, Chip, FormControl, TextField } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Autocomplete, Box, Chip, TextField } from '@mui/material';
 import React from 'react';
 
 export interface CoreMultipleSelectOption {
@@ -8,7 +8,7 @@ export interface CoreMultipleSelectOption {
   group?: string;
 }
 
-export interface CoreMultipleSelectProps extends FormControlProps {
+export interface CoreMultipleSelectProps extends BoxProps {
   options: CoreMultipleSelectOption[];
   setValue?: (
     value: React.SetStateAction<(CoreMultipleSelectOption | undefined)[]>,
@@ -30,7 +30,7 @@ export const CoreMultipleSelect = ({
   >([]);
 
   return (
-    <FormControl sx={{ minWidth: 200, ...sx }} {...rest}>
+    <Box sx={{ width: 200, ...sx }} {...rest}>
       <Autocomplete
         multiple
         options={options}
@@ -68,6 +68,6 @@ export const CoreMultipleSelect = ({
         }
         {...(group ? { groupBy: (option) => option?.group ?? '' } : {})}
       />
-    </FormControl>
+    </Box>
   );
 };

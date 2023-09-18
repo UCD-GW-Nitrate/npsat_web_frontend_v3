@@ -57,24 +57,24 @@ export const CoreRangeSlider = ({
           onChange={handleChange}
         />
         <div>
-          <CoreNumberField
-            displayLabel="left"
-            fieldLabel={minFieldLabel}
-            value={range[0]}
-            onNumberChange={handleMinNumberChange}
-            units={units}
-            sx={{ width: 100 }}
-          />
+          <CoreInput displayLabel="left" fieldLabel={minFieldLabel}>
+            <CoreNumberField
+              value={range[0]}
+              onNumberChange={handleMinNumberChange}
+              units={units}
+              sx={{ width: 100 }}
+            />
+          </CoreInput>
         </div>
         <div>
-          <CoreNumberField
-            displayLabel="left"
-            fieldLabel={maxFieldLabel}
-            value={range[1]}
-            onNumberChange={handleMaxNumberChange}
-            units={units}
-            sx={{ width: 100 }}
-          />
+          <CoreInput displayLabel="left" fieldLabel={maxFieldLabel}>
+            <CoreNumberField
+              value={range[1]}
+              onNumberChange={handleMaxNumberChange}
+              units={units}
+              sx={{ width: 100 }}
+            />
+          </CoreInput>
         </div>
       </HBox>
     </CoreInput>
