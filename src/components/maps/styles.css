@@ -1,0 +1,5 @@
+/* height of the container */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
