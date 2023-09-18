@@ -25,4 +25,7 @@ export const Primary: Story = {
       </ThemeProvider>
     </Provider>
   ),
+  args: {
+    mapType: 'county',
+  },
 };

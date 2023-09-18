@@ -96,7 +96,7 @@ const regionApi = createApi({
           return {
             url: 'api/region/',
             method: 'GET',
-            params: { offset: 0, region_type: 6, limit: 2000 },
+            params: { offset: 0, region_type: 2, limit: 2000 },
           };
         },
       }),
