@@ -4,6 +4,6 @@ import React from 'react';
 
 export interface CoreContainerProps extends ContainerProps {}
 
-export const CoreContainer = ({ children, ...rest }: CoreContainerProps) => (
-  <Container {...rest}>{children}</Container>
+export const CoreContainer = ({ ...rest }: CoreContainerProps) => (
+  <Container {...rest} />
 );

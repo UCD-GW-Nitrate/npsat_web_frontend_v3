@@ -3,8 +3,8 @@ import { Box } from '@mui/material';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-interface HBoxProps extends BoxProps {
-  spacing: number;
+export interface HBoxProps extends BoxProps {
+  spacing?: number;
 }
 
 export const HBox = ({
@@ -17,8 +17,9 @@ export const HBox = ({
       sx={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: spacing,
+        gap: spacing ?? 0,
         alignItems: 'center',
+        flexDirection: 'row',
         ...sx,
       }}
     >

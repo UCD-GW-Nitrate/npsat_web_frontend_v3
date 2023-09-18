@@ -3,8 +3,8 @@ import Image from 'next/image';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import Footer from '@/components/Footer/Footer';
-import LoginForm from '@/components/Login/LoginForm';
+import Footer from '@/components/custom/Footer/Footer';
+import LoginForm from '@/components/custom/Login/LoginForm';
 import logo from '@/public/images/logo.svg';
 
 import styles from './login.module.css';
