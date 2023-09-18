@@ -7,6 +7,15 @@ import { CoreStepper } from '@/components/core/CoreStepper/CoreStepper';
 import Layout from '@/components/custom/Layout/Layout';
 
 import Step1 from '../steps/Step1';
+import Step2 from '../steps/Step2';
+import Step3 from '../steps/Step3';
+import Step4 from '../steps/Step4';
+import Step5 from '../steps/Step5';
+
+export interface Step {
+  onPrev: () => void;
+  onNext: () => void;
+}
 
 const steps = [
   'Select Settings',
@@ -18,6 +27,51 @@ const steps = [
 
 const CreateModelPage = () => {
   const theme = useTheme();
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [completed, setCompleted] = React.useState<{
+    [k: number]: boolean;
+  }>({});
+
+  const totalSteps = () => {
+    return steps.length;
+  };
+
+  const completedSteps = () => {
+    return Object.keys(completed).length;
+  };
+
+  const isLastStep = () => {
+    return activeStep === totalSteps() - 1;
+  };
+
+  const allStepsCompleted = () => {
+    return completedSteps() === totalSteps();
+  };
+
+  const handleNext = () => {
+    const newActiveStep =
+      isLastStep() && !allStepsCompleted()
+        ? // It's the last step, but not all steps have been completed,
+          // find the first step that has been completed
+          steps.findIndex((_step, i) => !(i in completed))
+        : activeStep + 1;
+    setActiveStep(newActiveStep);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStep = (step: number) => () => {
+    setActiveStep(step);
+  };
+
+  const handleComplete = () => {
+    const newCompleted = completed;
+    newCompleted[activeStep] = true;
+    setCompleted(newCompleted);
+    handleNext();
+  };
 
   return (
     <HelmetProvider>
@@ -32,8 +86,27 @@ const CreateModelPage = () => {
             py: 5,
           }}
         >
-          <CoreStepper steps={steps} />
-          <Step1 />
+          <CoreStepper
+            steps={steps}
+            handleStep={handleStep}
+            completed={completed}
+            activeStep={activeStep}
+          />
+          {activeStep === 0 && (
+            <Step1 onPrev={handleBack} onNext={handleComplete} />
+          )}
+          {activeStep === 1 && (
+            <Step2 onPrev={handleBack} onNext={handleComplete} />
+          )}
+          {activeStep === 2 && (
+            <Step3 onPrev={handleBack} onNext={handleComplete} />
+          )}
+          {activeStep === 3 && (
+            <Step4 onPrev={handleBack} onNext={handleComplete} />
+          )}
+          {activeStep === 4 && (
+            <Step5 onPrev={handleBack} onNext={handleComplete} />
+          )}
         </CoreContainer>
       </Layout>
     </HelmetProvider>

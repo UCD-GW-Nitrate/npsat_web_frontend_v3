@@ -8,6 +8,8 @@ import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 
+import type { Step } from '../../create';
+
 const flowScenarioOptions = [
   { label: 'C2Vsim' },
   { label: 'CVHM (currently unavailable)' },
@@ -36,17 +38,19 @@ const transiptionPeriodOptions = [
   { label: 'BAU scenario' },
 ];
 const fields = [
-  { label: 'Flow scenario' },
-  { label: 'Load scenario' },
-  { label: 'Well Type scenario' },
-  { label: 'Unsaturated zone depth scenario' },
-  { label: 'Unsaturated zone effective water conent' },
-  { label: 'Simulation ending year' },
-  { label: 'Scenario type' },
-  { label: 'Transition period' },
+  { label: 'Flow scenario:' },
+  { label: 'Load scenario:' },
+  { label: 'Well Type scenario:' },
+  { label: 'Unsaturated zone depth scenario:' },
+  { label: 'Unsaturated zone effective water conent:' },
+  { label: 'Simulation ending year:' },
+  { label: 'Scenario type:' },
+  { label: 'Transition period:' },
 ];
 
-const Step1 = () => {
+interface Step1Props extends Step {}
+
+const Step1 = ({ onPrev, onNext }: Step1Props) => {
   return (
     <CoreForm
       fields={fields}
@@ -74,7 +78,7 @@ const Step1 = () => {
       <CoreDateField />
       <CoreToggleButton options={transiptionPeriodOptions} />
       <CoreDateRangeField />
-      <PageAdvancementButtons />
+      <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
     </CoreForm>
   );
 };
