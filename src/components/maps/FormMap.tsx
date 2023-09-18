@@ -1,7 +1,3 @@
-import './styles.css';
-import 'leaflet/dist/leaflet.css';
-
-import console from 'console';
 import type { GeoJsonObject } from 'geojson';
 import { useState } from 'react';
 import { GeoJSON, MapContainer, TileLayer } from 'react-leaflet';

@@ -1,3 +1,6 @@
+import 'leaflet/dist/leaflet.css';
+import './styles.css';
+
 import { ThemeProvider } from '@emotion/react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
@@ -6,7 +9,7 @@ import theme from '@/components/theme';
 import { store } from '@/store';
 
 import type { FormMapSelectProps } from './FormMapSelect';
-import { FormMapSelect } from './FormMapSelect';
+import FormMapSelect from './FormMapSelect';
 
 const meta: Meta<typeof FormMapSelect> = {
   component: FormMapSelect,

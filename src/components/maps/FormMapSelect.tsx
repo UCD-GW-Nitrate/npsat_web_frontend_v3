@@ -110,7 +110,7 @@ export const TownshipFormMapSelect = () => {
   return <div />;
 };
 
-export const FormMapSelect = ({ mapType }: FormMapSelectProps) => {
+const FormMapSelect = ({ mapType }: FormMapSelectProps) => {
   if (mapType === 'county') {
     return <CountyFormMapSelect />;
   }
@@ -132,3 +132,5 @@ export const FormMapSelect = ({ mapType }: FormMapSelectProps) => {
 
   return <div />;
 };
+
+export default FormMapSelect;

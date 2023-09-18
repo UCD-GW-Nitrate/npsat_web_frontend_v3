@@ -1,3 +1,5 @@
+import 'leaflet/dist/leaflet.css';
+import '@/components/maps/styles.css';
 import '../styles/global.css';
 
 import GlobalStyles from '@mui/material/GlobalStyles';
