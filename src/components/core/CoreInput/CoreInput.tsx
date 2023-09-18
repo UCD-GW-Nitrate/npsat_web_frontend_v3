@@ -1,35 +1,48 @@
-import type { FormControlProps } from '@mui/material';
-import { FormControl } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { Box } from '@mui/material';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-import { HBox } from '@/components/HBox/Hbox';
+import { HBox } from '@/components/custom/HBox/Hbox';
+import { VBox } from '@/components/custom/VBox/VBox';
 
 import { CoreText } from '../CoreText/CoreText';
 
-export interface CoreInputProps extends FormControlProps {
-  fieldLabel?: string | null;
-  displayLabel?: 'none' | 'left' | 'top' | null;
+export interface CoreInputProps {
+  fieldLabel?: string;
+  displayLabel?: 'none' | 'left' | 'top';
+  labelStyle?: SxProps<Theme>;
+  fullWidth?: boolean;
 }
+
+export interface CoreInputPropsComponent
+  extends CoreInputProps,
+    PropsWithChildren {}
 
 export const CoreInput = ({
   children,
   displayLabel,
   fieldLabel,
-  ...rest
-}: CoreInputProps) => (
-  <FormControl {...rest}>
+  labelStyle,
+  fullWidth = true,
+}: CoreInputPropsComponent) => (
+  <Box sx={fullWidth ? { width: '100%' } : {}}>
     {displayLabel === 'top' && (
       <>
-        <CoreText>{fieldLabel ?? ''}</CoreText>
+        <VBox sx={{ alignItems: 'flex-end', ...labelStyle }}>
+          <CoreText>{fieldLabel ?? ''}</CoreText>
+        </VBox>
         {children}
       </>
     )}
     {displayLabel === 'left' && (
       <HBox spacing={2}>
-        <CoreText>{fieldLabel ?? ''}</CoreText>
+        <VBox sx={{ display: 'flex', alignItems: 'flex-end', ...labelStyle }}>
+          <CoreText>{fieldLabel ?? ''}</CoreText>
+        </VBox>
         {children}
       </HBox>
     )}
-    {(displayLabel === 'none' || displayLabel === null) && <>{children}</>}
-  </FormControl>
+    {(displayLabel === 'none' || displayLabel === undefined) && <>{children}</>}
+  </Box>
 );
