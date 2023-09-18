@@ -8,6 +8,7 @@ import { CoreText } from '../CoreText/CoreText';
 
 export interface CoreFormField {
   label: string;
+  position?: 'flex-start' | 'center' | 'flex-end';
   required?: boolean;
   errorMessage?: string;
 }
@@ -35,13 +36,24 @@ export const CoreForm = ({ children, fields, ...rest }: CoreFormProps) => {
             <HBox
               key={fields[index]?.label ?? ''}
               spacing={2}
-              sx={{ width: '100%' }}
+              sx={{
+                width: '100%',
+                alignItems: fields[index]?.position
+                  ? fields[index]?.position
+                  : 'center',
+              }}
             >
               <Stack
                 flexDirection="column"
                 sx={{ width: '30vw', overflow: 'hidden' }}
               >
-                <CoreText sx={{ marginLeft: 'auto' }} noWrap>
+                <CoreText
+                  sx={{
+                    marginLeft: 'auto',
+                    mt: fields[index]?.position ? 0.5 : 0,
+                  }}
+                  noWrap
+                >
                   {fields[index]?.label ?? ''}
                 </CoreText>
               </Stack>
