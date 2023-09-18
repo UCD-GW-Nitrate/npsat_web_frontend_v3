@@ -30,11 +30,12 @@ export const CoreMultipleSelect = ({
   >([]);
 
   return (
-    <Box sx={{ width: 200, ...sx }} {...rest}>
+    <Box sx={{ minWidth: 200, ...sx }} {...rest}>
       <Autocomplete
         multiple
         options={options}
         size="small"
+        sx={{ minWidth: 200, ...sx }}
         renderInput={(params) => (
           <TextField
             {...params}

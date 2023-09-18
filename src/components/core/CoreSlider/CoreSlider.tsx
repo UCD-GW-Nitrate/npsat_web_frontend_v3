@@ -1,25 +1,21 @@
-import type { SliderProps } from '@mui/material';
-import { Slider } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Box, Slider } from '@mui/material';
 import React, { useState } from 'react';
 
 import { HBox } from '@/components/custom/HBox/Hbox';
 
-import type { CoreInputProps } from '../CoreInput/CoreInput';
 import { CoreInput } from '../CoreInput/CoreInput';
 import { CoreNumberField } from '../CoreNumberField/CoreNumberField';
 
-export interface CoreSliderProps extends CoreInputProps, SliderProps {
+export interface CoreSliderProps extends BoxProps {
   units?: string;
   textFieldLabel?: string;
 }
 
 export const CoreSlider = ({
-  displayLabel,
-  fieldLabel,
-  labelStyle,
-  fullWidth,
   units,
   textFieldLabel,
+  sx,
   ...rest
 }: CoreSliderProps) => {
   const [value, setValue] = useState(0);
@@ -33,19 +29,11 @@ export const CoreSlider = ({
   };
 
   return (
-    <CoreInput
-      displayLabel={displayLabel}
-      fieldLabel={fieldLabel}
-      labelStyle={labelStyle}
-      fullWidth={fullWidth}
-    >
+    <Box {...rest}>
       <HBox spacing={2}>
-        <Slider
-          sx={{ width: 150 }}
-          {...rest}
-          value={value}
-          onChange={handleChange}
-        />
+        <div>
+          <Slider value={value} onChange={handleChange} sx={{ width: 200 }} />
+        </div>
         <div>
           <CoreInput displayLabel="left" fieldLabel={textFieldLabel}>
             <CoreNumberField
@@ -57,6 +45,6 @@ export const CoreSlider = ({
           </CoreInput>
         </div>
       </HBox>
-    </CoreInput>
+    </Box>
   );
 };
