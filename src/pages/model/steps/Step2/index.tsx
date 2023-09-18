@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 
@@ -8,6 +8,7 @@ import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 
 import type { Step } from '../../create';
+import Step2Instructions from './Step2Instructions';
 
 interface Step2Props extends Step {}
 
@@ -59,6 +60,8 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
         <CoreSwitch />
         <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
       </CoreForm>
+      <Divider sx={{ mt: 6 }} />
+      <Step2Instructions />
     </Box>
   );
 };

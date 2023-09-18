@@ -1,3 +1,4 @@
+import { Box, Divider } from '@mui/material';
 import React from 'react';
 
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
@@ -6,6 +7,7 @@ import { CoreSlider } from '@/components/core/CoreSlider/CoreSlider';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 
 import type { Step } from '../../create';
+import Step3Instructions from './Step3Instructions';
 
 interface Step3Props extends Step {}
 
@@ -20,25 +22,29 @@ const crops = [
   { label: 'Cherries' },
 ];
 
-const fields = [{ label: 'Crop(s)' }, { label: 'Loading' }];
+const fields = [{ label: 'Crop(s):' }, { label: 'Loading:' }];
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
   return (
-    <CoreForm
-      fields={fields}
-      sx={{
-        mt: 6,
-      }}
-    >
-      <CoreMultipleSelect
-        options={crops}
-        sx={{ width: 400 }}
-        placeholder=""
-        group={false}
-      />
-      <CoreSlider units="%" />
-      <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
-    </CoreForm>
+    <Box>
+      <CoreForm
+        fields={fields}
+        sx={{
+          mt: 6,
+        }}
+      >
+        <CoreMultipleSelect
+          options={crops}
+          sx={{ width: 400 }}
+          placeholder=""
+          group={false}
+        />
+        <CoreSlider units="%" />
+        <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
+      </CoreForm>
+      <Divider sx={{ mt: 6 }} />
+      <Step3Instructions />
+    </Box>
   );
 };
 
