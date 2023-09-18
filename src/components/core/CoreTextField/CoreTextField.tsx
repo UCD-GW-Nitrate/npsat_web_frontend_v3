@@ -5,13 +5,20 @@ import React from 'react';
 import type { CoreInputProps } from '../CoreInput/CoreInput';
 import { CoreInput } from '../CoreInput/CoreInput';
 
-export interface CoreTextFieldProps extends CoreInputProps, FormControlProps {}
+export interface CoreTextFieldProps extends CoreInputProps, FormControlProps {
+  value?: unknown;
+  onTextChange?: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  >;
+}
 
 export const CoreTextField = ({
   displayLabel,
   fieldLabel,
   labelStyle,
   fullWidth,
+  value,
+  onTextChange,
   sx,
   ...rest
 }: CoreTextFieldProps) => (
@@ -22,7 +29,7 @@ export const CoreTextField = ({
     fullWidth={fullWidth}
   >
     <FormControl sx={{ minWidth: 200, ...sx }} {...rest}>
-      <TextField size="small" />
+      <TextField size="small" onChange={onTextChange} value={value} />
     </FormControl>
   </CoreInput>
 );
