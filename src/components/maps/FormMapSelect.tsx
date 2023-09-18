@@ -22,8 +22,7 @@ export interface FormMapSelectProps {
 
 const configureData = (county: ResultResponse) => {
   const { geometry } = county;
-  // geometry.properties = { ...geometry.properties, id: county.id };
-  return geometry;
+  return { ...geometry, properties: { ...geometry.properties, id: county.id } };
 };
 
 export const CountyFormMapSelect = () => {
