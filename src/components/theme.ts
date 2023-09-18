@@ -6,6 +6,14 @@ const theme = createTheme({
       fontSize: 32,
       fontWeight: 600,
     },
+    h2: {
+      fontSize: 20,
+      fontWeight: 600,
+    },
+    h3: {
+      fontSize: 16,
+      fontWeight: 600,
+    },
   },
   palette: {
     background: {

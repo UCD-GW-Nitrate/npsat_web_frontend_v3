@@ -1,3 +1,4 @@
+import { Box, Divider } from '@mui/material';
 import React from 'react';
 
 import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
@@ -9,6 +10,7 @@ import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleB
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 
 import type { Step } from '../../create';
+import Step1Instructions from './Step1Instructions';
 
 const flowScenarioOptions = [
   { label: 'C2Vsim' },
@@ -52,34 +54,38 @@ interface Step1Props extends Step {}
 
 const Step1 = ({ onPrev, onNext }: Step1Props) => {
   return (
-    <CoreForm
-      fields={fields}
-      sx={{
-        mt: 6,
-      }}
-    >
-      <CoreSelect
-        options={flowScenarioOptions}
-        sx={{ display: 'flex', flexGrow: 1 }}
-      />
-      <CoreSelect
-        options={loadScenario}
-        sx={{ display: 'flex', flexGrow: 1 }}
-      />
-      <CoreSelect
-        options={wellTypeScenario}
-        sx={{ display: 'flex', flexGrow: 1 }}
-      />
-      <CoreSelect
-        options={unsatZoneDepthScenario}
-        sx={{ display: 'flex', flexGrow: 1 }}
-      />
-      <CoreNumberField sx={{ width: 100 }} units="%" />
-      <CoreDateField />
-      <CoreToggleButton options={transiptionPeriodOptions} />
-      <CoreDateRangeField />
-      <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
-    </CoreForm>
+    <Box>
+      <CoreForm
+        fields={fields}
+        sx={{
+          mt: 6,
+        }}
+      >
+        <CoreSelect
+          options={flowScenarioOptions}
+          sx={{ display: 'flex', flexGrow: 1 }}
+        />
+        <CoreSelect
+          options={loadScenario}
+          sx={{ display: 'flex', flexGrow: 1 }}
+        />
+        <CoreSelect
+          options={wellTypeScenario}
+          sx={{ display: 'flex', flexGrow: 1 }}
+        />
+        <CoreSelect
+          options={unsatZoneDepthScenario}
+          sx={{ display: 'flex', flexGrow: 1 }}
+        />
+        <CoreNumberField sx={{ width: 100 }} units="%" />
+        <CoreDateField />
+        <CoreToggleButton options={transiptionPeriodOptions} />
+        <CoreDateRangeField />
+        <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
+      </CoreForm>
+      <Divider sx={{ mt: 6 }} />
+      <Step1Instructions />
+    </Box>
   );
 };
 
