@@ -19,7 +19,7 @@ export const CoreSelect = ({ options, sx, ...rest }: CoreSelectProps) => {
   };
 
   return (
-    <Box sx={{ width: 200, ...sx }} {...rest}>
+    <Box sx={{ minWidth: 200, ...sx }} {...rest}>
       <Select
         value={inputValue}
         onChange={handleChange}

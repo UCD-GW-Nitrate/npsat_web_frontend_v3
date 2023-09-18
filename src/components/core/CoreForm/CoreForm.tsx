@@ -24,10 +24,19 @@ export const CoreForm = ({ children, fields, ...rest }: CoreFormProps) => {
 
   return (
     <Box component="form" {...rest}>
-      <Stack spacing={4} alignItems="flex-start" flexDirection="column">
+      <Stack
+        spacing={4}
+        alignItems="flex-start"
+        flexDirection="column"
+        sx={{ width: '100%' }}
+      >
         {childrenArray.map((child, index) => {
           return (
-            <HBox key={fields[index]?.label ?? ''} spacing={2}>
+            <HBox
+              key={fields[index]?.label ?? ''}
+              spacing={2}
+              sx={{ width: '100%' }}
+            >
               <Stack
                 flexDirection="column"
                 sx={{ width: '30vw', overflow: 'hidden' }}
