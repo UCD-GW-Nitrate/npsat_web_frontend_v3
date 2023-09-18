@@ -40,7 +40,7 @@ export interface PropertyResponse {
   BUDGET_TYP: string;
   Regional_0: number;
   Shape_Area: number;
-  id?: number;
+  id: number;
 }
 
 export interface RegionGeometryResponse {
