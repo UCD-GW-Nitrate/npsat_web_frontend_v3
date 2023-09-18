@@ -1,27 +1,18 @@
-import type { ToggleButtonGroupProps } from '@mui/material';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React, { useState } from 'react';
-
-import type { CoreInputProps } from '../CoreInput/CoreInput';
-import { CoreInput } from '../CoreInput/CoreInput';
 
 export interface CoreToggleOption {
   label: string;
   value?: string;
 }
 
-export interface CoreToggleButtonProps
-  extends CoreInputProps,
-    ToggleButtonGroupProps {
+export interface CoreToggleButtonProps extends BoxProps {
   options: CoreToggleOption[];
 }
 
 export const CoreToggleButton = ({
   options,
-  fieldLabel,
-  displayLabel,
-  labelStyle,
-  fullWidth,
   ...rest
 }: CoreToggleButtonProps) => {
   const [alignment, setAlignment] = useState('');
@@ -34,19 +25,13 @@ export const CoreToggleButton = ({
   };
 
   return (
-    <CoreInput
-      fieldLabel={fieldLabel}
-      displayLabel={displayLabel}
-      labelStyle={labelStyle}
-      fullWidth={fullWidth}
-    >
+    <Box {...rest}>
       <ToggleButtonGroup
-        size="small"
-        exclusive
         color="primary"
-        {...rest}
         value={alignment}
+        exclusive
         onChange={handleChange}
+        size="small"
       >
         {options.map(({ label, value }: CoreToggleOption) => (
           <ToggleButton key={label} value={value ?? label}>
@@ -54,6 +39,6 @@ export const CoreToggleButton = ({
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
-    </CoreInput>
+    </Box>
   );
 };

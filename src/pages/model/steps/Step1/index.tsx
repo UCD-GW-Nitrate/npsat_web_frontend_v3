@@ -2,12 +2,11 @@ import React from 'react';
 
 import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
 import { CoreDateRangeField } from '@/components/core/CoreDateRangeField/CoreDateRangeField';
-import { CoreInput } from '@/components/core/CoreInput/CoreInput';
+import { CoreForm } from '@/components/core/CoreForm/CoreForm';
 import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import { VBox } from '@/components/custom/VBox/VBox';
 
 const flowScenarioOptions = [
   { label: 'C2Vsim' },
@@ -36,71 +35,35 @@ const transiptionPeriodOptions = [
   { label: 'Custom scenario' },
   { label: 'BAU scenario' },
 ];
+const fields = [
+  { label: 'Flow scenario' },
+  { label: 'Load scenario' },
+  { label: 'Well Type scenario' },
+  { label: 'Unsaturated zone depth scenario' },
+  { label: 'Unsaturated zone effective water conent' },
+  { label: 'Simulation ending year' },
+  { label: 'Scenario type' },
+  { label: 'Transition period' },
+];
 
 const Step1 = () => {
   return (
-    <VBox
-      spacing={4}
+    <CoreForm
+      fields={fields}
       sx={{
         mt: 6,
-        alignItems: 'flex-start',
       }}
     >
-      <CoreSelect
-        options={flowScenarioOptions}
-        fieldLabel="Flow scenario:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-        sx={{ flexGrow: 1 }}
-      />
-      <CoreSelect
-        options={loadScenario}
-        fieldLabel="Load scenario:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-        sx={{ flexGrow: 1 }}
-      />
-      <CoreSelect
-        options={wellTypeScenario}
-        fieldLabel="Well Type scenario:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-        sx={{ flexGrow: 1 }}
-      />
-      <CoreSelect
-        options={unsatZoneDepthScenario}
-        fieldLabel="Unsaturated zone depth scenario:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-        sx={{ flexGrow: 1 }}
-      />
-      <CoreNumberField
-        fieldLabel="Unsaturated zone effective water content:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-        sx={{ width: 100 }}
-        units="%"
-      />
-      <CoreDateField
-        fieldLabel="Simulation ending year:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-      />
-      <CoreToggleButton
-        options={transiptionPeriodOptions}
-        fieldLabel="Scenario type:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-      />
-      <CoreDateRangeField
-        fieldLabel="Transition period:"
-        displayLabel="left"
-        labelStyle={{ minWidth: '30vw' }}
-      />
-      <CoreInput displayLabel="left" labelStyle={{ minWidth: '30vw' }}>
-        <PageAdvancementButtons />
-      </CoreInput>
-    </VBox>
+      <CoreSelect options={flowScenarioOptions} sx={{ flexGrow: 1 }} />
+      <CoreSelect options={loadScenario} sx={{ flexGrow: 1 }} />
+      <CoreSelect options={wellTypeScenario} sx={{ flexGrow: 1 }} />
+      <CoreSelect options={unsatZoneDepthScenario} sx={{ flexGrow: 1 }} />
+      <CoreNumberField sx={{ width: 100 }} units="%" />
+      <CoreDateField />
+      <CoreToggleButton options={transiptionPeriodOptions} />
+      <CoreDateRangeField />
+      <PageAdvancementButtons />
+    </CoreForm>
   );
 };
 

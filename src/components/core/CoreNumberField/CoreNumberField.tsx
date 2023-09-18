@@ -1,11 +1,8 @@
-import type { FormControlProps } from '@mui/material';
-import { FormControl, InputAdornment, TextField } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Box, InputAdornment, TextField } from '@mui/material';
 import React from 'react';
 
-import type { CoreInputProps } from '../CoreInput/CoreInput';
-import { CoreInput } from '../CoreInput/CoreInput';
-
-export interface CoreNumberFieldProps extends CoreInputProps, FormControlProps {
+export interface CoreNumberFieldProps extends BoxProps {
   units?: string;
   value?: unknown;
   onNumberChange?: React.ChangeEventHandler<
@@ -14,38 +11,27 @@ export interface CoreNumberFieldProps extends CoreInputProps, FormControlProps {
 }
 
 export const CoreNumberField = ({
-  displayLabel,
-  fieldLabel,
-  labelStyle,
-  fullWidth,
   units,
   value,
   onNumberChange,
   sx,
   ...rest
 }: CoreNumberFieldProps) => (
-  <CoreInput
-    displayLabel={displayLabel}
-    fieldLabel={fieldLabel}
-    labelStyle={labelStyle}
-    fullWidth={fullWidth}
-  >
-    <FormControl sx={{ minWidth: 50, ...sx }} {...rest}>
-      <TextField
-        size="small"
-        type="number"
-        onChange={onNumberChange}
-        value={value}
-        InputProps={
-          units
-            ? {
-                endAdornment: (
-                  <InputAdornment position="end">{units}</InputAdornment>
-                ),
-              }
-            : {}
-        }
-      />
-    </FormControl>
-  </CoreInput>
+  <Box sx={{ minWidth: 50, ...sx }} {...rest}>
+    <TextField
+      size="small"
+      type="number"
+      onChange={onNumberChange}
+      value={value}
+      InputProps={
+        units
+          ? {
+              endAdornment: (
+                <InputAdornment position="end">{units}</InputAdornment>
+              ),
+            }
+          : {}
+      }
+    />
+  </Box>
 );

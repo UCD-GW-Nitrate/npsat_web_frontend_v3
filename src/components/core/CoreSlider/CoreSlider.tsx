@@ -47,14 +47,14 @@ export const CoreSlider = ({
           onChange={handleChange}
         />
         <div>
-          <CoreNumberField
-            displayLabel="left"
-            fieldLabel={textFieldLabel}
-            value={value}
-            onNumberChange={handleNumberChange}
-            units={units}
-            sx={{ width: 100 }}
-          />
+          <CoreInput displayLabel="left" fieldLabel={textFieldLabel}>
+            <CoreNumberField
+              value={value}
+              onNumberChange={handleNumberChange}
+              units={units}
+              sx={{ width: 100 }}
+            />
+          </CoreInput>
         </div>
       </HBox>
     </CoreInput>
