@@ -7,6 +7,10 @@ import { CoreInput } from '../CoreInput/CoreInput';
 
 export interface CoreNumberFieldProps extends CoreInputProps, FormControlProps {
   units?: string;
+  value?: unknown;
+  onNumberChange?: React.ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement
+  >;
 }
 
 export const CoreNumberField = ({
@@ -15,6 +19,8 @@ export const CoreNumberField = ({
   labelStyle,
   fullWidth,
   units,
+  value,
+  onNumberChange,
   sx,
   ...rest
 }: CoreNumberFieldProps) => (
@@ -28,6 +34,8 @@ export const CoreNumberField = ({
       <TextField
         size="small"
         type="number"
+        onChange={onNumberChange}
+        value={value}
         InputProps={
           units
             ? {
