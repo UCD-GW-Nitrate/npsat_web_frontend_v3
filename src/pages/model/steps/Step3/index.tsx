@@ -32,7 +32,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
     >
       <CoreMultipleSelect
         options={crops}
-        sx={{ display: 'flex', flexGrow: 1 }}
+        sx={{ width: 400 }}
         placeholder=""
         group={false}
       />

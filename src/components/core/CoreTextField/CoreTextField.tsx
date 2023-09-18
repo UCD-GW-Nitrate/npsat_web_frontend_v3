@@ -7,15 +7,24 @@ export interface CoreTextFieldProps extends BoxProps {
   onTextChange?: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   >;
+  multiline?: boolean;
 }
 
 export const CoreTextField = ({
   value,
   onTextChange,
   sx,
+  multiline,
   ...rest
 }: CoreTextFieldProps) => (
-  <Box sx={{ width: 200, ...sx }} {...rest}>
-    <TextField size="small" onChange={onTextChange} value={value} />
+  <Box sx={{ minWidth: 200, ...sx }} {...rest}>
+    <TextField
+      sx={{ minWidth: 200, ...sx }}
+      size="small"
+      onChange={onTextChange}
+      value={value}
+      multiline={multiline ?? false}
+      rows={multiline ? 4 : 1}
+    />
   </Box>
 );
