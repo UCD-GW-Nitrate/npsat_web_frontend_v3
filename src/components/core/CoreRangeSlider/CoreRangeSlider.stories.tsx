@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import theme from '@/components/theme';
 
+import { CoreForm } from '../CoreForm/CoreForm';
 import type { CoreRangeSliderProps } from './CoreRangeSlider';
 import { CoreRangeSlider } from './CoreRangeSlider';
 
@@ -17,9 +18,11 @@ type Story = StoryObj<typeof CoreRangeSlider>;
 export const Primary: Story = {
   render: ({ ...args }: CoreRangeSliderProps) => (
     <ThemeProvider theme={theme}>
-      <Box sx={{ mt: 2 }}>
-        <CoreRangeSlider {...args} />
-      </Box>
+      <CoreForm>
+        <Box sx={{ mt: 2 }}>
+          <CoreRangeSlider {...args} />
+        </Box>
+      </CoreForm>
     </ThemeProvider>
   ),
 };

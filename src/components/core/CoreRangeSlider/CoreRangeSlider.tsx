@@ -1,5 +1,5 @@
 import type { SliderProps } from '@mui/material';
-import { Slider } from '@mui/material';
+import { Box, Slider } from '@mui/material';
 import React, { useState } from 'react';
 
 import { HBox } from '@/components/custom/HBox/Hbox';
@@ -39,40 +39,46 @@ export const CoreRangeSlider = ({
   };
 
   return (
-    <CoreInput
-      displayLabel={displayLabel}
-      fieldLabel={fieldLabel}
-      labelStyle={labelStyle}
-      fullWidth={fullWidth}
-    >
-      <HBox spacing={2}>
-        <Slider
-          sx={{ width: 150 }}
-          {...rest}
-          value={range}
-          onChange={handleChange}
-        />
-        <div>
-          <CoreInput displayLabel="left" fieldLabel={minFieldLabel}>
-            <CoreNumberField
-              value={range[0]}
-              onNumberChange={handleMinNumberChange}
-              units={units}
-              sx={{ width: 100 }}
-            />
-          </CoreInput>
-        </div>
-        <div>
-          <CoreInput displayLabel="left" fieldLabel={maxFieldLabel}>
-            <CoreNumberField
-              value={range[1]}
-              onNumberChange={handleMaxNumberChange}
-              units={units}
-              sx={{ width: 100 }}
-            />
-          </CoreInput>
-        </div>
-      </HBox>
-    </CoreInput>
+    <Box>
+      <CoreInput
+        displayLabel={displayLabel}
+        fieldLabel={fieldLabel}
+        labelStyle={labelStyle}
+        fullWidth={fullWidth}
+      >
+        <HBox spacing={2}>
+          <Slider
+            sx={{ width: 150 }}
+            {...rest}
+            value={range}
+            onChange={handleChange}
+          />
+          <div>
+            <CoreInput
+              displayLabel="left"
+              fieldLabel={minFieldLabel}
+              sx={{ ml: 2 }}
+            >
+              <CoreNumberField
+                value={range[0]}
+                onNumberChange={handleMinNumberChange}
+                units={units}
+                sx={{ width: 90 }}
+              />
+            </CoreInput>
+          </div>
+          <div>
+            <CoreInput displayLabel="left" fieldLabel={maxFieldLabel}>
+              <CoreNumberField
+                value={range[1]}
+                onNumberChange={handleMaxNumberChange}
+                units={units}
+                sx={{ width: 90 }}
+              />
+            </CoreInput>
+          </div>
+        </HBox>
+      </CoreInput>
+    </Box>
   );
 };
