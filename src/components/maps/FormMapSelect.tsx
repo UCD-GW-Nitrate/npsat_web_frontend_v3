@@ -1,3 +1,12 @@
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+  QueryDefinition,
+} from '@reduxjs/toolkit/dist/query';
+import type { UseQuery } from '@reduxjs/toolkit/dist/query/react/buildHooks';
+
 import {
   useFetchB118BasinQuery,
   useFetchBasinQuery,
@@ -6,7 +15,7 @@ import {
   useFetchSubregionsQuery,
   useFetchTownshipQuery,
 } from '@/store';
-import type { ResultResponse } from '@/store/apis/regionApi';
+import type { RegionResponse, ResultResponse } from '@/store/apis/regionApi';
 
 import { FormMap } from './FormMap';
 
@@ -18,6 +27,26 @@ export interface FormMapSelectProps {
     | 'b118basin'
     | 'subregions'
     | 'township';
+  name?: string;
+}
+
+interface FormMapSelectVariableProps {
+  query: UseQuery<
+    QueryDefinition<
+      void,
+      BaseQueryFn<
+        string | FetchArgs,
+        unknown,
+        FetchBaseQueryError,
+        {},
+        FetchBaseQueryMeta
+      >,
+      never,
+      RegionResponse,
+      'region'
+    >
+  >;
+  name?: string;
 }
 
 const configureData = (county: ResultResponse) => {
@@ -25,82 +54,16 @@ const configureData = (county: ResultResponse) => {
   return { ...geometry, properties: { ...geometry.properties, id: county.id } };
 };
 
-export const CountyFormMapSelect = () => {
-  const { data, error, isFetching } = useFetchCountyQuery();
+export const FormMapSelectVariable = ({
+  query,
+  name,
+}: FormMapSelectVariableProps) => {
+  const { data, error, isFetching } = query();
   if (!isFetching) {
     return (
       <FormMap
         data={data?.results.map((region) => configureData(region)) ?? []}
-      />
-    );
-  }
-  if (error) {
-    console.log(error);
-  }
-  return <div />;
-};
-export const CentralValleyFormMapSelect = () => {
-  const { data, error, isFetching } = useFetchCentralValleyQuery();
-  if (!isFetching) {
-    return (
-      <FormMap
-        data={data?.results.map((region) => configureData(region)) ?? []}
-      />
-    );
-  }
-  if (error) {
-    console.log(error);
-  }
-  return <div />;
-};
-export const BasinFormMapSelect = () => {
-  const { data, error, isFetching } = useFetchBasinQuery();
-  if (!isFetching) {
-    return (
-      <FormMap
-        data={data?.results.map((region) => configureData(region)) ?? []}
-      />
-    );
-  }
-  if (error) {
-    console.log(error);
-  }
-  return <div />;
-};
-export const B118BasinFormMapSelect = () => {
-  const { data, error, isFetching } = useFetchB118BasinQuery();
-  if (!isFetching) {
-    return (
-      <FormMap
-        data={data?.results.map((region) => configureData(region)) ?? []}
-      />
-    );
-  }
-  if (error) {
-    console.log(error);
-  }
-  return <div />;
-};
-export const SubregionFormMapSelect = () => {
-  const { data, error, isFetching } = useFetchSubregionsQuery();
-  if (!isFetching) {
-    return (
-      <FormMap
-        data={data?.results.map((region) => configureData(region)) ?? []}
-      />
-    );
-  }
-  if (error) {
-    console.log(error);
-  }
-  return <div />;
-};
-export const TownshipFormMapSelect = () => {
-  const { data, error, isFetching } = useFetchTownshipQuery();
-  if (!isFetching) {
-    return (
-      <FormMap
-        data={data?.results.map((region) => configureData(region)) ?? []}
+        name={name}
       />
     );
   }
@@ -110,24 +73,28 @@ export const TownshipFormMapSelect = () => {
   return <div />;
 };
 
-const FormMapSelect = ({ mapType }: FormMapSelectProps) => {
+const FormMapSelect = ({ mapType, name }: FormMapSelectProps) => {
   if (mapType === 'county') {
-    return <CountyFormMapSelect />;
+    return <FormMapSelectVariable query={useFetchCountyQuery} name={name} />;
   }
   if (mapType === 'valley') {
-    return <CentralValleyFormMapSelect />;
+    return (
+      <FormMapSelectVariable query={useFetchCentralValleyQuery} name={name} />
+    );
   }
   if (mapType === 'basin') {
-    return <BasinFormMapSelect />;
+    return <FormMapSelectVariable query={useFetchBasinQuery} name={name} />;
   }
   if (mapType === 'b118basin') {
-    return <B118BasinFormMapSelect />;
+    return <FormMapSelectVariable query={useFetchB118BasinQuery} name={name} />;
   }
   if (mapType === 'subregions') {
-    return <SubregionFormMapSelect />;
+    return (
+      <FormMapSelectVariable query={useFetchSubregionsQuery} name={name} />
+    );
   }
   if (mapType === 'township') {
-    return <TownshipFormMapSelect />;
+    return <FormMapSelectVariable query={useFetchTownshipQuery} name={name} />;
   }
 
   return <div />;
