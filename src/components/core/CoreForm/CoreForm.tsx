@@ -1,5 +1,6 @@
 import type { BoxProps } from '@mui/material';
 import { Box, Stack } from '@mui/material';
+import type { FormEvent } from 'react';
 import React, { Children } from 'react';
 
 import { HBox } from '@/components/custom/HBox/Hbox';
@@ -15,16 +16,22 @@ export interface CoreFormField {
 
 export interface CoreFormProps extends BoxProps {
   fields: CoreFormField[];
+  onFormSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
-export const CoreForm = ({ children, fields, ...rest }: CoreFormProps) => {
+export const CoreForm = ({
+  children,
+  fields,
+  sx,
+  onFormSubmit,
+}: CoreFormProps) => {
   const childrenArray = Children.toArray(children);
   for (let i = 0; i < childrenArray.length - fields.length; i += 1) {
     fields.push({ label: '' } as CoreFormField);
   }
 
   return (
-    <Box component="form" {...rest}>
+    <Box component="form" onSubmit={onFormSubmit} sx={{ mt: 1, ...sx }}>
       <Stack
         spacing={4}
         alignItems="flex-start"

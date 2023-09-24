@@ -9,9 +9,10 @@ export interface CoreSelectOption {
 
 export interface CoreSelectProps extends BoxProps {
   options: CoreSelectOption[];
+  name?: string;
 }
 
-export const CoreSelect = ({ options, sx, ...rest }: CoreSelectProps) => {
+export const CoreSelect = ({ options, name, sx, ...rest }: CoreSelectProps) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const handleChange = (event: SelectChangeEvent<unknown>) => {
@@ -25,7 +26,9 @@ export const CoreSelect = ({ options, sx, ...rest }: CoreSelectProps) => {
         onChange={handleChange}
         displayEmpty
         size="small"
-        sx={{ width: 200, ...sx }}
+        sx={{ minWidth: 200, ...sx }}
+        name={name}
+        MenuProps={{ disableScrollLock: true }}
       >
         {options.map(({ label, value }: CoreSelectOption) => (
           <MenuItem key={label} value={value ?? label}>

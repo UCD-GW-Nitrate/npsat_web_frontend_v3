@@ -45,6 +45,8 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
     );
   };
 
+  const handleSubmit = () => {};
+
   return (
     <Box sx={{ mt: 6 }}>
       <CoreTabs tabs={tabs} onTabChange={handleTabChange} />
@@ -53,6 +55,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
         sx={{
           mt: 6,
         }}
+        onFormSubmit={handleSubmit}
       >
         <div id="map" style={{ height: '600px', width: '500px' }}>
           <MapWithNoSSR mapType={mapType} />

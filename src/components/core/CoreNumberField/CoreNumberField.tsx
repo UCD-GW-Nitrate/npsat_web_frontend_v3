@@ -8,12 +8,14 @@ export interface CoreNumberFieldProps extends BoxProps {
   onNumberChange?: React.ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   >;
+  name?: string;
 }
 
 export const CoreNumberField = ({
   units,
   value,
   onNumberChange,
+  name,
   sx,
   ...rest
 }: CoreNumberFieldProps) => (
@@ -23,6 +25,7 @@ export const CoreNumberField = ({
       type="number"
       onChange={onNumberChange}
       value={value}
+      name={name}
       InputProps={
         units
           ? {

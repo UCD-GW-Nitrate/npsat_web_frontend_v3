@@ -4,6 +4,7 @@ import { authApi } from './apis/authApi';
 import { feedApi } from './apis/feedApi';
 import { regionApi } from './apis/regionApi';
 import authReducer from './slices/authSlice';
+import { modelReducer } from './slices/modelSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     [feedApi.reducerPath]: feedApi.reducer,
     [regionApi.reducerPath]: regionApi.reducer,
     auth: authReducer,
+    model: modelReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
