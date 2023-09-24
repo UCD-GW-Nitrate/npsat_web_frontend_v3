@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import theme from '@/components/theme';
 import { store } from '@/store';
 
+import { CoreForm } from '../core/CoreForm/CoreForm';
 import type { FormMapSelectProps } from './FormMapSelect';
 import FormMapSelect from './FormMapSelect';
 
@@ -22,13 +23,16 @@ export const Primary: Story = {
   render: ({ ...args }: FormMapSelectProps) => (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <div id="map" style={{ height: '600px' }}>
-          <FormMapSelect {...args} />
-        </div>
+        <CoreForm>
+          <div id="map" style={{ height: '600px' }}>
+            <FormMapSelect {...args} />
+          </div>
+        </CoreForm>
       </ThemeProvider>
     </Provider>
   ),
   args: {
     mapType: 'county',
+    name: 'display',
   },
 };
