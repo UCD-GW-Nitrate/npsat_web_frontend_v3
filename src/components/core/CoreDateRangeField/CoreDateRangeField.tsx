@@ -9,17 +9,19 @@ import { CoreText } from '../CoreText/CoreText';
 
 export interface CoreDateRangeFieldProps extends BoxProps {
   views?: DateView[];
+  name?: string;
 }
 
 export const CoreDateRangeField = ({
   views = ['year'],
+  name,
   ...rest
 }: CoreDateRangeFieldProps) => (
   <Box {...rest}>
     <HBox spacing={2}>
-      <CoreDateField views={views} />
+      <CoreDateField views={views} name={`${name} start`} />
       <CoreText> &rarr; </CoreText>
-      <CoreDateField views={views} />
+      <CoreDateField views={views} name={`${name} end`} />
     </HBox>
   </Box>
 );

@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import theme from '@/components/theme';
 
+import { CoreForm } from '../CoreForm/CoreForm';
 import type { CoreToggleButtonProps } from './CoreToggleButton';
 import { CoreToggleButton } from './CoreToggleButton';
 
@@ -16,7 +17,9 @@ type Story = StoryObj<typeof CoreToggleButton>;
 export const Primary: Story = {
   render: ({ ...args }: CoreToggleButtonProps) => (
     <ThemeProvider theme={theme}>
-      <CoreToggleButton {...args} />
+      <CoreForm>
+        <CoreToggleButton {...args} />
+      </CoreForm>
     </ThemeProvider>
   ),
   args: {
@@ -28,5 +31,6 @@ export const Primary: Story = {
         label: 'option2 ',
       },
     ],
+    name: 'display',
   },
 };

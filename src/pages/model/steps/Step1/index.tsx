@@ -1,6 +1,6 @@
 import { Box, Divider } from '@mui/material';
-import type { FormEvent } from 'react';
 import React from 'react';
+import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
@@ -47,7 +47,7 @@ const fields = [
   { label: 'Load scenario:' },
   { label: 'Well Type scenario:' },
   { label: 'Unsaturated zone depth scenario:' },
-  { label: 'Unsaturated zone effective water conent:' },
+  { label: 'Unsaturated zone effective water content:' },
   { label: 'Simulation ending year:' },
   { label: 'Scenario type:' },
   { label: 'Transition period:' },
@@ -58,21 +58,21 @@ interface Step1Props extends Step {}
 const Step1 = ({ onPrev, onNext }: Step1Props) => {
   const dispatch = useDispatch();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const flowScenario: string = data.get('flow scenario')?.toString() ?? '';
-    const loadScenario: string = data.get('load scenario')?.toString() ?? '';
-    const wellTypeScenario: string =
-      data.get('well type scenario')?.toString() ?? '';
-    const unsatZoneDepthScenario: string =
-      data.get('unsat zone depth scenario')?.toString() ?? '';
+  const onFormSubmit = (data: FieldValues) => {
     dispatch(
       saveCurrentStep({
-        flow_scenario: flowScenario,
-        load_scenario: loadScenario,
-        unsat_scenario: unsatZoneDepthScenario,
-        welltype_scenario: wellTypeScenario,
+        flow_scenario: data['flow scenario'],
+        load_scenario: data['load scenario'],
+        welltype_scenario: data['well type scenario'],
+        unsat_scenario: data['unsat zone depth scenario'],
+        water_content: data['water content'],
+        simEndYear: (data['sim end year'] as Date)?.getFullYear(),
+        reduction_start_year: (
+          data['transition period start'] as Date
+        )?.getFullYear(),
+        reduction_end_year: (
+          data['transition period end'] as Date
+        )?.getFullYear(),
       }),
     );
 
@@ -86,7 +86,7 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
         sx={{
           mt: 6,
         }}
-        onFormSubmit={handleSubmit}
+        onFormSubmit={(data: FieldValues) => onFormSubmit(data)}
       >
         <CoreSelect
           options={flowScenarioOptions}
@@ -113,9 +113,12 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
           key="unsat zone depth scenario"
         />
         <CoreNumberField sx={{ width: 100 }} units="%" name="water content" />
-        <CoreDateField />
-        <CoreToggleButton options={transiptionPeriodOptions} />
-        <CoreDateRangeField />
+        <CoreDateField name="sim end year" views={['year']} />
+        <CoreToggleButton
+          options={transiptionPeriodOptions}
+          name="scenario type"
+        />
+        <CoreDateRangeField name="transition period" />
         <PageAdvancementButtons onClickPrev={onPrev} />
       </CoreForm>
       <Divider sx={{ mt: 6 }} />

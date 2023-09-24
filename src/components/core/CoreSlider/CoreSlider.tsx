@@ -20,8 +20,8 @@ export const CoreSlider = ({
 }: CoreSliderProps) => {
   const [value, setValue] = useState(0);
 
-  const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(+event.target.value);
+  const handleNumberChange = (newVal: number) => {
+    setValue(newVal);
   };
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
