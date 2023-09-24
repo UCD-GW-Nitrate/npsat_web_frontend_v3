@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
+import { CoreRangeSlider } from '@/components/core/CoreRangeSlider/CoreRangeSlider';
 import { CoreSwitch } from '@/components/core/CoreSwitch/CoreSwitch';
 import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
@@ -25,6 +26,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
   const [mapType, setMapType] = useState<
     'valley' | 'basin' | 'county' | 'b118basin' | 'subregions' | 'township'
   >('valley');
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
 
   const MapWithNoSSR = dynamic(
     () => import('@/components/maps/FormMapSelect'),
@@ -60,7 +62,23 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
         <div id="map" style={{ height: '600px', width: '500px' }}>
           <MapWithNoSSR mapType={mapType} />
         </div>
-        <CoreSwitch />
+        <CoreSwitch onSwitchChange={setShowAdvancedFilter} />
+        {showAdvancedFilter && (
+          <CoreForm
+            fields={[{ label: 'Depth (m):' }, { label: 'Screen Length (m):' }]}
+          >
+            <CoreRangeSlider
+              units="ft"
+              minFieldLabel="min:"
+              maxFieldLabel="max:"
+            />
+            <CoreRangeSlider
+              units="ft"
+              minFieldLabel="min:"
+              maxFieldLabel="max:"
+            />
+          </CoreForm>
+        )}
         <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
