@@ -19,6 +19,8 @@ const fields = [
 ];
 
 const Step4 = ({ onPrev, onNext }: Step4Props) => {
+  const handleSubmit = () => {};
+
   return (
     <Box>
       <CoreForm
@@ -26,6 +28,7 @@ const Step4 = ({ onPrev, onNext }: Step4Props) => {
         sx={{
           mt: 6,
         }}
+        onFormSubmit={handleSubmit}
       >
         <CoreTextField sx={{ width: 400 }} />
         <CoreTextField sx={{ width: 400 }} multiline />

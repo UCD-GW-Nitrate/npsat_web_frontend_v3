@@ -25,6 +25,8 @@ const crops = [
 const fields = [{ label: 'Crop(s):' }, { label: 'Loading:' }];
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
+  const handleSubmit = () => {};
+
   return (
     <Box>
       <CoreForm
@@ -32,6 +34,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
         sx={{
           mt: 6,
         }}
+        onFormSubmit={handleSubmit}
       >
         <CoreMultipleSelect
           options={crops}
