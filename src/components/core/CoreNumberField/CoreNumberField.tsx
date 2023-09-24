@@ -25,7 +25,7 @@ export const CoreNumberField = ({
       <Controller
         name={name ?? ''}
         defaultValue={value ?? numValue}
-        render={({ field: { onChange, ...restField } }) => (
+        render={({ field: { onChange } }) => (
           <TextField
             size="small"
             type="number"
@@ -45,7 +45,7 @@ export const CoreNumberField = ({
                   }
                 : {}
             }
-            {...restField}
+            value={value ?? numValue}
           />
         )}
       />

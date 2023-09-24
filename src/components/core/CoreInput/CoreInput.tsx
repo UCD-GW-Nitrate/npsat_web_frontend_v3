@@ -1,6 +1,5 @@
-import type { SxProps, Theme } from '@mui/material';
+import type { BoxProps, SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
-import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import { HBox } from '@/components/custom/HBox/Hbox';
@@ -15,18 +14,17 @@ export interface CoreInputProps {
   fullWidth?: boolean;
 }
 
-export interface CoreInputPropsComponent
-  extends CoreInputProps,
-    PropsWithChildren {}
+export interface CoreInputPropsComponent extends CoreInputProps, BoxProps {}
 
 export const CoreInput = ({
   children,
   displayLabel,
   fieldLabel,
   labelStyle,
+  sx,
   fullWidth = true,
 }: CoreInputPropsComponent) => (
-  <Box sx={fullWidth ? { width: '100%' } : {}}>
+  <Box sx={fullWidth ? { width: '100%', ...sx } : {}}>
     {displayLabel === 'top' && (
       <>
         <VBox sx={{ alignItems: 'flex-end', ...labelStyle }}>
