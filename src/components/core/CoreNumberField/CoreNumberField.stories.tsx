@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import theme from '@/components/theme';
 
+import { CoreForm } from '../CoreForm/CoreForm';
 import type { CoreNumberFieldProps } from './CoreNumberField';
 import { CoreNumberField } from './CoreNumberField';
 
@@ -16,7 +17,12 @@ type Story = StoryObj<typeof CoreNumberField>;
 export const Primary: Story = {
   render: ({ ...args }: CoreNumberFieldProps) => (
     <ThemeProvider theme={theme}>
-      <CoreNumberField {...args} />
+      <CoreForm>
+        <CoreNumberField {...args} />
+      </CoreForm>
     </ThemeProvider>
   ),
+  args: {
+    name: 'display',
+  },
 };

@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import theme from '@/components/theme';
 
+import { CoreForm } from '../CoreForm/CoreForm';
 import type { CoreDateFieldProps } from './CoreDateField';
 import { CoreDateField } from './CoreDateField';
 
@@ -16,7 +17,12 @@ type Story = StoryObj<typeof CoreDateField>;
 export const Primary: Story = {
   render: ({ ...args }: CoreDateFieldProps) => (
     <ThemeProvider theme={theme}>
-      <CoreDateField {...args} />
+      <CoreForm>
+        <CoreDateField {...args} />
+      </CoreForm>
     </ThemeProvider>
   ),
+  args: {
+    name: 'display',
+  },
 };

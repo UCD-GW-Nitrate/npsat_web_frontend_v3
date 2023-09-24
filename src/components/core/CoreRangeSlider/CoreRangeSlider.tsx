@@ -26,16 +26,12 @@ export const CoreRangeSlider = ({
 }: CoreRangeSliderProps) => {
   const [range, setRange] = useState<number[]>([0, 100]);
 
-  const handleMinNumberChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRange([+event.target.value, range[1] as number]);
+  const handleMinNumberChange = (value: number) => {
+    setRange([value, range[1] as number]);
   };
 
-  const handleMaxNumberChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRange([range[0] as number, +event.target.value]);
+  const handleMaxNumberChange = (value: number) => {
+    setRange([range[0] as number, value]);
   };
 
   const handleChange = (_event: Event, newValue: number | number[]) => {

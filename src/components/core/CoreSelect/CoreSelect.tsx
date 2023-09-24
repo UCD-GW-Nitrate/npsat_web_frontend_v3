@@ -1,6 +1,7 @@
-import type { BoxProps, SelectChangeEvent } from '@mui/material';
+import type { BoxProps } from '@mui/material';
 import { Box, MenuItem, Select } from '@mui/material';
 import React from 'react';
+import { Controller } from 'react-hook-form';
 
 export interface CoreSelectOption {
   label: string;
@@ -15,27 +16,31 @@ export interface CoreSelectProps extends BoxProps {
 export const CoreSelect = ({ options, name, sx, ...rest }: CoreSelectProps) => {
   const [inputValue, setInputValue] = React.useState('');
 
-  const handleChange = (event: SelectChangeEvent<unknown>) => {
-    setInputValue(event.target.value as string);
-  };
-
   return (
     <Box sx={{ minWidth: 200, ...sx }} {...rest}>
-      <Select
-        value={inputValue}
-        onChange={handleChange}
-        displayEmpty
-        size="small"
-        sx={{ minWidth: 200, ...sx }}
-        name={name}
-        MenuProps={{ disableScrollLock: true }}
-      >
-        {options.map(({ label, value }: CoreSelectOption) => (
-          <MenuItem key={label} value={value ?? label}>
-            {label}
-          </MenuItem>
-        ))}
-      </Select>
+      <Controller
+        name={name ?? ''}
+        defaultValue={inputValue}
+        render={({ field: { onChange, ...restField } }) => (
+          <Select
+            onChange={(event) => {
+              setInputValue(event.target.value);
+              onChange(event.target.value);
+            }}
+            displayEmpty
+            size="small"
+            sx={{ minWidth: 200, ...sx }}
+            MenuProps={{ disableScrollLock: true }}
+            {...restField}
+          >
+            {options.map(({ label, value }: CoreSelectOption) => (
+              <MenuItem key={label} value={value ?? label}>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
     </Box>
   );
 };

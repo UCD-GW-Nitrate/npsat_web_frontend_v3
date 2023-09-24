@@ -3,25 +3,46 @@ import { Box } from '@mui/material';
 import type { DateView } from '@mui/x-date-pickers';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import React from 'react';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
+import { Controller } from 'react-hook-form';
 
 export interface CoreDateFieldProps extends BoxProps {
   views?: DateView[];
+  name?: string;
 }
 
-export const CoreDateField = ({ sx, views, ...rest }: CoreDateFieldProps) => {
+export const CoreDateField = ({
+  sx,
+  views,
+  name,
+  ...rest
+}: CoreDateFieldProps) => {
+  const [value, setValue] = useState<dayjs.Dayjs | null>(null);
+
   return (
     <Box sx={{ width: 200, ...sx }} {...rest}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          views={views}
-          slotProps={{
-            textField: {
-              size: 'small',
-            },
-          }}
-        />
-      </LocalizationProvider>
+      <Controller
+        name={name ?? ''}
+        render={({ field: { onChange, ...restField } }) => (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              views={views}
+              onChange={(event) => {
+                onChange(event?.toDate());
+                setValue(event ?? dayjs());
+              }}
+              slotProps={{
+                textField: {
+                  size: 'small',
+                },
+              }}
+              {...restField}
+              value={value}
+            />
+          </LocalizationProvider>
+        )}
+      />
     </Box>
   );
 };
