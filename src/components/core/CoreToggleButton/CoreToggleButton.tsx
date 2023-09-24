@@ -1,6 +1,7 @@
 import type { BoxProps } from '@mui/material';
 import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React, { useState } from 'react';
+import { Controller } from 'react-hook-form';
 
 export interface CoreToggleOption {
   label: string;
@@ -9,36 +10,43 @@ export interface CoreToggleOption {
 
 export interface CoreToggleButtonProps extends BoxProps {
   options: CoreToggleOption[];
+  name?: string;
 }
 
 export const CoreToggleButton = ({
   options,
+  name,
   ...rest
 }: CoreToggleButtonProps) => {
   const [alignment, setAlignment] = useState('');
 
-  const handleChange = (
-    _event: React.MouseEvent<HTMLElement>,
-    newAlignment: string,
-  ) => {
-    setAlignment(newAlignment);
-  };
-
   return (
     <Box {...rest}>
-      <ToggleButtonGroup
-        color="primary"
-        value={alignment}
-        exclusive
-        onChange={handleChange}
-        size="small"
-      >
-        {options.map(({ label, value }: CoreToggleOption) => (
-          <ToggleButton key={label} value={value ?? label}>
-            {label}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+      <Controller
+        name={name ?? ''}
+        defaultValue={alignment}
+        render={({ field: { onChange, ...restField } }) => (
+          <ToggleButtonGroup
+            color="primary"
+            exclusive
+            onChange={(
+              _event: React.MouseEvent<HTMLElement>,
+              newAlignment: string,
+            ) => {
+              onChange(newAlignment);
+              setAlignment(newAlignment);
+            }}
+            size="small"
+            {...restField}
+          >
+            {options.map(({ label, value }: CoreToggleOption) => (
+              <ToggleButton key={label} value={value ?? label}>
+                {label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        )}
+      />
     </Box>
   );
 };

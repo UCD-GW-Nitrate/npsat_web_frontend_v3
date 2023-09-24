@@ -13,8 +13,9 @@ export interface Model {
   name?: string;
   description?: string;
   water_content?: number;
-  sim_end_year?: Date;
-  reduction_start_year?: Date;
+  sim_end_year?: number;
+  reduction_start_year?: number;
+  reduction_end_year?: number;
   flow_scenario?: Scenario;
   load_scenario?: Scenario;
   unsat_scenario?: Scenario;
