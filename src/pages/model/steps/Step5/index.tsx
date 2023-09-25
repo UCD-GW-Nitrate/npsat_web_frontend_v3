@@ -1,26 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { CoreForm } from '@/components/core/CoreForm/CoreForm';
-import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
+import { useRunModelMutation } from '@/store';
+import { selectCurrentModel } from '@/store/slices/modelSlice';
 
-import type { Step } from '../../create';
+const Step5 = () => {
+  const [runModel] = useRunModelMutation();
+  const model = useSelector(selectCurrentModel);
 
-interface Step5Props extends Step {}
+  useEffect(() => {
+    const results = runModel(model);
+    console.log(model);
+    console.log(results);
+  }, []);
 
-const Step5 = ({ onPrev, onNext }: Step5Props) => {
-  const handleSubmit = () => {};
-
-  return (
-    <CoreForm
-      fields={[]}
-      sx={{
-        mt: 6,
-      }}
-      onFormSubmit={handleSubmit}
-    >
-      <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
-    </CoreForm>
-  );
+  return <div />;
 };
 
 export default Step5;
