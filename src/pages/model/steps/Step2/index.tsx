@@ -1,12 +1,15 @@
 import { Box, Divider } from '@mui/material';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
+import type { FieldValues } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
 import { CoreRangeSlider } from '@/components/core/CoreRangeSlider/CoreRangeSlider';
 import { CoreSwitch } from '@/components/core/CoreSwitch/CoreSwitch';
 import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
+import { saveCurrentStep } from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step2Instructions from './Step2Instructions';
@@ -27,6 +30,9 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
     'valley' | 'basin' | 'county' | 'b118basin' | 'subregions' | 'township'
   >('valley');
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
+  const defaultFields = [{ label: '' }, { label: 'Advanced filter:' }];
+  const [fields, setFields] = useState([...defaultFields]);
+  const dispatch = useDispatch();
 
   const MapWithNoSSR = dynamic(
     () => import('@/components/maps/FormMapSelect'),
@@ -47,37 +53,72 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
     );
   };
 
-  const handleSubmit = () => {};
+  const handleShowAdvancedOptions = (val: boolean) => {
+    setShowAdvancedFilter(val);
+    if (val) {
+      setFields([
+        ...defaultFields,
+        { label: 'Depth (m):' },
+        { label: 'Screen Length (m):' },
+      ]);
+    } else {
+      setFields(defaultFields);
+    }
+  };
+
+  const onFormSubmit = (data: FieldValues) => {
+    if (showAdvancedFilter) {
+      dispatch(
+        saveCurrentStep({
+          regions: (data.map as number[]).map((val) => {
+            return { id: val };
+          }),
+          depth_range_min: data.depth[0],
+          depth_range_max: data.depth[1],
+          screen_length_range_min: data['screen length'][0],
+          screen_length_range_max: data['screen length'][1],
+        }),
+      );
+    } else {
+      dispatch(
+        saveCurrentStep({
+          regions: (data.map as number[]).map((val) => {
+            return { id: val };
+          }),
+        }),
+      );
+    }
+  };
 
   return (
     <Box sx={{ mt: 6 }}>
       <CoreTabs tabs={tabs} onTabChange={handleTabChange} />
       <CoreForm
-        fields={[{ label: '' }, { label: 'Advanced filter:' }]}
+        fields={fields}
         sx={{
           mt: 6,
         }}
-        onFormSubmit={handleSubmit}
+        onFormSubmit={onFormSubmit}
       >
         <div id="map" style={{ height: '600px', width: '500px' }}>
           <MapWithNoSSR mapType={mapType} />
         </div>
-        <CoreSwitch onSwitchChange={setShowAdvancedFilter} />
+        <CoreSwitch onSwitchChange={handleShowAdvancedOptions} />
         {showAdvancedFilter && (
-          <CoreForm
-            fields={[{ label: 'Depth (m):' }, { label: 'Screen Length (m):' }]}
-          >
-            <CoreRangeSlider
-              units="ft"
-              minFieldLabel="min:"
-              maxFieldLabel="max:"
-            />
-            <CoreRangeSlider
-              units="ft"
-              minFieldLabel="min:"
-              maxFieldLabel="max:"
-            />
-          </CoreForm>
+          <CoreRangeSlider
+            name="depth"
+            units="ft"
+            minFieldLabel="min:"
+            maxFieldLabel="max:"
+          />
+        )}
+        {showAdvancedFilter && (
+          <CoreRangeSlider
+            name="screen length"
+            units="ft"
+            minFieldLabel="min:"
+            maxFieldLabel="max:"
+          />
         )}
         <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
       </CoreForm>
