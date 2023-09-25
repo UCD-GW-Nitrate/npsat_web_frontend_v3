@@ -1,6 +1,7 @@
 import { Box, Divider } from '@mui/material';
 import React, { useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import type { CoreFormField } from '@/components/core/CoreForm/CoreForm';
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
@@ -8,6 +9,7 @@ import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSel
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSlider } from '@/components/core/CoreSlider/CoreSlider';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
+import { saveCurrentStep } from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step3Instructions from './Step3Instructions';
@@ -26,8 +28,15 @@ const crops: (CoreMultipleSelectOption | undefined)[] = [
 ];
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
+  const dispatch = useDispatch();
   const onFormSubmit = (data: FieldValues) => {
     console.log(data);
+    dispatch(
+      saveCurrentStep({
+        modifications: [],
+      }),
+    );
+    onNext();
   };
 
   const defaultVal: (CoreMultipleSelectOption | undefined)[] = [crops[1]];
@@ -71,7 +80,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
         {selectedCrops.map((crop) => (
           <CoreSlider units="%" key={crop?.label} min={0} max={200} />
         ))}
-        <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
+        <PageAdvancementButtons onClickPrev={onPrev} />
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
       <Step3Instructions />

@@ -88,6 +88,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
         }),
       );
     }
+    onNext();
   };
 
   return (
