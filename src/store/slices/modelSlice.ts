@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import type { RootState } from '..';
+
 export interface Scenario {
   id: number;
 }
@@ -51,3 +53,4 @@ const modelSlice = createSlice({
 
 export const { saveCurrentStep } = modelSlice.actions;
 export const modelReducer = modelSlice.reducer;
+export const selectCurrentModel = (state: RootState) => state.model;
