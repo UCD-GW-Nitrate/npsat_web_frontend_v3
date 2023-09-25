@@ -9,17 +9,17 @@ export interface CoreMultipleSelectOption {
 }
 
 export interface CoreMultipleSelectProps extends BoxProps {
-  options: CoreMultipleSelectOption[];
-  setValue?: (
-    value: React.SetStateAction<(CoreMultipleSelectOption | undefined)[]>,
-  ) => void;
+  options: (CoreMultipleSelectOption | undefined)[];
+  setFieldValue?: (fieldVal: (CoreMultipleSelectOption | undefined)[]) => void;
+  fieldValue?: (CoreMultipleSelectOption | undefined)[];
   placeholder: string;
   group: boolean;
 }
 
 export const CoreMultipleSelect = ({
   options,
-  setValue,
+  fieldValue,
+  setFieldValue,
   placeholder,
   group,
   sx,
@@ -36,18 +36,21 @@ export const CoreMultipleSelect = ({
         options={options}
         size="small"
         sx={{ minWidth: 200, ...sx }}
+        value={fieldValue}
         renderInput={(params) => (
           <TextField
             {...params}
-            placeholder={inputValue.length === 0 ? placeholder ?? '' : ''}
+            placeholder={
+              (fieldValue ?? inputValue).length === 0 ? placeholder ?? '' : ''
+            }
           />
         )}
         onChange={(
           _event: any,
           value: (CoreMultipleSelectOption | undefined)[],
         ) => {
-          if (setValue) {
-            setValue(value);
+          if (setFieldValue) {
+            setFieldValue(value);
           }
           setInputValue(value);
         }}
