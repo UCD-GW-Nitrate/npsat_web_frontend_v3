@@ -104,9 +104,7 @@ const CreateModelPage = () => {
           {activeStep === 3 && (
             <Step4 onPrev={handleBack} onNext={handleComplete} />
           )}
-          {activeStep === 4 && (
-            <Step5 onPrev={handleBack} onNext={handleComplete} />
-          )}
+          {activeStep === 4 && <Step5 />}
         </CoreContainer>
       </Layout>
     </HelmetProvider>
