@@ -10,15 +10,19 @@ import { CoreNumberField } from '../CoreNumberField/CoreNumberField';
 export interface CoreSliderProps extends BoxProps {
   units?: string;
   textFieldLabel?: string;
+  min?: number;
+  max?: number;
 }
 
 export const CoreSlider = ({
   units,
   textFieldLabel,
+  min,
+  max,
   sx,
   ...rest
 }: CoreSliderProps) => {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(((min ?? 0) + (max ?? 0)) / 2);
 
   const handleNumberChange = (newVal: number) => {
     setValue(newVal);
@@ -32,7 +36,13 @@ export const CoreSlider = ({
     <Box {...rest}>
       <HBox spacing={2}>
         <div>
-          <Slider value={value} onChange={handleChange} sx={{ width: 200 }} />
+          <Slider
+            value={value}
+            onChange={handleChange}
+            sx={{ width: 200 }}
+            min={min}
+            max={max}
+          />
         </div>
         <div>
           <CoreInput displayLabel="left" fieldLabel={textFieldLabel}>
