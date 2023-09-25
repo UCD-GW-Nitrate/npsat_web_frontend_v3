@@ -63,7 +63,7 @@ export const FormMapSelectVariable = ({
     return (
       <FormMap
         data={data?.results.map((region) => configureData(region)) ?? []}
-        name={name}
+        name={name ?? 'map'}
       />
     );
   }

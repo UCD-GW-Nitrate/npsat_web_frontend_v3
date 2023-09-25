@@ -5,8 +5,7 @@ export interface Scenario {
 }
 
 export interface Regions {
-  CV: number;
-  'region-4-choice': number[];
+  id: number;
 }
 
 export interface Model {
@@ -24,6 +23,10 @@ export interface Model {
   public?: boolean;
   is_base?: boolean;
   applied_simulation_filter?: boolean;
+  screen_length_range_min?: number;
+  screen_length_range_max?: number;
+  depth_range_min?: number;
+  depth_range_max?: number;
 }
 
 const modelSlice = createSlice({
