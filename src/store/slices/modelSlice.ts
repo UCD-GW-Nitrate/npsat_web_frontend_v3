@@ -8,6 +8,15 @@ export interface Regions {
   id: number;
 }
 
+export interface Crop {
+  id: number;
+}
+
+export interface CropModification {
+  crop: Crop;
+  proportion: number;
+}
+
 export interface Model {
   name?: string;
   description?: string;
@@ -27,6 +36,7 @@ export interface Model {
   screen_length_range_max?: number;
   depth_range_min?: number;
   depth_range_max?: number;
+  modifications?: CropModification[];
 }
 
 const modelSlice = createSlice({
