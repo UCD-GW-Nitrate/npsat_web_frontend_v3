@@ -13,6 +13,8 @@ export interface CoreRangeSliderProps extends BoxProps {
   minFieldLabel?: string;
   maxFieldLabel?: string;
   name?: string;
+  min?: number;
+  max?: number;
 }
 
 export const CoreRangeSlider = ({
@@ -20,9 +22,11 @@ export const CoreRangeSlider = ({
   minFieldLabel,
   maxFieldLabel,
   name,
+  min,
+  max,
   ...rest
 }: CoreRangeSliderProps) => {
-  const [range, setRange] = useState<number[]>([0, 100]);
+  const [range, setRange] = useState<number[]>([min ?? 0, max ?? 100]);
 
   return (
     <Box {...rest}>
@@ -38,6 +42,8 @@ export const CoreRangeSlider = ({
                 onChange(newValue as number[]);
                 setRange(newValue as number[]);
               }}
+              min={min}
+              max={max}
             />
             <div>
               <CoreInput

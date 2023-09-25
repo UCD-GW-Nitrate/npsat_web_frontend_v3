@@ -110,6 +110,8 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
             units="ft"
             minFieldLabel="min:"
             maxFieldLabel="max:"
+            min={0}
+            max={800}
           />
         )}
         {showAdvancedFilter && (
@@ -118,6 +120,8 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
             units="ft"
             minFieldLabel="min:"
             maxFieldLabel="max:"
+            min={0}
+            max={800}
           />
         )}
         <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />

@@ -1,5 +1,6 @@
 import { Box, Divider } from '@mui/material';
 import React, { useState } from 'react';
+import type { FieldValues } from 'react-hook-form';
 
 import type { CoreFormField } from '@/components/core/CoreForm/CoreForm';
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
@@ -25,7 +26,10 @@ const crops: (CoreMultipleSelectOption | undefined)[] = [
 ];
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
-  const handleSubmit = () => {};
+  const onFormSubmit = (data: FieldValues) => {
+    console.log(data);
+  };
+
   const defaultVal: (CoreMultipleSelectOption | undefined)[] = [crops[1]];
   const [selectedCrops, setSelectedCrops] =
     useState<(CoreMultipleSelectOption | undefined)[]>(defaultVal);
@@ -54,7 +58,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
         sx={{
           mt: 6,
         }}
-        onFormSubmit={handleSubmit}
+        onFormSubmit={onFormSubmit}
       >
         <CoreMultipleSelect
           options={crops}
@@ -65,7 +69,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
           setFieldValue={handeCropSelect}
         />
         {selectedCrops.map((crop) => (
-          <CoreSlider units="%" key={crop?.label} />
+          <CoreSlider units="%" key={crop?.label} min={0} max={200} />
         ))}
         <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
       </CoreForm>
