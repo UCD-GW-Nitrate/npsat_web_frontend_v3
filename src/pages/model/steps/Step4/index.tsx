@@ -1,9 +1,12 @@
 import { Box, Divider } from '@mui/material';
 import React from 'react';
+import type { FieldValues } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
 import { CoreTextField } from '@/components/core/CoreTextField/CoreTextField';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
+import { saveCurrentStep } from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step4Instructions from './Step4Instructions';
@@ -19,7 +22,16 @@ const fields = [
 ];
 
 const Step4 = ({ onPrev, onNext }: Step4Props) => {
-  const handleSubmit = () => {};
+  const dispatch = useDispatch();
+  const onFormSubmit = (data: FieldValues) => {
+    dispatch(
+      saveCurrentStep({
+        name: data['scenario name'],
+        description: data.description,
+      }),
+    );
+    onNext();
+  };
 
   return (
     <Box>
@@ -28,10 +40,10 @@ const Step4 = ({ onPrev, onNext }: Step4Props) => {
         sx={{
           mt: 6,
         }}
-        onFormSubmit={handleSubmit}
+        onFormSubmit={onFormSubmit}
       >
-        <CoreTextField sx={{ width: 400 }} />
-        <CoreTextField sx={{ width: 400 }} multiline />
+        <CoreTextField sx={{ width: 400 }} name="scenario name" />
+        <CoreTextField sx={{ width: 400 }} name="description" multiline />
         <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
