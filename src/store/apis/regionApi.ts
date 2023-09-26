@@ -48,6 +48,32 @@ export interface RegionGeometryResponse {
   coordinates: [[number[]]];
 }
 
+export interface Property {
+  name: string;
+  fullname: string;
+  abbrev: string;
+  abcode: string;
+  ansi: string;
+}
+
+export interface RegionGeometry {
+  type: string;
+  coordinates: [[number[]]][];
+}
+
+export interface Geometry {
+  type: string;
+  properties: Property[];
+}
+
+export interface RegionDetail {
+  id: number;
+  external_id: string;
+  name: string;
+  mantis_id: string;
+  geometry: Geometry;
+}
+
 const regionApi = createApi({
   reducerPath: 'region',
   baseQuery: fetchBaseQuery({
@@ -109,6 +135,12 @@ const regionApi = createApi({
           };
         },
       }),
+      getRegionDetail: builder.query<RegionDetail, number>({
+        query: (id) => ({
+          url: `api/region/${id}`,
+          method: 'GET',
+        }),
+      }),
     };
   },
 });
@@ -120,5 +152,6 @@ export const {
   useFetchBasinQuery,
   useFetchCountyQuery,
   useFetchSubregionsQuery,
+  useGetRegionDetailQuery,
 } = regionApi;
 export { regionApi };
