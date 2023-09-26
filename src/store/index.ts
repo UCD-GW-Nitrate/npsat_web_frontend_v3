@@ -37,7 +37,13 @@ export {
   useGetCropQuery,
 } from './apis/cropApi';
 export { useFetchFeedQuery } from './apis/feedApi';
-export { useRunModelMutation } from './apis/modelApi';
+export {
+  useGetModelDetailQuery,
+  useGetModelResultsQuery,
+  useGetModificationDetailQuery,
+  usePutModelMutation,
+  useRunModelMutation,
+} from './apis/modelApi';
 export {
   useGetAllModelDetailQuery,
   useGetModelandBaseModelDetailQuery,
