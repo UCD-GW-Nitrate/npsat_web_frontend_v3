@@ -44,16 +44,22 @@ export const authApi = createApi({
         body: credentials,
       }),
       transformResponse: (response: UserResponse) => {
-        return {
-          token: response.token,
-          user: {
-            userId: response.user_id,
-            username: response.username,
-            isStaff: response.is_staff,
-            isSuperuser: response.is_superuser,
-            email: response.email,
-          },
+        const user: User = {
+          userId: response.user_id,
+          username: response.username,
+          isStaff: response.is_staff,
+          isSuperuser: response.is_superuser,
+          email: response.email,
         };
+
+        const authState: AuthState = {
+          token: response.token,
+          user,
+        };
+
+        localStorage.setItem('npsat_user_info', JSON.stringify(authState));
+
+        return authState;
       },
     }),
     protected: builder.mutation<{ message: string }, void>({
