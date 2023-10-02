@@ -6,11 +6,30 @@ import GlobalStyles from '@mui/material/GlobalStyles';
 import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Provider } from 'react-redux';
+import { type PropsWithChildren, useEffect } from 'react';
+import { Provider, useDispatch } from 'react-redux';
 
 import theme from '@/components/theme';
+import type { AuthState } from '@/store/apis/authApi';
+import { setCredentials } from '@/store/slices/authSlice';
 
 import { store } from '../store';
+
+const Wrapper = ({ children }: PropsWithChildren) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const cachedAuthState: AuthState = JSON.parse(
+      localStorage.getItem('npsat_user_info') ?? '{}',
+    );
+
+    console.log('cachedAuthState', cachedAuthState);
+
+    dispatch(setCredentials(cachedAuthState));
+  }, []);
+
+  return <>{children}</>;
+};
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -51,7 +70,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               body: { backgroundColor: theme.palette.background.default },
             }}
           />
-          <Component {...pageProps} />
+          <Wrapper>
+            <Component {...pageProps} />
+          </Wrapper>
         </ThemeProvider>
       </Provider>
     </main>

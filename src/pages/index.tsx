@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { CoreMenuButton } from '@/components/core/CoreMenuButton/CoreMenuButton';
@@ -13,6 +14,7 @@ import Footer from '@/components/custom/Footer/Footer';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import Layout from '@/components/custom/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
+import { selectCurrentUser } from '@/store/slices/authSlice';
 
 const columns: CoreTableColumn[] = [
   { field: 'name', label: 'Scenario Name', width: 150 },
@@ -94,10 +96,18 @@ const filterOptions: CoreMultipleSelectOption[] = [
 ];
 
 const Index = () => {
-  const { data, error, isFetching } = useFetchFeedQuery();
+  const { data, error, isFetching, refetch } = useFetchFeedQuery();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [fetchedOnce, setFetechedOnce] = useState(false);
   const router = useRouter();
+  const user = useSelector(selectCurrentUser);
+
+  useEffect(() => {
+    if (user && fetchedOnce) {
+      refetch();
+    }
+  }, [user, fetchedOnce]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
@@ -115,8 +125,9 @@ const Index = () => {
   };
 
   if (!isFetching) {
-    console.log('log data');
-    console.log(data);
+    if (!fetchedOnce) {
+      setFetechedOnce(true);
+    }
   } else if (error) {
     console.log(error);
   }
