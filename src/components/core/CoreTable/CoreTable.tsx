@@ -8,6 +8,7 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import { useRouter } from 'next/router';
 import type { UIEvent } from 'react';
 import React, { useState } from 'react';
 
@@ -43,6 +44,8 @@ export const CoreTable = ({
 }: CoreTableProps) => {
   const [left, setLeft] = useState(true);
   const [right, setRight] = useState(false);
+  const router = useRouter();
+
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const isRight =
       e.currentTarget.scrollWidth - e.currentTarget.scrollLeft ===
@@ -115,9 +118,15 @@ export const CoreTable = ({
             <TableBody>
               {(data ?? [])
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                .map((row, index) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.id}
+                      onClick={() => router.push(`/model/${index}`)}
+                    >
                       {columns.map((column) => {
                         const value = row[column.field as keyof PlotModel];
                         return (
