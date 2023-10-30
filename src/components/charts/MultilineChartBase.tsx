@@ -20,14 +20,17 @@ export interface ChartDataPoint {
 }
 
 export interface ChartData {
-  [percentile: string]: ChartDataPoint[];
+  [model: string]: ChartDataPoint[];
 }
 
 export interface MultilineChartBaseProps {
   width: number;
   height: number;
   chartType: 'bar' | 'line' | 'area';
-  data: { [percentile: string]: ChartDataPoint[] };
+  data: ChartData;
+  xLabel?: string;
+  yLabel?: string;
+  tooltip?: boolean;
 }
 
 export default function MultilineChartBase({
@@ -35,6 +38,9 @@ export default function MultilineChartBase({
   width,
   chartType = 'line',
   data,
+  xLabel,
+  yLabel,
+  tooltip = true,
 }: MultilineChartBaseProps) {
   const getDate = (dataPoint: ChartDataPoint) => dataPoint.year;
   const getValue = (dataPoint: ChartDataPoint) => dataPoint.value;
@@ -56,12 +62,12 @@ export default function MultilineChartBase({
       />
       {chartType === 'bar' && (
         <BarGroup>
-          {Object.keys(data).map((percentile: string) => {
+          {Object.keys(data).map((model: string) => {
             return (
               <BarSeries
-                key={percentile}
-                dataKey={percentile}
-                data={data[percentile]!}
+                key={model}
+                dataKey={model}
+                data={data[model]!}
                 xAccessor={getDate}
                 yAccessor={getValue}
               />
@@ -71,12 +77,12 @@ export default function MultilineChartBase({
       )}
       {chartType === 'area' && (
         <>
-          {Object.keys(data).map((percentile: string) => {
+          {Object.keys(data).map((model: string) => {
             return (
               <AreaSeries
-                key={percentile}
-                dataKey={percentile}
-                data={data[percentile]!}
+                key={model}
+                dataKey={model}
+                data={data[model]!}
                 xAccessor={getDate}
                 yAccessor={getValue}
                 fillOpacity={0.4}
@@ -87,12 +93,12 @@ export default function MultilineChartBase({
       )}
       {chartType === 'line' && (
         <>
-          {Object.keys(data).map((percentile: string) => {
+          {Object.keys(data).map((model: string) => {
             return (
               <LineSeries
-                key={percentile}
-                dataKey={percentile}
-                data={data[percentile]!}
+                key={model}
+                dataKey={model}
+                data={data[model]!}
                 xAccessor={getDate}
                 yAccessor={getValue}
               />
@@ -100,48 +106,57 @@ export default function MultilineChartBase({
           })}
         </>
       )}
-      <Axis orientation="bottom" numTicks={4} />
-      <AnimatedAxis orientation="left" numTicks={4} animationTrajectory="min" />
-      <Tooltip<ChartDataPoint>
-        showVerticalCrosshair
-        snapTooltipToDatumX
-        renderTooltip={({ tooltipData, colorScale }) => (
-          <>
-            {/** date */}
-            {(tooltipData?.nearestDatum?.datum &&
-              getDate(tooltipData?.nearestDatum?.datum)) ||
-              'No date'}
-            <br />
-            <br />
-            {/** temperatures */}
-            {(
-              Object.keys(tooltipData?.datumByKey ?? {}).filter(
-                (percentile) => percentile,
-              ) as string[]
-            ).map((percentile) => {
-              const startYear = data[percentile]?.[0]?.year;
-              const selectedYear = tooltipData?.nearestDatum?.datum.year;
-              const value =
-                selectedYear &&
-                startYear &&
-                data[percentile]?.[selectedYear - startYear]?.value;
-
-              return (
-                <div key={percentile}>
-                  <em
-                    style={{
-                      color: colorScale?.(percentile),
-                    }}
-                  >
-                    {percentile}
-                  </em>{' '}
-                  {value == null || Number.isNaN(value) ? '–' : `${value}`}
-                </div>
-              );
-            })}
-          </>
-        )}
+      <Axis orientation="bottom" numTicks={4} label={xLabel} />
+      <AnimatedAxis
+        orientation="left"
+        numTicks={4}
+        animationTrajectory="min"
+        label={yLabel}
       />
+      {tooltip && (
+        <Tooltip<ChartDataPoint>
+          showVerticalCrosshair
+          snapTooltipToDatumX
+          renderTooltip={({ tooltipData, colorScale }) => (
+            <>
+              {/** date */}
+              {(tooltipData?.nearestDatum?.datum &&
+                getDate(tooltipData?.nearestDatum?.datum)) ||
+                'No date'}
+              <br />
+              <br />
+              {/** temperatures */}
+              {(
+                Object.keys(tooltipData?.datumByKey ?? {}).filter(
+                  (model) => model,
+                ) as string[]
+              ).map((model) => {
+                const startYear = data[model]?.[0]?.year;
+                const selectedYear = tooltipData?.nearestDatum?.datum.year;
+                const value =
+                  selectedYear &&
+                  startYear &&
+                  data[model]?.[selectedYear - startYear]?.value;
+
+                return (
+                  <div key={model}>
+                    <em
+                      style={{
+                        color: colorScale?.(model),
+                      }}
+                    >
+                      &#x2022;
+                    </em>{' '}
+                    <span>{model}</span>
+                    {': '}
+                    {value == null || Number.isNaN(value) ? '–' : `${value}`}
+                  </div>
+                );
+              })}
+            </>
+          )}
+        />
+      )}
     </XYChart>
   );
 }
