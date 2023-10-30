@@ -3,25 +3,95 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import theme from '@/components/theme';
 
-import type { MultilineChartProps } from './MultilineChart';
-import MultilineChart from './MultilineChart';
+import type { MultilineChartBaseProps } from './MultilineChartBase';
+import MultilineChartBase from './MultilineChartBase';
 
-const meta: Meta<typeof MultilineChart> = {
-  component: MultilineChart,
+const meta: Meta<typeof MultilineChartBase> = {
+  component: MultilineChartBase,
 };
 
 export default meta;
-type Story = StoryObj<typeof MultilineChart>;
+type Story = StoryObj<typeof MultilineChartBase>;
 
 export const Primary: Story = {
-  render: ({ ...args }: MultilineChartProps) => (
+  render: ({ ...args }: MultilineChartBaseProps) => (
     <ThemeProvider theme={theme}>
-      <MultilineChart {...args} />
+      <MultilineChartBase {...args} />
     </ThemeProvider>
   ),
   args: {
     width: 800,
     height: 400,
     chartType: 'line',
+    data: {
+      '75': [
+        {
+          year: 2000,
+          value: 10,
+        },
+        {
+          year: 2001,
+          value: 13,
+        },
+        {
+          year: 2002,
+          value: 14,
+        },
+        {
+          year: 2003,
+          value: 10,
+        },
+        {
+          year: 2004,
+          value: 16,
+        },
+        {
+          year: 2005,
+          value: 9,
+        },
+        {
+          year: 2006,
+          value: 7,
+        },
+        {
+          year: 2007,
+          value: 11,
+        },
+      ],
+      '50': [
+        {
+          year: 2000,
+          value: 9,
+        },
+        {
+          year: 2001,
+          value: 14,
+        },
+        {
+          year: 2002,
+          value: 16,
+        },
+        {
+          year: 2003,
+          value: 17,
+        },
+        {
+          year: 2004,
+          value: 16,
+        },
+        {
+          year: 2005,
+          value: 14,
+        },
+        {
+          year: 2006,
+          value: 16,
+        },
+        {
+          year: 2007,
+          value: 18,
+        },
+      ],
+    },
   },
 };

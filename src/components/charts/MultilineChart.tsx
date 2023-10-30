@@ -7,29 +7,25 @@ import type { CityTemperature } from '@visx/mock-data/lib/mocks/cityTemperature'
 import cityTemperature from '@visx/mock-data/lib/mocks/cityTemperature';
 import { PatternLines } from '@visx/pattern';
 import { scaleLinear, scaleTime } from '@visx/scale';
-import {
-  AnimatedAxis,
-  AnimatedGrid,
-  AreaSeries,
-  Axis,
-  BarGroup,
-  BarSeries,
-  lightTheme,
-  LineSeries,
-  Tooltip,
-  XYChart,
-} from '@visx/xychart';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
-import CustomChartBackground from './CustomChartBackground';
+import type { MultilineChartBaseProps } from './MultilineChartBase';
+import MultilineChartBase from './MultilineChartBase';
 
-export type MultilineChartProps = {
-  width: number;
-  height: number;
-  chartType: 'bar' | 'line' | 'area';
-};
+export interface Annotation {
+  date: Date;
+  text: string;
+}
 
-type City = 'San Francisco' | 'New York' | 'Austin';
+export interface BrushedValue {
+  start: Date;
+  end: Date;
+}
+
+export interface MultilineChartProps extends MultilineChartBaseProps {
+  annotations?: Annotation[];
+  brushed?: BrushedValue;
+}
 
 function BrushHandle({ x, height, isBrushActive }: BrushHandleRenderProps) {
   const pathWidth = 8;
@@ -54,53 +50,11 @@ export default function MultilineChart({
   height,
   width,
   chartType = 'line',
+  data,
 }: MultilineChartProps) {
-  type Accessor = (d: CityTemperature) => number | string;
-
-  interface Accessors {
-    'San Francisco': Accessor;
-    'New York': Accessor;
-    Austin: Accessor;
-  }
-
-  type DataKey = keyof Accessors;
-
-  const defaultAnnotationDataIndex = 13;
-  const [annotationDataKey, setAnnotationDataKey] = useState<DataKey | null>(
-    null,
-  );
-  const [annotationDataIndex, setAnnotationDataIndex] = useState(
-    defaultAnnotationDataIndex,
-  );
   const getDate = (d: CityTemperature) => d.date;
-  const getSfTemperature = (d: CityTemperature) => Number(d['San Francisco']);
-  const getNyTemperature = (d: CityTemperature) => Number(d['New York']);
-  const getAustinTemperature = (d: CityTemperature) => Number(d.Austin);
 
-  const data = cityTemperature.slice(150, 275);
-
-  const selectedDatumPatternId = 'xychart-selected-datum';
-  const colorAccessorFactory = useCallback(
-    (dataKey: DataKey) => (d: CityTemperature) =>
-      annotationDataKey === dataKey && d === data[annotationDataIndex]
-        ? `url(#${selectedDatumPatternId})`
-        : null,
-    [annotationDataIndex, annotationDataKey],
-  );
-
-  const accessors = {
-    x: {
-      'San Francisco': getDate,
-      'New York': getDate,
-      Austin: getDate,
-    },
-    y: {
-      'San Francisco': getSfTemperature,
-      'New York': getNyTemperature,
-      Austin: getAustinTemperature,
-    },
-    date: getDate,
-  };
+  const oldData = cityTemperature.slice(150, 275);
 
   const brushMargin = { top: 10, bottom: 10, left: 50, right: 20 };
   const PATTERN_ID = 'brush_pattern';
@@ -110,11 +64,11 @@ export default function MultilineChart({
     stroke: 'white',
   };
   const brushRef = useRef<BaseBrush | null>(null);
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(oldData);
   const onBrushChange = (domain: Bounds | null) => {
     if (!domain) return;
     const { x0, x1 } = domain;
-    const dataCopy = data.filter((s) => {
+    const dataCopy = oldData.filter((s) => {
       const x = Date.parse(getDate(s));
       return x > x0 && x < x1;
     });
@@ -130,8 +84,8 @@ export default function MultilineChart({
       scaleTime<number>({
         range: [0, xBrushMax],
         domain: [
-          Date.parse(getDate(data[0]!)),
-          Date.parse(getDate(data[100]!)),
+          Date.parse(getDate(oldData[0]!)),
+          Date.parse(getDate(oldData[100]!)),
         ],
       }),
     [xBrushMax],
@@ -148,155 +102,20 @@ export default function MultilineChart({
 
   const initialBrushPosition = useMemo(
     () => ({
-      start: { x: brushDateScale(Date.parse(getDate(data[50]!))) },
-      end: { x: brushDateScale(Date.parse(getDate(data[100]!))) },
+      start: { x: brushDateScale(Date.parse(getDate(filteredData[50]!))) },
+      end: { x: brushDateScale(Date.parse(getDate(oldData[100]!))) },
     }),
     [brushDateScale],
   );
 
   return (
     <div>
-      <XYChart
-        theme={lightTheme}
-        xScale={{ type: 'band', paddingInner: 0.3 }}
-        yScale={{ type: 'linear' }}
-        height={Math.min(400, height)}
-        onPointerUp={(d) => {
-          setAnnotationDataKey(
-            d.key as 'New York' | 'San Francisco' | 'Austin',
-          );
-          setAnnotationDataIndex(d.index);
-        }}
-      >
-        <CustomChartBackground />
-        <AnimatedGrid
-          rows={false}
-          columns={false}
-          animationTrajectory="center"
-          numTicks={4}
-        />
-        {chartType === 'bar' && (
-          <BarGroup>
-            <BarSeries
-              dataKey="New York"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getNyTemperature}
-              colorAccessor={colorAccessorFactory('New York')}
-            />
-            <BarSeries
-              dataKey="San Francisco"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getSfTemperature}
-              colorAccessor={colorAccessorFactory('San Francisco')}
-            />
-            <BarSeries
-              dataKey="Austin"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getAustinTemperature}
-              colorAccessor={colorAccessorFactory('Austin')}
-            />
-          </BarGroup>
-        )}
-        {chartType === 'area' && (
-          <>
-            <AreaSeries
-              dataKey="Austin"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getAustinTemperature}
-              fillOpacity={0.4}
-            />
-            <AreaSeries
-              dataKey="New York"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getNyTemperature}
-              fillOpacity={0.4}
-            />
-            <AreaSeries
-              dataKey="San Francisco"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getSfTemperature}
-              fillOpacity={0.4}
-            />
-          </>
-        )}
-        {chartType === 'line' && (
-          <>
-            <LineSeries
-              dataKey="Austin"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getAustinTemperature}
-            />
-            <LineSeries
-              dataKey="New York"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getNyTemperature}
-            />
-            <LineSeries
-              dataKey="San Francisco"
-              data={filteredData}
-              xAccessor={getDate}
-              yAccessor={getSfTemperature}
-            />
-          </>
-        )}
-        <Axis orientation="bottom" numTicks={4} />
-        <AnimatedAxis
-          orientation="left"
-          numTicks={4}
-          animationTrajectory="min"
-        />
-        <Tooltip<CityTemperature>
-          showVerticalCrosshair
-          snapTooltipToDatumX
-          renderTooltip={({ tooltipData, colorScale }) => (
-            <>
-              {/** date */}
-              {(tooltipData?.nearestDatum?.datum &&
-                getDate(tooltipData?.nearestDatum?.datum)) ||
-                'No date'}
-              <br />
-              <br />
-              {/** temperatures */}
-              {(
-                Object.keys(tooltipData?.datumByKey ?? {}).filter(
-                  (city) => city,
-                ) as City[]
-              ).map((city) => {
-                const temperature =
-                  tooltipData?.nearestDatum?.datum &&
-                  accessors.y[city](tooltipData?.nearestDatum?.datum);
-
-                return (
-                  <div key={city}>
-                    <em
-                      style={{
-                        color: colorScale?.(city),
-                        textDecoration:
-                          tooltipData?.nearestDatum?.key === city
-                            ? 'underline'
-                            : undefined,
-                      }}
-                    >
-                      {city}
-                    </em>{' '}
-                    {temperature == null || Number.isNaN(temperature)
-                      ? '–'
-                      : `${temperature}° F`}
-                  </div>
-                );
-              })}
-            </>
-          )}
-        />
-      </XYChart>
+      <MultilineChartBase
+        height={height}
+        width={width}
+        chartType={chartType}
+        data={data}
+      />
       <svg style={{ width: xBrushMax, height: yBrushMax }}>
         <div style={{ width: xBrushMax, height: yBrushMax }} />
         <PatternLines
