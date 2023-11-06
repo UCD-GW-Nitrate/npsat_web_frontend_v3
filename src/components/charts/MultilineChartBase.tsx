@@ -130,8 +130,8 @@ export default function MultilineChartBase({
             <Annotation
               dataKey={annotation.dataKey}
               datum={data[annotation.dataKey]![annotation.index]!}
-              dx={1}
-              dy={0}
+              dx={11}
+              dy={20}
               canEditSubject={false}
               key={annotation.dataKey + annotation.index}
             >
@@ -168,13 +168,11 @@ export default function MultilineChartBase({
           snapTooltipToDatumX
           renderTooltip={({ tooltipData, colorScale }) => (
             <>
-              {/** date */}
               {(tooltipData?.nearestDatum?.datum &&
                 getDate(tooltipData?.nearestDatum?.datum)) ||
                 'No date'}
               <br />
               <br />
-              {/** temperatures */}
               {(
                 Object.keys(tooltipData?.datumByKey ?? {}).filter(
                   (model) => model,
