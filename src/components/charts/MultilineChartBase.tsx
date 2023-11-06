@@ -1,3 +1,4 @@
+import type { Margin } from '@visx/xychart';
 import {
   AnimatedAxis,
   AnimatedGrid,
@@ -13,6 +14,7 @@ import {
   Tooltip,
   XYChart,
 } from '@visx/xychart';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import CustomChartBackground from './CustomChartBackground';
@@ -33,7 +35,7 @@ export interface ChartAnnotation {
   color?: string;
 }
 
-export interface MultilineChartBaseProps {
+export interface MultilineChartBaseProps extends PropsWithChildren {
   width: number;
   height: number;
   chartType: 'bar' | 'line' | 'area';
@@ -46,6 +48,7 @@ export interface MultilineChartBaseProps {
   // eslint-disable-next-line react/no-unused-prop-types
   max: number;
   annotations?: ChartAnnotation[];
+  margin?: Margin;
 }
 
 export default function MultilineChartBase({
@@ -59,6 +62,8 @@ export default function MultilineChartBase({
   axis = true,
   min,
   annotations,
+  margin,
+  children,
 }: MultilineChartBaseProps) {
   const getDate = (dataPoint: ChartDataPoint) => dataPoint.year;
   const getValue = (dataPoint: ChartDataPoint) => dataPoint.value;
@@ -70,8 +75,10 @@ export default function MultilineChartBase({
       yScale={{ type: 'linear' }}
       height={height}
       width={width}
+      margin={margin}
     >
       <CustomChartBackground />
+      {children}
       <AnimatedGrid
         rows={false}
         columns={false}
