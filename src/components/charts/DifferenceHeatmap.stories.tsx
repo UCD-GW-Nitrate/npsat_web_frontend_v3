@@ -20,7 +20,7 @@ export const Primary: Story = {
     </ThemeProvider>
   ),
   args: {
-    width: 800,
-    height: 400,
+    width: 500,
+    height: 550,
   },
 };
