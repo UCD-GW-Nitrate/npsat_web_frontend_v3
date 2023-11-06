@@ -3,27 +3,22 @@ import type BaseBrush from '@visx/brush/lib/BaseBrush';
 import type { BrushHandleRenderProps } from '@visx/brush/lib/BrushHandle';
 import type { Bounds } from '@visx/brush/lib/types';
 import { Group } from '@visx/group';
-import type { CityTemperature } from '@visx/mock-data/lib/mocks/cityTemperature';
-import cityTemperature from '@visx/mock-data/lib/mocks/cityTemperature';
 import { PatternLines } from '@visx/pattern';
 import { scaleLinear, scaleTime } from '@visx/scale';
 import React, { useMemo, useRef, useState } from 'react';
 
-import type { MultilineChartBaseProps } from './MultilineChartBase';
+import type {
+  ChartDataPoint,
+  MultilineChartBaseProps,
+} from './MultilineChartBase';
 import MultilineChartBase from './MultilineChartBase';
 
-export interface Annotation {
-  date: Date;
-  text: string;
-}
-
 export interface BrushedValue {
-  start: Date;
-  end: Date;
+  start: number;
+  end: number;
 }
 
 export interface MultilineChartProps extends MultilineChartBaseProps {
-  annotations?: Annotation[];
   brushed?: BrushedValue;
 }
 
@@ -51,10 +46,10 @@ export default function MultilineChart({
   width,
   chartType = 'line',
   data,
+  min,
+  max,
 }: MultilineChartProps) {
-  const getDate = (d: CityTemperature) => d.date;
-
-  const oldData = cityTemperature.slice(150, 275);
+  const getDate = (dataPoint: ChartDataPoint) => dataPoint.year;
 
   const brushMargin = { top: 10, bottom: 10, left: 50, right: 20 };
   const PATTERN_ID = 'brush_pattern';
@@ -64,13 +59,18 @@ export default function MultilineChart({
     stroke: 'white',
   };
   const brushRef = useRef<BaseBrush | null>(null);
-  const [filteredData, setFilteredData] = useState(oldData);
+  const [filteredData, setFilteredData] = useState(data);
   const onBrushChange = (domain: Bounds | null) => {
     if (!domain) return;
     const { x0, x1 } = domain;
-    const dataCopy = oldData.filter((s) => {
-      const x = Date.parse(getDate(s));
-      return x > x0 && x < x1;
+    const dataCopy = structuredClone(data);
+    Object.keys(dataCopy).forEach((key) => {
+      if (dataCopy[key] !== undefined) {
+        dataCopy[key] = dataCopy[key]!.filter((s) => {
+          const x = getDate(s);
+          return x > x0 && x < x1;
+        });
+      }
     });
     setFilteredData(dataCopy);
   };
@@ -83,10 +83,7 @@ export default function MultilineChart({
     () =>
       scaleTime<number>({
         range: [0, xBrushMax],
-        domain: [
-          Date.parse(getDate(oldData[0]!)),
-          Date.parse(getDate(oldData[100]!)),
-        ],
+        domain: [min, max],
       }),
     [xBrushMax],
   );
@@ -94,7 +91,7 @@ export default function MultilineChart({
     () =>
       scaleLinear({
         range: [yBrushMax, 0],
-        domain: [0, height],
+        domain: [0, 17],
         nice: true,
       }),
     [yBrushMax],
@@ -102,8 +99,8 @@ export default function MultilineChart({
 
   const initialBrushPosition = useMemo(
     () => ({
-      start: { x: brushDateScale(Date.parse(getDate(filteredData[50]!))) },
-      end: { x: brushDateScale(Date.parse(getDate(oldData[100]!))) },
+      start: { x: brushDateScale(min) },
+      end: { x: brushDateScale(max) },
     }),
     [brushDateScale],
   );
@@ -114,10 +111,21 @@ export default function MultilineChart({
         height={height}
         width={width}
         chartType={chartType}
-        data={data}
+        data={filteredData}
+        min={min}
+        max={max}
       />
       <svg style={{ width: xBrushMax, height: yBrushMax }}>
-        <div style={{ width: xBrushMax, height: yBrushMax }} />
+        <MultilineChartBase
+          height={yBrushMax}
+          width={xBrushMax}
+          chartType={chartType}
+          data={data}
+          min={min}
+          max={max}
+          tooltip={false}
+          axis={false}
+        />
         <PatternLines
           id={PATTERN_ID}
           height={8}

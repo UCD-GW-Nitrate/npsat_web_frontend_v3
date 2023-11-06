@@ -1,6 +1,9 @@
 import {
   AnimatedAxis,
   AnimatedGrid,
+  Annotation,
+  AnnotationLabel,
+  AnnotationLineSubject,
   AreaSeries,
   Axis,
   BarGroup,
@@ -23,6 +26,13 @@ export interface ChartData {
   [model: string]: ChartDataPoint[];
 }
 
+export interface ChartAnnotation {
+  dataKey: string;
+  index: number;
+  title: string;
+  color?: string;
+}
+
 export interface MultilineChartBaseProps {
   width: number;
   height: number;
@@ -31,6 +41,11 @@ export interface MultilineChartBaseProps {
   xLabel?: string;
   yLabel?: string;
   tooltip?: boolean;
+  axis?: boolean;
+  min: number;
+  // eslint-disable-next-line react/no-unused-prop-types
+  max: number;
+  annotations?: ChartAnnotation[];
 }
 
 export default function MultilineChartBase({
@@ -41,6 +56,9 @@ export default function MultilineChartBase({
   xLabel,
   yLabel,
   tooltip = true,
+  axis = true,
+  min,
+  annotations,
 }: MultilineChartBaseProps) {
   const getDate = (dataPoint: ChartDataPoint) => dataPoint.year;
   const getValue = (dataPoint: ChartDataPoint) => dataPoint.value;
@@ -48,9 +66,9 @@ export default function MultilineChartBase({
   return (
     <XYChart
       theme={lightTheme}
-      xScale={{ type: 'band', paddingInner: 0.3 }}
+      xScale={{ type: 'band' }}
       yScale={{ type: 'linear' }}
-      height={Math.min(400, height)}
+      height={height}
       width={width}
     >
       <CustomChartBackground />
@@ -106,13 +124,44 @@ export default function MultilineChartBase({
           })}
         </>
       )}
-      <Axis orientation="bottom" numTicks={4} label={xLabel} />
-      <AnimatedAxis
-        orientation="left"
-        numTicks={4}
-        animationTrajectory="min"
-        label={yLabel}
-      />
+      {annotations && annotations?.length > 0 && (
+        <>
+          {annotations.map((annotation: ChartAnnotation) => (
+            <Annotation
+              dataKey={annotation.dataKey}
+              datum={data[annotation.dataKey]![annotation.index]!}
+              dx={1}
+              dy={0}
+              canEditSubject={false}
+              key={annotation.dataKey + annotation.index}
+            >
+              <AnnotationLineSubject stroke={annotation.color ?? 'red'} />
+              <AnnotationLabel
+                title={annotation.title}
+                showAnchorLine={false}
+                width={30}
+                backgroundProps={{
+                  strokeOpacity: 0,
+                  fillOpacity: 0,
+                }}
+                fontColor={annotation.color ?? 'red'}
+                titleProps={{ writingMode: 'vertical-rl' }}
+              />
+            </Annotation>
+          ))}
+        </>
+      )}
+      {axis && (
+        <>
+          <Axis orientation="bottom" numTicks={4} label={xLabel} />
+          <AnimatedAxis
+            orientation="left"
+            numTicks={4}
+            animationTrajectory="min"
+            label={yLabel}
+          />
+        </>
+      )}
       {tooltip && (
         <Tooltip<ChartDataPoint>
           showVerticalCrosshair
@@ -131,7 +180,7 @@ export default function MultilineChartBase({
                   (model) => model,
                 ) as string[]
               ).map((model) => {
-                const startYear = data[model]?.[0]?.year;
+                const startYear = min;
                 const selectedYear = tooltipData?.nearestDatum?.datum.year;
                 const value =
                   selectedYear &&
