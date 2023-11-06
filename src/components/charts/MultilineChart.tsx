@@ -51,9 +51,7 @@ export default function MultilineChart({
 }: MultilineChartProps) {
   const getDate = (dataPoint: ChartDataPoint) => dataPoint.year;
 
-  const brushMargin = { top: 10, bottom: 10, left: 50, right: 20 };
   const PATTERN_ID = 'brush_pattern';
-  const accentColor = '#f6acc8';
   const selectedBrushStyle = {
     fill: `url(#${PATTERN_ID})`,
     stroke: 'white',
@@ -75,8 +73,25 @@ export default function MultilineChart({
     setFilteredData(dataCopy);
   };
 
-  const xBrushMax = width;
-  const yBrushMax = height / 8;
+  const margin = {
+    top: 20,
+    left: 50,
+    bottom: 20,
+    right: 20,
+  };
+  const brushMargin = { top: 10, bottom: 15, left: 50, right: 20 };
+
+  const chartSeparation = 30;
+  const innerHeight = height - margin.top - margin.bottom;
+  const topChartBottomMargin = chartSeparation / 2;
+  const topChartHeight = 0.8 * innerHeight - topChartBottomMargin;
+  const bottomChartHeight = innerHeight - topChartHeight - chartSeparation;
+
+  const xBrushMax = Math.max(width - brushMargin.left - brushMargin.right, 0);
+  const yBrushMax = Math.max(
+    bottomChartHeight - brushMargin.top - brushMargin.bottom,
+    0,
+  );
 
   // scales
   const brushDateScale = useMemo(
@@ -114,24 +129,15 @@ export default function MultilineChart({
         data={filteredData}
         min={min}
         max={max}
+        margin={margin}
       />
-      <svg style={{ width: xBrushMax, height: yBrushMax }}>
-        <MultilineChartBase
-          height={yBrushMax}
-          width={xBrushMax}
-          chartType={chartType}
-          data={data}
-          min={min}
-          max={max}
-          tooltip={false}
-          axis={false}
-        />
+      <svg width={width} style={{ paddingLeft: 50 }} height={yBrushMax}>
         <PatternLines
           id={PATTERN_ID}
           height={8}
           width={8}
-          stroke={accentColor}
-          strokeWidth={1}
+          stroke="lightgrey"
+          strokeWidth={8}
           orientation={['diagonal']}
         />
         <Brush
