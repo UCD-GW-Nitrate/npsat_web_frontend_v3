@@ -30,12 +30,12 @@ export const Primary: Story = {
       {
         dataKey: 'base',
         index: 2,
-        title: 'start',
+        title: 'Implementation start year',
       },
       {
         dataKey: 'base',
         index: 5,
-        title: 'end',
+        title: 'Implementation end year',
       },
     ],
     data: {

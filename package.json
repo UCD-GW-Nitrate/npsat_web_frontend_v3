@@ -42,6 +42,7 @@
     "@visx/gradient": "^3.3.0",
     "@visx/grid": "^3.3.0",
     "@visx/group": "^3.3.0",
+    "@visx/heatmap": "^3.3.0",
     "@visx/mock-data": "^3.3.0",
     "@visx/pattern": "^3.3.0",
     "@visx/react-spring": "^3.4.1",
