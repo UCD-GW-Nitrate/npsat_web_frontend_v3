@@ -24,6 +24,20 @@ export const Primary: Story = {
     height: 400,
     chartType: 'line',
     yLabel: 'Concentration of Nitrate as N [mg/L]',
+    min: 2000,
+    max: 2007,
+    annotations: [
+      {
+        dataKey: 'base',
+        index: 2,
+        title: 'start',
+      },
+      {
+        dataKey: 'base',
+        index: 5,
+        title: 'end',
+      },
+    ],
     data: {
       custom: [
         {
