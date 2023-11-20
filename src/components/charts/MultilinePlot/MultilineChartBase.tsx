@@ -44,9 +44,6 @@ export interface MultilineChartBaseProps extends PropsWithChildren {
   yLabel?: string;
   tooltip?: boolean;
   axis?: boolean;
-  min: number;
-  // eslint-disable-next-line react/no-unused-prop-types
-  max: number;
   annotations?: ChartAnnotation[];
   margin?: Margin;
 }
@@ -60,13 +57,23 @@ export default function MultilineChartBase({
   yLabel,
   tooltip = true,
   axis = true,
-  min,
   annotations,
   margin,
   children,
 }: MultilineChartBaseProps) {
   const getDate = (dataPoint: ChartDataPoint) => dataPoint.year;
   const getValue = (dataPoint: ChartDataPoint) => dataPoint.value;
+
+  let startYear = 4000;
+  Object.keys(data).forEach((model: string) => {
+    if (
+      data[model]?.length &&
+      data[model]?.length! > 0 &&
+      startYear > data[model]![0]!.year
+    ) {
+      startYear = data[model]![0]!.year;
+    }
+  });
 
   return (
     <XYChart
@@ -185,7 +192,6 @@ export default function MultilineChartBase({
                   (model) => model,
                 ) as string[]
               ).map((model) => {
-                const startYear = min;
                 const selectedYear = tooltipData?.nearestDatum?.datum.year;
                 const value =
                   selectedYear &&

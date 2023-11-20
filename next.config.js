@@ -15,3 +15,14 @@ module.exports = withBundleAnalyzer({
   // You can remove `basePath` if you don't need it.
   reactStrictMode: true,
 });
+
+// module.exports = {
+//   async rewrite() {
+//     return [
+//       {
+//         source: '/api/:path*',
+//         destination: 'http://localhost:8010/api/:path*',
+//       },
+//     ];
+//   },
+// };
