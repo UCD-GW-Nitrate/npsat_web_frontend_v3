@@ -142,27 +142,36 @@ export default function MultilineChartBase({
           {annotations && annotations?.length > 0 && (
             <>
               {annotations.map((annotation: ChartAnnotation) => (
-                <Annotation
-                  dataKey={annotation.dataKey}
-                  datum={data[annotation.dataKey]![annotation.index]!}
-                  dx={11}
-                  dy={20}
-                  canEditSubject={false}
-                  key={annotation.dataKey + annotation.index}
-                >
-                  <AnnotationLineSubject stroke={annotation.color ?? 'red'} />
-                  <AnnotationLabel
-                    title={annotation.title}
-                    showAnchorLine={false}
-                    width={30}
-                    backgroundProps={{
-                      strokeOpacity: 0,
-                      fillOpacity: 0,
-                    }}
-                    fontColor={annotation.color ?? 'red'}
-                    titleProps={{ writingMode: 'vertical-rl' }}
-                  />
-                </Annotation>
+                <>
+                  {annotation.dataKey &&
+                    annotation.index &&
+                    data[annotation.dataKey] &&
+                    data[annotation.dataKey]!.length > annotation.index && (
+                      <Annotation
+                        dataKey={annotation.dataKey}
+                        datum={data[annotation.dataKey]![annotation.index]!}
+                        dx={11}
+                        dy={20}
+                        canEditSubject={false}
+                        key={annotation.dataKey + annotation.index}
+                      >
+                        <AnnotationLineSubject
+                          stroke={annotation.color ?? 'red'}
+                        />
+                        <AnnotationLabel
+                          title={annotation.title}
+                          showAnchorLine={false}
+                          width={30}
+                          backgroundProps={{
+                            strokeOpacity: 0,
+                            fillOpacity: 0,
+                          }}
+                          fontColor={annotation.color ?? 'red'}
+                          titleProps={{ writingMode: 'vertical-rl' }}
+                        />
+                      </Annotation>
+                    )}
+                </>
               ))}
             </>
           )}
