@@ -118,14 +118,19 @@ export const CoreTable = ({
             <TableBody>
               {(data ?? [])
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((row) => {
                   return (
                     <TableRow
                       hover
                       role="checkbox"
                       tabIndex={-1}
                       key={row.id}
-                      onClick={() => router.push(`/model/${index}`)}
+                      onClick={() =>
+                        router.push({
+                          pathname: `/model/`,
+                          query: { id: row.id },
+                        })
+                      }
                     >
                       {columns.map((column) => {
                         const value = row[column.field as keyof PlotModel];

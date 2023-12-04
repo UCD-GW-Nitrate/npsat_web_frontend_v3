@@ -41,6 +41,12 @@ export interface Model {
   modifications?: CropModification[];
 }
 
+export interface ModelResult {
+  id: number;
+  values: number[];
+  percentile: number;
+}
+
 const modelSlice = createSlice({
   name: 'model',
   initialState: <Model>{},

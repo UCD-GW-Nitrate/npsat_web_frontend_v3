@@ -20,6 +20,9 @@ export interface BrushedValue {
 
 export interface MultilineChartProps extends MultilineChartBaseProps {
   brushed?: BrushedValue;
+  min: number;
+  max: number;
+  width: number;
 }
 
 function BrushHandle({ x, height, isBrushActive }: BrushHandleRenderProps) {
@@ -124,11 +127,8 @@ export default function MultilineChart({
     <div>
       <MultilineChartBase
         height={height}
-        width={width}
         chartType={chartType}
         data={filteredData}
-        min={min}
-        max={max}
         margin={margin}
       />
       <svg width={width} style={{ paddingLeft: 50 }} height={yBrushMax}>
