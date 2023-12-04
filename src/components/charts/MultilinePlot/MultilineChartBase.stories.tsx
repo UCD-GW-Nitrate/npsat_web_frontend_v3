@@ -20,7 +20,6 @@ export const Primary: Story = {
     </ThemeProvider>
   ),
   args: {
-    width: 800,
     height: 400,
     chartType: 'line',
     yLabel: 'Concentration of Nitrate as N [mg/L]',
