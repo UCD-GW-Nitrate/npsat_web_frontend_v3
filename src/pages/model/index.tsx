@@ -87,7 +87,7 @@ const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
       <CoreMultipleSelect
         group={false}
         placeholder="Select Percentiles"
-        sx={{ mt: 2, mx: 2 }}
+        sx={{ mt: 4, mx: 5 }}
         options={(percentilesData as number[]).map((p) => {
           const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
           return res;
@@ -95,7 +95,7 @@ const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
         fieldValue={multSelect}
         setFieldValue={handleMultSelect}
       />
-      <HBox spacing={1} sx={{ mt: 4, ml: 5 }}>
+      <HBox spacing={1} sx={{ mt: 2, ml: 5 }}>
         <CoreButton
           variant="contained"
           label="Select 5th, 50th, 95th"

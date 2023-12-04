@@ -35,7 +35,6 @@ export const CoreMultipleSelect = ({
         multiple
         options={options}
         size="small"
-        sx={{ minWidth: 200, ...sx }}
         value={fieldValue}
         renderInput={(params) => (
           <TextField
