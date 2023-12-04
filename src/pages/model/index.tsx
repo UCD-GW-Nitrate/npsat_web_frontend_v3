@@ -5,6 +5,8 @@ import type { ChartDataPoint } from '@/components/charts/MultilinePlot/Multiline
 import MultilineChartBase from '@/components/charts/MultilinePlot/MultilineChartBase';
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
+import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
+import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import Layout from '@/components/custom/Layout/Layout';
 import type { ModelDisplay } from '@/hooks/useModelResults';
@@ -21,10 +23,13 @@ interface DisplayData {
 }
 
 const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
-  const [plotData] = useModelResults(percentiles);
+  const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
     5, 50, 95,
   ]);
+  const [multSelect, setMultSelect] = useState<
+    (CoreMultipleSelectOption | undefined)[]
+  >([]);
 
   function configureDisplayData(percentilesInput: number[]) {
     const res: any = {};
@@ -46,16 +51,28 @@ const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
 
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
+    setMultSelect(
+      (percentilesDisplayed as number[]).map((p) => {
+        const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
+        return res;
+      }),
+    );
   }, [plotData, percentilesDisplayed]);
+
+  useEffect(() => {
+    setDisplayData(configureDisplayData(multSelect.map((p) => p!.value)));
+  }, [multSelect]);
 
   if (!plotData) {
     return <div />;
   }
 
-  console.log('plot data');
-  console.log(plotData);
-  console.log('display data');
-  console.log(displayData);
+  const handleMultSelect = (
+    selected: (CoreMultipleSelectOption | undefined)[],
+  ) => {
+    setMultSelect(selected);
+    setPercentilesDisplayed(selected.map((s) => s?.value));
+  };
 
   return (
     <CoreContainer
@@ -67,6 +84,17 @@ const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
         flexDirection: 'column',
       }}
     >
+      <CoreMultipleSelect
+        group={false}
+        placeholder="Select Percentiles"
+        sx={{ mt: 2, mx: 2 }}
+        options={(percentilesData as number[]).map((p) => {
+          const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
+          return res;
+        })}
+        fieldValue={multSelect}
+        setFieldValue={handleMultSelect}
+      />
       <HBox spacing={1} sx={{ mt: 4, ml: 5 }}>
         <CoreButton
           variant="contained"
@@ -77,6 +105,11 @@ const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
           variant="contained"
           label="Select 10th, 50th, 90th"
           onClick={() => setPercentilesDisplayed([10, 50, 90])}
+        />
+        <CoreButton
+          variant="contained"
+          label="Select 25th, 50th, 75th"
+          onClick={() => setPercentilesDisplayed([25, 50, 75])}
         />
       </HBox>
       <MultilineChartBase
