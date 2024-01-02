@@ -13,4 +13,5 @@ body, main {
 #__next {
   margin: 0;
   height:100vh;
+  background-color: #F1F2F5;
 }

@@ -2,7 +2,6 @@ import 'leaflet/dist/leaflet.css';
 import '@/components/maps/styles.css';
 import '../styles/global.css';
 
-import GlobalStyles from '@mui/material/GlobalStyles';
 import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -65,11 +64,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <GlobalStyles
-            styles={{
-              body: { backgroundColor: theme.palette.background.default },
-            }}
-          />
           <Wrapper>
             <Component {...pageProps} />
           </Wrapper>

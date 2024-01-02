@@ -1,9 +1,19 @@
-import type { ContainerProps } from '@mui/material';
-import { Container } from '@mui/material';
+import type { PaperProps } from '@mui/material';
+import { Paper } from '@mui/material';
 import React from 'react';
 
-export interface CoreContainerProps extends ContainerProps {}
+import { CONTAINER_COLOR } from '@/components/theme';
 
-export const CoreContainer = ({ ...rest }: CoreContainerProps) => (
-  <Container {...rest} />
+export interface CoreContainerProps extends PaperProps {}
+
+export const CoreContainer = ({
+  sx,
+  elevation,
+  ...rest
+}: CoreContainerProps) => (
+  <Paper
+    elevation={elevation ?? 0}
+    sx={{ backgroundColor: CONTAINER_COLOR, p: 2, ...sx }}
+    {...rest}
+  />
 );
