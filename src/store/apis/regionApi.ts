@@ -63,7 +63,7 @@ export interface RegionGeometry {
 
 export interface Geometry {
   type: string;
-  properties: Property[];
+  properties: Property;
 }
 
 export interface RegionDetail {

@@ -13,8 +13,6 @@ export interface ModelDisplay {
   percentile: string;
 }
 
-// import { useThunk } from './useThunk';
-
 const ordinalSuffix = (num: number) =>
   `${num}${['st', 'nd', 'rd'][((((num + 90) % 100) - 10) % 10) - 1] || 'th'}`;
 
