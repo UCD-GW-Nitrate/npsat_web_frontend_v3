@@ -18,7 +18,6 @@ export const VBox = ({
         display: 'flex',
         flexWrap: 'wrap',
         gap: spacing,
-        alignItems: 'center',
         flexDirection: 'column',
         ...sx,
       }}
