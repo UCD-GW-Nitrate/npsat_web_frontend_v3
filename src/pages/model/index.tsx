@@ -75,15 +75,7 @@ const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
   };
 
   return (
-    <CoreContainer
-      disableGutters
-      sx={{
-        backgroundColor: 'white',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-      }}
-    >
+    <CoreContainer>
       <CoreMultipleSelect
         group={false}
         placeholder="Select Percentiles"
