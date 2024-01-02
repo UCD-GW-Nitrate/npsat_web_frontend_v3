@@ -15,6 +15,7 @@ export const HBox = ({
   return (
     <Box
       sx={{
+        justifyContent: spacing === undefined ? 'space-between' : 'flex-start',
         display: 'flex',
         flexWrap: 'wrap',
         gap: spacing ?? 0,

@@ -1,6 +1,5 @@
 import type { PaperProps } from '@mui/material';
 import {
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -13,6 +12,8 @@ import type { UIEvent } from 'react';
 import React, { useState } from 'react';
 
 import type { PlotModel } from '@/store/apis/feedApi';
+
+import { CoreContainer } from '../CoreContainer/CoreContainer';
 
 export interface CoreTableColumn {
   label: string;
@@ -67,7 +68,7 @@ export const CoreTable = ({
   };
 
   return (
-    <Paper {...rest} sx={{ ...sx, overflowX: 'hidden' }}>
+    <CoreContainer {...rest} sx={{ ...sx, overflowX: 'hidden', p: 0 }}>
       <div style={{ position: 'relative' }}>
         <div
           style={{
@@ -157,6 +158,6 @@ export const CoreTable = ({
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{ overflow: 'fixed' }}
       />
-    </Paper>
+    </CoreContainer>
   );
 };

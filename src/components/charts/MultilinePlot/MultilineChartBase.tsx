@@ -191,7 +191,7 @@ export default function MultilineChartBase({
               showVerticalCrosshair
               snapTooltipToDatumX
               renderTooltip={({ tooltipData, colorScale }) => (
-                <>
+                <div style={{ margin: 5 }}>
                   {(tooltipData?.nearestDatum?.datum &&
                     getDate(tooltipData?.nearestDatum?.datum)) ||
                     'No date'}
@@ -209,23 +209,22 @@ export default function MultilineChartBase({
                       data[model]?.[selectedYear - startYear]?.value;
 
                     return (
-                      <div key={model}>
-                        <em
+                      <div key={model} style={{ marginBottom: 4 }}>
+                        <span
                           style={{
                             color: colorScale?.(model),
                           }}
                         >
-                          &#x2022;
-                        </em>{' '}
-                        <span>{model}</span>
-                        {': '}
+                          {model}:
+                        </span>
+                        {'   '}
                         {value == null || Number.isNaN(value)
                           ? '–'
                           : `${value}`}
                       </div>
                     );
                   })}
-                </>
+                </div>
               )}
             />
           )}
