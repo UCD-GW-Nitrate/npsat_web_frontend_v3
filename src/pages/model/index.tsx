@@ -1,138 +1,23 @@
+import { Box } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import type { ChartDataPoint } from '@/components/charts/MultilinePlot/MultilineChartBase';
-import MultilineChartBase from '@/components/charts/MultilinePlot/MultilineChartBase';
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
-import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
-import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
-import { HBox } from '@/components/custom/HBox/Hbox';
+import Footer from '@/components/custom/Footer/Footer';
 import Layout from '@/components/custom/Layout/Layout';
-import type { ModelDisplay } from '@/hooks/useModelResults';
-import { useModelResults } from '@/hooks/useModelResults';
+import { VBox } from '@/components/custom/VBox/VBox';
 import { useGetModelDetailQuery } from '@/store';
-import type { Result } from '@/store/apis/modelApi';
 
-interface PlotWithPercentilesProps {
-  percentiles: Result[];
-}
-
-interface DisplayData {
-  [percentile: string]: ChartDataPoint[];
-}
-
-const PlotWithPercentiles = ({ percentiles }: PlotWithPercentilesProps) => {
-  const [plotData, percentilesData] = useModelResults(percentiles);
-  const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
-    5, 50, 95,
-  ]);
-  const [multSelect, setMultSelect] = useState<
-    (CoreMultipleSelectOption | undefined)[]
-  >([]);
-
-  function configureDisplayData(percentilesInput: number[]) {
-    const res: any = {};
-    percentilesInput.forEach((p) => {
-      res[`${p}th percentile`] =
-        ((plotData as any)[p] as ModelDisplay[] | undefined)?.map((data) => {
-          return {
-            year: data.year,
-            value: data.value,
-          } as ChartDataPoint;
-        }) ?? [];
-    });
-    return res;
-  }
-
-  const [displayData, setDisplayData] = useState<DisplayData>(
-    configureDisplayData(percentilesDisplayed),
-  );
-
-  useEffect(() => {
-    setDisplayData(configureDisplayData(percentilesDisplayed));
-    setMultSelect(
-      (percentilesDisplayed as number[]).map((p) => {
-        const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
-        return res;
-      }),
-    );
-  }, [plotData, percentilesDisplayed]);
-
-  useEffect(() => {
-    setDisplayData(configureDisplayData(multSelect.map((p) => p!.value)));
-  }, [multSelect]);
-
-  if (!plotData) {
-    return <div />;
-  }
-
-  const handleMultSelect = (
-    selected: (CoreMultipleSelectOption | undefined)[],
-  ) => {
-    setMultSelect(selected);
-    setPercentilesDisplayed(selected.map((s) => s?.value));
-  };
-
-  return (
-    <CoreContainer>
-      <CoreMultipleSelect
-        group={false}
-        placeholder="Select Percentiles"
-        sx={{ mt: 4, mx: 5 }}
-        options={(percentilesData as number[]).map((p) => {
-          const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
-          return res;
-        })}
-        fieldValue={multSelect}
-        setFieldValue={handleMultSelect}
-      />
-      <HBox spacing={1} sx={{ mt: 2, ml: 5 }}>
-        <CoreButton
-          variant="contained"
-          label="Select 5th, 50th, 95th"
-          onClick={() => setPercentilesDisplayed([5, 50, 95])}
-        />
-        <CoreButton
-          variant="contained"
-          label="Select 10th, 50th, 90th"
-          onClick={() => setPercentilesDisplayed([10, 50, 90])}
-        />
-        <CoreButton
-          variant="contained"
-          label="Select 25th, 50th, 75th"
-          onClick={() => setPercentilesDisplayed([25, 50, 75])}
-        />
-      </HBox>
-      <MultilineChartBase
-        height={500}
-        chartType="line"
-        yLabel="Concentration of Nitrate as N [mg/L]"
-        annotations={[
-          {
-            dataKey: `${
-              percentilesDisplayed[percentilesDisplayed.length - 1]
-            }th percentile`,
-            index: 70,
-            title: 'Implementation start year',
-          },
-          {
-            dataKey: `${
-              percentilesDisplayed[percentilesDisplayed.length - 1]
-            }th percentile`,
-            index: 75,
-            title: 'Implementation complete year',
-          },
-        ]}
-        data={displayData}
-      />
-    </CoreContainer>
-  );
-};
+import ModelChart from './components/ModelChart';
 
 const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelDetailQuery(+router.query.id!);
+
+  const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
+    ssr: false,
+  });
 
   if (modelDetail.isFetching || modelDetail.error) {
     return <div />;
@@ -144,7 +29,16 @@ const ModelPage = () => {
 
   return (
     <Layout>
-      <PlotWithPercentiles percentiles={modelDetail.data!.results} />
+      <VBox spacing={3}>
+        <ModelChart percentiles={modelDetail.data!.results} />
+        <CoreContainer>
+          <div id="map" style={{ height: '600px', margin: 0 }}>
+            <MapWithNoSSR data={[]} selected={[]} />
+          </div>
+        </CoreContainer>
+      </VBox>
+      <Box sx={{ mt: 10 }} />
+      <Footer />
     </Layout>
   );
 };

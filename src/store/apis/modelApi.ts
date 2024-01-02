@@ -192,7 +192,7 @@ const modelApi = createApi({
           },
         }),
       }),
-      getModelDetail: builder.query<any, number>({
+      getModelDetail: builder.query<ModelDetail, number>({
         query: (id) => ({
           url: `api/model_run/${id}/`,
           method: 'GET',

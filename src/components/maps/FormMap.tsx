@@ -5,6 +5,8 @@ import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
 
 const { Option } = Select;
 
+import RegionsMap from './RegionsMap';
+
 export interface FormMapProps {
   data: ResultResponse[];
   selected: number[];

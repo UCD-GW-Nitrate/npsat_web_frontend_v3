@@ -2,13 +2,14 @@ import 'leaflet/dist/leaflet.css';
 import '@/components/maps/styles.css';
 import '../styles/global.css';
 
+import { GlobalStyles } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { type PropsWithChildren, useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 
-import theme from '@/components/theme';
+import theme, { BACKGROUND_COLOR } from '@/components/theme';
 import type { AuthState } from '@/store/apis/authApi';
 import { setCredentials } from '@/store/slices/authSlice';
 
@@ -64,6 +65,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
+          <GlobalStyles
+            styles={{
+              body: { backgroundColor: BACKGROUND_COLOR },
+            }}
+          />
           <Wrapper>
             <Component {...pageProps} />
           </Wrapper>
