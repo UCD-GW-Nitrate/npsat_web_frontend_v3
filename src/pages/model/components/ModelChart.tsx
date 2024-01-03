@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import MultilineChart from '@/components/charts/MultilinePlot/MultilineChart';
 import type { ChartDataPoint } from '@/components/charts/MultilinePlot/MultilineChartBase';
-import MultilineChartBase from '@/components/charts/MultilinePlot/MultilineChartBase';
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
@@ -71,6 +71,8 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
     setPercentilesDisplayed(selected.map((s) => s?.value));
   };
 
+  console.log('display data: ', displayData);
+
   return (
     <CoreContainer>
       <CoreMultipleSelect
@@ -101,7 +103,7 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
           onClick={() => setPercentilesDisplayed([25, 50, 75])}
         />
       </HBox>
-      <MultilineChartBase
+      <MultilineChart
         height={500}
         chartType="line"
         yLabel="Concentration of Nitrate as N [mg/L]"
