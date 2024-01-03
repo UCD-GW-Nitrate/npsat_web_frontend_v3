@@ -30,8 +30,7 @@ export interface ChartData {
 }
 
 export interface ChartAnnotation {
-  dataKey: string;
-  index: number;
+  date: number;
   title: string;
   color?: string;
 }
@@ -137,23 +136,41 @@ export default function MultilineChartBase({
                   />
                 );
               })}
+              {data && Object.keys(data).length > 0 && (
+                <LineSeries
+                  key="zero"
+                  dataKey="zero"
+                  data={data[Object.keys(data)[0]!]!}
+                  xAccessor={getDate}
+                  yAccessor={() => 0}
+                />
+              )}
             </>
           )}
           {annotations && annotations?.length > 0 && (
             <>
               {annotations.map((annotation: ChartAnnotation) => (
                 <>
-                  {annotation.dataKey &&
-                    annotation.index &&
-                    data[annotation.dataKey] &&
-                    data[annotation.dataKey]!.length > annotation.index && (
+                  {Object.keys(data)[0] &&
+                    annotation.date &&
+                    data[Object.keys(data)[0]!] &&
+                    data[Object.keys(data)[0]!]!.length > 0 &&
+                    data[Object.keys(data)[0]!]!.length >
+                      annotation.date - data[Object.keys(data)[0]!]![0]!.year &&
+                    annotation.date - data[Object.keys(data)[0]!]![0]!.year >=
+                      0 && (
                       <Annotation
-                        dataKey={annotation.dataKey}
-                        datum={data[annotation.dataKey]![annotation.index]!}
+                        dataKey="zero"
+                        datum={
+                          data[Object.keys(data)[0]!]![
+                            annotation.date -
+                              data[Object.keys(data)[0]!]![0]!.year
+                          ]!
+                        }
                         dx={11}
-                        dy={20}
+                        dy={-260}
                         canEditSubject={false}
-                        key={annotation.dataKey + annotation.index}
+                        key={annotation.date}
                       >
                         <AnnotationLineSubject
                           stroke={annotation.color ?? 'red'}
@@ -197,33 +214,32 @@ export default function MultilineChartBase({
                     'No date'}
                   <br />
                   <br />
-                  {(
-                    Object.keys(tooltipData?.datumByKey ?? {}).filter(
-                      (model) => model,
-                    ) as string[]
-                  ).map((model) => {
-                    const selectedYear = tooltipData?.nearestDatum?.datum.year;
-                    const value =
-                      selectedYear &&
-                      startYear &&
-                      data[model]?.[selectedYear - startYear]?.value;
+                  {(Object.keys(data).filter((model) => model) as string[]).map(
+                    (model) => {
+                      const selectedYear =
+                        tooltipData?.nearestDatum?.datum.year;
+                      const value =
+                        selectedYear &&
+                        startYear &&
+                        data[model]?.[selectedYear - startYear]?.value;
 
-                    return (
-                      <div key={model} style={{ marginBottom: 4 }}>
-                        <span
-                          style={{
-                            color: colorScale?.(model),
-                          }}
-                        >
-                          {model}:
-                        </span>
-                        {'   '}
-                        {value == null || Number.isNaN(value)
-                          ? '–'
-                          : `${value}`}
-                      </div>
-                    );
-                  })}
+                      return (
+                        <div key={model} style={{ marginBottom: 4 }}>
+                          <span
+                            style={{
+                              color: colorScale?.(model),
+                            }}
+                          >
+                            {model}:
+                          </span>
+                          {'   '}
+                          {value == null || Number.isNaN(value)
+                            ? '–'
+                            : `${value}`}
+                        </div>
+                      );
+                    },
+                  )}
                 </div>
               )}
             />
