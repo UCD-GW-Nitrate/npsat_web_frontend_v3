@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import theme from '@/components/theme';
 
-import type { MultilineChartProps } from './MultilineChart';
 import MultilineChart from './MultilineChart';
+import type { MultilineChartBaseProps } from './MultilineChartBase';
 
 const meta: Meta<typeof MultilineChart> = {
   component: MultilineChart,
@@ -14,18 +14,15 @@ export default meta;
 type Story = StoryObj<typeof MultilineChart>;
 
 export const Primary: Story = {
-  render: ({ ...args }: MultilineChartProps) => (
+  render: ({ ...args }: MultilineChartBaseProps) => (
     <ThemeProvider theme={theme}>
       <MultilineChart {...args} />
     </ThemeProvider>
   ),
   args: {
-    width: 800,
     height: 400,
     chartType: 'line',
     yLabel: 'Concentration of Nitrate as N [mg/L]',
-    min: 2000,
-    max: 2007,
     data: {
       custom: [
         {

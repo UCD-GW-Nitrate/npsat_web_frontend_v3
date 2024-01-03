@@ -7,7 +7,7 @@ import Navbar from '../Navbar';
 const Layout = ({ children }: PropsWithChildren) => {
   return (
     <Navbar>
-      <Box sx={{ mx: 4 }}>{children}</Box>
+      <Box sx={{ mx: 8 }}>{children}</Box>
     </Navbar>
   );
 };
