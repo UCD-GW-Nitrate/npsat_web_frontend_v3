@@ -109,17 +109,11 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
         yLabel="Concentration of Nitrate as N [mg/L]"
         annotations={[
           {
-            dataKey: `${
-              percentilesDisplayed[percentilesDisplayed.length - 1]
-            }th percentile`,
-            index: 70,
+            date: 1984,
             title: 'Implementation start year',
           },
           {
-            dataKey: `${
-              percentilesDisplayed[percentilesDisplayed.length - 1]
-            }th percentile`,
-            index: 75,
+            date: 1995,
             title: 'Implementation complete year',
           },
         ]}

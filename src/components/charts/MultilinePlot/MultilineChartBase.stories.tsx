@@ -25,13 +25,11 @@ export const Primary: Story = {
     yLabel: 'Concentration of Nitrate as N [mg/L]',
     annotations: [
       {
-        dataKey: 'base',
-        index: 2,
+        date: 2004,
         title: 'Implementation start year',
       },
       {
-        dataKey: 'base',
-        index: 5,
+        date: 2005,
         title: 'Implementation end year',
       },
     ],
