@@ -1,9 +1,9 @@
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import MultilineChart from '@/components/charts/MultilinePlot/MultilineChart';
 import type { ChartDataPoint } from '@/components/charts/MultilinePlot/MultilineChartBase';
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { HBox } from '@/components/custom/HBox/Hbox';
@@ -85,11 +85,10 @@ const ModelChart = ({
   console.log('display data: ', displayData);
 
   return (
-    <CoreContainer>
+    <Box>
       <CoreMultipleSelect
         group={false}
         placeholder="Select Percentiles"
-        sx={{ mt: 4, mx: 5 }}
         options={(percentilesData as number[]).map((p) => {
           const res: CoreMultipleSelectOption = {
             label: `${p}th percentile`,
@@ -101,7 +100,7 @@ const ModelChart = ({
         setFieldValue={handleMultSelect}
         isOptionEqualToValue={(option, value) => option?.value === value?.value}
       />
-      <HBox sx={{ mt: 2, mx: 5 }}>
+      <HBox sx={{ mt: 2, mb: 4 }}>
         <HBox spacing={1}>
           <CoreButton
             variant={
@@ -171,7 +170,7 @@ const ModelChart = ({
         ]}
         data={displayData}
       />
-    </CoreContainer>
+    </Box>
   );
 };
 

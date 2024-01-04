@@ -33,13 +33,18 @@ const ModelPage = () => {
 
   return (
     <Layout>
-      <VBox spacing={3}>
-        <ModelChart
-          percentiles={modelDetail.data!.results}
-          reductionStartYear={modelDetail.data!.reduction_start_year}
-          reductionCompleteYear={modelDetail.data!.reduction_end_year}
-        />
-        <CoreContainer>
+      <VBox spacing={4}>
+        <CoreContainer title="Run results">
+          <ModelChart
+            percentiles={modelDetail.data!.results}
+            reductionStartYear={modelDetail.data!.reduction_start_year}
+            reductionCompleteYear={modelDetail.data!.reduction_end_year}
+          />
+        </CoreContainer>
+        <CoreContainer title="Crop loading details">
+          <Box />
+        </CoreContainer>
+        <CoreContainer title="Regions included in this scenario run">
           <div id="map" style={{ height: '600px', margin: 0 }}>
             <MapWithNoSSR data={regions.map((region) => region.geometry)} />
           </div>
