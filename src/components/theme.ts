@@ -24,7 +24,7 @@ const theme = createTheme({
     },
     h3: {
       fontSize: H3_SIZE,
-      fontWeight: FONT_WEIGHT,
+      fontWeight: 500,
     },
   },
   palette: {
