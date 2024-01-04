@@ -14,6 +14,12 @@ export interface CoreMultipleSelectProps extends BoxProps {
   fieldValue?: (CoreMultipleSelectOption | undefined)[];
   placeholder: string;
   group: boolean;
+  isOptionEqualToValue?:
+    | ((
+        option: CoreMultipleSelectOption | undefined,
+        value: CoreMultipleSelectOption | undefined,
+      ) => boolean)
+    | undefined;
 }
 
 export const CoreMultipleSelect = ({
@@ -22,6 +28,7 @@ export const CoreMultipleSelect = ({
   setFieldValue,
   placeholder,
   group,
+  isOptionEqualToValue,
   sx,
   ...rest
 }: CoreMultipleSelectProps) => {
@@ -36,6 +43,7 @@ export const CoreMultipleSelect = ({
         options={options}
         size="small"
         value={fieldValue}
+        isOptionEqualToValue={isOptionEqualToValue}
         renderInput={(params) => (
           <TextField
             {...params}

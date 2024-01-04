@@ -13,13 +13,19 @@ import type { Result } from '@/store/apis/modelApi';
 
 interface ModelChartProps {
   percentiles: Result[];
+  reductionStartYear: number;
+  reductionCompleteYear: number;
 }
 
 interface DisplayData {
   [percentile: string]: ChartDataPoint[];
 }
 
-const ModelChart = ({ percentiles }: ModelChartProps) => {
+const ModelChart = ({
+  percentiles,
+  reductionStartYear,
+  reductionCompleteYear,
+}: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
     5, 50, 95,
@@ -27,6 +33,8 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
   const [multSelect, setMultSelect] = useState<
     (CoreMultipleSelectOption | undefined)[]
   >([]);
+  const [percentileButtonClicked, setPercentileButtonClicked] =
+    useState<string>('Select 5th, 50th, 95th');
 
   function configureDisplayData(percentilesInput: number[]) {
     const res: any = {};
@@ -50,7 +58,10 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
     setMultSelect(
       (percentilesDisplayed as number[]).map((p) => {
-        const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
+        const res: CoreMultipleSelectOption = {
+          label: `${p}th percentile`,
+          value: p,
+        };
         return res;
       }),
     );
@@ -80,27 +91,68 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
         placeholder="Select Percentiles"
         sx={{ mt: 4, mx: 5 }}
         options={(percentilesData as number[]).map((p) => {
-          const res: CoreMultipleSelectOption = { label: `${p}`, value: p };
+          const res: CoreMultipleSelectOption = {
+            label: `${p}th percentile`,
+            value: p,
+          };
           return res;
         })}
         fieldValue={multSelect}
         setFieldValue={handleMultSelect}
+        isOptionEqualToValue={(option, value) => option?.value === value?.value}
       />
-      <HBox spacing={1} sx={{ mt: 2, ml: 5 }}>
+      <HBox sx={{ mt: 2, mx: 5 }}>
+        <HBox spacing={1}>
+          <CoreButton
+            variant={
+              percentileButtonClicked === 'Select 5th, 50th, 95th'
+                ? 'contained'
+                : 'outlined'
+            }
+            label="Select 5th, 50th, 95th"
+            onClick={() => {
+              setPercentilesDisplayed([5, 50, 95]);
+              setPercentileButtonClicked('Select 5th, 50th, 95th');
+            }}
+            size="small"
+          />
+          <CoreButton
+            variant={
+              percentileButtonClicked === 'Select 10th, 50th, 90th'
+                ? 'contained'
+                : 'outlined'
+            }
+            label="Select 10th, 50th, 90th"
+            onClick={() => {
+              setPercentilesDisplayed([10, 50, 90]);
+              setPercentileButtonClicked('Select 10th, 50th, 90th');
+            }}
+            size="small"
+          />
+          <CoreButton
+            variant={
+              percentileButtonClicked === 'Select 25th, 50th, 75th'
+                ? 'contained'
+                : 'outlined'
+            }
+            label="Select 25th, 50th, 75th"
+            onClick={() => {
+              setPercentilesDisplayed([25, 50, 75]);
+              setPercentileButtonClicked('Select 25th, 50th, 75th');
+            }}
+            size="small"
+          />
+        </HBox>
         <CoreButton
-          variant="contained"
-          label="Select 5th, 50th, 95th"
-          onClick={() => setPercentilesDisplayed([5, 50, 95])}
-        />
-        <CoreButton
-          variant="contained"
-          label="Select 10th, 50th, 90th"
-          onClick={() => setPercentilesDisplayed([10, 50, 90])}
-        />
-        <CoreButton
-          variant="contained"
-          label="Select 25th, 50th, 75th"
-          onClick={() => setPercentilesDisplayed([25, 50, 75])}
+          variant={
+            percentileButtonClicked === 'Select All' ? 'contained' : 'outlined'
+          }
+          label="Select All"
+          onClick={() => {
+            setPercentilesDisplayed(percentilesData as number[]);
+            setPercentileButtonClicked('Select All');
+          }}
+          size="small"
         />
       </HBox>
       <MultilineChart
@@ -109,11 +161,11 @@ const ModelChart = ({ percentiles }: ModelChartProps) => {
         yLabel="Concentration of Nitrate as N [mg/L]"
         annotations={[
           {
-            date: 1984,
+            date: reductionStartYear,
             title: 'Implementation start year',
           },
           {
-            date: 1995,
+            date: reductionCompleteYear,
             title: 'Implementation complete year',
           },
         ]}
