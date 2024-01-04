@@ -28,12 +28,17 @@ const ModelPage = () => {
 
   if (modelDetail.error) {
     console.log(modelDetail.error);
+    return <div />;
   }
 
   return (
     <Layout>
       <VBox spacing={3}>
-        <ModelChart percentiles={modelDetail.data!.results} />
+        <ModelChart
+          percentiles={modelDetail.data!.results}
+          reductionStartYear={modelDetail.data!.reduction_start_year}
+          reductionCompleteYear={modelDetail.data!.reduction_end_year}
+        />
         <CoreContainer>
           <div id="map" style={{ height: '600px', margin: 0 }}>
             <MapWithNoSSR data={regions.map((region) => region.geometry)} />

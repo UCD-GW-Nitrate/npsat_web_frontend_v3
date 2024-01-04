@@ -18,6 +18,8 @@ import {
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
+import { PRIMARY_COLOR } from '@/components/theme';
+
 import CustomChartBackground from './CustomChartBackground';
 
 export interface ChartDataPoint {
@@ -173,7 +175,7 @@ export default function MultilineChartBase({
                         key={annotation.date}
                       >
                         <AnnotationLineSubject
-                          stroke={annotation.color ?? 'red'}
+                          stroke={annotation.color ?? PRIMARY_COLOR}
                         />
                         <AnnotationLabel
                           title={annotation.title}
@@ -183,7 +185,7 @@ export default function MultilineChartBase({
                             strokeOpacity: 0,
                             fillOpacity: 0,
                           }}
-                          fontColor={annotation.color ?? 'red'}
+                          fontColor={annotation.color ?? PRIMARY_COLOR}
                           titleProps={{ writingMode: 'vertical-rl' }}
                         />
                       </Annotation>
