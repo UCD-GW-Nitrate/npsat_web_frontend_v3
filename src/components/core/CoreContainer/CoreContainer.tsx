@@ -20,7 +20,7 @@ export const CoreContainer = ({
 }: PropsWithChildren<CoreContainerProps>) => (
   <Paper
     elevation={elevation ?? 0}
-    sx={{ backgroundColor: CONTAINER_COLOR }}
+    sx={{ backgroundColor: CONTAINER_COLOR, overflow: 'clip' }}
     {...rest}
   >
     {title && (
