@@ -50,7 +50,7 @@ export interface ModelDetail {
   status: number;
   status_message: string;
   sim_end_year: number;
-  water_content: string;
+  water_content: number;
   reduction_start_year: number;
   reduction_end_year: number;
   is_base: boolean;

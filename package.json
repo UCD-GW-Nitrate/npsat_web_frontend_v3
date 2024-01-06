@@ -52,6 +52,7 @@
     "@visx/tooltip": "^3.3.0",
     "@visx/vendor": "^3.3.0",
     "@visx/xychart": "^3.4.1",
+    "antd": "^5.12.7",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "leaflet": "^1.9.4",

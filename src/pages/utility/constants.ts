@@ -2,6 +2,28 @@ import type { CoreMenuOption } from '@/components/core/CoreMenu/CoreMenu';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
 
+export const MODEL_STATUS_MACROS = {
+  NOT_READY: 0,
+  READY: 1,
+  RUNNING: 2,
+  COMPLETED: 3,
+  ERROR: 4,
+};
+
+export const DEPTH_RANGE_CONFIG = {
+  min: 0,
+  max: 800,
+  step: 1,
+  maxIdentifier: true,
+};
+
+export const SCREEN_LENGTH_RANGE_CONFIG = {
+  min: 0,
+  max: 800,
+  step: 1,
+  maxIdentifier: true,
+};
+
 export const COLUMNS: CoreTableColumn[] = [
   { field: 'name', label: 'Scenario Name', width: 150 },
   { field: 'description', label: 'Description', width: 300 },
