@@ -16,13 +16,13 @@ export interface Region {
 export interface Crop {
   id: number;
   name: string;
-  caml_code: string;
+  caml_code: number;
 }
 
 export interface Modification {
   id: number;
   crop: Crop;
-  proportion: string;
+  proportion: number;
 }
 
 export interface Result {
