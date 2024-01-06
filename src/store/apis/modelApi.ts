@@ -99,6 +99,13 @@ const modelApi = createApi({
           // params: { id },
         }),
       }),
+      getModelandBaseModelDetail: builder.query<ModelDetail[], number>({
+        query: (id) => ({
+          url: `api/model_run/${id}/`,
+          method: 'GET',
+          params: { includeBase: true },
+        }),
+      }),
       getModificationDetail: builder.query<ModelResults, number>({
         query: (id) => ({
           url: `api/modification/${id}/`,
@@ -124,6 +131,7 @@ const modelApi = createApi({
 export const {
   useRunModelMutation,
   useGetModelDetailQuery,
+  useGetModelandBaseModelDetailQuery,
   useGetModelResultsQuery,
   useGetModificationDetailQuery,
   usePutModelMutation,

@@ -93,24 +93,28 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
           sx={{ display: 'flex', flexGrow: 1 }}
           name="flow scenario"
           key="flow scenario"
+          formField
         />
         <CoreSelect
           options={loadScenarioOptions}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="load scenario"
           key="load scenario"
+          formField
         />
         <CoreSelect
           options={wellTypeScenarioOptions}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="well type scenario"
           key="well type scenario"
+          formField
         />
         <CoreSelect
           options={unsatZoneDepthScenarioOptions}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="unsat zone depth scenario"
           key="unsat zone depth scenario"
+          formField
         />
         <CoreNumberField sx={{ width: 100 }} units="%" name="water content" />
         <CoreDateField name="sim end year" views={['year']} />

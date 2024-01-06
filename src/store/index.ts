@@ -34,6 +34,7 @@ export { useLoginMutation, useProtectedMutation } from './apis/authApi';
 export { useGetAllCropsQuery, useGetCropQuery } from './apis/cropApi';
 export { useFetchFeedQuery } from './apis/feedApi';
 export {
+  useGetModelandBaseModelDetailQuery,
   useGetModelDetailQuery,
   useGetModelResultsQuery,
   useGetModificationDetailQuery,
