@@ -4,13 +4,16 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
+import { CoreText } from '@/components/core/CoreText/CoreText';
 import Footer from '@/components/custom/Footer/Footer';
 import Layout from '@/components/custom/Layout/Layout';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useGetModelDetailQuery } from '@/store';
+import type { RegionDetail } from '@/store/apis/regionApi';
 
 import ModelChart from './components/ModelChart';
+import ModelDescriptionTable from './components/ModelDescriptionTable';
 
 const ModelPage = () => {
   const router = useRouter();
@@ -23,17 +26,26 @@ const ModelPage = () => {
   const regions = useModelRegions(modelDetail.data?.regions ?? []);
 
   if (modelDetail.isFetching || modelDetail.error) {
-    return <div />;
+    return <Box />;
   }
 
   if (modelDetail.error) {
     console.log(modelDetail.error);
-    return <div />;
+    return <Box />;
   }
 
   return (
     <Layout>
+      <CoreText variant="h1" sx={{ my: 4 }}>
+        Details and Results
+      </CoreText>
       <VBox spacing={4}>
+        <CoreContainer title="Scenario info">
+          <ModelDescriptionTable
+            modelDetail={modelDetail.data}
+            regions={regions}
+          />
+        </CoreContainer>
         <CoreContainer title="Run results">
           <ModelChart
             percentiles={modelDetail.data!.results}
@@ -45,9 +57,11 @@ const ModelPage = () => {
           <Box />
         </CoreContainer>
         <CoreContainer title="Regions included in this scenario run">
-          <div id="map" style={{ height: '600px', margin: 0 }}>
-            <MapWithNoSSR data={regions.map((region) => region.geometry)} />
-          </div>
+          <Box id="map" style={{ height: '600px', margin: 0 }}>
+            <MapWithNoSSR
+              data={regions.map((region: RegionDetail) => region.geometry)}
+            />
+          </Box>
         </CoreContainer>
       </VBox>
       <Box sx={{ mt: 10 }} />
