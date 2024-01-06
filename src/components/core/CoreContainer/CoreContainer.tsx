@@ -20,7 +20,7 @@ export const CoreContainer = ({
 }: PropsWithChildren<CoreContainerProps>) => (
   <Paper
     elevation={elevation ?? 0}
-    sx={{ backgroundColor: CONTAINER_COLOR, ...sx }}
+    sx={{ backgroundColor: CONTAINER_COLOR }}
     {...rest}
   >
     {title && (
@@ -31,6 +31,6 @@ export const CoreContainer = ({
         <Divider />
       </>
     )}
-    <Box sx={{ p: 3 }}>{children}</Box>
+    <Box sx={{ p: 3, ...sx }}>{children}</Box>
   </Paper>
 );
