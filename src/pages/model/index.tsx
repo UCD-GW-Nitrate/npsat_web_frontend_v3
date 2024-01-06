@@ -12,6 +12,7 @@ import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useGetModelDetailQuery } from '@/store';
 import type { RegionDetail } from '@/store/apis/regionApi';
 
+import CropLoadingDetailsTable from './components/CropLoadingDetailsTable';
 import ModelChart from './components/ModelChart';
 import ModelDescriptionTable from './components/ModelDescriptionTable';
 
@@ -54,7 +55,7 @@ const ModelPage = () => {
           />
         </CoreContainer>
         <CoreContainer title="Crop loading details">
-          <Box />
+          <CropLoadingDetailsTable modelDetail={modelDetail.data} />
         </CoreContainer>
         <CoreContainer title="Regions included in this scenario run">
           <Box id="map" style={{ height: '600px', margin: 0 }}>
