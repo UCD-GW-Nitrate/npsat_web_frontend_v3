@@ -1,9 +1,10 @@
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
+import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
 import { CoreText } from '@/components/core/CoreText/CoreText';
 import Footer from '@/components/custom/Footer/Footer';
 import Layout from '@/components/custom/Layout/Layout';
@@ -21,6 +22,7 @@ import ModelDescriptionTable from './components/ModelDescriptionTable';
 const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
+  const [selectedTab, setSelectedTab] = useState('Comparison Line Plot');
   console.log('modelDetail', modelDetail);
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
@@ -46,6 +48,15 @@ const ModelPage = () => {
     return <Box />;
   }
 
+  const tabs = [
+    {
+      label: 'Comparison Line Plot',
+    },
+    {
+      label: 'Difference Heatmap',
+    },
+  ];
+
   return (
     <Layout>
       <CoreText variant="h1" sx={{ my: 4 }}>
@@ -66,15 +77,22 @@ const ModelPage = () => {
           />
         </CoreContainer>
         <CoreContainer title="BAU comparison">
-          <BAUCompareChart
-            basePercentiles={baseModelDetail!.results}
-            customPercentiles={customModelDetail!.results}
-            reductionStartYear={customModelDetail!.reduction_start_year}
-            reductionCompleteYear={customModelDetail!.reduction_end_year}
-          />
+          <CoreTabs tabs={tabs} onTabChange={(tab) => setSelectedTab(tab)} />
+          <Divider sx={{ mb: 4 }} />
+          {selectedTab === 'Comparison Line Plot' && (
+            <BAUCompareChart
+              basePercentiles={baseModelDetail!.results}
+              customPercentiles={customModelDetail!.results}
+              reductionStartYear={customModelDetail!.reduction_start_year}
+              reductionCompleteYear={customModelDetail!.reduction_end_year}
+            />
+          )}
         </CoreContainer>
         <CoreContainer title="Crop loading details">
-          <CropLoadingDetailsTable modelDetail={customModelDetail} />
+          <CropLoadingDetailsTable
+            customModelDetail={customModelDetail}
+            baseModelDetail={baseModelDetail}
+          />
         </CoreContainer>
         <CoreContainer title="Regions included in this scenario run">
           <Box id="map" style={{ height: '600px', margin: 0 }}>
