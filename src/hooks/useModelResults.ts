@@ -13,11 +13,17 @@ export interface ModelDisplay {
   percentile: string;
 }
 
+export interface PercentileResultMap {
+  [percentile: string]: ModelDisplay[];
+}
+
 const ordinalSuffix = (num: number) =>
   `${num}${['st', 'nd', 'rd'][((((num + 90) % 100) - 10) % 10) - 1] || 'th'}`;
 
-export const useModelResults = (percentiles: Result[]) => {
-  const [plotData, setData] = useState({});
+export const useModelResults = (
+  percentiles: Result[],
+): [PercentileResultMap, number[]] => {
+  const [plotData, setData] = useState<PercentileResultMap>({});
   const [percentilesData, setPercentilesData] = useState<number[]>([]);
   const auth = useSelector<RootState, AuthState>((state) => {
     return state.auth;

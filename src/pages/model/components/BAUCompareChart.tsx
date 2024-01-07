@@ -5,15 +5,17 @@ import MultilineChart from '@/components/charts/MultilinePlot/MultilineChart';
 import type { ChartDataPoint } from '@/components/charts/MultilinePlot/MultilineChartBase';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
-import type { ModelDisplay } from '@/hooks/useModelResults';
-import { useModelResults } from '@/hooks/useModelResults';
-import type { Result } from '@/store/apis/modelApi';
+import type {
+  ModelDisplay,
+  PercentileResultMap,
+} from '@/hooks/useModelResults';
 
 interface BAUCompareChartProps {
-  customPercentiles: Result[];
-  basePercentiles: Result[];
+  customPlotData: PercentileResultMap;
+  basePlotData: PercentileResultMap;
   reductionStartYear: number;
   reductionCompleteYear: number;
+  percentiles: number[];
 }
 
 interface DisplayData {
@@ -21,36 +23,30 @@ interface DisplayData {
 }
 
 const BAUCompareChart = ({
-  customPercentiles,
-  basePercentiles,
+  customPlotData,
+  basePlotData,
+  percentiles,
   reductionStartYear,
   reductionCompleteYear,
 }: BAUCompareChartProps) => {
-  const [customPlotData, customPercentilesData] =
-    useModelResults(customPercentiles);
-  const [basePlotData] = useModelResults(basePercentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number>(50);
 
   function configureDisplayData(percentile: number) {
     const res: any = {};
     res.custom = [];
     res.base = [];
-    (
-      (customPlotData as any)[percentile] as ModelDisplay[] | undefined
-    )?.forEach((data: ModelDisplay) => {
+    customPlotData[percentile]?.forEach((data: ModelDisplay) => {
       res.custom.push({
         year: data.year,
         value: data.value,
       } as ChartDataPoint);
     });
-    ((basePlotData as any)[percentile] as ModelDisplay[] | undefined)?.forEach(
-      (data: ModelDisplay) => {
-        res.base.push({
-          year: data.year,
-          value: data.value,
-        } as ChartDataPoint);
-      },
-    );
+    basePlotData[percentile]?.forEach((data: ModelDisplay) => {
+      res.base.push({
+        year: data.year,
+        value: data.value,
+      } as ChartDataPoint);
+    });
     return res;
   }
 
@@ -69,7 +65,7 @@ const BAUCompareChart = ({
   return (
     <Box>
       <CoreSelect
-        options={(customPercentilesData as number[]).map((p) => {
+        options={percentiles.map((p) => {
           const res: CoreMultipleSelectOption = {
             label: `${p}th percentile`,
             value: p,

@@ -10,6 +10,7 @@ import Footer from '@/components/custom/Footer/Footer';
 import Layout from '@/components/custom/Layout/Layout';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
+import { useModelResults } from '@/hooks/useModelResults';
 import { useGetModelandBaseModelDetailQuery } from '@/store';
 import type { ModelDetail } from '@/store/apis/modelApi';
 import type { RegionDetail } from '@/store/apis/regionApi';
@@ -18,12 +19,12 @@ import BAUCompareChart from './components/BAUCompareChart';
 import CropLoadingDetailsTable from './components/CropLoadingDetailsTable';
 import ModelChart from './components/ModelChart';
 import ModelDescriptionTable from './components/ModelDescriptionTable';
+import ModelDifferenceHeatmap from './components/ModelDifferenceHeatmap';
 
 const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
   const [selectedTab, setSelectedTab] = useState('Comparison Line Plot');
-  console.log('modelDetail', modelDetail);
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
     ssr: false,
@@ -33,6 +34,11 @@ const ModelPage = () => {
     ((modelDetail.data as any) ?? [undefined, undefined])[0];
   const baseModelDetail: ModelDetail | undefined =
     ((modelDetail.data as any) ?? [undefined, undefined])[1];
+
+  const [customModel, customPercentilesData] = useModelResults(
+    baseModelDetail?.results ?? [],
+  );
+  const [baseModel] = useModelResults(baseModelDetail?.results ?? []);
 
   console.log('base model detail', baseModelDetail);
   console.log('custom model detail', customModelDetail);
@@ -81,10 +87,18 @@ const ModelPage = () => {
           <Divider sx={{ mb: 4 }} />
           {selectedTab === 'Comparison Line Plot' && (
             <BAUCompareChart
-              basePercentiles={baseModelDetail!.results}
-              customPercentiles={customModelDetail!.results}
+              basePlotData={baseModel}
+              customPlotData={customModel}
+              percentiles={customPercentilesData}
               reductionStartYear={customModelDetail!.reduction_start_year}
               reductionCompleteYear={customModelDetail!.reduction_end_year}
+            />
+          )}
+          {selectedTab === 'Difference Heatmap' && (
+            <ModelDifferenceHeatmap
+              baseResults={baseModel}
+              customResults={customModel}
+              percentiles={customPercentilesData}
             />
           )}
         </CoreContainer>
