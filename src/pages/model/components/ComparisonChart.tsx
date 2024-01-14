@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import MultilineChart from '@/components/charts/MultilinePlot/MultilineChart';
-import type { ChartDataPoint } from '@/components/charts/MultilinePlot/MultilineChartBase';
+import LineChart from '@/components/charts/LineChart/LineChart';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import type {
@@ -16,45 +15,48 @@ export interface ComparisonChartModel {
 }
 
 interface ComparisonChartProps {
-  comparisonCharModels: ComparisonChartModel[];
+  comparisonChartModels: ComparisonChartModel[];
   reductionStartYear?: number;
   reductionCompleteYear?: number;
   percentiles: number[];
 }
 
-interface DisplayData {
-  [percentile: string]: ChartDataPoint[];
-}
-
 const ComparisonChart = ({
-  comparisonCharModels,
+  comparisonChartModels,
   percentiles,
   reductionStartYear,
   reductionCompleteYear,
 }: ComparisonChartProps) => {
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number>(50);
 
-  function configureDisplayData(percentile: number) {
-    const res: any = {};
-    comparisonCharModels.forEach((model) => {
-      res[model.name] = [];
+  function configureDisplayData(percentile: number): ApexAxisChartSeries {
+    const res: ApexAxisChartSeries = [];
+    comparisonChartModels.forEach((model) => {
+      const chartData: any = [];
       model.plotData[percentile]?.forEach((data: ModelDisplay) => {
-        res[model.name].push({
-          year: data.year,
-          value: data.value,
-        } as ChartDataPoint);
+        chartData.push({
+          x: data.year,
+          y: data.value,
+        });
+      });
+      chartData.push({
+        x: 2100,
+      });
+      res.push({
+        name: model.name,
+        data: chartData,
       });
     });
     return res;
   }
 
-  const [displayData, setDisplayData] = useState<DisplayData>(
+  const [displayData, setDisplayData] = useState<ApexAxisChartSeries>(
     configureDisplayData(percentilesDisplayed),
   );
 
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
-  }, [comparisonCharModels, percentilesDisplayed]);
+  }, [comparisonChartModels, percentilesDisplayed]);
 
   if (!displayData) {
     return <div />;
@@ -70,29 +72,14 @@ const ComparisonChart = ({
           };
           return res;
         })}
-        sx={{ minWidth: 200 }}
+        sx={{ minWidth: 200, mb: 3 }}
         defaultValue={50}
         onSelect={(value: number) => setPercentilesDisplayed(value)}
       />
-      <MultilineChart
-        height={500}
-        chartType="line"
-        yLabel="Concentration of Nitrate as N [mg/L]"
-        annotations={
-          reductionStartYear && reductionCompleteYear
-            ? [
-                {
-                  date: reductionStartYear,
-                  title: 'Implementation start year',
-                },
-                {
-                  date: reductionCompleteYear,
-                  title: 'Implementation complete year',
-                },
-              ]
-            : []
-        }
+      <LineChart
         data={displayData}
+        reductionEndYear={reductionCompleteYear}
+        reductionStartYear={reductionStartYear}
       />
     </Box>
   );

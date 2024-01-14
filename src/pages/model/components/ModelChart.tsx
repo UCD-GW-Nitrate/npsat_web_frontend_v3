@@ -1,8 +1,7 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import MultilineChart from '@/components/charts/MultilinePlot/MultilineChart';
-import type { ChartDataPoint } from '@/components/charts/MultilinePlot/MultilineChartBase';
+import LineChart from '@/components/charts/LineChart/LineChart';
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
@@ -15,10 +14,6 @@ interface ModelChartProps {
   percentiles: Result[];
   reductionStartYear: number;
   reductionCompleteYear: number;
-}
-
-interface DisplayData {
-  [percentile: string]: ChartDataPoint[];
 }
 
 const ModelChart = ({
@@ -36,21 +31,32 @@ const ModelChart = ({
   const [percentileButtonClicked, setPercentileButtonClicked] =
     useState<string>('Select 5th, 50th, 95th');
 
-  function configureDisplayData(percentilesInput: number[]) {
-    const res: any = {};
+  function configureDisplayData(
+    percentilesInput: number[],
+  ): ApexAxisChartSeries {
+    const res: ApexAxisChartSeries = [];
     percentilesInput.forEach((p) => {
-      res[`${p}th percentile`] =
-        ((plotData as any)[p] as ModelDisplay[] | undefined)?.map((data) => {
-          return {
-            year: data.year,
-            value: data.value,
-          } as ChartDataPoint;
-        }) ?? [];
+      const chartData: any = [];
+      ((plotData as any)[p] as ModelDisplay[] | undefined)?.forEach(
+        (data: ModelDisplay) => {
+          chartData.push({
+            x: data.year,
+            y: data.value,
+          });
+        },
+      );
+      chartData.push({
+        x: 2100,
+      });
+      res.push({
+        name: `${p}th percentile`,
+        data: chartData,
+      });
     });
     return res;
   }
 
-  const [displayData, setDisplayData] = useState<DisplayData>(
+  const [displayData, setDisplayData] = useState<ApexAxisChartSeries>(
     configureDisplayData(percentilesDisplayed),
   );
 
@@ -154,21 +160,10 @@ const ModelChart = ({
           size="small"
         />
       </HBox>
-      <MultilineChart
-        height={500}
-        chartType="line"
-        yLabel="Concentration of Nitrate as N [mg/L]"
-        annotations={[
-          {
-            date: reductionStartYear,
-            title: 'Implementation start year',
-          },
-          {
-            date: reductionCompleteYear,
-            title: 'Implementation complete year',
-          },
-        ]}
+      <LineChart
         data={displayData}
+        reductionEndYear={reductionCompleteYear}
+        reductionStartYear={reductionStartYear}
       />
     </Box>
   );
