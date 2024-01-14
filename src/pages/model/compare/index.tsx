@@ -52,7 +52,7 @@ const CompareModelPage = () => {
           </CoreContainer>
           <CoreContainer title="Comparison Line Chart">
             <ComparisonChart
-              comparisonCharModels={[
+              comparisonChartModels={[
                 baseComparisonModel,
                 customComparisonModel,
               ]}

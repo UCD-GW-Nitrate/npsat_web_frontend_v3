@@ -97,7 +97,7 @@ const ModelPage = () => {
           <Divider sx={{ mb: 4 }} />
           {selectedTab === 'Comparison Line Plot' && (
             <ComparisonChart
-              comparisonCharModels={[
+              comparisonChartModels={[
                 baseComparisonModel,
                 customComparisonModel,
               ]}
