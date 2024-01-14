@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import DifferenceHeatmap from '@/components/charts/Heatmap/DifferenceHeatmap';
+import DifferenceHeatmap from '@/components/charts/DifferenceHeatmap/DifferenceHeatmap';
 import type { PercentileResultMap } from '@/hooks/useModelResults';
 
 interface ModelDifferenceHeatmapProps {
@@ -60,8 +60,11 @@ const ModelDifferenceHeatmap = ({
     }
   }, [baseResults, customResults]);
 
-  const aggregate = (data?: PercentileDifferenceMap, level?: number) => {
-    const result: AggegateResult[] = [];
+  const aggregate = (
+    data?: PercentileDifferenceMap,
+    level?: number,
+  ): ApexAxisChartSeries => {
+    const result: ApexAxisChartSeries = [];
     if (!level || !data) {
       return result;
     }
@@ -71,6 +74,7 @@ const ModelDifferenceHeatmap = ({
         return;
       }
       const len = singleDifference.length;
+      const percentileData: any = [];
       for (let i = 0; i < len; i += level) {
         // assume divisible
         const temp = singleDifference.slice(i, Math.min(i + level, len));
@@ -89,15 +93,14 @@ const ModelDifferenceHeatmap = ({
           agg.yearRange = `${1945 + i} - ${1945 + i + level}`;
           agg.value = Number((agg.value / level).toFixed(0));
         }
-        result.push(agg);
+        percentileData.push({ x: agg.yearRange, y: agg.value });
       }
+      result.push({ name: `${p}th percentile`, data: percentileData });
     });
     return result;
   };
 
-  console.log(aggregate);
-
-  return <DifferenceHeatmap height={500} width={500} />;
+  return <DifferenceHeatmap data={aggregate(plotData, 20)} />;
 };
 
 export default ModelDifferenceHeatmap;
