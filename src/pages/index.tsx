@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import { CoreMenuButton } from '@/components/core/CoreMenuButton/CoreMenuButton';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreTable } from '@/components/core/CoreTable/CoreTable';
 import { CoreText } from '@/components/core/CoreText/CoreText';
@@ -14,17 +13,14 @@ import Layout from '@/components/custom/Layout/Layout';
 import { useFetchFeedQuery } from '@/store';
 import { selectCurrentUser } from '@/store/slices/authSlice';
 
-import {
-  COLUMNS,
-  COMPARE_SCENARIO_OPTIONS,
-  FILTER_OPTIONS,
-} from './utility/constants';
+import { COLUMNS, FILTER_OPTIONS } from './utility/constants';
 
 const Index = () => {
   const { data, error, isFetching, refetch } = useFetchFeedQuery();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [fetchedOnce, setFetechedOnce] = useState(false);
+  const [compareModels] = useState(-1);
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
 
@@ -62,18 +58,24 @@ const Index = () => {
     <Layout>
       <HBox sx={{ mt: 4 }}>
         <CoreText variant="h1">Home</CoreText>
+        {compareModels > -1 && (
+          <CoreText>Comparing {compareModels} models</CoreText>
+        )}
         <HBox spacing={2}>
-          <CoreMenuButton
+          <CoreButton
             label="Compare Scenario"
             variant="outlined"
-            options={COMPARE_SCENARIO_OPTIONS}
+            onClick={() =>
+              router.push({
+                pathname: '/model/compare',
+                query: { models: data?.recentCompletedModels.map((m) => m.id) },
+              })
+            }
           />
           <CoreButton
             label="Create Scenario"
             variant="contained"
-            onClick={() => {
-              router.push('/model/create');
-            }}
+            onClick={() => router.push('/model/create')}
           />
         </HBox>
       </HBox>

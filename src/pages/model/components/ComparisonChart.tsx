@@ -10,11 +10,15 @@ import type {
   PercentileResultMap,
 } from '@/hooks/useModelResults';
 
-interface BAUCompareChartProps {
-  customPlotData: PercentileResultMap;
-  basePlotData: PercentileResultMap;
-  reductionStartYear: number;
-  reductionCompleteYear: number;
+export interface ComparisonChartModel {
+  plotData: PercentileResultMap;
+  name: string;
+}
+
+interface ComparisonChartProps {
+  comparisonCharModels: ComparisonChartModel[];
+  reductionStartYear?: number;
+  reductionCompleteYear?: number;
   percentiles: number[];
 }
 
@@ -22,30 +26,24 @@ interface DisplayData {
   [percentile: string]: ChartDataPoint[];
 }
 
-const BAUCompareChart = ({
-  customPlotData,
-  basePlotData,
+const ComparisonChart = ({
+  comparisonCharModels,
   percentiles,
   reductionStartYear,
   reductionCompleteYear,
-}: BAUCompareChartProps) => {
+}: ComparisonChartProps) => {
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number>(50);
 
   function configureDisplayData(percentile: number) {
     const res: any = {};
-    res.custom = [];
-    res.base = [];
-    customPlotData[percentile]?.forEach((data: ModelDisplay) => {
-      res.custom.push({
-        year: data.year,
-        value: data.value,
-      } as ChartDataPoint);
-    });
-    basePlotData[percentile]?.forEach((data: ModelDisplay) => {
-      res.base.push({
-        year: data.year,
-        value: data.value,
-      } as ChartDataPoint);
+    comparisonCharModels.forEach((model) => {
+      res[model.name] = [];
+      model.plotData[percentile]?.forEach((data: ModelDisplay) => {
+        res[model.name].push({
+          year: data.year,
+          value: data.value,
+        } as ChartDataPoint);
+      });
     });
     return res;
   }
@@ -56,7 +54,7 @@ const BAUCompareChart = ({
 
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
-  }, [customPlotData, basePlotData, percentilesDisplayed]);
+  }, [comparisonCharModels, percentilesDisplayed]);
 
   if (!displayData) {
     return <div />;
@@ -80,20 +78,24 @@ const BAUCompareChart = ({
         height={500}
         chartType="line"
         yLabel="Concentration of Nitrate as N [mg/L]"
-        annotations={[
-          {
-            date: reductionStartYear,
-            title: 'Implementation start year',
-          },
-          {
-            date: reductionCompleteYear,
-            title: 'Implementation complete year',
-          },
-        ]}
+        annotations={
+          reductionStartYear && reductionCompleteYear
+            ? [
+                {
+                  date: reductionStartYear,
+                  title: 'Implementation start year',
+                },
+                {
+                  date: reductionCompleteYear,
+                  title: 'Implementation complete year',
+                },
+              ]
+            : []
+        }
         data={displayData}
       />
     </Box>
   );
 };
 
-export default BAUCompareChart;
+export default ComparisonChart;
