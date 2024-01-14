@@ -15,7 +15,8 @@ import { useGetModelandBaseModelDetailQuery } from '@/store';
 import type { ModelDetail } from '@/store/apis/modelApi';
 import type { RegionDetail } from '@/store/apis/regionApi';
 
-import BAUCompareChart from './components/BAUCompareChart';
+import type { ComparisonChartModel } from './components/ComparisonChart';
+import ComparisonChart from './components/ComparisonChart';
 import CropLoadingDetailsTable from './components/CropLoadingDetailsTable';
 import ModelChart from './components/ModelChart';
 import ModelDescriptionTable from './components/ModelDescriptionTable';
@@ -62,6 +63,15 @@ const ModelPage = () => {
       label: 'Difference Heatmap',
     },
   ];
+  const baseComparisonModel: ComparisonChartModel = {
+    name: 'base',
+    plotData: baseModel,
+  };
+
+  const customComparisonModel: ComparisonChartModel = {
+    name: 'custom',
+    plotData: customModel,
+  };
 
   return (
     <Layout>
@@ -86,9 +96,11 @@ const ModelPage = () => {
           <CoreTabs tabs={tabs} onTabChange={(tab) => setSelectedTab(tab)} />
           <Divider sx={{ mb: 4 }} />
           {selectedTab === 'Comparison Line Plot' && (
-            <BAUCompareChart
-              basePlotData={baseModel}
-              customPlotData={customModel}
+            <ComparisonChart
+              comparisonCharModels={[
+                baseComparisonModel,
+                customComparisonModel,
+              ]}
               percentiles={customPercentilesData}
               reductionStartYear={customModelDetail!.reduction_start_year}
               reductionCompleteYear={customModelDetail!.reduction_end_year}

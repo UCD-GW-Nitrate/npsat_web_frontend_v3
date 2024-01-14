@@ -1,3 +1,4 @@
+import { CheckBox } from '@mui/icons-material';
 import type { PaperProps } from '@mui/material';
 import {
   Table,
@@ -31,6 +32,7 @@ export interface CoreTableProps extends PaperProps {
     newPage: number,
   ) => void;
   handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  checkboaxSelection?: boolean;
 }
 
 export const CoreTable = ({
@@ -41,6 +43,7 @@ export const CoreTable = ({
   handleChangePage,
   handleChangeRowsPerPage,
   sx,
+  checkboaxSelection = false,
   ...rest
 }: CoreTableProps) => {
   const [left, setLeft] = useState(true);
@@ -106,6 +109,9 @@ export const CoreTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
+                <TableCell padding="checkbox">
+                  <CheckBox />
+                </TableCell>
                 {columns.map((column) => (
                   <TableCell
                     key={column.field}
@@ -133,6 +139,9 @@ export const CoreTable = ({
                         })
                       }
                     >
+                      <TableCell padding="checkbox">
+                        <CheckBox />
+                      </TableCell>
                       {columns.map((column) => {
                         const value = row[column.field as keyof PlotModel];
                         return (
