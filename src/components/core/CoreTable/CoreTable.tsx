@@ -1,6 +1,6 @@
-import { CheckBox } from '@mui/icons-material';
 import type { PaperProps } from '@mui/material';
 import {
+  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -24,7 +24,7 @@ export interface CoreTableColumn {
 
 export interface CoreTableProps extends PaperProps {
   columns: CoreTableColumn[];
-  data: any[];
+  data: PlotModel[];
   page: number;
   rowsPerPage: number;
   handleChangePage: (
@@ -32,7 +32,8 @@ export interface CoreTableProps extends PaperProps {
     newPage: number,
   ) => void;
   handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  checkboaxSelection?: boolean;
+  checkboxSelection?: boolean;
+  onCheckboxSelection?: (selected: number[]) => void;
 }
 
 export const CoreTable = ({
@@ -43,12 +44,23 @@ export const CoreTable = ({
   handleChangePage,
   handleChangeRowsPerPage,
   sx,
-  checkboaxSelection = false,
+  checkboxSelection = false,
+  onCheckboxSelection,
   ...rest
 }: CoreTableProps) => {
+  const [selected, setSelected] = useState<number[]>([]);
   const [left, setLeft] = useState(true);
   const [right, setRight] = useState(false);
   const router = useRouter();
+
+  const isSelected = (id: number) => {
+    for (let i = 0; i < selected.length; i += 1) {
+      if (selected[i] === id) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const isRight =
@@ -67,6 +79,41 @@ export const CoreTable = ({
       setLeft(true);
     } else if (left) {
       setLeft(false);
+    }
+  };
+
+  const handleCheckboxClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: number,
+  ) => {
+    event.stopPropagation();
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: number[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+    if (onCheckboxSelection) {
+      onCheckboxSelection(newSelected);
+    }
+  };
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelected(data.map((row) => row.id));
+    } else {
+      setSelected([]);
     }
   };
 
@@ -109,9 +156,17 @@ export const CoreTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <CheckBox />
-                </TableCell>
+                {checkboxSelection && (
+                  <TableCell>
+                    <Checkbox
+                      indeterminate={
+                        selected.length > 0 && selected.length < data.length
+                      }
+                      checked={selected.length === data.length}
+                      onChange={handleSelectAllClick}
+                    />
+                  </TableCell>
+                )}
                 {columns.map((column) => (
                   <TableCell
                     key={column.field}
@@ -138,10 +193,18 @@ export const CoreTable = ({
                           query: { id: row.id },
                         })
                       }
+                      selected={isSelected(row.id)}
                     >
-                      <TableCell padding="checkbox">
-                        <CheckBox />
-                      </TableCell>
+                      {checkboxSelection && (
+                        <TableCell sx={{ py: 0 }}>
+                          <Checkbox
+                            onClick={(event) =>
+                              handleCheckboxClick(event, row.id)
+                            }
+                            checked={isSelected(row.id)}
+                          />
+                        </TableCell>
+                      )}
                       {columns.map((column) => {
                         const value = row[column.field as keyof PlotModel];
                         return (

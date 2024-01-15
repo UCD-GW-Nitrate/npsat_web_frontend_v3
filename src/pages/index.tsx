@@ -1,3 +1,4 @@
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -20,7 +21,7 @@ const Index = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [fetchedOnce, setFetechedOnce] = useState(false);
-  const [compareModels] = useState(-1);
+  const [compareModels, setCompareModels] = useState<number[]>([]);
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
 
@@ -58,26 +59,11 @@ const Index = () => {
     <Layout>
       <HBox sx={{ mt: 4 }}>
         <CoreText variant="h1">Home</CoreText>
-        {compareModels > -1 && (
-          <CoreText>Comparing {compareModels} models</CoreText>
-        )}
-        <HBox spacing={2}>
-          <CoreButton
-            label="Compare Scenario"
-            variant="outlined"
-            onClick={() =>
-              router.push({
-                pathname: '/model/compare',
-                query: { models: data?.recentCompletedModels.map((m) => m.id) },
-              })
-            }
-          />
-          <CoreButton
-            label="Create Scenario"
-            variant="contained"
-            onClick={() => router.push('/model/create')}
-          />
-        </HBox>
+        <CoreButton
+          label="Create Scenario"
+          variant="contained"
+          onClick={() => router.push('/model/create')}
+        />
       </HBox>
       <HBox spacing={1} sx={{ mt: 4 }}>
         <CoreText variant="body1">Scenario Type:</CoreText>
@@ -88,6 +74,35 @@ const Index = () => {
           group
         />
       </HBox>
+      <Box
+        sx={{
+          px: 2,
+          backgroundColor: 'rgba(100,149,237, 0.2)',
+          borderRadius: 1,
+          mt: 3,
+        }}
+      >
+        <HBox>
+          <HBox spacing={1}>
+            <InfoOutlinedIcon color="primary" sx={{ py: 2 }} />
+            You may select two or more models to compare.
+          </HBox>
+          <CoreButton
+            label="Compare Scenarios"
+            variant="outlined"
+            size="small"
+            disabled={compareModels.length <= 1}
+            onClick={() =>
+              router.push({
+                pathname: '/model/compare',
+                query: {
+                  models: compareModels,
+                },
+              })
+            }
+          />
+        </HBox>
+      </Box>
       <CoreTable
         columns={COLUMNS}
         data={data?.recentCompletedModels ?? []}
@@ -96,6 +111,8 @@ const Index = () => {
         handleChangePage={handleChangePage}
         handleChangeRowsPerPage={handleChangeRowsPerPage}
         sx={{ mt: 4 }}
+        checkboxSelection
+        onCheckboxSelection={setCompareModels}
       />
       <Box sx={{ mt: 30 }} />
       <Footer />
