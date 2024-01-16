@@ -6,41 +6,46 @@ import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreText } from '@/components/core/CoreText/CoreText';
 import Layout from '@/components/custom/Layout/Layout';
 import { VBox } from '@/components/custom/VBox/VBox';
-import { useModelResults } from '@/hooks/useModelResults';
-import { useGetModelDetailQuery } from '@/store';
+import { useModelDetails } from '@/hooks/useModelDetails';
+import type { PercentileResultMap } from '@/hooks/useModelResults';
+import { useAllModelResults } from '@/hooks/useModelResults';
 
 import type { ComparisonChartModel } from '../components/ComparisonChart';
 import ComparisonChart from '../components/ComparisonChart';
 
 const CompareModelPage = () => {
   const router = useRouter();
-  const modelDetails1 = useGetModelDetailQuery(
-    router.query.models![0]! as unknown as number,
-  );
-  const modelDetails2 = useGetModelDetailQuery(
-    router.query.models![1]! as unknown as number,
+
+  const [allModelDetails, allModelNames] = useModelDetails(
+    router.query.models as unknown as number[],
   );
 
-  const [customModel, customPercentilesData] = useModelResults(
-    modelDetails1.data?.results ?? [],
-  );
-  const [baseModel] = useModelResults(modelDetails2.data?.results ?? []);
+  console.log('all model details', allModelDetails);
 
-  const baseComparisonModel: ComparisonChartModel = {
-    name: 'base',
-    plotData: baseModel,
-  };
+  const [allModelResults, customPercentilesData] =
+    useAllModelResults(allModelDetails);
 
-  const customComparisonModel: ComparisonChartModel = {
-    name: 'custom',
-    plotData: customModel,
+  console.log('all model results', allModelResults);
+
+  const getComparisonChartModels = (
+    plotData: PercentileResultMap[],
+    plotLabels: string[],
+  ): ComparisonChartModel[] => {
+    const chartInfo: ComparisonChartModel[] = [];
+    for (let i = 0; i < plotData.length; i += 1) {
+      chartInfo.push({
+        name: plotLabels[i] ?? '',
+        plotData: plotData[i]!,
+      });
+    }
+    return chartInfo;
   };
 
   return (
     <HelmetProvider>
       <Helmet>
         <title>Compare Scenario - NPSAT</title>
-        <meta name="description" content="Create Scenario - NPSAT" />
+        <meta name="description" content="Compare Scenario - NPSAT" />
       </Helmet>
       <Layout>
         <CoreText variant="h1" sx={{ my: 4 }}>
@@ -52,10 +57,10 @@ const CompareModelPage = () => {
           </CoreContainer>
           <CoreContainer title="Comparison Line Chart">
             <ComparisonChart
-              comparisonChartModels={[
-                baseComparisonModel,
-                customComparisonModel,
-              ]}
+              comparisonChartModels={getComparisonChartModels(
+                allModelResults,
+                allModelNames,
+              )}
               percentiles={customPercentilesData}
             />
           </CoreContainer>
