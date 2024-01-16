@@ -6,8 +6,13 @@ import type { RootState } from '@/store';
 import type { AuthState } from '@/store/apis/authApi';
 import type { ModelDetail, Result } from '@/store/apis/modelApi';
 
-export const useModelDetails = (modelIds: number[]): [Result[][], string[]] => {
-  const [allModelDetails, setAllModelDetails] = useState<Result[][]>([]);
+export const useModelDetails = (
+  modelIds: number[],
+): [Result[][], ModelDetail[], string[]] => {
+  const [allModelDetailResults, setAllModelDetailResults] = useState<
+    Result[][]
+  >([]);
+  const [allModelDetails, setAllModelDetails] = useState<ModelDetail[]>([]);
   const [allModelNames, setAllModelNames] = useState<string[]>([]);
   const auth = useSelector<RootState, AuthState>((state) => {
     return state.auth;
@@ -26,10 +31,11 @@ export const useModelDetails = (modelIds: number[]): [Result[][], string[]] => {
         ),
       ),
     ).then((data) => {
-      setAllModelDetails(data.map((d) => d.data.results));
+      setAllModelDetailResults(data.map((d) => d.data.results));
       setAllModelNames(data.map((d) => d.data.name));
+      setAllModelDetails(data.map((d) => d.data));
     });
   }, [modelIds]);
 
-  return [allModelDetails, allModelNames];
+  return [allModelDetailResults, allModelDetails, allModelNames];
 };

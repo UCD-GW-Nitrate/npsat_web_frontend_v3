@@ -16,7 +16,6 @@ export const VBox = ({
     <Box
       sx={{
         display: 'flex',
-        flexWrap: 'wrap',
         gap: spacing,
         flexDirection: 'column',
         ...sx,
