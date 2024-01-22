@@ -9,7 +9,14 @@ import { CoreRangeSlider } from '@/components/core/CoreRangeSlider/CoreRangeSlid
 import { CoreSwitch } from '@/components/core/CoreSwitch/CoreSwitch';
 import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import { saveCurrentStep } from '@/store/slices/modelSlice';
+import type { RegionID } from '@/store/slices/modelSlice';
+import {
+  setModelDepthRangeMax,
+  setModelDepthRangeMin,
+  setModelRegions,
+  setModelScreenLenRangeMax,
+  setModelScreenLenRangeMin,
+} from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step2Instructions from './Step2Instructions';
@@ -69,23 +76,23 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
   const onFormSubmit = (data: FieldValues) => {
     if (showAdvancedFilter) {
       dispatch(
-        saveCurrentStep({
-          regions: (data.map as number[]).map((val) => {
-            return { id: val };
+        setModelRegions(
+          (data.map as number[]).map((val) => {
+            return { id: val } as RegionID;
           }),
-          depth_range_min: data.depth[0],
-          depth_range_max: data.depth[1],
-          screen_length_range_min: data['screen length'][0],
-          screen_length_range_max: data['screen length'][1],
-        }),
+        ),
       );
+      dispatch(setModelDepthRangeMax(data.depth[0]));
+      dispatch(setModelDepthRangeMin(data.depth[1]));
+      dispatch(setModelScreenLenRangeMin(data['screen length'][0]));
+      dispatch(setModelScreenLenRangeMax(data['screen length'][1]));
     } else {
       dispatch(
-        saveCurrentStep({
-          regions: (data.map as number[]).map((val) => {
-            return { id: val };
+        setModelRegions(
+          (data.map as number[]).map((val) => {
+            return { id: val } as RegionID;
           }),
-        }),
+        ),
       );
     }
     onNext();

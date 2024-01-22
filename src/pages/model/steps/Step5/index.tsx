@@ -10,8 +10,8 @@ const Step5 = () => {
 
   useEffect(() => {
     const results = runModel(model);
-    console.log(model);
-    console.log(results);
+    console.log('run model:', model);
+    console.log('run model results:', results);
   }, []);
 
   return <div />;

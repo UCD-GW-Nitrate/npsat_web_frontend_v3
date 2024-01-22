@@ -9,7 +9,8 @@ import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSel
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSlider } from '@/components/core/CoreSlider/CoreSlider';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import { saveCurrentStep } from '@/store/slices/modelSlice';
+import type { CropModification } from '@/store/slices/modelSlice';
+import { setModelModifications } from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step3Instructions from './Step3Instructions';
@@ -30,12 +31,10 @@ const crops: (CoreMultipleSelectOption | undefined)[] = [
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
   const dispatch = useDispatch();
   const onFormSubmit = (data: FieldValues) => {
+    const modifications: CropModification[] = [];
+    // TODO: iterate through modifications
     console.log(data);
-    dispatch(
-      saveCurrentStep({
-        modifications: [],
-      }),
-    );
+    dispatch(setModelModifications(modifications));
     onNext();
   };
 

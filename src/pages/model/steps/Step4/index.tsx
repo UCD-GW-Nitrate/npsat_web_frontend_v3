@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
 import { CoreTextField } from '@/components/core/CoreTextField/CoreTextField';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import { saveCurrentStep } from '@/store/slices/modelSlice';
+import { setModelDescription, setModelName } from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step4Instructions from './Step4Instructions';
@@ -24,12 +24,8 @@ const fields = [
 const Step4 = ({ onPrev, onNext }: Step4Props) => {
   const dispatch = useDispatch();
   const onFormSubmit = (data: FieldValues) => {
-    dispatch(
-      saveCurrentStep({
-        name: data['scenario name'],
-        description: data.description,
-      }),
-    );
+    dispatch(setModelName(data['scenario name']));
+    dispatch(setModelDescription(data.description));
     onNext();
   };
 

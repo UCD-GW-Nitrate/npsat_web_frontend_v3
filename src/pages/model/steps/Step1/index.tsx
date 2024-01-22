@@ -1,5 +1,5 @@
 import { Box, Divider } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
@@ -10,34 +10,22 @@ import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberFie
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import { saveCurrentStep } from '@/store/slices/modelSlice';
+import type { Scenario } from '@/hooks/useScenarioGroups';
+import { useScenarioGroups } from '@/hooks/useScenarioGroups';
+import {
+  setModelFlowScenario,
+  setModelLoadScenario,
+  setModelReductionEndYear,
+  setModelReductionStartYear,
+  setModelSimEndYear,
+  setModelUnsatScenario,
+  setModelWaterContent,
+  setModelWelltypeScenario,
+} from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
 import Step1Instructions from './Step1Instructions';
 
-const flowScenarioOptions = [
-  { label: 'C2Vsim' },
-  { label: 'CVHM (currently unavailable)' },
-];
-const loadScenarioOptions = [
-  { label: 'GNLM' },
-  { label: 'Baseline' },
-  { label: 'High Fertilization' },
-  { label: 'High Irrigation' },
-  { label: 'High Irrigation and High Fertilization' },
-];
-const wellTypeScenarioOptions = [
-  { label: 'Public Supply Wells and Irrigation Wells' },
-  { label: 'Domestic Wells' },
-  {
-    label:
-      'Virtual Shallow Monitoring Well Network Grid (currently unavailable)',
-  },
-];
-const unsatZoneDepthScenarioOptions = [
-  { label: 'Drought vadose zone thickness (spring 2015)' },
-  { label: 'Typical vadose zone thickness (spring 2000)' },
-];
 const transiptionPeriodOptions = [
   { label: 'Custom scenario' },
   { label: 'BAU scenario' },
@@ -57,25 +45,57 @@ interface Step1Props extends Step {}
 
 const Step1 = ({ onPrev, onNext }: Step1Props) => {
   const dispatch = useDispatch();
+  const [flowScenarioOptions, setFlowScenarioOptions] = useState<Scenario[]>(
+    [],
+  );
+  const [loadScenarioOptions, setLoadScenarioOptions] = useState<Scenario[]>(
+    [],
+  );
+  const [unsatScenarioOptions, setUnsatScenarioOptions] = useState<Scenario[]>(
+    [],
+  );
+  const [welltypeScenarioOptions, setWelltypeScenarioOptions] = useState<
+    Scenario[]
+  >([]);
+  const {
+    flowScenarios: flowScen,
+    loadScenarios: loadScen,
+    unsatScenarios: unsatScen,
+    welltypeScenarios: welltypeScen,
+  } = useScenarioGroups();
+
+  useEffect(() => {
+    setFlowScenarioOptions(flowScen ?? []);
+  }, [flowScen]);
+  useEffect(() => {
+    setLoadScenarioOptions(loadScen ?? []);
+  }, [loadScen]);
+  useEffect(() => {
+    setUnsatScenarioOptions(unsatScen ?? []);
+  }, [unsatScen]);
+  useEffect(() => {
+    setWelltypeScenarioOptions(welltypeScen ?? []);
+  }, [welltypeScen]);
+
+  console.log('flow scen', flowScen);
 
   const onFormSubmit = (data: FieldValues) => {
+    dispatch(setModelFlowScenario(data['flow scenario']));
+    dispatch(setModelLoadScenario(data['load scenario']));
+    dispatch(setModelWelltypeScenario(data['well type scenario']));
+    dispatch(setModelUnsatScenario(data['unsat zone depth scenario']));
+    dispatch(setModelWaterContent(data['water content']));
+    dispatch(setModelSimEndYear((data['sim end year'] as Date)?.getFullYear()));
     dispatch(
-      saveCurrentStep({
-        flow_scenario: data['flow scenario'],
-        load_scenario: data['load scenario'],
-        welltype_scenario: data['well type scenario'],
-        unsat_scenario: data['unsat zone depth scenario'],
-        water_content: data['water content'],
-        simEndYear: (data['sim end year'] as Date)?.getFullYear(),
-        reduction_start_year: (
-          data['transition period start'] as Date
-        )?.getFullYear(),
-        reduction_end_year: (
-          data['transition period end'] as Date
-        )?.getFullYear(),
-      }),
+      setModelReductionStartYear(
+        (data['transition period start'] as Date)?.getFullYear(),
+      ),
     );
-
+    dispatch(
+      setModelReductionEndYear(
+        (data['transition period end'] as Date)?.getFullYear(),
+      ),
+    );
     onNext();
   };
 
@@ -89,28 +109,40 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
         onFormSubmit={(data: FieldValues) => onFormSubmit(data)}
       >
         <CoreSelect
-          options={flowScenarioOptions}
+          options={flowScenarioOptions.map((scen) => ({
+            label: scen.name,
+            value: scen.id,
+          }))}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="flow scenario"
           key="flow scenario"
           formField
         />
         <CoreSelect
-          options={loadScenarioOptions}
+          options={loadScenarioOptions.map((scen) => ({
+            label: scen.name,
+            value: scen.id,
+          }))}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="load scenario"
           key="load scenario"
           formField
         />
         <CoreSelect
-          options={wellTypeScenarioOptions}
+          options={welltypeScenarioOptions.map((scen) => ({
+            label: scen.name,
+            value: scen.id,
+          }))}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="well type scenario"
           key="well type scenario"
           formField
         />
         <CoreSelect
-          options={unsatZoneDepthScenarioOptions}
+          options={unsatScenarioOptions.map((scen) => ({
+            label: scen.name,
+            value: scen.id,
+          }))}
           sx={{ display: 'flex', flexGrow: 1 }}
           name="unsat zone depth scenario"
           key="unsat zone depth scenario"
