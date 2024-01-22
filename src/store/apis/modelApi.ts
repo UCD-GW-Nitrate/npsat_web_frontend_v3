@@ -86,11 +86,23 @@ const modelApi = createApi({
   endpoints(builder) {
     return {
       runModel: builder.mutation<ModelResults, Model>({
-        query: (params) => ({
-          url: 'api/model_run/',
-          method: 'POST',
-          params: { params },
-        }),
+        query: (params) => {
+          return {
+            url: 'api/model_run/',
+            method: 'POST',
+            params: {
+              ...params,
+              water_content: (params.water_content ?? 0) / 100,
+              flow_scenario: { id: params.flow_scenario },
+              load_scenario: { id: params.load_scenario },
+              unsat_scenario: { id: params.unsat_scenario },
+              welltype_scenario: { id: params.welltype_scenario },
+              public: false,
+              is_base: false,
+              applied_simulation_filter: false,
+            },
+          };
+        },
       }),
       getModelDetail: builder.query<ModelDetail, number>({
         query: (id) => ({
