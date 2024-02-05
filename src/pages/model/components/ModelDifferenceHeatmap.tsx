@@ -1,6 +1,13 @@
+import { Box } from '@mui/material';
 import { useEffect, useState } from 'react';
+import type { FieldValues } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import DifferenceHeatmap from '@/components/charts/DifferenceHeatmap/DifferenceHeatmap';
+import { CoreButton } from '@/components/core/CoreButton/CoreButton';
+import { CoreFormElement } from '@/components/core/CoreForm/CoreFormElement';
+import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
+import { HBox } from '@/components/custom/HBox/Hbox';
 import type { PercentileResultMap } from '@/hooks/useModelResults';
 
 interface ModelDifferenceHeatmapProps {
@@ -32,6 +39,7 @@ const ModelDifferenceHeatmap = ({
 }: ModelDifferenceHeatmapProps) => {
   const [plotData, setPlotData] = useState<PercentileDifferenceMap>({});
   const [selected, setSelected] = useState<number | undefined>(undefined);
+  const [bucketSize, setBucketSize] = useState<number>(18.5);
 
   console.log(plotData);
   console.log(selected);
@@ -100,7 +108,40 @@ const ModelDifferenceHeatmap = ({
     return result;
   };
 
-  return <DifferenceHeatmap data={aggregate(plotData, 20)} />;
+  const onFormSubmit = (data: FieldValues) => {
+    setBucketSize(data['Aggregate (avg) years']);
+    console.log(data['Aggregate (avg) years']);
+  };
+
+  const formField = { label: 'Aggregate (avg) years:' };
+  const methods = useForm();
+
+  return (
+    <>
+      <FormProvider {...methods}>
+        <Box
+          component="form"
+          onSubmit={methods.handleSubmit((data) => {
+            onFormSubmit(data);
+          })}
+          sx={{ mb: 4 }}
+        >
+          <HBox>
+            <Box>
+              <CoreFormElement formField={formField}>
+                <CoreNumberField
+                  name="Aggregate (avg) years"
+                  defaultValue={20}
+                />
+              </CoreFormElement>
+            </Box>
+            <CoreButton label="Submit" type="submit" variant="contained" />
+          </HBox>
+        </Box>
+      </FormProvider>
+      <DifferenceHeatmap data={aggregate(plotData, bucketSize)} />
+    </>
+  );
 };
 
 export default ModelDifferenceHeatmap;

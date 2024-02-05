@@ -1,8 +1,10 @@
+import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreText } from '@/components/core/CoreText/CoreText';
+import Footer from '@/components/custom/Footer/Footer';
 import Layout from '@/components/custom/Layout/Layout';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelDetails } from '@/hooks/useModelDetails';
@@ -69,6 +71,8 @@ const CompareModelPage = () => {
             />
           </CoreContainer>
         </VBox>
+        <Box sx={{ mt: 10 }} />
+        <Footer />
       </Layout>
     </HelmetProvider>
   );
