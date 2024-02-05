@@ -7,6 +7,7 @@ export interface CoreNumberFieldProps extends BoxProps {
   units?: string;
   name?: string;
   value?: number;
+  defaultValue?: number;
   onNumberChange?: (value: number) => void;
 }
 
@@ -15,10 +16,11 @@ export const CoreNumberField = ({
   name,
   sx,
   value,
+  defaultValue,
   onNumberChange,
   ...rest
 }: CoreNumberFieldProps) => {
-  const [numValue, setNumValue] = useState<number | null>(null);
+  const [numValue, setNumValue] = useState<number | undefined>(defaultValue);
 
   return (
     <Box sx={{ minWidth: 50, ...sx }} {...rest}>

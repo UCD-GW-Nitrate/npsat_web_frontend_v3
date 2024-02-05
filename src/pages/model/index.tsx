@@ -1,7 +1,7 @@
 import { Box, Divider } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
@@ -46,15 +46,6 @@ const ModelPage = () => {
 
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
-  if (modelDetail.isFetching || modelDetail.error || !customModelDetail) {
-    return <Box />;
-  }
-
-  if (modelDetail.error) {
-    console.log(modelDetail.error);
-    return <Box />;
-  }
-
   const tabs = [
     {
       label: 'Comparison Line Plot',
@@ -72,6 +63,59 @@ const ModelPage = () => {
     name: 'custom',
     plotData: customModel,
   };
+
+  const linePlot = useMemo(
+    () => (
+      <>
+        {!modelDetail.isFetching &&
+          !modelDetail.error &&
+          customModelDetail &&
+          !modelDetail.error && (
+            <ComparisonChart
+              comparisonChartModels={[
+                baseComparisonModel,
+                customComparisonModel,
+              ]}
+              percentiles={customPercentilesData}
+              reductionStartYear={customModelDetail!.reduction_start_year}
+              reductionCompleteYear={customModelDetail!.reduction_end_year}
+            />
+          )}
+      </>
+    ),
+    [
+      baseComparisonModel,
+      customComparisonModel,
+      customPercentilesData,
+      customModelDetail,
+    ],
+  );
+
+  const heatmap = useMemo(
+    () => (
+      <>
+        {!modelDetail.isFetching &&
+          !modelDetail.error &&
+          customModelDetail &&
+          !modelDetail.error && (
+            <ModelDifferenceHeatmap
+              baseResults={baseModel}
+              customResults={customModel}
+              percentiles={customPercentilesData}
+            />
+          )}
+      </>
+    ),
+    [baseModel, customModel, customPercentilesData],
+  );
+
+  if (modelDetail.isFetching || modelDetail.error || !customModelDetail) {
+    return <Box />;
+  }
+
+  if (modelDetail.error) {
+    console.log(modelDetail.error);
+  }
 
   return (
     <Layout>
@@ -95,24 +139,12 @@ const ModelPage = () => {
         <CoreContainer title="BAU comparison">
           <CoreTabs tabs={tabs} onTabChange={(tab) => setSelectedTab(tab)} />
           <Divider sx={{ mb: 4 }} />
-          {selectedTab === 'Comparison Line Plot' && (
-            <ComparisonChart
-              comparisonChartModels={[
-                baseComparisonModel,
-                customComparisonModel,
-              ]}
-              percentiles={customPercentilesData}
-              reductionStartYear={customModelDetail!.reduction_start_year}
-              reductionCompleteYear={customModelDetail!.reduction_end_year}
-            />
-          )}
-          {selectedTab === 'Difference Heatmap' && (
-            <ModelDifferenceHeatmap
-              baseResults={baseModel}
-              customResults={customModel}
-              percentiles={customPercentilesData}
-            />
-          )}
+          <div role="tabpanel" hidden={selectedTab !== 'Comparison Line Plot'}>
+            {linePlot}
+          </div>
+          <div role="tabpanel" hidden={selectedTab !== 'Difference Heatmap'}>
+            {heatmap}
+          </div>
         </CoreContainer>
         <CoreContainer title="Crop loading details">
           {customModelDetail && baseModelDetail && (

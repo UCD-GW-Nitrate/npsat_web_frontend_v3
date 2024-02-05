@@ -85,13 +85,13 @@ const Index = () => {
         <HBox>
           <HBox spacing={1}>
             <InfoOutlinedIcon color="primary" sx={{ py: 2 }} />
-            You may select two or more models to compare.
+            You may select two or more models to compare. Maximum of 5.
           </HBox>
           <CoreButton
             label="Compare Scenarios"
             variant="outlined"
             size="small"
-            disabled={compareModels.length <= 1}
+            disabled={compareModels.length <= 1 || compareModels.length > 5}
             onClick={() =>
               router.push({
                 pathname: '/model/compare',
