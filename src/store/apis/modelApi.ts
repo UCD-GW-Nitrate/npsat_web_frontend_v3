@@ -90,7 +90,7 @@ const modelApi = createApi({
           return {
             url: 'api/model_run/',
             method: 'POST',
-            params: {
+            data: {
               ...params,
               water_content: (params.water_content ?? 0) / 100,
               flow_scenario: { id: params.flow_scenario },

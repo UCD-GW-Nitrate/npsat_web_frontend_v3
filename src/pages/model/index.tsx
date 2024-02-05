@@ -17,7 +17,7 @@ import type { RegionDetail } from '@/store/apis/regionApi';
 
 import type { ComparisonChartModel } from './components/ComparisonChart';
 import ComparisonChart from './components/ComparisonChart';
-import CropLoadingDetailsTable from './components/CropLoadingDetailsTable';
+import { CropLoadingDetailsBaseComparisonTable } from './components/CropLoadingDetailsTable';
 import ModelChart from './components/ModelChart';
 import ModelDescriptionTable from './components/ModelDescriptionTable';
 import ModelDifferenceHeatmap from './components/ModelDifferenceHeatmap';
@@ -115,10 +115,12 @@ const ModelPage = () => {
           )}
         </CoreContainer>
         <CoreContainer title="Crop loading details">
-          <CropLoadingDetailsTable
-            customModelDetail={customModelDetail}
-            baseModelDetail={baseModelDetail}
-          />
+          {customModelDetail && baseModelDetail && (
+            <CropLoadingDetailsBaseComparisonTable
+              customModelDetail={customModelDetail}
+              baseModelDetail={baseModelDetail}
+            />
+          )}
         </CoreContainer>
         <CoreContainer title="Regions included in this scenario run">
           <Box id="map" style={{ height: '600px', margin: 0 }}>

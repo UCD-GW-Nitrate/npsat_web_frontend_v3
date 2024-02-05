@@ -7,52 +7,30 @@ import type { ModelDetail, Modification, Region } from '@/store/apis/modelApi';
 import areaPerCrop from '../logic/areaPerCrop';
 
 interface CropLoadingDetailsTableProps {
-  baseModelDetail: ModelDetail | undefined;
-  customModelDetail: ModelDetail | undefined;
+  modelDetails: ModelDetail[];
+  compareWithBase?: boolean;
+}
+
+interface CropLoadingDetailsBaseComparisonTableProps {
+  customModelDetail: ModelDetail;
+  baseModelDetail: ModelDetail;
 }
 
 interface CropLoadingDetailsTableData {
-  name: string;
-  customPercentage: string;
-  bauPercentage: string;
-  area: string;
+  __cropName__: string;
+  [modelName: string]: string;
 }
 
 function numberWithCommas(x: number) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-const CropLoadingDetailsTable = ({
-  customModelDetail,
-  baseModelDetail,
+export const CropLoadingDetailsTable = ({
+  modelDetails,
+  compareWithBase = false,
 }: CropLoadingDetailsTableProps) => {
   const [crop, setCrop] = useState<CropLoadingDetailsTableData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const loadScenario = customModelDetail?.flow_scenario.scenario_type; // load_scenario type was assigned to flow_scenario, needs to be fixed
-  const mapType = customModelDetail?.regions[0]?.region_type;
-
-  const columns: ColumnsType<CropLoadingDetailsTableData> = [
-    {
-      title: 'Crops',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Custom loading percentage',
-      dataIndex: 'customPercentage',
-    },
-    {
-      title: 'BAU loading percentage',
-      dataIndex: 'bauPercentage',
-    },
-    {
-      title: 'Crop area (Hectare)',
-      dataIndex: 'area',
-    },
-    {
-      title: 'Crop area (Acre)',
-      dataIndex: 'area',
-    },
-  ];
+  const [columns, setColumns] = useState<ColumnsType<any>>([]);
 
   const getRegions = (regions: Region[]) => {
     const regionNames: string[] = [];
@@ -62,7 +40,7 @@ const CropLoadingDetailsTable = ({
     return regionNames;
   };
 
-  const getCrops = (modifications: Modification[]) => {
+  const getCrops = (modifications: Modification[]): number[] => {
     const cropCAML: number[] = [];
     modifications.forEach((m) => {
       cropCAML.push(m.crop.caml_code);
@@ -71,44 +49,124 @@ const CropLoadingDetailsTable = ({
   };
 
   useEffect(() => {
-    if (customModelDetail?.modifications && baseModelDetail?.modifications) {
-      const cropAreas = areaPerCrop(
-        mapType,
-        loadScenario,
-        getCrops(customModelDetail.modifications),
-        getRegions(customModelDetail.regions),
-      );
+    // data processor
+    if (modelDetails && modelDetails.length > 0) {
+      // map crop id to index in crops
+      const cropMap = new Map();
       const crops: CropLoadingDetailsTableData[] = [];
-      for (let i = 0; i < customModelDetail.modifications.length; i += 1) {
-        const customModification = customModelDetail.modifications[i]!;
-        const baseModification = baseModelDetail.modifications[i]!;
-        crops.push({
-          name: customModification.crop.name,
-          customPercentage: `${customModification.proportion * 100}%`,
-          bauPercentage: `${baseModification.proportion * 100}%`,
-          area: numberWithCommas(
-            cropAreas[
-              customModification.crop.caml_code
-                ? customModification.crop.caml_code
-                : 0
-            ] ?? 0,
-          ),
+      const modelColumns: ColumnsType = [];
+      const additionalColumns: ColumnsType<any> = [];
+      modelDetails.forEach((model) => {
+        const { modifications, name, regions } = model;
+        const mapType = model.regions[0]?.region_type;
+        const loadScenario = model.flow_scenario.scenario_type; // load_scenario type was assigned to flow_scenario, needs to be fixed
+        const cropAreas = areaPerCrop(
+          mapType,
+          loadScenario,
+          getCrops(modifications),
+          getRegions(regions),
+        );
+        modifications.forEach((modification) => {
+          if (!cropMap.has(modification.crop.id)) {
+            cropMap.set(modification.crop.id, crops.length);
+            crops.push({
+              // to avoid duplicate names
+              __cropName__: modification.crop.name,
+              [`model${model.id}Loading`]: `${modification.proportion}`,
+              [`model${model.id}AreaAcre`]: numberWithCommas(
+                Math.round(
+                  (cropAreas[
+                    modification.crop.caml_code
+                      ? modification.crop.caml_code
+                      : 0
+                  ] ?? 0) *
+                    0.25 *
+                    2.47,
+                ),
+              ),
+              [`model${model.id}AreaHectare`]: numberWithCommas(
+                Math.round(
+                  (cropAreas[
+                    modification.crop.caml_code
+                      ? modification.crop.caml_code
+                      : 0
+                  ] ?? 0) * 0.25,
+                ),
+              ),
+            });
+          } else {
+            crops[cropMap.get(modification.crop.id)]![
+              `model${model.id}Loading`
+            ] = `${modification.proportion}`;
+            crops[cropMap.get(modification.crop.id)]![
+              `model${model.id}AreaAcre`
+            ] = numberWithCommas(
+              Math.round(
+                (cropAreas[
+                  modification.crop.caml_code ? modification.crop.caml_code : 0
+                ] ?? 0) *
+                  0.25 *
+                  2.47,
+              ),
+            );
+            crops[cropMap.get(modification.crop.id)]![
+              `model${model.id}AreaHectare`
+            ] = numberWithCommas(
+              Math.round(
+                (cropAreas[
+                  modification.crop.caml_code ? modification.crop.caml_code : 0
+                ] ?? 0) * 0.25,
+              ),
+            );
+          }
+        });
+        modelColumns.push({
+          title: `${name} - Loading Percentage`,
+          dataIndex: `model${model.id}Loading`,
+          render: (num) => `${num * 100}%`,
+        });
+        if (!compareWithBase) {
+          modelColumns.push({
+            title: `${name} - Crop Area (Acre)`,
+            dataIndex: `model${model.id}AreaAcre`,
+          });
+        }
+      });
+      if (compareWithBase && modelDetails.length === 2) {
+        additionalColumns.push({
+          title: `Crop Area (Acre)`,
+          dataIndex: `model${modelDetails[0]!.id}AreaAcre`,
+        });
+        additionalColumns.push({
+          title: `Crop Area (Hectare)`,
+          dataIndex: `model${modelDetails[0]!.id}AreaHectare`,
         });
       }
       setCrop(crops);
-      setLoading(false);
+      setColumns([
+        {
+          title: 'Crop',
+          dataIndex: '__cropName__',
+        },
+        ...modelColumns,
+        ...additionalColumns,
+      ]);
     }
-  }, [customModelDetail, baseModelDetail]);
+  }, [modelDetails]);
 
   return (
-    <Table
-      pagination={false}
-      bordered
-      loading={loading}
-      columns={columns}
-      dataSource={crop}
-    />
+    <Table pagination={false} bordered columns={columns} dataSource={crop} />
   );
 };
 
-export default CropLoadingDetailsTable;
+export const CropLoadingDetailsBaseComparisonTable = ({
+  customModelDetail,
+  baseModelDetail,
+}: CropLoadingDetailsBaseComparisonTableProps) => {
+  return (
+    <CropLoadingDetailsTable
+      modelDetails={[customModelDetail, baseModelDetail]}
+      compareWithBase
+    />
+  );
+};
