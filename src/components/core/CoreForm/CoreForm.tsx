@@ -4,9 +4,7 @@ import React, { Children } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { HBox } from '@/components/custom/HBox/Hbox';
-
-import { CoreText } from '../CoreText/CoreText';
+import { CoreFormElement } from './CoreFormElement';
 
 export interface CoreFormField {
   label: string;
@@ -53,35 +51,13 @@ export const CoreForm = ({
         >
           {childrenArray.map((child, index) => {
             return (
-              <HBox
-                key={fields[index]?.label ?? ''}
-                spacing={2}
-                sx={{
-                  width: '100%',
-                  alignItems: fields[index]?.position
-                    ? fields[index]?.position
-                    : 'center',
-                }}
+              <CoreFormElement
+                key={fields[index]?.label ?? index}
+                formField={fields[index]}
+                insertLabelSpacing={insertLabelSpacing}
               >
-                <Stack
-                  flexDirection="column"
-                  sx={{
-                    width: insertLabelSpacing ? '30vw' : 0,
-                    overflow: 'hidden',
-                  }}
-                >
-                  <CoreText
-                    sx={{
-                      marginLeft: 'auto',
-                      mt: fields[index]?.position ? 0.5 : 0,
-                    }}
-                    noWrap
-                  >
-                    {fields[index]?.label ?? ''}
-                  </CoreText>
-                </Stack>
                 {child}
-              </HBox>
+              </CoreFormElement>
             );
           })}
         </Stack>
