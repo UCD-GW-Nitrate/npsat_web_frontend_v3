@@ -12,6 +12,7 @@ import { useAllModelResults } from '@/hooks/useModelResults';
 import CompareModelsTable from '../components/CompareModelsTable';
 import type { ComparisonChartModel } from '../components/ComparisonChart';
 import ComparisonChart from '../components/ComparisonChart';
+import { CropLoadingDetailsTable } from '../components/CropLoadingDetailsTable';
 
 const CompareModelPage = () => {
   const router = useRouter();
@@ -54,6 +55,9 @@ const CompareModelPage = () => {
         <VBox spacing={4}>
           <CoreContainer title="Scenarios Selected">
             <CompareModelsTable data={allModelDetails} />
+          </CoreContainer>
+          <CoreContainer title="Crop Selection">
+            <CropLoadingDetailsTable modelDetails={allModelDetails} />
           </CoreContainer>
           <CoreContainer title="Comparison Line Chart">
             <ComparisonChart
