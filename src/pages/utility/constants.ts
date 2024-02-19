@@ -10,6 +10,16 @@ export const MODEL_STATUS_MACROS = {
   ERROR: 4,
 };
 
+export const REGION_MACROS = {
+  CENTRAL_VALLEY: 0,
+  SUB_BASIN: 1,
+  CVHM_FARM: 2,
+  B118_BASIN: 3,
+  COUNTY: 4,
+  TOWNSHIPS: 5,
+  C2V_SIM_SUBREGIONS: 6,
+};
+
 export const DEPTH_RANGE_CONFIG = {
   min: 0,
   max: 800,
