@@ -41,6 +41,7 @@ export interface PropertyResponse {
   Regional_0: number;
   Shape_Area: number;
   id: number;
+  name: string;
 }
 
 export interface RegionGeometryResponse {

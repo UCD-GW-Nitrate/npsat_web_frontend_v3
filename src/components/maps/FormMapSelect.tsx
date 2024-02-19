@@ -7,6 +7,7 @@ import type {
 } from '@reduxjs/toolkit/dist/query';
 import type { UseQuery } from '@reduxjs/toolkit/dist/query/react/buildHooks';
 
+import { REGION_MACROS } from '@/pages/utility/constants';
 import {
   useFetchB118BasinQuery,
   useFetchBasinQuery,
@@ -15,7 +16,7 @@ import {
   useFetchSubregionsQuery,
   useFetchTownshipQuery,
 } from '@/store';
-import type { RegionResponse, ResultResponse } from '@/store/apis/regionApi';
+import type { RegionResponse } from '@/store/apis/regionApi';
 
 import { FormMap } from './FormMap';
 
@@ -27,7 +28,6 @@ export interface FormMapSelectProps {
     | 'b118basin'
     | 'subregions'
     | 'township';
-  name?: string;
 }
 
 interface FormMapSelectVariableProps {
@@ -46,26 +46,16 @@ interface FormMapSelectVariableProps {
       'region'
     >
   >;
-  name?: string;
+  regionType: number;
 }
-
-const configureData = (county: ResultResponse) => {
-  const { geometry } = county;
-  return { ...geometry, properties: { ...geometry.properties, id: county.id } };
-};
 
 export const FormMapSelectVariable = ({
   query,
-  name,
+  regionType,
 }: FormMapSelectVariableProps) => {
   const { data, error, isFetching } = query();
   if (!isFetching) {
-    return (
-      <FormMap
-        data={data?.results.map((region) => configureData(region)) ?? []}
-        name={name ?? 'map'}
-      />
-    );
+    return <FormMap data={data?.results ?? []} regionType={regionType} />;
   }
   if (error) {
     console.log(error);
@@ -73,28 +63,54 @@ export const FormMapSelectVariable = ({
   return <div />;
 };
 
-const FormMapSelect = ({ mapType, name }: FormMapSelectProps) => {
+const FormMapSelect = ({ mapType }: FormMapSelectProps) => {
   if (mapType === 'county') {
-    return <FormMapSelectVariable query={useFetchCountyQuery} name={name} />;
+    return (
+      <FormMapSelectVariable
+        query={useFetchCountyQuery}
+        regionType={REGION_MACROS.COUNTY}
+      />
+    );
   }
   if (mapType === 'valley') {
     return (
-      <FormMapSelectVariable query={useFetchCentralValleyQuery} name={name} />
+      <FormMapSelectVariable
+        query={useFetchCentralValleyQuery}
+        regionType={REGION_MACROS.CENTRAL_VALLEY}
+      />
     );
   }
   if (mapType === 'basin') {
-    return <FormMapSelectVariable query={useFetchBasinQuery} name={name} />;
+    return (
+      <FormMapSelectVariable
+        query={useFetchBasinQuery}
+        regionType={REGION_MACROS.SUB_BASIN}
+      />
+    );
   }
   if (mapType === 'b118basin') {
-    return <FormMapSelectVariable query={useFetchB118BasinQuery} name={name} />;
+    return (
+      <FormMapSelectVariable
+        query={useFetchB118BasinQuery}
+        regionType={REGION_MACROS.B118_BASIN}
+      />
+    );
   }
   if (mapType === 'subregions') {
     return (
-      <FormMapSelectVariable query={useFetchSubregionsQuery} name={name} />
+      <FormMapSelectVariable
+        query={useFetchSubregionsQuery}
+        regionType={REGION_MACROS.CVHM_FARM}
+      />
     );
   }
   if (mapType === 'township') {
-    return <FormMapSelectVariable query={useFetchTownshipQuery} name={name} />;
+    return (
+      <FormMapSelectVariable
+        query={useFetchTownshipQuery}
+        regionType={REGION_MACROS.TOWNSHIPS}
+      />
+    );
   }
 
   return <div />;
