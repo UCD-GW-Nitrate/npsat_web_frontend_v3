@@ -15,6 +15,7 @@ export interface CoreRangeSliderProps extends BoxProps {
   name?: string;
   min?: number;
   max?: number;
+  onSliderChange?: (n: [number, number]) => void;
 }
 
 export const CoreRangeSlider = ({
@@ -24,9 +25,10 @@ export const CoreRangeSlider = ({
   name,
   min,
   max,
+  onSliderChange,
   ...rest
 }: CoreRangeSliderProps) => {
-  const [range, setRange] = useState<number[]>([min ?? 0, max ?? 100]);
+  const [range, setRange] = useState<[number, number]>([min ?? 0, max ?? 100]);
 
   return (
     <Box {...rest}>
@@ -39,8 +41,11 @@ export const CoreRangeSlider = ({
               sx={{ width: 150 }}
               value={range}
               onChange={(_event: Event, newValue: number | number[]) => {
-                onChange(newValue as number[]);
-                setRange(newValue as number[]);
+                onChange(newValue as [number, number]);
+                setRange(newValue as [number, number]);
+                if (onSliderChange) {
+                  onSliderChange(newValue as [number, number]);
+                }
               }}
               min={min}
               max={max}
@@ -56,6 +61,9 @@ export const CoreRangeSlider = ({
                   onNumberChange={(value: number) => {
                     setRange([value, range[1] as number]);
                     onChange([value, range[1] as number]);
+                    if (onSliderChange) {
+                      onSliderChange([value, range[1] as number]);
+                    }
                   }}
                   units={units}
                   sx={{ width: 90 }}
@@ -69,6 +77,9 @@ export const CoreRangeSlider = ({
                   onNumberChange={(value: number) => {
                     setRange([range[0] as number, value]);
                     onChange([range[0] as number, value]);
+                    if (onSliderChange) {
+                      onSliderChange([range[0] as number, value]);
+                    }
                   }}
                   units={units}
                   sx={{ width: 90 }}

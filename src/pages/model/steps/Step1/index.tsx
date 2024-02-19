@@ -80,9 +80,9 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
   console.log('flow scen', flowScen);
 
   const onFormSubmit = (data: FieldValues) => {
-    dispatch(setModelFlowScenario(data['flow scenario']));
-    dispatch(setModelLoadScenario(data['load scenario']));
-    dispatch(setModelWelltypeScenario(data['well type scenario']));
+    dispatch(setModelFlowScenario({ id: data['flow scenario'] }));
+    dispatch(setModelLoadScenario({ id: data['load scenario'] }));
+    dispatch(setModelWelltypeScenario({ id: data['well type scenario'] }));
     dispatch(setModelUnsatScenario(data['unsat zone depth scenario']));
     dispatch(setModelWaterContent(data['water content']));
     dispatch(setModelSimEndYear((data['sim end year'] as Date)?.getFullYear()));

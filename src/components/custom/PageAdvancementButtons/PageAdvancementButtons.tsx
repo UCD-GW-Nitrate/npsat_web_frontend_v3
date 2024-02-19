@@ -10,10 +10,16 @@ export interface PageAdvancementButtonsProps extends HBoxProps {
 
 export const PageAdvancementButtons = ({
   onClickPrev,
+  // onClickNext,
   ...rest
 }: PageAdvancementButtonsProps) => (
   <HBox spacing={2} {...rest}>
     <CoreButton variant="outlined" label="Prev" onClick={onClickPrev} />
-    <CoreButton variant="contained" label="Next" type="submit" />
+    <CoreButton
+      variant="contained"
+      label="Next"
+      type="submit"
+      // onClick={onClickNext}
+    />
   </HBox>
 );
