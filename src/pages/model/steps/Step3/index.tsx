@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import type { CoreFormField } from '@/components/core/CoreForm/CoreForm';
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
+import { CoreFormLayout } from '@/components/core/CoreForm/CoreFormLayout';
 import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSlider } from '@/components/core/CoreSlider/CoreSlider';
@@ -62,24 +63,25 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
   return (
     <Box>
       <CoreForm
-        fields={fields}
         sx={{
           mt: 6,
         }}
         onFormSubmit={onFormSubmit}
       >
-        <CoreMultipleSelect
-          options={crops}
-          sx={{ width: 400 }}
-          placeholder=""
-          group={false}
-          fieldValue={selectedCrops}
-          setFieldValue={handeCropSelect}
-        />
-        {selectedCrops.map((crop) => (
-          <CoreSlider units="%" key={crop?.label} min={0} max={200} />
-        ))}
-        <PageAdvancementButtons onClickPrev={onPrev} />
+        <CoreFormLayout fields={fields}>
+          <CoreMultipleSelect
+            options={crops}
+            sx={{ width: 400 }}
+            placeholder=""
+            group={false}
+            fieldValue={selectedCrops}
+            setFieldValue={handeCropSelect}
+          />
+          {selectedCrops.map((crop) => (
+            <CoreSlider units="%" key={crop?.label} min={0} max={200} />
+          ))}
+          <PageAdvancementButtons onClickPrev={onPrev} />
+        </CoreFormLayout>
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
       <Step3Instructions />

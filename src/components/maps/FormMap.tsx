@@ -5,7 +5,7 @@ import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
 
 const { Option } = Select;
 
-import { CoreForm } from '../core/CoreForm/CoreForm';
+import { CoreFormLayout } from '../core/CoreForm/CoreFormLayout';
 import { CoreRangeSlider } from '../core/CoreRangeSlider/CoreRangeSlider';
 import { CoreSwitch } from '../core/CoreSwitch/CoreSwitch';
 import RegionsMap from './RegionsMap';

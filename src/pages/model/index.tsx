@@ -25,6 +25,9 @@ import ModelDifferenceHeatmap from './components/ModelDifferenceHeatmap';
 const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
+
+  console.log('model page', modelDetail);
+
   const [selectedTab, setSelectedTab] = useState('Comparison Line Plot');
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
