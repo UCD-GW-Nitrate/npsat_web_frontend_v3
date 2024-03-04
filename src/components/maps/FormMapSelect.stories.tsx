@@ -33,6 +33,5 @@ export const Primary: Story = {
   ),
   args: {
     mapType: 'county',
-    name: 'display',
   },
 };
