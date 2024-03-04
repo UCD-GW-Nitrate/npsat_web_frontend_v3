@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import getAuth from '../getAuth';
 import type { Model } from '../slices/modelSlice';
+import { paramsSerializer } from './paramsSerializer';
 
 export interface ModelResults {}
 
@@ -111,11 +112,22 @@ const modelApi = createApi({
           };
         },
       }),
+      getAllModelDetail: builder.query<ModelDetail[], number>({
+        query: () => ({
+          url: `api/model_run/`,
+          method: 'GET',
+        }),
+      }),
+      getModelDetailByIds: builder.query<ModelDetail[], number[]>({
+        query: (modelIds) => ({
+          url: `api/model_run/?${paramsSerializer({ modelIds })}`,
+          method: 'GET',
+        }),
+      }),
       getModelDetail: builder.query<ModelDetail, number>({
         query: (id) => ({
           url: `api/model_run/${id}/`,
           method: 'GET',
-          // params: { id },
         }),
       }),
       getModelandBaseModelDetail: builder.query<ModelDetail[], number>({
@@ -154,5 +166,7 @@ export const {
   useGetModelResultsQuery,
   useGetModificationDetailQuery,
   usePutModelMutation,
+  useGetAllModelDetailQuery,
+  useGetModelDetailByIdsQuery,
 } = modelApi;
 export { modelApi };

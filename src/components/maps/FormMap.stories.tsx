@@ -25,7 +25,6 @@ export const Primary: Story = {
     </ThemeProvider>
   ),
   args: {
-    name: 'display',
     data: [],
   },
 };
