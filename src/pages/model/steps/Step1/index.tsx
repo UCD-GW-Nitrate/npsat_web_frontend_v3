@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
 import { CoreDateRangeField } from '@/components/core/CoreDateRangeField/CoreDateRangeField';
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
+import { CoreFormLayout } from '@/components/core/CoreForm/CoreFormLayout';
 import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
@@ -102,60 +103,61 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
   return (
     <Box>
       <CoreForm
-        fields={fields}
         sx={{
           mt: 6,
         }}
         onFormSubmit={(data: FieldValues) => onFormSubmit(data)}
       >
-        <CoreSelect
-          options={flowScenarioOptions.map((scen) => ({
-            label: scen.name,
-            value: scen.id,
-          }))}
-          sx={{ display: 'flex', flexGrow: 1 }}
-          name="flow scenario"
-          key="flow scenario"
-          formField
-        />
-        <CoreSelect
-          options={loadScenarioOptions.map((scen) => ({
-            label: scen.name,
-            value: scen.id,
-          }))}
-          sx={{ display: 'flex', flexGrow: 1 }}
-          name="load scenario"
-          key="load scenario"
-          formField
-        />
-        <CoreSelect
-          options={welltypeScenarioOptions.map((scen) => ({
-            label: scen.name,
-            value: scen.id,
-          }))}
-          sx={{ display: 'flex', flexGrow: 1 }}
-          name="well type scenario"
-          key="well type scenario"
-          formField
-        />
-        <CoreSelect
-          options={unsatScenarioOptions.map((scen) => ({
-            label: scen.name,
-            value: scen.id,
-          }))}
-          sx={{ display: 'flex', flexGrow: 1 }}
-          name="unsat zone depth scenario"
-          key="unsat zone depth scenario"
-          formField
-        />
-        <CoreNumberField sx={{ width: 100 }} units="%" name="water content" />
-        <CoreDateField name="sim end year" views={['year']} />
-        <CoreToggleButton
-          options={transiptionPeriodOptions}
-          name="scenario type"
-        />
-        <CoreDateRangeField name="transition period" />
-        <PageAdvancementButtons onClickPrev={onPrev} />
+        <CoreFormLayout fields={fields}>
+          <CoreSelect
+            options={flowScenarioOptions.map((scen) => ({
+              label: scen.name,
+              value: scen.id,
+            }))}
+            sx={{ display: 'flex', flexGrow: 1 }}
+            name="flow scenario"
+            key="flow scenario"
+            formField
+          />
+          <CoreSelect
+            options={loadScenarioOptions.map((scen) => ({
+              label: scen.name,
+              value: scen.id,
+            }))}
+            sx={{ display: 'flex', flexGrow: 1 }}
+            name="load scenario"
+            key="load scenario"
+            formField
+          />
+          <CoreSelect
+            options={welltypeScenarioOptions.map((scen) => ({
+              label: scen.name,
+              value: scen.id,
+            }))}
+            sx={{ display: 'flex', flexGrow: 1 }}
+            name="well type scenario"
+            key="well type scenario"
+            formField
+          />
+          <CoreSelect
+            options={unsatScenarioOptions.map((scen) => ({
+              label: scen.name,
+              value: scen.id,
+            }))}
+            sx={{ display: 'flex', flexGrow: 1 }}
+            name="unsat zone depth scenario"
+            key="unsat zone depth scenario"
+            formField
+          />
+          <CoreNumberField sx={{ width: 100 }} units="%" name="water content" />
+          <CoreDateField name="sim end year" views={['year']} />
+          <CoreToggleButton
+            options={transiptionPeriodOptions}
+            name="scenario type"
+          />
+          <CoreDateRangeField name="transition period" />
+          <PageAdvancementButtons onClickPrev={onPrev} />
+        </CoreFormLayout>
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
       <Step1Instructions />

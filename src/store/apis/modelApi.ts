@@ -85,21 +85,28 @@ const modelApi = createApi({
   }),
   endpoints(builder) {
     return {
-      runModel: builder.mutation<ModelResults, Model>({
-        query: (params) => {
+      runModel: builder.mutation<ModelResult, Model>({
+        query(params) {
           return {
             url: 'api/model_run/',
             method: 'POST',
-            data: {
-              ...params,
-              water_content: (params.water_content ?? 0) / 100,
-              flow_scenario: { id: params.flow_scenario },
-              load_scenario: { id: params.load_scenario },
-              unsat_scenario: { id: params.unsat_scenario },
-              welltype_scenario: { id: params.welltype_scenario },
-              public: false,
-              is_base: false,
-              applied_simulation_filter: false,
+            body: {
+              name: '03.03.541',
+              water_content: params.water_content,
+              sim_end_year: params.reduction_end_year,
+              reduction_start_year: params.reduction_start_year,
+              reduction_end_year: params.reduction_end_year,
+              flow_scenario: params.flow_scenario,
+              load_scenario: params.load_scenario,
+              unsat_scenario: {
+                id: params.unsat_scenario,
+              },
+              welltype_scenario: params.welltype_scenario,
+              regions: params.regions,
+              modifications: params.modifications,
+              public: params.public,
+              is_base: params.is_base,
+              applied_simulation_filter: params.applied_simulation_filter,
             },
           };
         },

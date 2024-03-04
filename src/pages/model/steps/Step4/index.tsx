@@ -4,6 +4,7 @@ import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { CoreForm } from '@/components/core/CoreForm/CoreForm';
+import { CoreFormLayout } from '@/components/core/CoreForm/CoreFormLayout';
 import { CoreTextField } from '@/components/core/CoreTextField/CoreTextField';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { setModelDescription, setModelName } from '@/store/slices/modelSlice';
@@ -32,15 +33,16 @@ const Step4 = ({ onPrev, onNext }: Step4Props) => {
   return (
     <Box>
       <CoreForm
-        fields={fields}
         sx={{
           mt: 6,
         }}
         onFormSubmit={onFormSubmit}
       >
-        <CoreTextField sx={{ width: 400 }} name="scenario name" />
-        <CoreTextField sx={{ width: 400 }} name="description" multiline />
-        <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
+        <CoreFormLayout fields={fields}>
+          <CoreTextField sx={{ width: 400 }} name="scenario name" />
+          <CoreTextField sx={{ width: 400 }} name="description" multiline />
+          <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
+        </CoreFormLayout>
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
       <Step4Instructions />

@@ -1,20 +1,10 @@
 import { useState } from 'react';
-import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import WellNumber from '@/pages/model/steps/Step2/WellNumber';
 import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
-import type { RegionID } from '@/store/slices/modelSlice';
-import {
-  setModelDepthRangeMax,
-  setModelDepthRangeMin,
-  setModelRegions,
-  setModelScreenLenRangeMax,
-  setModelScreenLenRangeMin,
-} from '@/store/slices/modelSlice';
 
-import { CoreForm } from '../core/CoreForm/CoreForm';
+import { CoreFormLayout } from '../core/CoreForm/CoreFormLayout';
 import { CoreRangeSlider } from '../core/CoreRangeSlider/CoreRangeSlider';
 import { CoreSwitch } from '../core/CoreSwitch/CoreSwitch';
 import RegionsMap from './RegionsMap';
@@ -32,7 +22,6 @@ export const FormMap = ({ data, regionType }: FormMapProps) => {
   const [fields, setFields] = useState([...defaultFields]);
   const [depth, setDepth] = useState<[number, number]>([0, 800]);
   const [screenLength, setScreenLength] = useState<[number, number]>([0, 800]);
-  const dispatch = useDispatch();
 
   const configureData = (county: ResultResponse): GeometryResponse => {
     const { geometry } = county;
@@ -55,39 +44,8 @@ export const FormMap = ({ data, regionType }: FormMapProps) => {
     }
   };
 
-  const onFormSubmit = (formData: FieldValues) => {
-    console.log('submitting map form');
-    if (showAdvancedFilter) {
-      dispatch(
-        setModelRegions(
-          (formData.map as number[]).map((val) => {
-            return { id: val } as RegionID;
-          }),
-        ),
-      );
-      dispatch(setModelDepthRangeMax(formData.depth[0]));
-      dispatch(setModelDepthRangeMin(formData.depth[1]));
-      dispatch(setModelScreenLenRangeMin(formData['screen length'][0]));
-      dispatch(setModelScreenLenRangeMax(formData['screen length'][1]));
-    } else {
-      dispatch(
-        setModelRegions(
-          (formData.map as number[]).map((val) => {
-            return { id: val } as RegionID;
-          }),
-        ),
-      );
-    }
-  };
-
   return (
-    <CoreForm
-      fields={fields}
-      sx={{
-        mt: 2,
-      }}
-      onFormSubmit={onFormSubmit}
-    >
+    <CoreFormLayout fields={fields}>
       <Controller
         name="map"
         defaultValue={selected}
@@ -165,6 +123,6 @@ export const FormMap = ({ data, regionType }: FormMapProps) => {
           onSliderChange={setScreenLength}
         />
       )}
-    </CoreForm>
+    </CoreFormLayout>
   );
 };
