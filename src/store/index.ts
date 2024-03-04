@@ -38,7 +38,9 @@ export {
 } from './apis/cropApi';
 export { useFetchFeedQuery } from './apis/feedApi';
 export {
+  useGetAllModelDetailQuery,
   useGetModelandBaseModelDetailQuery,
+  useGetModelDetailByIdsQuery,
   useGetModelDetailQuery,
   useGetModelResultsQuery,
   useGetModificationDetailQuery,

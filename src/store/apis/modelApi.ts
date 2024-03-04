@@ -196,7 +196,6 @@ const modelApi = createApi({
         query: (id) => ({
           url: `api/model_run/${id}/`,
           method: 'GET',
-          // params: { id },
         }),
       }),
       getModelandBaseModelDetail: builder.query<ModelDetail[], number>({
