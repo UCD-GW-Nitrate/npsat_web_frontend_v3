@@ -44,6 +44,8 @@ export const FormMap = ({ data, regionType }: FormMapProps) => {
     }
   };
 
+  console.log('form map data', data);
+
   return (
     <CoreFormLayout fields={fields}>
       <Controller

@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import getAuth from '../getAuth';
-
 export interface UserResponse {
   token: string;
   user_id: number;
@@ -32,9 +30,6 @@ export interface LoginRequest {
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:8010',
-    prepareHeaders: (headers, { getState }) => {
-      return getAuth(headers, getState);
-    },
   }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthState, LoginRequest>({

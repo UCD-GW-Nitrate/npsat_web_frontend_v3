@@ -88,12 +88,30 @@ const modelApi = createApi({
     return {
       runModel: builder.mutation<ModelResult, Model>({
         query(params) {
+          console.log('run model query', {
+            name: '03.03.541',
+            water_content: params.water_content ?? 0 / 100,
+            sim_end_year: params.reduction_end_year,
+            reduction_start_year: params.reduction_start_year,
+            reduction_end_year: params.reduction_end_year,
+            flow_scenario: params.flow_scenario,
+            load_scenario: params.load_scenario,
+            unsat_scenario: {
+              id: params.unsat_scenario,
+            },
+            welltype_scenario: params.welltype_scenario,
+            regions: params.regions,
+            modifications: params.modifications,
+            public: true,
+            is_base: false,
+            applied_simulation_filter: false,
+          });
           return {
             url: 'api/model_run/',
             method: 'POST',
             body: {
               name: '03.03.541',
-              water_content: params.water_content,
+              water_content: params.water_content ?? 0 / 100,
               sim_end_year: params.reduction_end_year,
               reduction_start_year: params.reduction_start_year,
               reduction_end_year: params.reduction_end_year,
@@ -105,9 +123,9 @@ const modelApi = createApi({
               welltype_scenario: params.welltype_scenario,
               regions: params.regions,
               modifications: params.modifications,
-              public: params.public,
-              is_base: params.is_base,
-              applied_simulation_filter: params.applied_simulation_filter,
+              public: true,
+              is_base: false,
+              applied_simulation_filter: false,
             },
           };
         },
