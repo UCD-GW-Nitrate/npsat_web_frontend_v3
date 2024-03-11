@@ -16,7 +16,7 @@ import {
   useFetchSubregionsQuery,
   useFetchTownshipQuery,
 } from '@/store';
-import type { RegionResponse } from '@/store/apis/regionApi';
+import type { ResultResponse } from '@/store/apis/regionApi';
 
 import { FormMap } from './FormMap';
 
@@ -42,7 +42,7 @@ interface FormMapSelectVariableProps {
         FetchBaseQueryMeta
       >,
       never,
-      RegionResponse,
+      ResultResponse[],
       'region'
     >
   >;
@@ -54,8 +54,9 @@ export const FormMapSelectVariable = ({
   regionType,
 }: FormMapSelectVariableProps) => {
   const { data, error, isFetching } = query();
+  console.log('form map select variable data', data);
   if (!isFetching) {
-    return <FormMap data={data?.results ?? []} regionType={regionType} />;
+    return <FormMap data={data ?? []} regionType={regionType} />;
   }
   if (error) {
     console.log(error);
@@ -73,6 +74,7 @@ const FormMapSelect = ({ mapType }: FormMapSelectProps) => {
     );
   }
   if (mapType === 'valley') {
+    console.log('is valley');
     return (
       <FormMapSelectVariable
         query={useFetchCentralValleyQuery}

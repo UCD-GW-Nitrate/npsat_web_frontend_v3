@@ -1,17 +1,16 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import type { RootState } from '@/store';
-import type { AuthState } from '@/store/apis/authApi';
 import type { Region } from '@/store/apis/modelApi';
-import type { RegionDetail } from '@/store/apis/regionApi';
+import {
+  type RegionDetail,
+  useGetRegionByIdsQuery,
+} from '@/store/apis/regionApi';
 
 export const useModelRegions = (regionArray: Region[]) => {
   const [regions, setRegions] = useState<RegionDetail[]>([]);
-  const auth = useSelector<RootState, AuthState>((state) => {
-    return state.auth;
-  });
+  const { data } = useGetRegionByIdsQuery(regionArray.map((r) => r.id));
+
+  console.log('use model regions', data);
 
   useEffect(() => {
     if (regionArray) {
