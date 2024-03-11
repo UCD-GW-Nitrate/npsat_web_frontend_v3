@@ -50,4 +50,6 @@ export {
   useFetchCountyQuery,
   useFetchSubregionsQuery,
   useFetchTownshipQuery,
+  useGetRegionByIdsQuery,
+  useGetRegionDetailQuery,
 } from './apis/regionApi';
