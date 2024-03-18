@@ -1,25 +1,41 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import type { RootState } from '@/store';
+import type { AuthState } from '@/store/apis/authApi';
 import type { Region } from '@/store/apis/modelApi';
-import {
-  type RegionDetail,
-  useGetRegionByIdsQuery,
-} from '@/store/apis/regionApi';
+import type { RegionDetail } from '@/store/apis/regionApi';
 
 export const useModelRegions = (regionArray: Region[]) => {
   const [regions, setRegions] = useState<RegionDetail[]>([]);
-  const { data } = useGetRegionByIdsQuery(regionArray.map((r) => r.id));
-
-  console.log('use model regions', data);
+  const auth = useSelector<RootState, AuthState>((state) => {
+    return state.auth;
+  });
 
   useEffect(() => {
-    const formattedRegions = (data ?? []).map((region) => {
-      const result = region;
-      result.geometry.properties.name = region.name;
-      return result;
-    });
-    setRegions(formattedRegions);
-  }, [data]);
+    if (regionArray) {
+      Promise.all(
+        regionArray.map((region) =>
+          axios.get<RegionDetail>(
+            `http://localhost:8010/api/region/${region.id}/`,
+            {
+              headers: {
+                Authorization: `Token ${auth.token}`,
+              },
+            },
+          ),
+        ),
+      ).then((results) => {
+        const formattedRegions = results.map((region) => {
+          const result = region.data;
+          result.geometry.properties.name = region.data.name;
+          return result;
+        });
+        setRegions(formattedRegions);
+      });
+    }
+  }, [regionArray]);
 
   return regions;
 };

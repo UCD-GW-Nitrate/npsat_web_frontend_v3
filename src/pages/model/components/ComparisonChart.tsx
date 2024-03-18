@@ -39,9 +39,6 @@ const ComparisonChart = ({
           y: data.value,
         });
       });
-      chartData.push({
-        x: 2100,
-      });
       res.push({
         name: model.name,
         data: chartData,

@@ -36,11 +36,16 @@ const Step4 = ({ onPrev, onNext }: Step4Props) => {
         sx={{
           mt: 6,
         }}
-        onFormSubmit={onFormSubmit}
+        onFormSubmit={(data: FieldValues) => onFormSubmit(data)}
       >
         <CoreFormLayout fields={fields}>
-          <CoreTextField sx={{ width: 400 }} name="scenario name" />
-          <CoreTextField sx={{ width: 400 }} name="description" multiline />
+          <CoreTextField sx={{ width: 400 }} name="scenario name" formField />
+          <CoreTextField
+            sx={{ width: 400 }}
+            name="description"
+            multiline
+            formField
+          />
           <PageAdvancementButtons onClickPrev={onPrev} onClickNext={onNext} />
         </CoreFormLayout>
       </CoreForm>
