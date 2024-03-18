@@ -45,9 +45,6 @@ const ModelChart = ({
           });
         },
       );
-      chartData.push({
-        x: 2100,
-      });
       res.push({
         name: `${p}th percentile`,
         data: chartData,

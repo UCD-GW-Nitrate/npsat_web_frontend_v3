@@ -67,7 +67,7 @@ const LineChart = ({
       align: 'left',
     },
     xaxis: {
-      tickAmount: 31,
+      tickAmount: 21,
     },
     tooltip: {
       inverseOrder: true,

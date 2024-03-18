@@ -15,6 +15,7 @@ import type { Scenario } from '@/hooks/useScenarioGroups';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   setModelFlowScenario,
+  setModelIsBase,
   setModelLoadScenario,
   setModelReductionEndYear,
   setModelReductionStartYear,
@@ -87,6 +88,7 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
     dispatch(setModelUnsatScenario(data['unsat zone depth scenario']));
     dispatch(setModelWaterContent(data['water content']));
     dispatch(setModelSimEndYear((data['sim end year'] as Date)?.getFullYear()));
+    dispatch(setModelIsBase(data['scenario type'] === 'Custom scenario'));
     dispatch(
       setModelReductionStartYear(
         (data['transition period start'] as Date)?.getFullYear(),

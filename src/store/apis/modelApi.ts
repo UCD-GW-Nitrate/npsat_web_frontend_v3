@@ -91,7 +91,7 @@ const modelApi = createApi({
           console.log('run model query', {
             name: '03.03.541',
             water_content: params.water_content ?? 0 / 100,
-            sim_end_year: params.reduction_end_year,
+            sim_end_year: params.sim_end_year,
             reduction_start_year: params.reduction_start_year,
             reduction_end_year: params.reduction_end_year,
             flow_scenario: params.flow_scenario,
@@ -110,7 +110,8 @@ const modelApi = createApi({
             url: 'api/model_run/',
             method: 'POST',
             body: {
-              name: '03.03.541',
+              name: params.name,
+              description: params.description,
               water_content: params.water_content ?? 0 / 100,
               sim_end_year: params.reduction_end_year,
               reduction_start_year: params.reduction_start_year,
@@ -122,9 +123,16 @@ const modelApi = createApi({
               },
               welltype_scenario: params.welltype_scenario,
               regions: params.regions,
-              modifications: params.modifications,
+              modifications: [
+                {
+                  crop: {
+                    id: 1,
+                  },
+                  proportion: 0.7,
+                },
+              ],
               public: true,
-              is_base: false,
+              is_base: params.is_base,
               applied_simulation_filter: false,
             },
           };
