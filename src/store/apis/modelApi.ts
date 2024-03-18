@@ -132,9 +132,16 @@ const modelApi = createApi({
               unsat_scenario: params.unsat_scenario,
               welltype_scenario: params.welltype_scenario,
               regions: params.regions,
-              modifications: params.modifications,
+              modifications: [
+                {
+                  crop: {
+                    id: 1,
+                  },
+                  proportion: 0.7,
+                },
+              ],
               public: true,
-              is_base: false,
+              is_base: params.is_base,
               applied_simulation_filter: false,
             },
           };

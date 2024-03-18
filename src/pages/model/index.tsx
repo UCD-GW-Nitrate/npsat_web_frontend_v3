@@ -49,6 +49,8 @@ const ModelPage = () => {
 
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
+  console.log('custom model regions', regions);
+
   const tabs = [
     {
       label: 'Comparison Line Plot',
