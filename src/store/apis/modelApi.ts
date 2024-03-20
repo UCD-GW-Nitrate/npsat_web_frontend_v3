@@ -75,6 +75,16 @@ export interface ModelResult {
   percentile: number;
 }
 
+export interface ModelStatus {
+  results: ModelStatusResults[];
+}
+
+export interface ModelStatusResults {
+  id: number;
+  name: string;
+  status: number;
+}
+
 // https://npsat-dev.lawr.ucdavis.edu/services
 const modelApi = createApi({
   reducerPath: 'mantis',
@@ -181,6 +191,15 @@ const modelApi = createApi({
           method: 'PUT',
         }),
       }),
+      getModelStatus: builder.query<ModelStatus, any>({
+        query: (params) => ({
+          url: '/api/model_run__status/',
+          method: 'GET',
+          params: {
+            ...params,
+          },
+        }),
+      }),
     };
   },
 });
@@ -194,5 +213,6 @@ export const {
   usePutModelMutation,
   useGetAllModelDetailQuery,
   useGetModelDetailByIdsQuery,
+  useGetModelStatusQuery,
 } = modelApi;
 export { modelApi };
