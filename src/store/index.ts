@@ -43,6 +43,7 @@ export {
   useGetModelDetailByIdsQuery,
   useGetModelDetailQuery,
   useGetModelResultsQuery,
+  useGetModelStatusQuery,
   useGetModificationDetailQuery,
   usePutModelMutation,
   useRunModelMutation,
