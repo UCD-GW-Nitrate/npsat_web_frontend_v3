@@ -1,10 +1,14 @@
 import { useTheme } from '@mui/material';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreStepper } from '@/components/core/CoreStepper/CoreStepper';
 import Layout from '@/components/custom/Layout/Layout';
+import { useRunModelMutation } from '@/store';
+import { selectCurrentModel } from '@/store/slices/modelSlice';
 
 import Step1 from '../steps/Step1';
 import Step2 from '../steps/Step2';
@@ -31,6 +35,9 @@ const CreateModelPage = () => {
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
   }>({});
+  const [runModel, { data: modelData, isLoading: modelDataLoading }] =
+    useRunModelMutation();
+  const model = useSelector(selectCurrentModel);
 
   const totalSteps = () => {
     return steps.length;
@@ -73,6 +80,18 @@ const CreateModelPage = () => {
     handleNext();
   };
 
+  useEffect(() => {
+    if (model.name) {
+      console.log('model entered is', model);
+      runModel(model);
+    }
+  }, [model]);
+
+  useEffect(() => {
+    console.log('model data loading is', modelDataLoading);
+    console.log('model returned data is', modelData);
+  }, [modelDataLoading]);
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -104,7 +123,9 @@ const CreateModelPage = () => {
           {activeStep === 3 && (
             <Step4 onPrev={handleBack} onNext={handleComplete} />
           )}
-          {activeStep === 4 && <Step5 />}
+          {activeStep === 4 && !modelDataLoading && modelData?.id && (
+            <Step5 ids={modelData?.id} />
+          )}
         </CoreContainer>
       </Layout>
     </HelmetProvider>

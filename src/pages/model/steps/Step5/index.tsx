@@ -1,23 +1,27 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
 
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import { useRunModelMutation } from '@/store';
-import { selectCurrentModel } from '@/store/slices/modelSlice';
+import { useGetModelStatusQuery } from '@/store';
 
-const Step5 = () => {
-  const [runModel] = useRunModelMutation();
-  const model = useSelector(selectCurrentModel);
+interface Step5Props {
+  ids: any;
+}
 
-  const modelRun = () => {
-    const results = runModel(model);
-    console.log('run model:', model);
-    console.log('run model results:', results);
-  };
+const Step5 = ({ ids }: Step5Props) => {
+  const { data } = useGetModelStatusQuery(
+    { ids },
+    {
+      pollingInterval: 1000,
+    },
+  );
+
+  useEffect(() => {
+    console.log('model data is', data);
+  }, [data]);
 
   return (
     <div>
-      <CoreButton onClick={modelRun} label="Run Model" />
+      <p>loaded</p>
+      {data && data.results[0] && data.results[0].status === 3 && <p>done</p>}
     </div>
   );
 };
