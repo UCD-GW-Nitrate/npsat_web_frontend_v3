@@ -1,5 +1,5 @@
 import { Box, Divider } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
@@ -10,6 +10,8 @@ import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSel
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSlider } from '@/components/core/CoreSlider/CoreSlider';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
+import { useGetAllCropsQuery } from '@/store';
+import type { Crop } from '@/store/apis/cropApi';
 import type { CropModification } from '@/store/slices/modelSlice';
 import { setModelModifications } from '@/store/slices/modelSlice';
 
@@ -18,36 +20,32 @@ import Step3Instructions from './Step3Instructions';
 
 interface Step3Props extends Step {}
 
-const crops: (CoreMultipleSelectOption | undefined)[] = [
-  { label: 'Alfalfa' },
-  { label: 'All Other Crops' },
-  { label: 'Almonds' },
-  { label: 'Annual Grassland' },
-  { label: 'Beans (dry)' },
-  { label: 'Blue Oak Woodland' },
-  { label: 'Carrots' },
-  { label: 'Cherries' },
-];
-
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
+  const { data: cropData } = useGetAllCropsQuery();
+  const [crops, setCrops] = useState<CoreMultipleSelectOption[]>([]);
+  const [selectedCrops, setSelectedCrops] = useState<
+    (CoreMultipleSelectOption | undefined)[]
+  >([]);
+
   const dispatch = useDispatch();
   const onFormSubmit = (data: FieldValues) => {
     const modifications: CropModification[] = [];
-    // TODO: iterate through modifications
-    console.log(data);
+    selectedCrops.forEach((c) => {
+      if (c) {
+        modifications.push({
+          crop: {
+            id: c.value,
+          },
+          proportion: data[c.label] / 100,
+        });
+      }
+    });
+
     dispatch(setModelModifications(modifications));
     onNext();
   };
 
-  const defaultVal: (CoreMultipleSelectOption | undefined)[] = [crops[1]];
-  const [selectedCrops, setSelectedCrops] =
-    useState<(CoreMultipleSelectOption | undefined)[]>(defaultVal);
-  const [fields, setFields] = useState<CoreFormField[]>([
-    { label: 'Crop(s):' },
-    ...defaultVal.map((selectedVal) => {
-      return { label: `${selectedVal?.label} Loading:` ?? '' };
-    }),
-  ]);
+  const [fields, setFields] = useState<CoreFormField[]>([]);
   const handeCropSelect = (
     selected: (CoreMultipleSelectOption | undefined)[],
   ) => {
@@ -59,6 +57,26 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
       }),
     ]);
   };
+
+  useEffect(() => {
+    const cropsTemp: CoreMultipleSelectOption[] = [];
+    (cropData?.results ?? []).forEach((crop: Crop) => {
+      cropsTemp.push({
+        label: crop.name,
+        value: crop.id,
+      });
+    });
+    setCrops(cropsTemp);
+
+    const defaultVal = [cropsTemp[3]];
+    setSelectedCrops(defaultVal);
+    setFields([
+      { label: 'Crop(s):' },
+      ...defaultVal.map((selectedVal) => {
+        return { label: `${selectedVal?.label} Loading:` ?? '' };
+      }),
+    ]);
+  }, [cropData]);
 
   return (
     <Box>
@@ -78,7 +96,14 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
             setFieldValue={handeCropSelect}
           />
           {selectedCrops.map((crop) => (
-            <CoreSlider units="%" key={crop?.label} min={0} max={200} />
+            <CoreSlider
+              units="%"
+              key={crop?.label}
+              min={0}
+              max={200}
+              name={crop?.label ?? ''}
+              formField
+            />
           ))}
           <PageAdvancementButtons onClickPrev={onPrev} />
         </CoreFormLayout>

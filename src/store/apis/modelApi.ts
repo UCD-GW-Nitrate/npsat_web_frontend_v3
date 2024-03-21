@@ -122,7 +122,7 @@ const modelApi = createApi({
             body: {
               name: params.name,
               description: params.description,
-              water_content: params.water_content ?? 0 / 100,
+              water_content: Math.floor(params.water_content ?? 0) / 100,
               sim_end_year: params.sim_end_year,
               reduction_start_year: params.reduction_start_year,
               reduction_end_year: params.reduction_end_year,
@@ -133,14 +133,7 @@ const modelApi = createApi({
               },
               welltype_scenario: params.welltype_scenario,
               regions: params.regions,
-              modifications: [
-                {
-                  crop: {
-                    id: 1,
-                  },
-                  proportion: 0.7,
-                },
-              ],
+              modifications: params.modifications,
               public: true,
               is_base: false,
               applied_simulation_filter: false,

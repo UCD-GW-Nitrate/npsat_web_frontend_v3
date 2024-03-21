@@ -7,7 +7,7 @@ const Scrollable = ({ children }: PropsWithChildren) => {
 
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const isRight =
-      e.currentTarget.scrollWidth - e.currentTarget.scrollLeft ===
+      e.currentTarget.scrollWidth - e.currentTarget.scrollLeft - 1 <=
       e.currentTarget.clientWidth;
     const isLeft =
       e.currentTarget.scrollWidth - e.currentTarget.scrollLeft ===
