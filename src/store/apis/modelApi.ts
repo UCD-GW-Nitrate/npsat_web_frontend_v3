@@ -123,7 +123,7 @@ const modelApi = createApi({
               name: params.name,
               description: params.description,
               water_content: params.water_content ?? 0 / 100,
-              sim_end_year: params.reduction_end_year,
+              sim_end_year: params.sim_end_year,
               reduction_start_year: params.reduction_start_year,
               reduction_end_year: params.reduction_end_year,
               flow_scenario: params.flow_scenario,
@@ -142,7 +142,7 @@ const modelApi = createApi({
                 },
               ],
               public: true,
-              is_base: params.is_base,
+              is_base: false,
               applied_simulation_filter: false,
             },
           };

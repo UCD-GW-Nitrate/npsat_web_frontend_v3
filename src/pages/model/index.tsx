@@ -39,9 +39,13 @@ const ModelPage = () => {
   const baseModelDetail: ModelDetail | undefined =
     ((modelDetail.data as any) ?? [undefined, undefined])[1];
 
+  console.log('customModelDetail is ', customModelDetail?.results);
+  console.log('baseModelDetail is ', baseModelDetail?.results);
+
   const [customModel, customPercentilesData] = useModelResults(
-    baseModelDetail?.results ?? [],
+    customModelDetail?.results ?? [],
   );
+
   const [baseModel] = useModelResults(baseModelDetail?.results ?? []);
 
   console.log('base model detail', baseModelDetail);
@@ -68,6 +72,9 @@ const ModelPage = () => {
     name: 'custom',
     plotData: customModel,
   };
+
+  console.log('base comparison model is', baseComparisonModel);
+  console.log('custom comparison model is', customComparisonModel);
 
   const linePlot = useMemo(
     () => (
