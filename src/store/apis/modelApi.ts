@@ -141,7 +141,7 @@ const modelApi = createApi({
                 },
               ],
               public: true,
-              is_base: params.is_base,
+              is_base: false,
               applied_simulation_filter: false,
             },
           };

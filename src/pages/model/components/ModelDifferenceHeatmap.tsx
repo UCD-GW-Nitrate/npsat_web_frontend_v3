@@ -26,12 +26,6 @@ export interface ModelDifference {
   percentile: string;
 }
 
-interface AggegateResult {
-  value: number;
-  yearRange?: string;
-  percentile?: number;
-}
-
 const ModelDifferenceHeatmap = ({
   baseResults,
   customResults,
@@ -84,24 +78,20 @@ const ModelDifferenceHeatmap = ({
       const len = singleDifference.length;
       const percentileData: any = [];
       for (let i = 0; i < len; i += level) {
-        // assume divisible
         const temp = singleDifference.slice(i, Math.min(i + level, len));
-        const agg: AggegateResult = temp.reduce(
-          (acc, cur) => ({
-            ...acc,
-            ...cur,
-            value: Number((acc.value + cur.value).toFixed(6)),
-          }),
-          { value: 0 },
-        );
+        let aggValue = 0;
+        let aggYearRange = '';
+        temp.forEach((diff) => {
+          aggValue += diff.value ?? 0;
+        });
         if (i + level > len) {
-          agg.yearRange = `${1945 + i} - ${1945 + len}`;
-          agg.value = Number((agg.value / (level - i)).toFixed(0));
+          aggYearRange = `${1945 + i} - ${1945 + len}`;
+          aggValue = Number((aggValue / (len - i)).toFixed(2));
         } else {
-          agg.yearRange = `${1945 + i} - ${1945 + i + level}`;
-          agg.value = Number((agg.value / level).toFixed(0));
+          aggYearRange = `${1945 + i} - ${1945 + i + level}`;
+          aggValue = Number((aggValue / level).toFixed(2));
         }
-        percentileData.push({ x: agg.yearRange, y: agg.value });
+        percentileData.push({ x: aggYearRange, y: aggValue });
       }
       result.push({ name: `${p}th percentile`, data: percentileData });
     });
