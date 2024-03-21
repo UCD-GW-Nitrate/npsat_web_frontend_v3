@@ -1,5 +1,6 @@
 import { Box, CircularProgress } from '@mui/material';
 import { Result } from 'antd';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
@@ -17,6 +18,7 @@ const Step5 = ({ ids }: Step5Props) => {
       pollingInterval: 1000,
     },
   );
+  const router = useRouter();
 
   useEffect(() => {
     console.log('model data is', data);
@@ -24,7 +26,13 @@ const Step5 = ({ ids }: Step5Props) => {
 
   const extra = (
     <>
-      <CoreButton label="View scenario run" variant="contained" />
+      <CoreButton
+        label="View scenario run"
+        variant="contained"
+        onClick={() => {
+          router.push(`/model/?id=${ids}`);
+        }}
+      />
       <CoreButton label="Compare with BAU" variant="outlined" />
       <CoreButton label="Create another scenario" variant="outlined" />
     </>
