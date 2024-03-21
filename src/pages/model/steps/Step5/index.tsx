@@ -6,8 +6,6 @@ import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { CoreText } from '@/components/core/CoreText/CoreText';
 import { useGetModelStatusQuery } from '@/store';
 
-// import styles from './index.css';
-
 interface Step5Props {
   ids: any;
 }
