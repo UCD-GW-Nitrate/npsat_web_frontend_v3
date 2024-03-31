@@ -19,7 +19,6 @@ const areaPerCrop = (
   crops: number[] = [],
   regions: string[] = [],
 ): CropAreaMap => {
-  // crops: allOtherArea(null) is inteantionally left out for selected crops
   crops.shift();
 
   let cropsData: CropAreaInfo[] = [];
