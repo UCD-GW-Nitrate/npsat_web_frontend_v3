@@ -123,7 +123,7 @@ export const CropLoadingDetailsTable = ({
         modelColumns.push({
           title: `${name} - Loading Percentage`,
           dataIndex: `model${model.id}Loading`,
-          render: (num) => (num ? `${num * 100}%` : '100%'),
+          render: (num) => (num ? `${num * 100}%` : 'Not specified'),
         });
         if (!compareWithBase) {
           modelColumns.push({

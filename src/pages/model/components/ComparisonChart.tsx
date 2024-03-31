@@ -32,7 +32,6 @@ const ComparisonChart = ({
   function configureDisplayData(percentile: number): ApexAxisChartSeries {
     const res: ApexAxisChartSeries = [];
     comparisonChartModels.forEach((model) => {
-      console.log('compare chart model is', model);
       const chartData: any = [];
       model.plotData[percentile]?.forEach((data: ModelDisplay) => {
         chartData.push({
