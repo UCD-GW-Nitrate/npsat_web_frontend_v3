@@ -30,6 +30,17 @@ const cropApi = createApi({
           };
         },
       }),
+      getAllCropsByFlowScenario: builder.query<CropDetail, number>({
+        query: (flow_scenario) => {
+          return {
+            url: 'api/crop/',
+            method: 'GET',
+            params: {
+              flow_scenario,
+            },
+          };
+        },
+      }),
       getCrop: builder.query<Crop, number>({
         query: (id) => ({
           url: `api/crops/${id}`,
@@ -40,5 +51,9 @@ const cropApi = createApi({
   },
 });
 
-export const { useGetAllCropsQuery, useGetCropQuery } = cropApi;
+export const {
+  useGetAllCropsQuery,
+  useGetCropQuery,
+  useGetAllCropsByFlowScenarioQuery,
+} = cropApi;
 export { cropApi };

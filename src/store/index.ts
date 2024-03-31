@@ -31,7 +31,11 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export { useLoginMutation, useProtectedMutation } from './apis/authApi';
-export { useGetAllCropsQuery, useGetCropQuery } from './apis/cropApi';
+export {
+  useGetAllCropsByFlowScenarioQuery,
+  useGetAllCropsQuery,
+  useGetCropQuery,
+} from './apis/cropApi';
 export { useFetchFeedQuery } from './apis/feedApi';
 export {
   useGetAllModelDetailQuery,
