@@ -108,7 +108,9 @@ const feedApi = createApi({
                 statusMessage: model.status_message,
                 unsatZoneTravelTime: model.unsaturated_zone_travel_time,
                 user: model.user,
-                waterContent: `${Number(model.water_content) * 100}%`,
+                waterContent: `${(
+                  Number(model.water_content) * 100
+                ).toFixed()}%`,
                 loadScenario: model.load_scenario.name,
                 flowScenario: model.flow_scenario.name,
                 wellTypeScenario: model.welltype_scenario.name,

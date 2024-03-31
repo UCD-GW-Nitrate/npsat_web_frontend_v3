@@ -36,12 +36,10 @@ export const SCREEN_LENGTH_RANGE_CONFIG = {
 
 export const COLUMNS: CoreTableColumn[] = [
   { field: 'name', label: 'Scenario Name', width: 150 },
-  { field: 'description', label: 'Description', width: 300 },
   { field: 'flowScenario', label: 'Flow Scenario', width: 130 },
   { field: 'loadScenario', label: 'Load Scenario', width: 130 },
   { field: 'unsatScenario', label: 'Unsat Scenario', width: 150 },
   { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 130 },
-  { field: 'statusMessage', label: 'Status', width: 100 },
   { field: 'simEndYear', label: 'Year Range', width: 130 },
   {
     field: 'reductionStartYear',
