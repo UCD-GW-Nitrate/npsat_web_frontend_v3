@@ -1,14 +1,12 @@
 import { useTheme } from '@mui/material';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { useSelector } from 'react-redux';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreStepper } from '@/components/core/CoreStepper/CoreStepper';
 import Layout from '@/components/custom/Layout/Layout';
 import { useRunModelMutation } from '@/store';
-import { selectCurrentModel } from '@/store/slices/modelSlice';
+import type { Model } from '@/store/slices/modelSlice';
 
 import Step1 from '../steps/Step1';
 import Step2 from '../steps/Step2';
@@ -37,7 +35,6 @@ const CreateModelPage = () => {
   }>({});
   const [runModel, { data: modelData, isLoading: modelDataLoading }] =
     useRunModelMutation();
-  const model = useSelector(selectCurrentModel);
 
   const totalSteps = () => {
     return steps.length;
@@ -73,24 +70,17 @@ const CreateModelPage = () => {
     setActiveStep(step);
   };
 
-  const handleComplete = () => {
+  const handleCompleteSetp = () => {
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
     handleNext();
   };
 
-  useEffect(() => {
-    if (model.name) {
-      console.log('model entered is', model);
-      runModel(model);
-    }
-  }, [model]);
-
-  useEffect(() => {
-    console.log('model data loading is', modelDataLoading);
-    console.log('model returned data is', modelData);
-  }, [modelDataLoading]);
+  const handleCompleteModel = (newModel: Model) => {
+    runModel(newModel);
+    handleCompleteSetp();
+  };
 
   return (
     <HelmetProvider>
@@ -112,16 +102,20 @@ const CreateModelPage = () => {
             activeStep={activeStep}
           />
           {activeStep === 0 && (
-            <Step1 onPrev={handleBack} onNext={handleComplete} />
+            <Step1 onPrev={handleBack} onNext={handleCompleteSetp} />
           )}
           {activeStep === 1 && (
-            <Step2 onPrev={handleBack} onNext={handleComplete} />
+            <Step2 onPrev={handleBack} onNext={handleCompleteSetp} />
           )}
           {activeStep === 2 && (
-            <Step3 onPrev={handleBack} onNext={handleComplete} />
+            <Step3 onPrev={handleBack} onNext={handleCompleteSetp} />
           )}
           {activeStep === 3 && (
-            <Step4 onPrev={handleBack} onNext={handleComplete} />
+            <Step4
+              onPrev={handleBack}
+              onNext={handleCompleteSetp}
+              onComplete={handleCompleteModel}
+            />
           )}
           {activeStep === 4 && !modelDataLoading && modelData?.id && (
             <Step5 ids={modelData?.id} />

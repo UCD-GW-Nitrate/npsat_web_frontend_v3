@@ -26,8 +26,6 @@ const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
 
-  console.log('model page', modelDetail);
-
   const [selectedTab, setSelectedTab] = useState('Comparison Line Plot');
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
@@ -39,21 +37,13 @@ const ModelPage = () => {
   const baseModelDetail: ModelDetail | undefined =
     ((modelDetail.data as any) ?? [undefined, undefined])[1];
 
-  console.log('customModelDetail is ', customModelDetail?.results);
-  console.log('baseModelDetail is ', baseModelDetail?.results);
-
   const [customModel, customPercentilesData] = useModelResults(
     customModelDetail?.results ?? [],
   );
 
   const [baseModel] = useModelResults(baseModelDetail?.results ?? []);
 
-  console.log('base model detail', baseModelDetail);
-  console.log('custom model detail', customModelDetail);
-
   const regions = useModelRegions(customModelDetail?.regions ?? []);
-
-  console.log('custom model regions', regions);
 
   const tabs = [
     {
@@ -72,9 +62,6 @@ const ModelPage = () => {
     name: 'custom',
     plotData: customModel,
   };
-
-  console.log('base comparison model is', baseComparisonModel);
-  console.log('custom comparison model is', customComparisonModel);
 
   const linePlot = useMemo(
     () => (

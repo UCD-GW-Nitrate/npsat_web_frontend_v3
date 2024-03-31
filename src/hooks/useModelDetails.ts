@@ -18,7 +18,7 @@ export const useModelDetails = (
   useEffect(() => {
     setAllModelDetailResults((data ?? []).map((d) => d.results));
     setAllModelNames((data ?? []).map((d) => d.name));
-  }, [modelIds]);
+  }, [modelIds, data]);
 
   return [allModelDetailResults, data ?? [], allModelNames];
 };

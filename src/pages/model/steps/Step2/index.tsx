@@ -93,11 +93,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
         <div id="map">
           <MapWithNoSSR mapType={mapType} />
         </div>
-        <PageAdvancementButtons
-          onClickPrev={onPrev}
-          onClickNext={onNext}
-          sx={{ ml: 50, mt: 2 }}
-        />
+        <PageAdvancementButtons onClickPrev={onPrev} sx={{ ml: 50, mt: 2 }} />
       </CoreForm>
       <Divider sx={{ mt: 6 }} />
       <Step2Instructions />
