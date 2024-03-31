@@ -10,7 +10,7 @@ import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSel
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreSlider } from '@/components/core/CoreSlider/CoreSlider';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import { useGetAllCropsQuery } from '@/store';
+import { useGetAllCropsByFlowScenarioQuery } from '@/store';
 import type { Crop } from '@/store/apis/cropApi';
 import type { CropModification } from '@/store/slices/modelSlice';
 import { setModelModifications } from '@/store/slices/modelSlice';
@@ -21,7 +21,7 @@ import Step3Instructions from './Step3Instructions';
 interface Step3Props extends Step {}
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
-  const { data: cropData } = useGetAllCropsQuery();
+  const { data: cropData } = useGetAllCropsByFlowScenarioQuery(1);
   const [crops, setCrops] = useState<CoreMultipleSelectOption[]>([]);
   const [selectedCrops, setSelectedCrops] = useState<
     (CoreMultipleSelectOption | undefined)[]
@@ -68,7 +68,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
     });
     setCrops(cropsTemp);
 
-    const defaultVal = [cropsTemp[3]];
+    const defaultVal = [cropsTemp[1]];
     setSelectedCrops(defaultVal);
     setFields([
       { label: 'Crop(s):' },

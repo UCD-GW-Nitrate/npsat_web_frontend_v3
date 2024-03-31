@@ -123,12 +123,13 @@ export const CropLoadingDetailsTable = ({
         modelColumns.push({
           title: `${name} - Loading Percentage`,
           dataIndex: `model${model.id}Loading`,
-          render: (num) => `${num * 100}%`,
+          render: (num) => (num ? `${num * 100}%` : '100%'),
         });
         if (!compareWithBase) {
           modelColumns.push({
             title: `${name} - Crop Area (Acre)`,
             dataIndex: `model${model.id}AreaAcre`,
+            render: (num) => num || 'Not specified',
           });
         }
       });
@@ -136,10 +137,12 @@ export const CropLoadingDetailsTable = ({
         additionalColumns.push({
           title: `Crop Area (Acre)`,
           dataIndex: `model${modelDetails[0]!.id}AreaAcre`,
+          render: (num) => num || 'Not specified',
         });
         additionalColumns.push({
           title: `Crop Area (Hectare)`,
           dataIndex: `model${modelDetails[0]!.id}AreaHectare`,
+          render: (num) => num || 'Not specified',
         });
       }
       setCrop(crops);
