@@ -1,9 +1,46 @@
 import type { PropsWithChildren, UIEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { useWindowSize } from '@/hooks/useWindowResize';
 
 const Scrollable = ({ children }: PropsWithChildren) => {
-  const [left, setLeft] = useState(true);
+  const [left, setLeft] = useState(false);
   const [right, setRight] = useState(false);
+  const [width] = useWindowSize();
+  const scroll = useRef<HTMLDivElement>(null);
+
+  const changeBorderShadow = (isLeft: boolean, isRight: boolean) => {
+    if (isRight && !right) {
+      setRight(true);
+    } else if (!isRight && right) {
+      setRight(false);
+    }
+    if (isLeft && !left) {
+      setLeft(true);
+    } else if (!isLeft && left) {
+      setLeft(false);
+    }
+  };
+
+  const handleResize = () => {
+    let isRight = false;
+    let isLeft = false;
+
+    if (scroll.current) {
+      isRight =
+        scroll.current.scrollWidth - scroll.current.scrollLeft - 1 <=
+        scroll.current.clientWidth;
+      isLeft =
+        scroll.current.scrollWidth - scroll.current.scrollLeft ===
+        scroll.current.scrollWidth;
+    }
+
+    changeBorderShadow(isLeft, isRight);
+  };
+
+  useEffect(() => {
+    handleResize();
+  }, [width]);
 
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const isRight =
@@ -13,16 +50,7 @@ const Scrollable = ({ children }: PropsWithChildren) => {
       e.currentTarget.scrollWidth - e.currentTarget.scrollLeft ===
       e.currentTarget.scrollWidth;
 
-    if (isRight && !right) {
-      setRight(true);
-    } else if (right) {
-      setRight(false);
-    }
-    if (isLeft && !left) {
-      setLeft(true);
-    } else if (left) {
-      setLeft(false);
-    }
+    changeBorderShadow(isLeft, isRight);
   };
 
   return (
@@ -58,6 +86,7 @@ const Scrollable = ({ children }: PropsWithChildren) => {
         style={{
           overflowX: 'scroll',
         }}
+        ref={scroll}
         onScroll={handleScroll}
       >
         {children}
