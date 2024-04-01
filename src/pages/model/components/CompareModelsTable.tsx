@@ -9,42 +9,16 @@ interface CompareModelsTableProps {
 }
 
 const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
-  console.log('compare models table:', data);
   const columns: ColumnsType<ModelDetail> = [
     {
       title: 'Name',
       dataIndex: 'name',
-    },
-    {
-      title: 'BAU',
-      dataIndex: 'is_base',
-      render: (value) => (value ? 'Yes' : 'No'),
+      width: 400,
     },
     {
       title: 'Description',
       dataIndex: 'description',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: (value: number) => {
-        if (value === 0) {
-          return 'Not ready';
-        }
-        if (value === 1) {
-          return 'In queue';
-        }
-        if (value === 2) {
-          return 'Running';
-        }
-        if (value === 3) {
-          return 'Complete';
-        }
-        if (value === 4) {
-          return 'Error';
-        }
-        return '';
-      },
+      width: 400,
     },
     {
       title: 'Flow Scenario',
@@ -60,16 +34,19 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
       title: 'Unsat Scenario',
       dataIndex: 'unsat_scenario',
       render: (v) => v.name,
+      width: 500,
     },
     {
       title: 'Well Type Scenario',
       dataIndex: 'welltype_scenario',
       render: (v) => v.name,
+      width: 200,
     },
     {
       title: 'Regions',
       dataIndex: 'regions',
       render: (value) => value.map((regions: any) => regions.name).join(','),
+      width: 200,
     },
     {
       title: 'Wells included',
@@ -80,6 +57,7 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
       title: 'Year range',
       dataIndex: 'sim_end_year',
       render: (value) => `1945 - ${value}`,
+      width: 250,
     },
     {
       title: 'Implementation start year',
@@ -97,10 +75,11 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
     {
       title: 'Date Created',
       dataIndex: 'date_submitted',
-    },
-    {
-      title: 'Date Completed',
-      dataIndex: 'date_completed',
+      render: (value: string) => {
+        const date = new Date(value);
+        return date.toISOString().substring(0, 10);
+      },
+      width: 250,
     },
   ];
 
