@@ -100,7 +100,8 @@ const modelApi = createApi({
         query(params) {
           console.log('run model query', {
             name: '03.03.541',
-            water_content: params.water_content ?? 0 / 100,
+            description: params.description,
+            water_content: Math.floor(params.water_content ?? 0) / 100,
             sim_end_year: params.sim_end_year,
             reduction_start_year: params.reduction_start_year,
             reduction_end_year: params.reduction_end_year,

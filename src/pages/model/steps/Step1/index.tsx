@@ -1,4 +1,5 @@
 import { Box, Divider } from '@mui/material';
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -9,13 +10,11 @@ import { CoreForm } from '@/components/core/CoreForm/CoreForm';
 import { CoreFormLayout } from '@/components/core/CoreForm/CoreFormLayout';
 import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
 import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
-import { CoreToggleButton } from '@/components/core/CoreToggleButton/CoreToggleButton';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import type { Scenario } from '@/hooks/useScenarioGroups';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   setModelFlowScenario,
-  setModelIsBase,
   setModelLoadScenario,
   setModelReductionEndYear,
   setModelReductionStartYear,
@@ -28,10 +27,6 @@ import {
 import type { Step } from '../../create';
 import Step1Instructions from './Step1Instructions';
 
-const transiptionPeriodOptions = [
-  { label: 'Custom scenario' },
-  { label: 'BAU scenario' },
-];
 const fields = [
   { label: 'Flow scenario:' },
   { label: 'Load scenario:' },
@@ -39,7 +34,6 @@ const fields = [
   { label: 'Unsaturated zone depth scenario:' },
   { label: 'Unsaturated zone effective water content:' },
   { label: 'Simulation ending year:' },
-  { label: 'Scenario type:' },
   { label: 'Transition period:' },
 ];
 
@@ -88,7 +82,6 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
     dispatch(setModelUnsatScenario(data['unsat zone depth scenario']));
     dispatch(setModelWaterContent(data['water content']));
     dispatch(setModelSimEndYear((data['sim end year'] as Date)?.getFullYear()));
-    dispatch(setModelIsBase(data['scenario type'] === 'Custom scenario'));
     dispatch(
       setModelReductionStartYear(
         (data['transition period start'] as Date)?.getFullYear(),
@@ -152,10 +145,10 @@ const Step1 = ({ onPrev, onNext }: Step1Props) => {
             formField
           />
           <CoreNumberField sx={{ width: 100 }} units="%" name="water content" />
-          <CoreDateField name="sim end year" views={['year']} />
-          <CoreToggleButton
-            options={transiptionPeriodOptions}
-            name="scenario type"
+          <CoreDateField
+            name="sim end year"
+            views={['year']}
+            defaultDate={dayjs(new Date(2100, 1, 1))}
           />
           <CoreDateRangeField name="transition period" />
           <PageAdvancementButtons onClickPrev={onPrev} />
