@@ -1,17 +1,18 @@
-import { Box, Divider } from '@mui/material';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Form,
+  InputNumber,
+  Select,
+  Tooltip,
+} from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
-import { CoreDateField } from '@/components/core/CoreDateField/CoreDateField';
-import { CoreDateRangeField } from '@/components/core/CoreDateRangeField/CoreDateRangeField';
-import { CoreForm } from '@/components/core/CoreForm/CoreForm';
-import { CoreFormLayout } from '@/components/core/CoreForm/CoreFormLayout';
-import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
-import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
-import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import type { Scenario } from '@/hooks/useScenarioGroups';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   setModelFlowScenario,
@@ -25,138 +26,224 @@ import {
 } from '@/store/slices/modelSlice';
 
 import type { Step } from '../../create';
+import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
 
-const fields = [
-  { label: 'Flow scenario:' },
-  { label: 'Load scenario:' },
-  { label: 'Well Type scenario:' },
-  { label: 'Unsaturated zone depth scenario:' },
-  { label: 'Unsaturated zone effective water content:' },
-  { label: 'Simulation ending year:' },
-  { label: 'Transition period:' },
-];
+const { RangePicker } = DatePicker;
 
 interface Step1Props extends Step {}
 
-const Step1 = ({ onPrev, onNext }: Step1Props) => {
+const Step1 = ({ onNext }: Step1Props) => {
+  const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const [flowScenarioOptions, setFlowScenarioOptions] = useState<Scenario[]>(
-    [],
-  );
-  const [loadScenarioOptions, setLoadScenarioOptions] = useState<Scenario[]>(
-    [],
-  );
-  const [unsatScenarioOptions, setUnsatScenarioOptions] = useState<Scenario[]>(
-    [],
-  );
-  const [welltypeScenarioOptions, setWelltypeScenarioOptions] = useState<
-    Scenario[]
-  >([]);
   const {
-    flowScenarios: flowScen,
-    loadScenarios: loadScen,
-    unsatScenarios: unsatScen,
-    welltypeScenarios: welltypeScen,
+    flowScenarios: flowScenarioOptions,
+    loadScenarios: loadScenarioOptions,
+    unsatScenarios: unsatScenarioOptions,
+    welltypeScenarios: welltypeScenarioOptions,
   } = useScenarioGroups();
 
-  useEffect(() => {
-    setFlowScenarioOptions(flowScen ?? []);
-  }, [flowScen]);
-  useEffect(() => {
-    setLoadScenarioOptions(loadScen ?? []);
-  }, [loadScen]);
-  useEffect(() => {
-    setUnsatScenarioOptions(unsatScen ?? []);
-  }, [unsatScen]);
-  useEffect(() => {
-    setWelltypeScenarioOptions(welltypeScen ?? []);
-  }, [welltypeScen]);
-
-  console.log('flow scen', flowScen);
-
   const onFormSubmit = (data: FieldValues) => {
-    dispatch(setModelFlowScenario({ id: data['flow scenario'] }));
-    dispatch(setModelLoadScenario({ id: data['load scenario'] }));
-    dispatch(setModelWelltypeScenario({ id: data['well type scenario'] }));
-    dispatch(setModelUnsatScenario(data['unsat zone depth scenario']));
-    dispatch(setModelWaterContent(data['water content']));
-    dispatch(setModelSimEndYear((data['sim end year'] as Date)?.getFullYear()));
+    dispatch(setModelFlowScenario({ id: data.flow_scenario }));
+    dispatch(setModelLoadScenario({ id: data.load_scenario }));
+    dispatch(setModelWelltypeScenario({ id: data.welltype_scenario }));
+    dispatch(setModelUnsatScenario(data.unsat_scenario));
+    dispatch(setModelWaterContent(data.water_content));
+    dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(
       setModelReductionStartYear(
-        (data['transition period start'] as Date)?.getFullYear(),
+        (data.reduction_year as dayjs.Dayjs[])[0]!.year(),
       ),
     );
     dispatch(
       setModelReductionEndYear(
-        (data['transition period end'] as Date)?.getFullYear(),
+        (data.reduction_year as dayjs.Dayjs[])[1]!.year(),
       ),
     );
     onNext();
   };
 
+  const formItemLayout = {
+    labelCol: {
+      span: 7,
+    },
+    wrapperCol: {
+      span: 25,
+    },
+  };
+
   return (
-    <Box>
-      <CoreForm
-        sx={{
-          mt: 6,
-        }}
-        onFormSubmit={(data: FieldValues) => onFormSubmit(data)}
+    <>
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="horizontal"
+        onFinish={onFormSubmit}
       >
-        <CoreFormLayout fields={fields}>
-          <CoreSelect
-            options={flowScenarioOptions.map((scen) => ({
-              label: scen.name,
-              value: scen.id,
-            }))}
-            sx={{ display: 'flex', flexGrow: 1 }}
-            name="flow scenario"
-            key="flow scenario"
-            formField
+        <Form.Item
+          name="flow_scenario"
+          label="Flow scenario"
+          rules={defaultRules('Please select a flow scenario')}
+        >
+          <Select>
+            {flowScenarioOptions.map((scen) => (
+              <Select.Option value={scen.id} key={scen.id}>
+                <>
+                  {scen.name}{' '}
+                  {scen.description ? (
+                    <Tooltip title={scen.description}>
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  ) : null}
+                </>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="load_scenario"
+          label="Load scenario"
+          rules={defaultRules('Please select a load scenario')}
+        >
+          <Select>
+            {loadScenarioOptions.map((scen) => (
+              <Select.Option value={scen.id} key={scen.id}>
+                <>
+                  {scen.name}{' '}
+                  {scen.description ? (
+                    <Tooltip title={scen.description}>
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  ) : null}
+                </>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="welltype_scenario"
+          label="Well Type scenario"
+          rules={defaultRules('Please select a well type scenario')}
+        >
+          <Select>
+            {welltypeScenarioOptions.map((scen) => (
+              <Select.Option value={scen.id} key={scen.id}>
+                <>
+                  {scen.name}{' '}
+                  {scen.description ? (
+                    <Tooltip title={scen.description}>
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  ) : null}
+                </>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="unsat_scenario"
+          label="Unsaturated zone depth scenario"
+          rules={defaultRules('Please select an unsat scenario')}
+        >
+          <Select>
+            {unsatScenarioOptions.map((scen) => (
+              <Select.Option value={scen.id} key={scen.id}>
+                <>
+                  {scen.name}{' '}
+                  {scen.description ? (
+                    <Tooltip title={scen.description}>
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  ) : null}
+                </>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="water_content"
+          label="Unsaturated zone effective water content"
+          rules={defaultRules('Please enter the water content')}
+        >
+          <InputNumber min={0} max={200} formatter={(v) => `${v}%`} />
+        </Form.Item>
+        <Form.Item
+          name="sim_end_year"
+          label="Simulation ending year"
+          rules={defaultRules(
+            'Please enter numbers of years to simulate the scenario',
+          )}
+          initialValue={dayjs().year(2100)}
+        >
+          <DatePicker
+            picker="year"
+            disabledDate={(current) =>
+              current.isBefore(dayjs().year(2020), 'year') ||
+              current.isAfter(dayjs().year(2500), 'year')
+            }
           />
-          <CoreSelect
-            options={loadScenarioOptions.map((scen) => ({
-              label: scen.name,
-              value: scen.id,
-            }))}
-            sx={{ display: 'flex', flexGrow: 1 }}
-            name="load scenario"
-            key="load scenario"
-            formField
+        </Form.Item>
+        <Form.Item
+          name="reduction_year"
+          label="Transition period"
+          dependencies={['sim_end_year']}
+          rules={[
+            ...defaultRules('Please enter the reduction year'),
+            ({ getFieldValue }) => ({
+              validator: (_, _value) => {
+                const simEndYear: Date = getFieldValue('sim_end_year');
+                if (!_value || _value.length <= 1) {
+                  return Promise.resolve();
+                }
+                const [endYear] = _value;
+                if (endYear.isAfter(simEndYear, 'year')) {
+                  return Promise.reject(
+                    new Error(
+                      'Reduction end year must not be after sim end year.',
+                    ),
+                  );
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
+        >
+          <RangePicker
+            picker="year"
+            disabledDate={(current) => {
+              const endYear: dayjs.Dayjs = form
+                .getFieldValue('sim_end_year')
+                .clone();
+              return (
+                current.isBefore(dayjs().year(2000), 'year') ||
+                current.isAfter(endYear)
+              );
+            }}
           />
-          <CoreSelect
-            options={welltypeScenarioOptions.map((scen) => ({
-              label: scen.name,
-              value: scen.id,
-            }))}
-            sx={{ display: 'flex', flexGrow: 1 }}
-            name="well type scenario"
-            key="well type scenario"
-            formField
-          />
-          <CoreSelect
-            options={unsatScenarioOptions.map((scen) => ({
-              label: scen.name,
-              value: scen.id,
-            }))}
-            sx={{ display: 'flex', flexGrow: 1 }}
-            name="unsat zone depth scenario"
-            key="unsat zone depth scenario"
-            formField
-          />
-          <CoreNumberField sx={{ width: 100 }} units="%" name="water content" />
-          <CoreDateField
-            name="sim end year"
-            views={['year']}
-            defaultDate={dayjs(new Date(2100, 1, 1))}
-          />
-          <CoreDateRangeField name="transition period" />
-          <PageAdvancementButtons onClickPrev={onPrev} />
-        </CoreFormLayout>
-      </CoreForm>
-      <Divider sx={{ mt: 6 }} />
+        </Form.Item>
+        <Form.Item
+          style={{
+            marginBottom: 8,
+          }}
+          wrapperCol={{
+            xs: {
+              span: 24,
+              offset: 0,
+            },
+            sm: {
+              span: formItemLayout.wrapperCol.span,
+              offset: formItemLayout.labelCol.span,
+            },
+          }}
+        >
+          <Button type="primary" htmlType="submit">
+            Next
+          </Button>
+        </Form.Item>
+      </Form>
+      <Divider />
       <Step1Instructions />
-    </Box>
+    </>
   );
 };
 
