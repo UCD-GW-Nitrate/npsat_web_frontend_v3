@@ -2,13 +2,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { paramsSerializer } from './paramsSerializer';
 
-export interface RegionResponse {
-  count: number;
-  next: string;
-  previous: string | null;
-  results: [ResultResponse];
-}
-
 export interface ResultResponse {
   id: number;
   external_id: string;
@@ -138,6 +131,15 @@ const regionApi = createApi({
           };
         },
       }),
+      fetchRegion: builder.query<ResultResponse[], number>({
+        query: (regionType) => {
+          return {
+            url: 'api/region/',
+            method: 'GET',
+            params: { offset: 0, region_type: regionType, limit: 2000 },
+          };
+        },
+      }),
       getRegionDetail: builder.query<RegionDetail, number>({
         query: (id) => ({
           url: `api/region/${id}`,
@@ -163,5 +165,6 @@ export const {
   useFetchSubregionsQuery,
   useGetRegionDetailQuery,
   useGetRegionByIdsQuery,
+  useFetchRegionQuery,
 } = regionApi;
 export { regionApi };

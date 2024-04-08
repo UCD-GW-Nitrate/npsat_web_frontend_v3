@@ -40,6 +40,7 @@ export interface Model {
   depth_range_min?: number;
   depth_range_max?: number;
   modifications?: CropModification[];
+  advancedWellFilter?: boolean;
 }
 
 export interface ModelResult {
@@ -109,6 +110,9 @@ const modelSlice = createSlice({
     setModelModifications(state, action: PayloadAction<CropModification[]>) {
       return { ...state, modifications: action.payload };
     },
+    setAdvancedWellFilter(state, action: PayloadAction<boolean>) {
+      return { ...state, advancedWellFilter: action.payload };
+    },
   },
 });
 
@@ -132,6 +136,7 @@ export const {
   setModelDepthRangeMin,
   setModelDepthRangeMax,
   setModelModifications,
+  setAdvancedWellFilter,
 } = modelSlice.actions;
 export const modelReducer = modelSlice.reducer;
 export const selectCurrentModel = (state: RootState) => state.model;

@@ -53,6 +53,7 @@ export {
   useFetchBasinQuery,
   useFetchCentralValleyQuery,
   useFetchCountyQuery,
+  useFetchRegionQuery,
   useFetchSubregionsQuery,
   useFetchTownshipQuery,
   useGetRegionByIdsQuery,
