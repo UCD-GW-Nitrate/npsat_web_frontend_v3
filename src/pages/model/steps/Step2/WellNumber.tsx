@@ -1,4 +1,5 @@
 /* eslint-disable no-prototype-builtins */
+import { Card } from 'antd';
 import { useSelector } from 'react-redux';
 
 import type { ResultResponse } from '@/store/apis/regionApi';
@@ -13,8 +14,10 @@ interface WellNumberProps {
   selectedRegions: number[];
   regionType: number;
   countyList: ResultResponse[];
-  depthFilter: [number, number];
-  screenLenFilter: [number, number];
+  depthMin: number;
+  depthMax: number;
+  screenLenMin: number;
+  screenLenMax: number;
   filterOn: boolean;
 }
 
@@ -24,10 +27,15 @@ const WellNumber = ({
   selectedRegions,
   countyList,
   regionType,
-  depthFilter,
-  screenLenFilter,
+  depthMax,
+  depthMin,
+  screenLenMax,
+  screenLenMin,
   filterOn,
 }: WellNumberProps) => {
+  const depthFilter: [number, number] = [depthMin, depthMax];
+  const screenLenFilter: [number, number] = [screenLenMin, screenLenMax];
+
   const model = useSelector(selectCurrentModel);
   const flowScenario = model.flow_scenario?.id;
   const welltypeScenario = model.welltype_scenario?.id;
@@ -38,6 +46,7 @@ const WellNumber = ({
   console.log('selected:', selectedRegions);
   console.log('flow_scenario: ', flowScenario);
   console.log('welltype: ', welltypeScenario);
+  console.log('region type well number', regionType);
 
   // load well data based on scenario
   let wellData: any[] = [];
@@ -281,7 +290,7 @@ const WellNumber = ({
   }
   return (
     <div>
-      <p>Number of Wells Selected: {wellCount}</p>
+      <Card>Number of Wells Selected: {wellCount}</Card>
     </div>
   );
 };

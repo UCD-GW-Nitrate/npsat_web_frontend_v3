@@ -10,6 +10,8 @@ import { CoreRangeSlider } from '../core/CoreRangeSlider/CoreRangeSlider';
 import { CoreSwitch } from '../core/CoreSwitch/CoreSwitch';
 import RegionsMap from './RegionsMap';
 
+const { Option } = Select;
+
 export interface FormMapProps {
   data: ResultResponse[];
   selected: number[];

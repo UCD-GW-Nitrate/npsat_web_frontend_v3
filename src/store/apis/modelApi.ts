@@ -135,7 +135,7 @@ const modelApi = createApi({
               modifications: params.modifications,
               public: true,
               is_base: false,
-              applied_simulation_filter: false,
+              applied_simulation_filter: params.advancedWellFilter,
             },
           };
         },

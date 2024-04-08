@@ -5,7 +5,15 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreStepper } from '@/components/core/CoreStepper/CoreStepper';
 import Layout from '@/components/custom/Layout/Layout';
-import { useRunModelMutation } from '@/store';
+import {
+  useFetchB118BasinQuery,
+  useFetchBasinQuery,
+  useFetchCentralValleyQuery,
+  useFetchCountyQuery,
+  useFetchSubregionsQuery,
+  useFetchTownshipQuery,
+  useRunModelMutation,
+} from '@/store';
 import type { Model } from '@/store/slices/modelSlice';
 
 import Step1 from '../steps/Step1';
@@ -33,6 +41,15 @@ const CreateModelPage = () => {
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
   }>({});
+
+  // fetch all map data beforehand
+  useFetchB118BasinQuery();
+  useFetchBasinQuery();
+  useFetchCentralValleyQuery();
+  useFetchCountyQuery();
+  useFetchSubregionsQuery();
+  useFetchTownshipQuery();
+
   const [runModel, { data: modelData, isLoading: modelDataLoading }] =
     useRunModelMutation();
 
