@@ -4,12 +4,13 @@ import '../styles/global.css';
 
 import { GlobalStyles } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import { ConfigProvider } from 'antd';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { type PropsWithChildren, useEffect } from 'react';
 import { Provider, useDispatch } from 'react-redux';
 
-import theme, { BACKGROUND_COLOR } from '@/components/theme';
+import theme, { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/components/theme';
 import type { AuthState } from '@/store/apis/authApi';
 import { setCredentials } from '@/store/slices/authSlice';
 
@@ -64,16 +65,29 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/images/favicon.ico" key="favicon" />
       </Head>
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyles
-            styles={{
-              body: { backgroundColor: BACKGROUND_COLOR },
-            }}
-          />
-          <Wrapper>
-            <Component {...pageProps} />
-          </Wrapper>
-        </ThemeProvider>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: PRIMARY_COLOR,
+            },
+            components: {
+              Button: {
+                primaryShadow: 'none',
+              },
+            },
+          }}
+        >
+          <ThemeProvider theme={theme}>
+            <GlobalStyles
+              styles={{
+                body: { backgroundColor: BACKGROUND_COLOR },
+              }}
+            />
+            <Wrapper>
+              <Component {...pageProps} />
+            </Wrapper>
+          </ThemeProvider>
+        </ConfigProvider>
       </Provider>
     </main>
   );
