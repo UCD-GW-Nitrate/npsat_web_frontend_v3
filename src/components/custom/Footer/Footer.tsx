@@ -1,8 +1,8 @@
 import { Container, Link } from '@mui/material';
 import React from 'react';
 
-import { CoreText } from '../../core/CoreText/CoreText';
 import { HBox } from '../HBox/Hbox';
+import { StandardText } from '../StandardText/StandardText';
 import styles from './Footer.module.css';
 
 const Footer = () => {
@@ -27,10 +27,10 @@ const Footer = () => {
               Groundwater
             </Link>
           </HBox>
-          <CoreText align="center">
+          <StandardText>
             Copywrite &copy;{' '}
             {` ${new Date().getFullYear()} Regents of the University of California`}
-          </CoreText>
+          </StandardText>
         </footer>
       </Container>
     </div>

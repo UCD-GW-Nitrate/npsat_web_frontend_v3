@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import { CoreText } from '@/components/core/CoreText/CoreText';
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { useGetModelStatusQuery } from '@/store';
 
 interface Step5Props {
@@ -48,7 +48,7 @@ const Step5 = ({ ids }: Step5Props) => {
           sx={{ mt: 5 }}
         >
           <CircularProgress size="4rem" />
-          <CoreText sx={{ mt: 2 }}>Creating Scenario...</CoreText>
+          <StandardText>Creating Scenario...</StandardText>
         </Box>
       )}
       {data && data.results[0] && data.results[0].status === 3 && (
