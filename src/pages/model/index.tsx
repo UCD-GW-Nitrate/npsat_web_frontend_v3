@@ -3,11 +3,11 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 
-import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
 import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
-import { CoreText } from '@/components/core/CoreText/CoreText';
 import Footer from '@/components/custom/Footer/Footer';
+import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Layout from '@/components/custom/Layout/Layout';
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useModelResults } from '@/hooks/useModelResults';
@@ -118,24 +118,22 @@ const ModelPage = () => {
 
   return (
     <Layout>
-      <CoreText variant="h1" sx={{ my: 4 }}>
-        Details and Results
-      </CoreText>
+      <StandardText variant="h1">Details and Results</StandardText>
       <VBox spacing={4}>
-        <CoreContainer title="Scenario info">
+        <InfoContainer title="Scenario info">
           <ModelDescriptionTable
             modelDetail={customModelDetail}
             regions={regions}
           />
-        </CoreContainer>
-        <CoreContainer title="Run results">
+        </InfoContainer>
+        <InfoContainer title="Run results">
           <ModelChart
             percentiles={customModelDetail.results}
             reductionStartYear={customModelDetail.reduction_start_year}
             reductionCompleteYear={customModelDetail.reduction_end_year}
           />
-        </CoreContainer>
-        <CoreContainer title="BAU comparison">
+        </InfoContainer>
+        <InfoContainer title="BAU comparison">
           <CoreTabs tabs={tabs} onTabChange={(tab) => setSelectedTab(tab)} />
           <Divider sx={{ mb: 4 }} />
           <div role="tabpanel" hidden={selectedTab !== 'Comparison Line Plot'}>
@@ -144,22 +142,22 @@ const ModelPage = () => {
           <div role="tabpanel" hidden={selectedTab !== 'Difference Heatmap'}>
             {heatmap}
           </div>
-        </CoreContainer>
-        <CoreContainer title="Crop loading details">
+        </InfoContainer>
+        <InfoContainer title="Crop loading details">
           {customModelDetail && baseModelDetail && (
             <CropLoadingDetailsBaseComparisonTable
               customModelDetail={customModelDetail}
               baseModelDetail={baseModelDetail}
             />
           )}
-        </CoreContainer>
-        <CoreContainer title="Regions included in this scenario run">
+        </InfoContainer>
+        <InfoContainer title="Regions included in this scenario run">
           <Box id="map" style={{ height: '600px', margin: 0 }}>
             <MapWithNoSSR
               data={regions.map((region: RegionDetail) => region.geometry)}
             />
           </Box>
-        </CoreContainer>
+        </InfoContainer>
       </VBox>
       <Box sx={{ mt: 10 }} />
       <Footer />

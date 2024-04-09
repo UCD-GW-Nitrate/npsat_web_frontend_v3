@@ -11,10 +11,9 @@ import {
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Scrollable from '@/components/custom/Scrollable/Scrollable';
 import type { PlotModel } from '@/store/apis/feedApi';
-
-import { CoreContainer } from '../CoreContainer/CoreContainer';
 
 export interface CoreTableColumn {
   label: string;
@@ -43,10 +42,8 @@ export const CoreTable = ({
   rowsPerPage,
   handleChangePage,
   handleChangeRowsPerPage,
-  sx,
   checkboxSelection = false,
   onCheckboxSelection,
-  ...rest
 }: CoreTableProps) => {
   const [selected, setSelected] = useState<number[]>([]);
   const router = useRouter();
@@ -96,7 +93,7 @@ export const CoreTable = ({
   };
 
   return (
-    <CoreContainer {...rest} sx={{ ...sx, overflowX: 'hidden', p: 0 }}>
+    <InfoContainer>
       <Scrollable>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -174,6 +171,6 @@ export const CoreTable = ({
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{ overflow: 'fixed' }}
       />
-    </CoreContainer>
+    </InfoContainer>
   );
 };
