@@ -8,11 +8,11 @@ import type { Crop } from '@/store/apis/cropApi';
 import type { CropModification } from '@/store/slices/modelSlice';
 import { setModelModifications } from '@/store/slices/modelSlice';
 
-import type { Step } from '../../create';
+import type { StepBase } from '../../create';
 import CropCard from './CropCard';
 import Step3Instructions from './Step3Instructions';
 
-interface Step3Props extends Step {}
+interface Step3Props extends StepBase {}
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
   const { data: cropData } = useGetAllCropsByFlowScenarioQuery(1);
@@ -113,8 +113,15 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
                     validator: () => Promise.resolve(),
                   },
                 ]}
+                initialValue={100}
               >
-                <CropCard crop={stringToCrop(crop)} initialValue={100} />
+                <CropCard
+                  crop={stringToCrop(crop)}
+                  initialValue={100}
+                  onChange={(v) => {
+                    form.setFieldValue(stringToCrop(crop).name, v);
+                  }}
+                />
               </Form.Item>
             )}
           </>

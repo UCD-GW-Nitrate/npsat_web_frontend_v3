@@ -25,13 +25,13 @@ import {
   setModelWelltypeScenario,
 } from '@/store/slices/modelSlice';
 
-import type { Step } from '../../create';
+import type { StepBase } from '../../create';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
 
 const { RangePicker } = DatePicker;
 
-interface Step1Props extends Step {}
+interface Step1Props extends StepBase {}
 
 const Step1 = ({ onNext }: Step1Props) => {
   const [form] = Form.useForm();
