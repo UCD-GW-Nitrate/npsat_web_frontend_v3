@@ -1,11 +1,13 @@
 import { Box } from '@mui/material';
-import { Tabs } from 'antd';
+import { Button, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Footer from '@/components/custom/Footer/Footer';
+import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Layout from '@/components/custom/Layout/Layout';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
@@ -15,6 +17,7 @@ import { useModelResults } from '@/hooks/useModelResults';
 import { useGetModelandBaseModelDetailQuery } from '@/store';
 import type { ModelDetail } from '@/store/apis/modelApi';
 import type { RegionDetail } from '@/store/apis/regionApi';
+import { createNewModel } from '@/store/slices/modelSlice';
 
 import type { ComparisonChartModel } from './components/ComparisonChart';
 import ComparisonChart from './components/ComparisonChart';
@@ -26,6 +29,7 @@ import ModelDifferenceHeatmap from './components/ModelDifferenceHeatmap';
 const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
+  const dispatch = useDispatch();
 
   const [selectedTab, setSelectedTab] = useState<string>(
     'Comparison Line Plot',
@@ -111,9 +115,39 @@ const ModelPage = () => {
     console.log(modelDetail.error);
   }
 
+  const copyAndModifyModel = () => {
+    if (customModelDetail) {
+      dispatch(
+        createNewModel({
+          name: customModelDetail.name,
+          description: customModelDetail.description,
+          water_content: customModelDetail.water_content,
+          sim_end_year: customModelDetail.sim_end_year,
+          reduction_start_year: customModelDetail.reduction_start_year,
+          reduction_end_year: customModelDetail.reduction_end_year,
+          flow_scenario: customModelDetail.flow_scenario,
+          load_scenario: customModelDetail.load_scenario,
+          unsat_scenario: customModelDetail.unsat_scenario,
+          welltype_scenario: customModelDetail.welltype_scenario,
+          regions: customModelDetail.regions,
+          modifications: customModelDetail.modifications,
+          public: true,
+          is_base: false,
+          applied_simulation_filter: false,
+        }),
+      );
+      router.push('/model/create');
+    }
+  };
+
   return (
     <Layout>
-      <StandardText variant="h1">Details and Results</StandardText>
+      <HBox>
+        <StandardText variant="h1">Details and Results</StandardText>
+        <Button type="primary" size="large" onClick={copyAndModifyModel}>
+          Copy and Modify Scenario
+        </Button>
+      </HBox>
       <VBox spacing={4}>
         <InfoContainer title="Scenario info">
           <ModelDescriptionTable

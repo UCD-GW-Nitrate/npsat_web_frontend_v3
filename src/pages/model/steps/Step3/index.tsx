@@ -1,13 +1,16 @@
 import { Divider, Form, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { useGetAllCropsByFlowScenarioQuery } from '@/store';
 import type { Crop } from '@/store/apis/cropApi';
 import type { CropModification } from '@/store/slices/modelSlice';
-import { setModelModifications } from '@/store/slices/modelSlice';
+import {
+  selectCurrentModel,
+  setModelModifications,
+} from '@/store/slices/modelSlice';
 
 import type { StepBase } from '../../create';
 import CropCard from './CropCard';
@@ -16,18 +19,8 @@ import Step3Instructions from './Step3Instructions';
 interface Step3Props extends StepBase {}
 
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
+  const model = useSelector(selectCurrentModel);
   const { data: cropData } = useGetAllCropsByFlowScenarioQuery(1);
-  const [selectedCrops, setSelectedCrops] = useState<string[]>([]);
-
-  const formItemLayout = {
-    labelCol: {
-      span: 5,
-    },
-    wrapperCol: {
-      span: 19,
-    },
-  };
-
   const dispatch = useDispatch();
   const [form] = Form.useForm();
 
@@ -46,13 +39,28 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
     };
   };
 
+  const [selectedCrops, setSelectedCrops] = useState<string[]>(
+    model.modifications?.map((mod) => cropToString(mod.crop)) ?? [],
+  );
+
+  const formItemLayout = {
+    labelCol: {
+      span: 5,
+    },
+    wrapperCol: {
+      span: 19,
+    },
+  };
+
   const onFormSubmit = (data: FieldValues) => {
+    console.log(data);
     const modifications: CropModification[] = [];
     selectedCrops.forEach((c) => {
       const selectedCrop = stringToCrop(c);
       modifications.push({
         crop: {
           id: selectedCrop.id,
+          name: selectedCrop.name,
         },
         proportion: data[selectedCrop.name] / 100,
       });
@@ -63,12 +71,18 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
   };
 
   useEffect(() => {
-    if (cropData && cropData.results[1]) {
-      const defaultVal = cropData.results[1];
-      setSelectedCrops([cropToString(defaultVal)]);
-      form.setFieldValue('crop_choice', [cropToString(defaultVal)]);
+    if (cropData && cropData.results[1] && selectedCrops.length === 0) {
+      const defaultVal = cropToString(cropData.results[1]);
+      setSelectedCrops([defaultVal]);
+      form.setFieldValue('crop_choice', [defaultVal]);
+    } else {
+      form.setFieldValue('crop_choice', selectedCrops);
     }
   }, [cropData]);
+
+  if (model.modifications) {
+    console.log('Step 3 proportion', model.modifications[0]?.proportion);
+  }
 
   return (
     <>
@@ -101,7 +115,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
             ))}
           </Select>
         </Form.Item>
-        {selectedCrops.map((crop) => (
+        {selectedCrops.map((crop, index) => (
           <>
             {crop && (
               <Form.Item
@@ -114,11 +128,19 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
                     validator: () => Promise.resolve(),
                   },
                 ]}
-                initialValue={100}
+                initialValue={
+                  model.modifications
+                    ? (model.modifications[index]?.proportion ?? 1) * 100
+                    : 100
+                }
               >
                 <CropCard
                   crop={stringToCrop(crop)}
-                  initialValue={100}
+                  initialValue={
+                    model.modifications
+                      ? (model.modifications[index]?.proportion ?? 1) * 100
+                      : 100
+                  }
                   onChange={(v) => {
                     form.setFieldValue(stringToCrop(crop).name, v);
                   }}

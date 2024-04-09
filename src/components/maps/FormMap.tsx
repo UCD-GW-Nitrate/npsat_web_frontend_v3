@@ -1,5 +1,4 @@
 import { Select } from 'antd';
-import { useEffect, useState } from 'react';
 
 import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
 
@@ -9,14 +8,11 @@ const { Option } = Select;
 
 export interface FormMapProps {
   data: ResultResponse[];
+  selected: number[];
   onSelectRegion?: (input: number[]) => void;
 }
 
-export const FormMap = ({ data, onSelectRegion }: FormMapProps) => {
-  const [selected, setSelected] = useState<number[]>([]);
-
-  console.log(selected);
-
+export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
   const configureData = (county: ResultResponse): GeometryResponse => {
     const { geometry } = county;
     return {
@@ -26,12 +22,10 @@ export const FormMap = ({ data, onSelectRegion }: FormMapProps) => {
   };
 
   const onListSelect = (v: number) => {
-    setSelected([...selected, v]);
+    if (onSelectRegion) {
+      onSelectRegion([...selected, v]);
+    }
   };
-
-  useEffect(() => {
-    setSelected([]);
-  }, [data]);
 
   return (
     <>
@@ -41,7 +35,7 @@ export const FormMap = ({ data, onSelectRegion }: FormMapProps) => {
         optionFilterProp="children"
         value={selected}
         onSelect={onListSelect}
-        onChange={setSelected}
+        onChange={onSelectRegion}
         mode="multiple"
         allowClear
         style={{ width: '100%' }}
@@ -81,7 +75,6 @@ export const FormMap = ({ data, onSelectRegion }: FormMapProps) => {
                     ),
                   ];
                 }
-                setSelected(selectedRegions);
                 if (onSelectRegion) {
                   onSelectRegion(selectedRegions);
                 }
