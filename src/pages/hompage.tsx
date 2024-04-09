@@ -11,6 +11,7 @@ import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useFetchFeedQuery } from '@/store';
+import type { PlotModel } from '@/store/apis/feedApi';
 import { selectCurrentUser } from '@/store/slices/authSlice';
 
 import { COLUMNS } from './utility/constants';
@@ -21,6 +22,9 @@ const Homepage = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [fetchedOnce, setFetechedOnce] = useState(false);
   const [compareModels, setCompareModels] = useState<number[]>([]);
+  const [displayData, setDisplayData] = useState<PlotModel[]>(
+    data?.recentCompletedModels ?? [],
+  );
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
 
@@ -36,6 +40,10 @@ const Homepage = () => {
       refetch();
     }
   }, [user, fetchedOnce]);
+
+  useEffect(() => {
+    setDisplayData(data?.recentCompletedModels ?? []);
+  }, [data]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
@@ -61,6 +69,21 @@ const Homepage = () => {
     return <Box />;
   }
 
+  const filterScenarios = (filter: string | undefined) => {
+    if (filter) {
+      const newData = (data?.recentCompletedModels ?? []).filter(
+        (d) =>
+          d.flowScenario === filter ||
+          d.unsatScenario === filter ||
+          d.wellTypeScenario === filter ||
+          d.loadScenario === filter,
+      );
+      setDisplayData(newData);
+    } else {
+      setDisplayData(data?.recentCompletedModels ?? []);
+    }
+  };
+
   return (
     <>
       <HBox sx={{ mt: 2 }}>
@@ -79,13 +102,13 @@ const Homepage = () => {
           showSearch
           placeholder="Filter Scenarios"
           optionFilterProp="children"
-          mode="multiple"
           allowClear
           style={{ width: 500 }}
+          onChange={filterScenarios}
         >
           <Select.OptGroup label="Flow Scenario">
             {flowScenarioOptions.map((item) => (
-              <Select.Option key={item.id} value={item.id}>
+              <Select.Option key={item.id} value={item.name}>
                 {item.name}
               </Select.Option>
             ))}
@@ -143,7 +166,7 @@ const Homepage = () => {
       </Box>
       <CoreTable
         columns={COLUMNS}
-        data={data?.recentCompletedModels ?? []}
+        data={displayData}
         rowsPerPage={rowsPerPage}
         page={page}
         handleChangePage={handleChangePage}
