@@ -13,6 +13,7 @@ export interface RegionID {
 
 export interface Crop {
   id: number;
+  name: string;
 }
 
 export interface CropModification {
@@ -41,6 +42,7 @@ export interface Model {
   depth_range_max?: number;
   modifications?: CropModification[];
   advancedWellFilter?: boolean;
+  region_type?: number;
 }
 
 export interface ModelResult {
@@ -113,6 +115,15 @@ const modelSlice = createSlice({
     setAdvancedWellFilter(state, action: PayloadAction<boolean>) {
       return { ...state, advancedWellFilter: action.payload };
     },
+    setRegionType(state, action: PayloadAction<number>) {
+      return { ...state, region_type: action.payload };
+    },
+    clearModel() {
+      return {};
+    },
+    createNewModel(_state, action: PayloadAction<Model>) {
+      return { ...action.payload };
+    },
   },
 });
 
@@ -137,6 +148,9 @@ export const {
   setModelDepthRangeMax,
   setModelModifications,
   setAdvancedWellFilter,
+  setRegionType,
+  clearModel,
+  createNewModel,
 } = modelSlice.actions;
 export const modelReducer = modelSlice.reducer;
 export const selectCurrentModel = (state: RootState) => state.model;

@@ -29,6 +29,7 @@ import {
   setModelRegions,
   setModelScreenLenRangeMax,
   setModelScreenLenRangeMin,
+  setRegionType,
 } from '@/store/slices/modelSlice';
 
 import type { StepBase } from '../../create';
@@ -41,15 +42,19 @@ const { TabPane } = Tabs;
 interface Step2Props extends StepBase {}
 
 const Step2 = ({ onPrev, onNext }: Step2Props) => {
-  const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
+  const model = useSelector(selectCurrentModel);
+  const [mapType, setMapType] = useState<number>(
+    model.region_type ?? REGION_MACROS.CENTRAL_VALLEY,
+  );
   const [depthMin, setDepthMin] = useState<number>(0);
   const [depthMax, setDepthMax] = useState<number>(801);
   const [screenLenMin, setScreenLenMin] = useState<number>(0);
   const [screenLenMax, setScreenLenMax] = useState<number>(801);
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number[]>(
+    model.regions?.map((region) => region.id) ?? [],
+  );
   const dispatch = useDispatch();
-  const model = useSelector(selectCurrentModel);
   const [form] = Form.useForm();
 
   const { data: b118BasinData } = useFetchB118BasinQuery();
@@ -68,12 +73,22 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
     },
   };
 
+  // useEffect(() => {
+  //   form.setFieldValue('region', model.regions?.map((region) => region.id));
+  // }, []);
+
+  console.log('step 2 model', model);
+  console.log('step 2 selected', selected);
+  console.log(model.region_type);
+
   const handleTabChange = (tab: string) => {
     setSelected([]);
+    form.setFieldValue('region', []);
     setMapType(parseInt(tab, 10));
   };
 
   const onFormSubmit = (formData: FieldValues) => {
+    console.log('step 2 submit', formData);
     if (showAdvancedFilter) {
       dispatch(
         setModelRegions(
@@ -86,6 +101,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
       dispatch(setModelDepthRangeMin(formData.depth_range[1]));
       dispatch(setModelScreenLenRangeMin(formData.screen_length_range[0]));
       dispatch(setModelScreenLenRangeMax(formData.screen_length_range[1]));
+      dispatch(setRegionType(mapType));
     } else {
       dispatch(
         setModelRegions(
@@ -94,6 +110,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
           }),
         ),
       );
+      dispatch(setRegionType(mapType));
     }
     onNext();
   };
@@ -188,10 +205,12 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
           name="region"
           label="Region"
           rules={defaultRules('Please select at least one region')}
+          initialValue={model.regions?.map((region) => region.id)}
         >
           <FormMap
             data={getRegionData(mapType) ?? []}
             onSelectRegion={onRegionSelect}
+            selected={selected}
           />
           <WellNumber
             selectedRegions={selected}

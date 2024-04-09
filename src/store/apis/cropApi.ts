@@ -3,9 +3,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export interface Crop {
   id: number;
   name: string;
-  caml_code: string;
-  crop_type: number;
-  swat_code: number;
+  caml_code?: string;
+  crop_type?: number;
+  swat_code?: number;
 }
 
 export interface CropDetail {

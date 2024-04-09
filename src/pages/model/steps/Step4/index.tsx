@@ -56,10 +56,15 @@ const Step4 = ({ onPrev, onComplete }: Step4Props) => {
           name="model_name"
           label="Scenario name"
           rules={defaultRules('Please enter the model name')}
+          initialValue={model.name}
         >
           <Input placeholder="scenario name" />
         </Form.Item>
-        <Form.Item name="model_desc" label="Description">
+        <Form.Item
+          name="model_desc"
+          label="Description"
+          initialValue={model.description}
+        >
           <TextArea rows={4} />
         </Form.Item>
         <Form.Item
