@@ -33,8 +33,13 @@ const Step5 = ({ ids }: Step5Props) => {
       >
         View scenario run
       </Button>
-      <Button type="primary">Compare with BAU</Button>
-      <Button type="primary">Create another scenario</Button>
+      <Button
+        onClick={() => {
+          router.push(`/model/create`);
+        }}
+      >
+        Create another scenario
+      </Button>
     </>
   );
 
@@ -52,7 +57,7 @@ const Step5 = ({ ids }: Step5Props) => {
         </Box>
       )}
       {data && data.results[0] && data.results[0].status === 3 && (
-        <Result status="success" title="Scenario created" extra={extra} />
+        <Result status="success" title="Running simulation..." extra={extra} />
       )}
     </Box>
   );

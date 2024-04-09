@@ -118,6 +118,7 @@ const ModelDifferenceHeatmap = ({
               ]}
               label={<span>Aggregate(avg) years </span>}
               name="years"
+              initialValue={bucketSize}
             >
               <InputNumber style={{ width: '100%' }} max={200} min={5} />
             </Form.Item>
