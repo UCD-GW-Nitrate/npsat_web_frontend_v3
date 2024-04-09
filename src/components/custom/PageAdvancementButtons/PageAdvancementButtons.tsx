@@ -1,25 +1,33 @@
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
+import { Button, Space } from 'antd';
 
 import type { HBoxProps } from '../HBox/Hbox';
 import { HBox } from '../HBox/Hbox';
 
 export interface PageAdvancementButtonsProps extends HBoxProps {
-  onClickNext?: () => void;
   onClickPrev?: () => void;
+  canGoBack?: boolean;
 }
 
 export const PageAdvancementButtons = ({
   onClickPrev,
-  // onClickNext,
+  canGoBack = false,
   ...rest
 }: PageAdvancementButtonsProps) => (
   <HBox spacing={2} {...rest}>
-    <CoreButton variant="outlined" label="Prev" onClick={onClickPrev} />
-    <CoreButton
-      variant="contained"
-      label="Next"
-      type="submit"
-      // onClick={onClickNext}
-    />
+    <Space>
+      {canGoBack && (
+        <Button
+          onClick={onClickPrev}
+          style={{
+            marginLeft: 8,
+          }}
+        >
+          Prev
+        </Button>
+      )}
+      <Button type="primary" htmlType="submit">
+        Next
+      </Button>
+    </Space>
   </HBox>
 );

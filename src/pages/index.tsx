@@ -1,121 +1,26 @@
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box } from '@mui/material';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
-import { CoreTable } from '@/components/core/CoreTable/CoreTable';
-import Footer from '@/components/custom/Footer/Footer';
-import { HBox } from '@/components/custom/HBox/Hbox';
 import Layout from '@/components/custom/Layout/Layout';
-import { StandardText } from '@/components/custom/StandardText/StandardText';
-import { useFetchFeedQuery } from '@/store';
+import SecurityLayout from '@/components/custom/SecurityLayout/SecutiryLayout';
 import { selectCurrentUser } from '@/store/slices/authSlice';
 
-import { COLUMNS, FILTER_OPTIONS } from './utility/constants';
+import Homepage from './hompage';
 
 const Index = () => {
-  const { data, error, isFetching, refetch } = useFetchFeedQuery();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [fetchedOnce, setFetechedOnce] = useState(false);
-  const [compareModels, setCompareModels] = useState<number[]>([]);
-  const router = useRouter();
   const user = useSelector(selectCurrentUser);
 
-  useEffect(() => {
-    if (user && fetchedOnce) {
-      refetch();
-    }
-  }, [user, fetchedOnce]);
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-    newPage: number,
-  ) => {
-    event?.preventDefault();
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  if (!isFetching) {
-    if (!fetchedOnce) {
-      setFetechedOnce(true);
-    }
-  } else if (error) {
-    console.log(error);
-    return <Box />;
+  if (user === null) {
+    return (
+      <Layout>
+        <SecurityLayout />
+      </Layout>
+    );
   }
 
   return (
     <Layout>
-      <HBox sx={{ mt: 4 }}>
-        <StandardText variant="h1">Home</StandardText>
-        <CoreButton
-          label="Create Scenario"
-          variant="contained"
-          onClick={() => router.push('/model/create')}
-        />
-      </HBox>
-      <HBox spacing={1} sx={{ mt: 4 }}>
-        <StandardText variant="body1">Scenario Type:</StandardText>
-        <CoreMultipleSelect
-          options={FILTER_OPTIONS}
-          sx={{ minWidth: 600 }}
-          placeholder="Filter Scenarios"
-          group
-        />
-      </HBox>
-      <Box
-        sx={{
-          px: 2,
-          backgroundColor: 'rgba(100,149,237, 0.2)',
-          borderRadius: 1,
-          mt: 3,
-        }}
-      >
-        <HBox>
-          <HBox spacing={1}>
-            <InfoOutlinedIcon color="primary" sx={{ py: 2 }} />
-            You may select two or more models to compare. Maximum of 5.
-          </HBox>
-          <CoreButton
-            label="Compare Scenarios"
-            variant="outlined"
-            size="small"
-            disabled={compareModels.length <= 1 || compareModels.length > 5}
-            onClick={() =>
-              router.push({
-                pathname: '/model/compare',
-                query: {
-                  models: compareModels,
-                },
-              })
-            }
-          />
-        </HBox>
-      </Box>
-      <CoreTable
-        columns={COLUMNS}
-        data={data?.recentCompletedModels ?? []}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        handleChangePage={handleChangePage}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-        sx={{ mt: 4 }}
-        checkboxSelection
-        onCheckboxSelection={setCompareModels}
-      />
-      <Box sx={{ mt: 30 }} />
-      <Footer />
+      <Homepage />
     </Layout>
   );
 };
