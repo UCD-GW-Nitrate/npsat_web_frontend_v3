@@ -1,6 +1,7 @@
 import { Steps } from 'antd';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
 
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Layout from '@/components/custom/Layout/Layout';
@@ -13,7 +14,7 @@ import {
   useFetchTownshipQuery,
   useRunModelMutation,
 } from '@/store';
-import type { Model } from '@/store/slices/modelSlice';
+import { clearModel, type Model } from '@/store/slices/modelSlice';
 
 import Step1 from '../steps/Step1';
 import Step2 from '../steps/Step2';
@@ -41,6 +42,7 @@ const CreateModelPage = () => {
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
   }>({});
+  const dispatch = useDispatch();
 
   // fetch all map data beforehand
   useFetchB118BasinQuery();
@@ -97,6 +99,7 @@ const CreateModelPage = () => {
   const handleCompleteModel = (newModel: Model) => {
     runModel(newModel);
     handleCompleteSetp();
+    dispatch(clearModel());
   };
 
   return (

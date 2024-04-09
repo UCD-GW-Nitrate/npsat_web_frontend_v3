@@ -3,11 +3,12 @@ import { DatePicker, Divider, Form, InputNumber, Select, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 import type { FieldValues } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
+  selectCurrentModel,
   setModelFlowScenario,
   setModelLoadScenario,
   setModelReductionEndYear,
@@ -35,13 +36,14 @@ const Step1 = ({ onNext }: Step1Props) => {
     unsatScenarios: unsatScenarioOptions,
     welltypeScenarios: welltypeScenarioOptions,
   } = useScenarioGroups();
+  const model = useSelector(selectCurrentModel);
 
   const onFormSubmit = (data: FieldValues) => {
     dispatch(setModelFlowScenario({ id: data.flow_scenario }));
     dispatch(setModelLoadScenario({ id: data.load_scenario }));
     dispatch(setModelWelltypeScenario({ id: data.welltype_scenario }));
-    dispatch(setModelUnsatScenario(data.unsat_scenario));
-    dispatch(setModelWaterContent(data.water_content));
+    dispatch(setModelUnsatScenario({ id: data.unsat_scenario }));
+    dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
     dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(
       setModelReductionStartYear(
@@ -65,6 +67,8 @@ const Step1 = ({ onNext }: Step1Props) => {
     },
   };
 
+  console.log('modify', model);
+
   return (
     <>
       <Form
@@ -77,6 +81,7 @@ const Step1 = ({ onNext }: Step1Props) => {
           name="flow_scenario"
           label="Flow scenario"
           rules={defaultRules('Please select a flow scenario')}
+          initialValue={model.flow_scenario?.id}
         >
           <Select>
             {flowScenarioOptions.map((scen) => (
@@ -97,6 +102,7 @@ const Step1 = ({ onNext }: Step1Props) => {
           name="load_scenario"
           label="Load scenario"
           rules={defaultRules('Please select a load scenario')}
+          initialValue={model.load_scenario?.id}
         >
           <Select>
             {loadScenarioOptions.map((scen) => (
@@ -117,6 +123,7 @@ const Step1 = ({ onNext }: Step1Props) => {
           name="welltype_scenario"
           label="Well Type scenario"
           rules={defaultRules('Please select a well type scenario')}
+          initialValue={model.welltype_scenario?.id}
         >
           <Select>
             {welltypeScenarioOptions.map((scen) => (
@@ -137,6 +144,7 @@ const Step1 = ({ onNext }: Step1Props) => {
           name="unsat_scenario"
           label="Unsaturated zone depth scenario"
           rules={defaultRules('Please select an unsat scenario')}
+          initialValue={model.unsat_scenario?.id}
         >
           <Select>
             {unsatScenarioOptions.map((scen) => (
@@ -157,6 +165,9 @@ const Step1 = ({ onNext }: Step1Props) => {
           name="water_content"
           label="Unsaturated zone effective water content"
           rules={defaultRules('Please enter the water content')}
+          initialValue={
+            model.water_content ? model.water_content * 100 : undefined
+          }
         >
           <InputNumber min={0} max={200} formatter={(v) => `${v}%`} />
         </Form.Item>
@@ -166,7 +177,11 @@ const Step1 = ({ onNext }: Step1Props) => {
           rules={defaultRules(
             'Please enter numbers of years to simulate the scenario',
           )}
-          initialValue={dayjs().year(2100)}
+          initialValue={
+            model.sim_end_year
+              ? dayjs().year(model.sim_end_year)
+              : dayjs().year(2100)
+          }
         >
           <DatePicker
             picker="year"
@@ -180,6 +195,14 @@ const Step1 = ({ onNext }: Step1Props) => {
           name="reduction_year"
           label="Transition period"
           dependencies={['sim_end_year']}
+          initialValue={
+            model.reduction_start_year && model.reduction_end_year
+              ? [
+                  dayjs().year(model.reduction_start_year),
+                  dayjs().year(model.reduction_end_year),
+                ]
+              : undefined
+          }
           rules={[
             ...defaultRules('Please enter the reduction year'),
             ({ getFieldValue }) => ({

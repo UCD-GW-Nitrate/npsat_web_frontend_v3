@@ -42,6 +42,7 @@ export interface Model {
   depth_range_max?: number;
   modifications?: CropModification[];
   advancedWellFilter?: boolean;
+  region_type?: number;
 }
 
 export interface ModelResult {
