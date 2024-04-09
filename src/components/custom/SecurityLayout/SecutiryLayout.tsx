@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { Spin } from 'antd';
 import type { PropsWithChildren } from 'react';
 
 interface SecurityLayoutProps extends PropsWithChildren {
@@ -6,17 +6,17 @@ interface SecurityLayoutProps extends PropsWithChildren {
 }
 
 const SecurityLayout = ({ children, loading }: SecurityLayoutProps) => {
-  const authenticated = false;
+  // const authenticated = false;
 
-  if (!authenticated) {
-    redirect('/user/login');
-  }
+  // if (!authenticated) {
+  //   redirect('/user/login');
+  // }
 
   if (loading) {
-    return <div />;
+    return <Spin />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default SecurityLayout;

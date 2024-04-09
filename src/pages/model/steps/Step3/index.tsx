@@ -1,8 +1,9 @@
-import { Button, Divider, Form, Select } from 'antd';
+import { Divider, Form, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
+import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { useGetAllCropsByFlowScenarioQuery } from '@/store';
 import type { Crop } from '@/store/apis/cropApi';
 import type { CropModification } from '@/store/slices/modelSlice';
@@ -141,17 +142,7 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
             },
           }}
         >
-          <Button
-            onClick={onPrev}
-            style={{
-              marginLeft: 8,
-            }}
-          >
-            Prev
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Next
-          </Button>
+          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
         </Form.Item>
       </Form>
       <Divider />
