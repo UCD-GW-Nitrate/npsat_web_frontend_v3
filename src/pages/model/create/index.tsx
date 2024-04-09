@@ -1,9 +1,9 @@
 import { useTheme } from '@mui/material';
+import { Steps } from 'antd';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
-import { CoreStepper } from '@/components/core/CoreStepper/CoreStepper';
 import Layout from '@/components/custom/Layout/Layout';
 import {
   useFetchB118BasinQuery,
@@ -22,7 +22,9 @@ import Step3 from '../steps/Step3';
 import Step4 from '../steps/Step4';
 import Step5 from '../steps/Step5';
 
-export interface Step {
+const { Step } = Steps;
+
+export interface StepBase {
   onPrev: () => void;
   onNext: () => void;
 }
@@ -112,12 +114,27 @@ const CreateModelPage = () => {
             py: 5,
           }}
         >
-          <CoreStepper
-            steps={steps}
-            handleStep={handleStep}
-            completed={completed}
-            activeStep={activeStep}
-          />
+          <Steps
+            current={activeStep}
+            onChange={handleStep}
+            style={{ marginBottom: 20 }}
+          >
+            <Step title={steps[0]} disabled={activeStep >= 4} />
+            <Step
+              title={steps[1]}
+              disabled={activeStep < 1 || activeStep >= 4}
+            />
+            <Step
+              title={steps[2]}
+              disabled={activeStep < 2 || activeStep >= 4}
+            />
+            <Step
+              title={steps[3]}
+              disabled={activeStep < 3 || activeStep >= 4}
+            />
+            <Step title={steps[4]} disabled />
+          </Steps>
+
           {activeStep === 0 && (
             <Step1 onPrev={handleBack} onNext={handleCompleteSetp} />
           )}

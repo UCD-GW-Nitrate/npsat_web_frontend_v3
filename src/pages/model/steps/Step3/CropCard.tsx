@@ -6,9 +6,10 @@ import type { Crop } from '@/store/apis/cropApi';
 interface CropCardProps {
   crop: Crop;
   initialValue?: number;
+  onChange?: (input: number) => void;
 }
 
-const CropCard = ({ crop, initialValue }: CropCardProps) => {
+const CropCard = ({ crop, initialValue, onChange }: CropCardProps) => {
   const [value, setValue] = useState<number>(initialValue ?? 0);
 
   return (
@@ -26,7 +27,12 @@ const CropCard = ({ crop, initialValue }: CropCardProps) => {
               200: '200%',
             }}
             value={value}
-            onChange={setValue}
+            onChange={(v) => {
+              setValue(v);
+              if (onChange) {
+                onChange(v);
+              }
+            }}
           />
         </Col>
         <Col span={4}>
@@ -34,7 +40,12 @@ const CropCard = ({ crop, initialValue }: CropCardProps) => {
             min={0}
             max={200}
             value={value}
-            onChange={(v: number | null) => setValue(v ?? initialValue ?? 0)}
+            onChange={(v: number | null) => {
+              setValue(v ?? initialValue ?? 0);
+              if (onChange) {
+                onChange(v ?? initialValue ?? 0);
+              }
+            }}
             style={{ margin: '0 16px' }}
             formatter={(v) => `${v}%`}
           />

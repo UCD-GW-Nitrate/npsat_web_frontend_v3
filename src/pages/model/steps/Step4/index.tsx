@@ -1,12 +1,9 @@
-import { Box, Divider } from '@mui/material';
+import { Button, Divider, Form, Input } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CoreForm } from '@/components/core/CoreForm/CoreForm';
-import { CoreFormLayout } from '@/components/core/CoreForm/CoreFormLayout';
-import { CoreTextField } from '@/components/core/CoreTextField/CoreTextField';
-import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import type { Model } from '@/store/slices/modelSlice';
 import {
   selectCurrentModel,
@@ -14,56 +11,87 @@ import {
   setModelName,
 } from '@/store/slices/modelSlice';
 
-import type { Step } from '../../create';
+import type { StepBase } from '../../create';
+import defaultRules from '../util/defaultRules';
 import Step4Instructions from './Step4Instructions';
 
-interface Step4Props extends Step {
+interface Step4Props extends StepBase {
   onComplete: (newModel: Model) => void;
 }
-
-const fields = [
-  { label: 'Scenario name:' },
-  {
-    label: 'Description:',
-    position: 'flex-start' as 'flex-start' | 'center' | 'flex-end',
-  },
-];
 
 const Step4 = ({ onPrev, onComplete }: Step4Props) => {
   const dispatch = useDispatch();
   const model = useSelector(selectCurrentModel);
+  const [form] = Form.useForm();
+
   const onFormSubmit = (data: FieldValues) => {
-    dispatch(setModelName(data['scenario name']));
+    dispatch(setModelName(data.model_name));
     dispatch(setModelDescription(data.description));
     onComplete({
       ...model,
-      name: data['scenario name'],
-      description: data.description,
+      name: data.model_name,
+      description: data.model_desc,
     });
   };
 
+  const formItemLayout = {
+    labelCol: {
+      span: 7,
+    },
+    wrapperCol: {
+      span: 25,
+    },
+  };
+
   return (
-    <Box>
-      <CoreForm
-        sx={{
-          mt: 6,
-        }}
-        onFormSubmit={(data: FieldValues) => onFormSubmit(data)}
+    <>
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="horizontal"
+        onFinish={onFormSubmit}
       >
-        <CoreFormLayout fields={fields}>
-          <CoreTextField sx={{ width: 400 }} name="scenario name" formField />
-          <CoreTextField
-            sx={{ width: 400 }}
-            name="description"
-            multiline
-            formField
-          />
-          <PageAdvancementButtons onClickPrev={onPrev} />
-        </CoreFormLayout>
-      </CoreForm>
-      <Divider sx={{ mt: 6 }} />
+        <Form.Item
+          name="model_name"
+          label="Scenario name"
+          rules={defaultRules('Please enter the model name')}
+        >
+          <Input placeholder="scenario name" />
+        </Form.Item>
+        <Form.Item name="model_desc" label="Description">
+          <TextArea rows={4} />
+        </Form.Item>
+        <Form.Item
+          style={{
+            marginBottom: 8,
+          }}
+          wrapperCol={{
+            xs: {
+              span: 24,
+              offset: 0,
+            },
+            sm: {
+              span: formItemLayout.wrapperCol.span,
+              offset: formItemLayout.labelCol.span,
+            },
+          }}
+        >
+          <Button
+            onClick={onPrev}
+            style={{
+              marginLeft: 8,
+            }}
+          >
+            Prev
+          </Button>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+      <Divider />
       <Step4Instructions />
-    </Box>
+    </>
   );
 };
 
