@@ -1,9 +1,8 @@
-import { useTheme } from '@mui/material';
 import { Steps } from 'antd';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
+import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Layout from '@/components/custom/Layout/Layout';
 import {
   useFetchB118BasinQuery,
@@ -38,7 +37,6 @@ const steps = [
 ];
 
 const CreateModelPage = () => {
-  const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState<{
     [k: number]: boolean;
@@ -108,12 +106,7 @@ const CreateModelPage = () => {
         <meta name="description" content="Create Scenario - NPSAT" />
       </Helmet>
       <Layout>
-        <CoreContainer
-          sx={{
-            backgroundColor: theme.palette.secondary.main,
-            py: 5,
-          }}
-        >
+        <InfoContainer>
           <Steps
             current={activeStep}
             onChange={handleStep}
@@ -154,7 +147,7 @@ const CreateModelPage = () => {
           {activeStep === 4 && !modelDataLoading && modelData?.id && (
             <Step5 ids={modelData?.id} />
           )}
-        </CoreContainer>
+        </InfoContainer>
       </Layout>
     </HelmetProvider>
   );

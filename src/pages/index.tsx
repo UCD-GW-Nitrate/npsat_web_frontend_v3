@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { CoreTable } from '@/components/core/CoreTable/CoreTable';
-import { CoreText } from '@/components/core/CoreText/CoreText';
 import Footer from '@/components/custom/Footer/Footer';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import Layout from '@/components/custom/Layout/Layout';
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { useFetchFeedQuery } from '@/store';
 import { selectCurrentUser } from '@/store/slices/authSlice';
 
@@ -58,7 +58,7 @@ const Index = () => {
   return (
     <Layout>
       <HBox sx={{ mt: 4 }}>
-        <CoreText variant="h1">Home</CoreText>
+        <StandardText variant="h1">Home</StandardText>
         <CoreButton
           label="Create Scenario"
           variant="contained"
@@ -66,7 +66,7 @@ const Index = () => {
         />
       </HBox>
       <HBox spacing={1} sx={{ mt: 4 }}>
-        <CoreText variant="body1">Scenario Type:</CoreText>
+        <StandardText variant="body1">Scenario Type:</StandardText>
         <CoreMultipleSelect
           options={FILTER_OPTIONS}
           sx={{ minWidth: 600 }}

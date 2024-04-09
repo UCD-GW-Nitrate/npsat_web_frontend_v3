@@ -1,13 +1,8 @@
-import { Box } from '@mui/material';
+import { Button, Col, Form, InputNumber, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
-import { FormProvider, useForm } from 'react-hook-form';
 
 import DifferenceHeatmap from '@/components/charts/DifferenceHeatmap/DifferenceHeatmap';
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import { CoreFormElement } from '@/components/core/CoreForm/CoreFormElement';
-import { CoreNumberField } from '@/components/core/CoreNumberField/CoreNumberField';
-import { HBox } from '@/components/custom/HBox/Hbox';
 import type { PercentileResultMap } from '@/hooks/useModelResults';
 
 interface ModelDifferenceHeatmapProps {
@@ -99,36 +94,43 @@ const ModelDifferenceHeatmap = ({
   };
 
   const onFormSubmit = (data: FieldValues) => {
-    setBucketSize(data['Aggregate (avg) years']);
-    console.log(data['Aggregate (avg) years']);
+    setBucketSize(data.years);
   };
-
-  const formField = { label: 'Aggregate (avg) years:' };
-  const methods = useForm();
 
   return (
     <>
-      <FormProvider {...methods}>
-        <Box
-          component="form"
-          onSubmit={methods.handleSubmit((data) => {
-            onFormSubmit(data);
-          })}
-          sx={{ mb: 4 }}
-        >
-          <HBox>
-            <Box>
-              <CoreFormElement formField={formField}>
-                <CoreNumberField
-                  name="Aggregate (avg) years"
-                  defaultValue={20}
-                />
-              </CoreFormElement>
-            </Box>
-            <CoreButton label="Submit" type="submit" variant="contained" />
-          </HBox>
-        </Box>
-      </FormProvider>
+      <Form onFinish={onFormSubmit}>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item
+              required
+              rules={[
+                {
+                  validator: (_, value) => {
+                    if (value <= 200 && value >= 5) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(`Out of range. Select from 5 to 200`),
+                    );
+                  },
+                },
+              ]}
+              label={<span>Aggregate(avg) years </span>}
+              name="years"
+            >
+              <InputNumber style={{ width: '100%' }} max={200} min={5} />
+            </Form.Item>
+          </Col>
+          <Col span={2}>
+            <Form.Item style={{ float: 'right' }}>
+              <Button htmlType="submit" type="primary">
+                Submit
+              </Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
       <DifferenceHeatmap data={aggregate(plotData, bucketSize)} />
     </>
   );

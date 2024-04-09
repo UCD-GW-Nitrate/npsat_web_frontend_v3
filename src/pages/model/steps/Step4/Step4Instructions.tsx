@@ -1,30 +1,30 @@
 import { Box } from '@mui/material';
 
-import { CoreText } from '@/components/core/CoreText/CoreText';
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 const Step4Instructions = () => {
   return (
     <Box sx={{ mx: 4 }}>
-      <CoreText variant="h2" color="description" paragraph>
+      <StandardText variant="h4" color="description">
         Instructions
-      </CoreText>
-      <CoreText variant="h3" color="description" paragraph>
+      </StandardText>
+      <StandardText variant="h5" color="description">
         Scenario name
-      </CoreText>
-      <CoreText color="description" paragraph>
+      </StandardText>
+      <StandardText color="description">
         Enter a scenario name, limited 255 characters.
-      </CoreText>
-      <CoreText variant="h3" color="description" paragraph>
+      </StandardText>
+      <StandardText variant="h5" color="description">
         Scenario description
-      </CoreText>
-      <CoreText color="description" paragraph>
+      </StandardText>
+      <StandardText color="description">
         Enter scenario optional description, no characters limit.
-      </CoreText>
-      <CoreText color="description" paragraph>
+      </StandardText>
+      <StandardText color="description">
         Once submitted, your customized scenario will be created and run.
         Scenario will be running for a few seconds to up to a minute (based on
         number of wells selected) to generate results.
-      </CoreText>
+      </StandardText>
     </Box>
   );
 };

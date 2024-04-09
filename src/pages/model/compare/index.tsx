@@ -2,10 +2,10 @@ import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import { CoreContainer } from '@/components/core/CoreContainer/CoreContainer';
-import { CoreText } from '@/components/core/CoreText/CoreText';
 import Footer from '@/components/custom/Footer/Footer';
+import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Layout from '@/components/custom/Layout/Layout';
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelDetails } from '@/hooks/useModelDetails';
 import type { PercentileResultMap } from '@/hooks/useModelResults';
@@ -51,17 +51,15 @@ const CompareModelPage = () => {
         <meta name="description" content="Compare Scenario - NPSAT" />
       </Helmet>
       <Layout>
-        <CoreText variant="h1" sx={{ my: 4 }}>
-          Compare Models
-        </CoreText>
+        <StandardText variant="h1">Compare Models</StandardText>
         <VBox spacing={4}>
-          <CoreContainer title="Scenarios Selected">
+          <InfoContainer title="Scenarios Selected">
             <CompareModelsTable data={allModelDetails} />
-          </CoreContainer>
-          <CoreContainer title="Crop Selection">
+          </InfoContainer>
+          <InfoContainer title="Crop Selection">
             <CropLoadingDetailsTable modelDetails={allModelDetails} />
-          </CoreContainer>
-          <CoreContainer title="Comparison Line Chart">
+          </InfoContainer>
+          <InfoContainer title="Comparison Line Chart">
             <ComparisonChart
               comparisonChartModels={getComparisonChartModels(
                 allModelResults,
@@ -69,7 +67,7 @@ const CompareModelPage = () => {
               )}
               percentiles={customPercentilesData}
             />
-          </CoreContainer>
+          </InfoContainer>
         </VBox>
         <Box sx={{ mt: 10 }} />
         <Footer />
