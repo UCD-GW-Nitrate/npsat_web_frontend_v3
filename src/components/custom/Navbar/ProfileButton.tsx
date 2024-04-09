@@ -1,7 +1,5 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
-  alpha,
-  Avatar,
   Box,
   Divider,
   ListItemIcon,
@@ -10,19 +8,20 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Avatar } from 'antd';
 import React from 'react';
 
-import { CoreIconButton } from '../../core/CoreIconButton/CoreIconButton';
-
 const ProfileButton = () => {
-  const theme = useTheme();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null,
   );
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+  const handleOpenUserMenu = (
+    e?: React.MouseEvent<HTMLElement, MouseEvent> | undefined,
+  ) => {
+    if (e) {
+      setAnchorElUser(e.currentTarget);
+    }
   };
 
   const handleCloseUserMenu = () => {
@@ -32,11 +31,9 @@ const ProfileButton = () => {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
-        <CoreIconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.15) }}>
-            C
-          </Avatar>
-        </CoreIconButton>
+        <Avatar size="large" onClick={handleOpenUserMenu}>
+          C
+        </Avatar>
       </Tooltip>
       <Menu
         sx={{ mt: 2 }}
@@ -66,7 +63,7 @@ const ProfileButton = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main, mt: 2 }}>C</Avatar>
+          <Avatar>C</Avatar>
           <Typography sx={{ mt: 1, mb: 2 }}>caden</Typography>
         </Box>
         <Divider light />

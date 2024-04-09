@@ -1,9 +1,8 @@
 import { Box, CircularProgress } from '@mui/material';
-import { Result } from 'antd';
+import { Button, Result } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { useGetModelStatusQuery } from '@/store';
 
@@ -26,15 +25,16 @@ const Step5 = ({ ids }: Step5Props) => {
 
   const extra = (
     <>
-      <CoreButton
-        label="View scenario run"
-        variant="contained"
+      <Button
+        type="primary"
         onClick={() => {
           router.push(`/model/?id=${ids}`);
         }}
-      />
-      <CoreButton label="Compare with BAU" variant="outlined" />
-      <CoreButton label="Create another scenario" variant="outlined" />
+      >
+        View scenario run
+      </Button>
+      <Button type="primary">Compare with BAU</Button>
+      <Button type="primary">Create another scenario</Button>
     </>
   );
 

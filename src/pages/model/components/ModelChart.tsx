@@ -1,10 +1,8 @@
 import { Box } from '@mui/material';
+import { Button, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
-import { CoreButton } from '@/components/core/CoreButton/CoreButton';
-import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
-import { CoreMultipleSelect } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import type { ModelDisplay } from '@/hooks/useModelResults';
 import { useModelResults } from '@/hooks/useModelResults';
@@ -25,9 +23,6 @@ const ModelChart = ({
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
     5, 50, 95,
   ]);
-  const [multSelect, setMultSelect] = useState<
-    (CoreMultipleSelectOption | undefined)[]
-  >([]);
   const [percentileButtonClicked, setPercentileButtonClicked] =
     useState<string>('Select 5th, 50th, 95th');
 
@@ -59,103 +54,83 @@ const ModelChart = ({
 
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
-    setMultSelect(
-      (percentilesDisplayed as number[]).map((p) => {
-        const res: CoreMultipleSelectOption = {
-          label: `${p}th percentile`,
-          value: p,
-        };
-        return res;
-      }),
-    );
   }, [plotData, percentilesDisplayed]);
-
-  useEffect(() => {
-    setDisplayData(configureDisplayData(multSelect.map((p) => p!.value)));
-  }, [multSelect]);
 
   if (!plotData) {
     return <div />;
   }
 
-  const handleMultSelect = (
-    selected: (CoreMultipleSelectOption | undefined)[],
-  ) => {
-    setMultSelect(selected);
-    setPercentilesDisplayed(selected.map((s) => s?.value));
-  };
-
-  console.log('display data: ', displayData);
-
   return (
     <Box>
-      <CoreMultipleSelect
-        group={false}
+      <Select
+        showSearch
         placeholder="Select Percentiles"
-        options={(percentilesData as number[]).map((p) => {
-          const res: CoreMultipleSelectOption = {
-            label: `${p}th percentile`,
-            value: p,
-          };
-          return res;
-        })}
-        fieldValue={multSelect}
-        setFieldValue={handleMultSelect}
-        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-      />
+        optionFilterProp="children"
+        mode="multiple"
+        allowClear
+        value={percentilesDisplayed}
+        onChange={setPercentilesDisplayed}
+        style={{ width: '100%' }}
+      >
+        {(percentilesData as number[]).map((p) => (
+          <Select.Option key={p} value={p}>
+            {p}th percentile
+          </Select.Option>
+        ))}
+      </Select>
       <HBox sx={{ mt: 2, mb: 4 }}>
         <HBox spacing={1}>
-          <CoreButton
-            variant={
+          <Button
+            type={
               percentileButtonClicked === 'Select 5th, 50th, 95th'
-                ? 'contained'
-                : 'outlined'
+                ? 'primary'
+                : 'default'
             }
-            label="Select 5th, 50th, 95th"
             onClick={() => {
               setPercentilesDisplayed([5, 50, 95]);
               setPercentileButtonClicked('Select 5th, 50th, 95th');
             }}
-            size="small"
-          />
-          <CoreButton
-            variant={
+          >
+            Select 5th, 50th, 95th
+          </Button>
+          <Button
+            type={
               percentileButtonClicked === 'Select 10th, 50th, 90th'
-                ? 'contained'
-                : 'outlined'
+                ? 'primary'
+                : 'default'
             }
-            label="Select 10th, 50th, 90th"
             onClick={() => {
               setPercentilesDisplayed([10, 50, 90]);
               setPercentileButtonClicked('Select 10th, 50th, 90th');
             }}
-            size="small"
-          />
-          <CoreButton
-            variant={
+          >
+            Select 10th, 50th, 90th
+          </Button>
+          <Button
+            type={
               percentileButtonClicked === 'Select 25th, 50th, 75th'
-                ? 'contained'
-                : 'outlined'
+                ? 'primary'
+                : 'default'
             }
-            label="Select 25th, 50th, 75th"
             onClick={() => {
               setPercentilesDisplayed([25, 50, 75]);
               setPercentileButtonClicked('Select 25th, 50th, 75th');
             }}
-            size="small"
-          />
+          >
+            Select 25th, 50th, 75th
+          </Button>
         </HBox>
-        <CoreButton
-          variant={
-            percentileButtonClicked === 'Select All' ? 'contained' : 'outlined'
+        <Button
+          type={
+            percentileButtonClicked === 'Select All' ? 'primary' : 'default'
           }
-          label="Select All"
           onClick={() => {
             setPercentilesDisplayed(percentilesData as number[]);
             setPercentileButtonClicked('Select All');
           }}
-          size="small"
-        />
+        >
+          Select All
+        </Button>
       </HBox>
       <LineChart
         data={displayData}

@@ -1,9 +1,10 @@
-import { Box, Divider } from '@mui/material';
+import { Box } from '@mui/material';
+import { Tabs } from 'antd';
+import TabPane from 'antd/es/tabs/TabPane';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 
-import { CoreTabs } from '@/components/core/CoreTabs/CoreTabs';
 import Footer from '@/components/custom/Footer/Footer';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Layout from '@/components/custom/Layout/Layout';
@@ -26,7 +27,9 @@ const ModelPage = () => {
   const router = useRouter();
   const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
 
-  const [selectedTab, setSelectedTab] = useState('Comparison Line Plot');
+  const [selectedTab, setSelectedTab] = useState<string>(
+    'Comparison Line Plot',
+  );
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
     ssr: false,
@@ -45,14 +48,6 @@ const ModelPage = () => {
 
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
-  const tabs = [
-    {
-      label: 'Comparison Line Plot',
-    },
-    {
-      label: 'Difference Heatmap',
-    },
-  ];
   const baseComparisonModel: ComparisonChartModel = {
     name: 'base',
     plotData: baseModel,
@@ -134,8 +129,15 @@ const ModelPage = () => {
           />
         </InfoContainer>
         <InfoContainer title="BAU comparison">
-          <CoreTabs tabs={tabs} onTabChange={(tab) => setSelectedTab(tab)} />
-          <Divider sx={{ mb: 4 }} />
+          <Tabs
+            tabPosition="top"
+            centered
+            activeKey={selectedTab}
+            onChange={setSelectedTab}
+          >
+            <TabPane tab="Comparison Line Plot" key="Comparison Line Plot" />
+            <TabPane tab="Difference Heatmap" key="Difference Heatmap" />
+          </Tabs>
           <div role="tabpanel" hidden={selectedTab !== 'Comparison Line Plot'}>
             {linePlot}
           </div>

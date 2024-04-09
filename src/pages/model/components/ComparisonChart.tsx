@@ -1,9 +1,8 @@
 import { Box } from '@mui/material';
+import { Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
-import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
-import { CoreSelect } from '@/components/core/CoreSelect/CoreSelect';
 import type {
   ModelDisplay,
   PercentileResultMap,
@@ -61,18 +60,17 @@ const ComparisonChart = ({
 
   return (
     <Box>
-      <CoreSelect
-        options={percentiles.map((p) => {
-          const res: CoreMultipleSelectOption = {
-            label: `${p}th percentile`,
-            value: p,
-          };
-          return res;
-        })}
-        sx={{ minWidth: 200, mb: 3 }}
-        defaultValue={50}
-        onSelect={(value: number) => setPercentilesDisplayed(value)}
-      />
+      <Select
+        value={percentilesDisplayed}
+        onSelect={setPercentilesDisplayed}
+        style={{ width: '100%', marginBottom: 4 }}
+      >
+        {percentiles.map((p) => (
+          <Select.Option value={p} key={p}>
+            {p}th percentile
+          </Select.Option>
+        ))}
+      </Select>
       <LineChart
         data={displayData}
         reductionEndYear={reductionCompleteYear}

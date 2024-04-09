@@ -1,8 +1,9 @@
-import { Button, Divider, Form, Switch, Tabs } from 'antd';
+import { Divider, Form, Switch, Tabs } from 'antd';
 import React, { useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { FormMap } from '@/components/maps/FormMap';
 import {
@@ -271,17 +272,7 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
             },
           }}
         >
-          <Button
-            onClick={onPrev}
-            style={{
-              marginLeft: 8,
-            }}
-          >
-            Prev
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Next
-          </Button>
+          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
         </Form.Item>
       </Form>
       <Divider />

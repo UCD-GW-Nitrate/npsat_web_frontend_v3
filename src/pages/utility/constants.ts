@@ -1,5 +1,3 @@
-import type { CoreMenuOption } from '@/components/core/CoreMenu/CoreMenu';
-import type { CoreMultipleSelectOption } from '@/components/core/CoreMultipleSelect/CoreMultipleSelect';
 import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
 
 export const MODEL_STATUS_MACROS = {
@@ -56,66 +54,5 @@ export const COLUMNS: CoreTableColumn[] = [
     field: 'dateCreated',
     label: 'Date Created',
     width: 120,
-  },
-];
-
-export const FILTER_OPTIONS: CoreMultipleSelectOption[] = [
-  {
-    label: 'C2Vsim',
-    group: 'Flow Scenario',
-  },
-  {
-    label: 'CVHM',
-    group: 'Flow Scenario',
-  },
-  {
-    label: 'Baseline',
-    group: 'Load Scenario',
-  },
-  {
-    label: 'GNLM',
-    group: 'Load Scenario',
-  },
-  {
-    label: 'High Irrigation',
-    group: 'Load Scenario',
-  },
-  {
-    label: 'High Fertilization',
-    group: 'Load Scenario',
-  },
-  {
-    label: 'High Irrigation and High Fertilization',
-    group: 'Load Scenario',
-  },
-  {
-    label: 'Drought vadose zone thickness (spring 2015)',
-    group: 'Unsat Scenario',
-  },
-  {
-    label: 'Typical vadose zone thickness (spring 2000)',
-    group: 'Unsat Scenario',
-  },
-  {
-    label: 'Domestic Wells',
-    group: 'Well Type Scenario',
-  },
-  {
-    label: 'Public Supply and Irrigation Wells',
-    group: 'Well Type Scenario',
-  },
-  {
-    label:
-      'Virtual Shallow Monitoring Well Network Grid (Currently Unavailable)',
-    group: 'Well Type Scenario',
-  },
-];
-
-export const COMPARE_SCENARIO_OPTIONS: CoreMenuOption[] = [
-  {
-    label: 'Compare with BAU',
-  },
-  {
-    label: 'Compare with other scenarios',
   },
 ];

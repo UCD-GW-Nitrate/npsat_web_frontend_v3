@@ -1,9 +1,10 @@
-import { Button, Divider, Form, Input } from 'antd';
+import { Divider, Form, Input } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import type { Model } from '@/store/slices/modelSlice';
 import {
   selectCurrentModel,
@@ -76,17 +77,7 @@ const Step4 = ({ onPrev, onComplete }: Step4Props) => {
             },
           }}
         >
-          <Button
-            onClick={onPrev}
-            style={{
-              marginLeft: 8,
-            }}
-          >
-            Prev
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
+          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
         </Form.Item>
       </Form>
       <Divider />

@@ -1,18 +1,11 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import {
-  Button,
-  DatePicker,
-  Divider,
-  Form,
-  InputNumber,
-  Select,
-  Tooltip,
-} from 'antd';
+import { DatePicker, Divider, Form, InputNumber, Select, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
+import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   setModelFlowScenario,
@@ -236,9 +229,7 @@ const Step1 = ({ onNext }: Step1Props) => {
             },
           }}
         >
-          <Button type="primary" htmlType="submit">
-            Next
-          </Button>
+          <PageAdvancementButtons />
         </Form.Item>
       </Form>
       <Divider />
