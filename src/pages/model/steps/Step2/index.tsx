@@ -30,14 +30,14 @@ import {
   setModelScreenLenRangeMin,
 } from '@/store/slices/modelSlice';
 
-import type { Step } from '../../create';
+import type { StepBase } from '../../create';
 import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';
 
 const { TabPane } = Tabs;
 
-interface Step2Props extends Step {}
+interface Step2Props extends StepBase {}
 
 const Step2 = ({ onPrev, onNext }: Step2Props) => {
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
