@@ -64,17 +64,8 @@ const ModelDescriptionTable = ({
           ? `${((modelDetail?.water_content ?? 0) * 100).toFixed(0)}%`
           : ''}
       </Descriptions.Item>
-      <Descriptions.Item label="Is public scenario">
-        {modelDetail?.public ? 'yes' : 'no'}
-      </Descriptions.Item>
-      <Descriptions.Item label="Is BAU">
-        {modelDetail?.is_base ? 'yes' : 'no'}
-      </Descriptions.Item>
       <Descriptions.Item label="Number of wells detected in selected region(s)">
         {modelDetail?.n_wells || 'scenario run not yet complete'}
-      </Descriptions.Item>
-      <Descriptions.Item label="Status message" span={3}>
-        {modelDetail?.status_message || 'no message'}
       </Descriptions.Item>
       <Descriptions.Item label="Scenario description" span={3}>
         {modelDetail?.description || 'no description'}

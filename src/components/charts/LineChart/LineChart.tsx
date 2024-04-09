@@ -72,6 +72,13 @@ const LineChart = ({
     tooltip: {
       inverseOrder: true,
     },
+    yaxis: {
+      labels: {
+        formatter(val) {
+          return `${Math.floor(val)}`;
+        },
+      },
+    },
   };
 
   return (
