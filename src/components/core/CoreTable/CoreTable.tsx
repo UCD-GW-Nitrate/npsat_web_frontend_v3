@@ -1,6 +1,8 @@
 import type { PaperProps } from '@mui/material';
 import {
+  Box,
   Checkbox,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -11,8 +13,8 @@ import {
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import Scrollable from '@/components/custom/Scrollable/Scrollable';
+import { CONTAINER_COLOR } from '@/components/theme';
 import type { PlotModel } from '@/store/apis/feedApi';
 
 export interface CoreTableColumn {
@@ -93,84 +95,94 @@ export const CoreTable = ({
   };
 
   return (
-    <InfoContainer>
-      <Scrollable>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {checkboxSelection && (
-                <TableCell>
-                  <Checkbox
-                    indeterminate={
-                      selected.length > 0 && selected.length < data.length
-                    }
-                    checked={selected.length === data.length}
-                    onChange={handleSelectAllClick}
-                  />
-                </TableCell>
-              )}
-              {columns.map((column) => (
-                <TableCell
-                  key={column.field}
-                  style={{ minWidth: column.width, backgroundColor: 'white' }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(data ?? [])
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={row.id}
-                    onClick={() =>
-                      router.push({
-                        pathname: `/model/`,
-                        query: { id: row.id },
-                      })
-                    }
-                    selected={isSelected(row.id)}
+    <Paper
+      elevation={0}
+      sx={{
+        backgroundColor: CONTAINER_COLOR,
+        overflow: 'clip',
+        overflowX: 'hidden',
+        mt: 2,
+      }}
+    >
+      <Box>
+        <Scrollable>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {checkboxSelection && (
+                  <TableCell>
+                    <Checkbox
+                      indeterminate={
+                        selected.length > 0 && selected.length < data.length
+                      }
+                      checked={selected.length === data.length}
+                      onChange={handleSelectAllClick}
+                    />
+                  </TableCell>
+                )}
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.field}
+                    style={{ minWidth: column.width, backgroundColor: 'white' }}
                   >
-                    {checkboxSelection && (
-                      <TableCell sx={{ py: 0 }}>
-                        <Checkbox
-                          onClick={(event) =>
-                            handleCheckboxClick(event, row.id)
-                          }
-                          checked={isSelected(row.id)}
-                        />
-                      </TableCell>
-                    )}
-                    {columns.map((column) => {
-                      const value = row[column.field as keyof PlotModel];
-                      return (
-                        <TableCell key={column.field}>
-                          {value as string}
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(data ?? [])
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.id}
+                      onClick={() =>
+                        router.push({
+                          pathname: `/model/`,
+                          query: { id: row.id },
+                        })
+                      }
+                      selected={isSelected(row.id)}
+                    >
+                      {checkboxSelection && (
+                        <TableCell sx={{ py: 0 }}>
+                          <Checkbox
+                            onClick={(event) =>
+                              handleCheckboxClick(event, row.id)
+                            }
+                            checked={isSelected(row.id)}
+                          />
                         </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </Scrollable>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={(data ?? []).length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ overflow: 'fixed' }}
-      />
-    </InfoContainer>
+                      )}
+                      {columns.map((column) => {
+                        const value = row[column.field as keyof PlotModel];
+                        return (
+                          <TableCell key={column.field}>
+                            {value as string}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Scrollable>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={(data ?? []).length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{ overflow: 'fixed' }}
+        />
+      </Box>
+    </Paper>
   );
 };
