@@ -3,8 +3,8 @@ import { AppBar, Box, IconButton, Toolbar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 
+import ProfileButton from '../AppLayout/ProfileButton';
 import Logo from './Logo';
-import ProfileButton from './ProfileButton';
 import SearchBar from './SearchBar';
 
 interface TopBarProps {

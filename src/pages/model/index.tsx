@@ -9,7 +9,6 @@ import { useDispatch } from 'react-redux';
 import Footer from '@/components/custom/Footer/Footer';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
-import Layout from '@/components/custom/Layout/Layout';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
@@ -141,7 +140,7 @@ const ModelPage = () => {
   };
 
   return (
-    <Layout>
+    <>
       <HBox>
         <StandardText variant="h1">Details and Results</StandardText>
         <Button type="primary" size="large" onClick={copyAndModifyModel}>
@@ -197,7 +196,7 @@ const ModelPage = () => {
       </VBox>
       <Box sx={{ mt: 10 }} />
       <Footer />
-    </Layout>
+    </>
   );
 };
 

@@ -2,35 +2,16 @@ import 'leaflet/dist/leaflet.css';
 import '@/components/maps/styles.css';
 import '../styles/global.css';
 
-import { GlobalStyles } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { ConfigProvider } from 'antd';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { type PropsWithChildren, useEffect } from 'react';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
 
-import theme, { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/components/theme';
-import type { AuthState } from '@/store/apis/authApi';
-import { setCredentials } from '@/store/slices/authSlice';
+import AppLayout from '@/components/custom/AppLayout/AppLayout';
+import theme, { PRIMARY_COLOR } from '@/components/theme';
 
 import { store } from '../store';
-
-const Wrapper = ({ children }: PropsWithChildren) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const cachedAuthState: AuthState = JSON.parse(
-      localStorage.getItem('npsat_user_info') ?? '{}',
-    );
-
-    console.log('cachedAuthState', cachedAuthState);
-
-    dispatch(setCredentials(cachedAuthState));
-  }, []);
-
-  return <>{children}</>;
-};
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -78,14 +59,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         >
           <ThemeProvider theme={theme}>
-            <GlobalStyles
-              styles={{
-                body: { backgroundColor: BACKGROUND_COLOR },
-              }}
-            />
-            <Wrapper>
+            <AppLayout>
               <Component {...pageProps} />
-            </Wrapper>
+            </AppLayout>
           </ThemeProvider>
         </ConfigProvider>
       </Provider>
