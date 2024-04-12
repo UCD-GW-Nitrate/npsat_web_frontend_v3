@@ -86,8 +86,10 @@ const Homepage = () => {
 
   return (
     <>
-      <HBox sx={{ mt: 2 }}>
-        <StandardText variant="h1">Home</StandardText>
+      <HBox>
+        <StandardText variant="h1" style={{ marginTop: 10 }}>
+          Home
+        </StandardText>
         <Button
           type="primary"
           size="large"

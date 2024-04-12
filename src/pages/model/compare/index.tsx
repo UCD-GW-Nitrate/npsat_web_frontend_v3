@@ -4,7 +4,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import Footer from '@/components/custom/Footer/Footer';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
-import Layout from '@/components/custom/Layout/Layout';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelDetails } from '@/hooks/useModelDetails';
@@ -50,28 +49,26 @@ const CompareModelPage = () => {
         <title>Compare Scenario - NPSAT</title>
         <meta name="description" content="Compare Scenario - NPSAT" />
       </Helmet>
-      <Layout>
-        <StandardText variant="h1">Compare Models</StandardText>
-        <VBox spacing={4}>
-          <InfoContainer title="Scenarios Selected">
-            <CompareModelsTable data={allModelDetails} />
-          </InfoContainer>
-          <InfoContainer title="Crop Selection">
-            <CropLoadingDetailsTable modelDetails={allModelDetails} />
-          </InfoContainer>
-          <InfoContainer title="Comparison Line Chart">
-            <ComparisonChart
-              comparisonChartModels={getComparisonChartModels(
-                allModelResults,
-                allModelNames,
-              )}
-              percentiles={customPercentilesData}
-            />
-          </InfoContainer>
-        </VBox>
-        <Box sx={{ mt: 10 }} />
-        <Footer />
-      </Layout>
+      <StandardText variant="h1">Compare Models</StandardText>
+      <VBox spacing={4}>
+        <InfoContainer title="Scenarios Selected">
+          <CompareModelsTable data={allModelDetails} />
+        </InfoContainer>
+        <InfoContainer title="Crop Selection">
+          <CropLoadingDetailsTable modelDetails={allModelDetails} />
+        </InfoContainer>
+        <InfoContainer title="Comparison Line Chart">
+          <ComparisonChart
+            comparisonChartModels={getComparisonChartModels(
+              allModelResults,
+              allModelNames,
+            )}
+            percentiles={customPercentilesData}
+          />
+        </InfoContainer>
+      </VBox>
+      <Box sx={{ mt: 10 }} />
+      <Footer />
     </HelmetProvider>
   );
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Layout from '@/components/custom/Layout/Layout';
 import SecurityLayout from '@/components/custom/SecurityLayout/SecutiryLayout';
 import { selectCurrentUser } from '@/store/slices/authSlice';
 
@@ -11,18 +10,10 @@ const Index = () => {
   const user = useSelector(selectCurrentUser);
 
   if (user === null) {
-    return (
-      <Layout>
-        <SecurityLayout />
-      </Layout>
-    );
+    return <SecurityLayout />;
   }
 
-  return (
-    <Layout>
-      <Homepage />
-    </Layout>
-  );
+  return <Homepage />;
 };
 
 export default Index;

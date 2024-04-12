@@ -27,8 +27,8 @@ const Footer = () => {
               Groundwater
             </Link>
           </HBox>
-          <StandardText>
-            Copywrite &copy;{' '}
+          <StandardText style={{ display: 'flex', justifyContent: 'center' }}>
+            Copyright &copy;{' '}
             {` ${new Date().getFullYear()} Regents of the University of California`}
           </StandardText>
         </footer>
