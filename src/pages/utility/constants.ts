@@ -1,4 +1,6 @@
-import type { CoreTableColumn } from '@/components/core/CoreTable/CoreTable';
+import type { ColumnType } from 'antd/es/table';
+
+import type { PlotModel } from '@/store/apis/feedApi';
 
 export const MODEL_STATUS_MACROS = {
   NOT_READY: 0,
@@ -32,27 +34,27 @@ export const SCREEN_LENGTH_RANGE_CONFIG = {
   maxIdentifier: true,
 };
 
-export const COLUMNS: CoreTableColumn[] = [
-  { field: 'name', label: 'Scenario Name', width: 150 },
-  { field: 'flowScenario', label: 'Flow Scenario', width: 130 },
-  { field: 'loadScenario', label: 'Load Scenario', width: 130 },
-  { field: 'unsatScenario', label: 'Unsat Scenario', width: 150 },
-  { field: 'wellTypeScenario', label: 'Well Type Scenario', width: 130 },
-  { field: 'simEndYear', label: 'Year Range', width: 130 },
+export const COLUMNS: ColumnType<PlotModel>[] = [
+  { dataIndex: 'name', title: 'Scenario Name', width: 150 },
+  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 130 },
+  { dataIndex: 'loadScenario', title: 'Load Scenario', width: 130 },
+  { dataIndex: 'unsatScenario', title: 'Unsat Scenario', width: 150 },
+  { dataIndex: 'wellTypeScenario', title: 'Well Type Scenario', width: 130 },
+  { dataIndex: 'simEndYear', title: 'Year Range', width: 130 },
   {
-    field: 'reductionStartYear',
-    label: 'Implementation Start Year',
+    dataIndex: 'reductionStartYear',
+    title: 'Implementation Start Year',
     width: 100,
   },
   {
-    field: 'reductionEndYear',
-    label: 'Implementation Complete Year',
+    dataIndex: 'reductionEndYear',
+    title: 'Implementation Complete Year',
     width: 100,
   },
-  { field: 'waterContent', label: 'Water Content', width: 80 },
+  { dataIndex: 'waterContent', title: 'Water Content', width: 80 },
   {
-    field: 'dateCreated',
-    label: 'Date Created',
+    dataIndex: 'dateCreated',
+    title: 'Date Created',
     width: 120,
   },
 ];
