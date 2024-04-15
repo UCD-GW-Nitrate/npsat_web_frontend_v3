@@ -1,11 +1,11 @@
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { Box } from '@mui/material';
-import { Button, Select } from 'antd';
+import { Button, Select, Table } from 'antd';
+import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CoreTable } from '@/components/core/CoreTable/CoreTable';
 import Footer from '@/components/custom/Footer/Footer';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
@@ -18,15 +18,13 @@ import { COLUMNS } from './utility/constants';
 
 const Homepage = () => {
   const { data, error, isFetching, refetch } = useFetchFeedQuery();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [fetchedOnce, setFetechedOnce] = useState(false);
-  const [compareModels, setCompareModels] = useState<number[]>([]);
   const [displayData, setDisplayData] = useState<PlotModel[]>(
     data?.recentCompletedModels ?? [],
   );
   const router = useRouter();
   const user = useSelector(selectCurrentUser);
+  const [selected, setSelected] = useState<number[]>([]);
 
   const {
     flowScenarios: flowScenarioOptions,
@@ -44,21 +42,6 @@ const Homepage = () => {
   useEffect(() => {
     setDisplayData(data?.recentCompletedModels ?? []);
   }, [data]);
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-    newPage: number,
-  ) => {
-    event?.preventDefault();
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   if (!isFetching) {
     if (!fetchedOnce) {
@@ -82,6 +65,15 @@ const Homepage = () => {
     } else {
       setDisplayData(data?.recentCompletedModels ?? []);
     }
+  };
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelected(newSelectedRowKeys.map((key) => parseInt(`${key}`, 10)));
+  };
+
+  const rowSelection: TableRowSelection<PlotModel> = {
+    selectedRowKeys: selected,
+    onChange: onSelectChange,
   };
 
   return (
@@ -148,34 +140,42 @@ const Homepage = () => {
       >
         <HBox>
           <HBox spacing={1}>
-            <InfoOutlinedIcon color="primary" sx={{ py: 2 }} />
+            <InfoCircleOutlined />
             You may select two or more models to compare. Maximum of 5.
           </HBox>
           <Button
-            disabled={compareModels.length <= 1 || compareModels.length > 5}
+            disabled={selected.length <= 1 || selected.length > 5}
+            style={{ marginTop: 10, marginBottom: 10 }}
             onClick={() =>
               router.push({
                 pathname: '/model/compare',
                 query: {
-                  models: compareModels,
+                  models: selected,
                 },
               })
             }
           >
-            Create Scenario
+            Compare Scenario
           </Button>
         </HBox>
       </Box>
-      <CoreTable
+      <Table
+        scroll={{ x: 'max-content' }}
+        rowSelection={rowSelection}
         columns={COLUMNS}
-        data={displayData}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        handleChangePage={handleChangePage}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-        sx={{ mt: 4 }}
-        checkboxSelection
-        onCheckboxSelection={setCompareModels}
+        dataSource={displayData}
+        rowKey={(model) => model.id}
+        style={{ marginTop: 30 }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              router.push({
+                pathname: `/model/`,
+                query: { id: record.id },
+              });
+            },
+          };
+        }}
       />
       <Box sx={{ mt: 30 }} />
       <Footer />
