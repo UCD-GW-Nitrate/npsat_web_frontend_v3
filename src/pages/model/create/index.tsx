@@ -5,7 +5,15 @@ import { useDispatch } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
-import { useRunModelMutation } from '@/store';
+import {
+  useFetchB118BasinQuery,
+  useFetchBasinQuery,
+  useFetchCentralValleyQuery,
+  useFetchCountyQuery,
+  useFetchSubregionsQuery,
+  useFetchTownshipQuery,
+  useRunModelMutation,
+} from '@/store';
 import { clearModel, type Model } from '@/store/slices/modelSlice';
 
 import Step1 from '../steps/Step1';
@@ -85,6 +93,14 @@ const CreateModelPage = () => {
     handleCompleteSetp();
     dispatch(clearModel());
   };
+
+  // fetch all map beforehand
+  useFetchB118BasinQuery();
+  useFetchBasinQuery();
+  useFetchCentralValleyQuery();
+  useFetchCountyQuery();
+  useFetchSubregionsQuery();
+  useFetchTownshipQuery();
 
   return (
     <AppLayout>

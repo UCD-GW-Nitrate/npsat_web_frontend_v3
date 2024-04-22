@@ -1,5 +1,5 @@
 import { Divider, Form, Switch, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -29,7 +29,6 @@ import {
   setModelRegions,
   setModelScreenLenRangeMax,
   setModelScreenLenRangeMin,
-  setRegionType,
 } from '@/store/slices/modelSlice';
 
 import type { StepBase } from '../../create';
@@ -43,9 +42,7 @@ interface Step2Props extends StepBase {}
 
 const Step2 = ({ onPrev, onNext }: Step2Props) => {
   const model = useSelector(selectCurrentModel);
-  const [mapType, setMapType] = useState<number>(
-    model.region_type ?? REGION_MACROS.CENTRAL_VALLEY,
-  );
+  const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
   const [depthMin, setDepthMin] = useState<number>(0);
   const [depthMax, setDepthMax] = useState<number>(801);
   const [screenLenMin, setScreenLenMin] = useState<number>(0);
@@ -79,7 +76,6 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
 
   console.log('step 2 model', model);
   console.log('step 2 selected', selected);
-  console.log(model.region_type);
 
   const handleTabChange = (tab: string) => {
     setSelected([]);
@@ -101,7 +97,6 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
       dispatch(setModelDepthRangeMin(formData.depth_range[1]));
       dispatch(setModelScreenLenRangeMin(formData.screen_length_range[0]));
       dispatch(setModelScreenLenRangeMax(formData.screen_length_range[1]));
-      dispatch(setRegionType(mapType));
     } else {
       dispatch(
         setModelRegions(
@@ -110,7 +105,6 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
           }),
         ),
       );
-      dispatch(setRegionType(mapType));
     }
     onNext();
   };
@@ -157,6 +151,18 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
     }
     return [];
   };
+
+  useEffect(() => {
+    if (selected.length > 0) {
+      Object.values(REGION_MACROS).forEach((region) => {
+        getRegionData(region)?.forEach((r) => {
+          if (r.id === selected[0]) {
+            setMapType(region);
+          }
+        });
+      });
+    }
+  }, []);
 
   return (
     <>
