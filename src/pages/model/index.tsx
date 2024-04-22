@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { Button, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import dynamic from 'next/dynamic';
@@ -6,7 +5,7 @@ import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import Footer from '@/components/custom/Footer/Footer';
+import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
@@ -107,7 +106,7 @@ const ModelPage = () => {
   );
 
   if (modelDetail.isFetching || modelDetail.error || !customModelDetail) {
-    return <Box />;
+    return <div />;
   }
 
   if (modelDetail.error) {
@@ -140,14 +139,14 @@ const ModelPage = () => {
   };
 
   return (
-    <>
+    <AppLayout>
       <HBox>
         <StandardText variant="h1">Details and Results</StandardText>
         <Button type="primary" size="large" onClick={copyAndModifyModel}>
           Copy and Modify Scenario
         </Button>
       </HBox>
-      <VBox spacing={4}>
+      <VBox spacing="large">
         <InfoContainer title="Scenario info">
           <ModelDescriptionTable
             modelDetail={customModelDetail}
@@ -187,16 +186,14 @@ const ModelPage = () => {
           )}
         </InfoContainer>
         <InfoContainer title="Regions included in this scenario run">
-          <Box id="map" style={{ height: '600px', margin: 0 }}>
+          <div id="map" style={{ height: '600px', margin: 0 }}>
             <MapWithNoSSR
               data={regions.map((region: RegionDetail) => region.geometry)}
             />
-          </Box>
+          </div>
         </InfoContainer>
       </VBox>
-      <Box sx={{ mt: 10 }} />
-      <Footer />
-    </>
+    </AppLayout>
   );
 };
 

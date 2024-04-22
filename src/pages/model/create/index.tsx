@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
 
+import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import {
   useFetchB118BasinQuery,
@@ -102,45 +103,56 @@ const CreateModelPage = () => {
   };
 
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>Create Scenario - NPSAT</title>
-        <meta name="description" content="Create Scenario - NPSAT" />
-      </Helmet>
-      <InfoContainer>
-        <Steps
-          current={activeStep}
-          onChange={handleStep}
-          style={{ marginBottom: 20 }}
-        >
-          <Step title={steps[0]} disabled={activeStep >= 4} />
-          <Step title={steps[1]} disabled={activeStep < 1 || activeStep >= 4} />
-          <Step title={steps[2]} disabled={activeStep < 2 || activeStep >= 4} />
-          <Step title={steps[3]} disabled={activeStep < 3 || activeStep >= 4} />
-          <Step title={steps[4]} disabled />
-        </Steps>
+    <AppLayout>
+      <HelmetProvider>
+        <Helmet>
+          <title>Create Scenario - NPSAT</title>
+          <meta name="description" content="Create Scenario - NPSAT" />
+        </Helmet>
+        <InfoContainer>
+          <Steps
+            current={activeStep}
+            onChange={handleStep}
+            style={{ marginBottom: 20 }}
+          >
+            <Step title={steps[0]} disabled={activeStep >= 4} />
+            <Step
+              title={steps[1]}
+              disabled={activeStep < 1 || activeStep >= 4}
+            />
+            <Step
+              title={steps[2]}
+              disabled={activeStep < 2 || activeStep >= 4}
+            />
+            <Step
+              title={steps[3]}
+              disabled={activeStep < 3 || activeStep >= 4}
+            />
+            <Step title={steps[4]} disabled />
+          </Steps>
 
-        {activeStep === 0 && (
-          <Step1 onPrev={handleBack} onNext={handleCompleteSetp} />
-        )}
-        {activeStep === 1 && (
-          <Step2 onPrev={handleBack} onNext={handleCompleteSetp} />
-        )}
-        {activeStep === 2 && (
-          <Step3 onPrev={handleBack} onNext={handleCompleteSetp} />
-        )}
-        {activeStep === 3 && (
-          <Step4
-            onPrev={handleBack}
-            onNext={handleCompleteSetp}
-            onComplete={handleCompleteModel}
-          />
-        )}
-        {activeStep === 4 && !modelDataLoading && modelData?.id && (
-          <Step5 ids={modelData?.id} />
-        )}
-      </InfoContainer>
-    </HelmetProvider>
+          {activeStep === 0 && (
+            <Step1 onPrev={handleBack} onNext={handleCompleteSetp} />
+          )}
+          {activeStep === 1 && (
+            <Step2 onPrev={handleBack} onNext={handleCompleteSetp} />
+          )}
+          {activeStep === 2 && (
+            <Step3 onPrev={handleBack} onNext={handleCompleteSetp} />
+          )}
+          {activeStep === 3 && (
+            <Step4
+              onPrev={handleBack}
+              onNext={handleCompleteSetp}
+              onComplete={handleCompleteModel}
+            />
+          )}
+          {activeStep === 4 && !modelDataLoading && modelData?.id && (
+            <Step5 ids={modelData?.id} />
+          )}
+        </InfoContainer>
+      </HelmetProvider>
+    </AppLayout>
   );
 };
 

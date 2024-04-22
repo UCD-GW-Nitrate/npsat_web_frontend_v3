@@ -1,99 +1,81 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Container from '@mui/material/Container';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import type { FormProps } from 'antd';
+import { Button, Checkbox, Form, Input } from 'antd';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { FormEvent } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useLoginMutation } from '@/store';
 import { setCredentials } from '@/store/slices/authSlice';
 
-export default function SignIn() {
+import { HBox } from '../HBox/Hbox';
+
+type FieldType = {
+  username?: string;
+  password?: string;
+  remember?: string;
+};
+
+interface LoginFormProps {
+  style?: React.CSSProperties;
+}
+
+const LoginForm = ({ style }: LoginFormProps) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [login] = useLoginMutation();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const username: string = data.get('username')?.toString() ?? '';
-    const password: string = data.get('password')?.toString() ?? '';
-
+  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const username = values.username ?? '';
+    const password = values.password ?? '';
     const user = await login({ username, password }).unwrap();
     dispatch(setCredentials(user));
     router.push('/');
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          boxShadow: 3,
-          borderRadius: 2,
-          px: 4,
-          py: 6,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          backgroundColor: 'white',
-        }}
+    <Form
+      style={style}
+      name="normal_login"
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+    >
+      <Form.Item<FieldType>
+        name="username"
+        rules={[{ required: true, message: 'Please input your Username!' }]}
       >
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="." variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="." variant="body2">
-                Don&apos;t have an account? Sign Up
-              </Link>
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-    </Container>
+        <Input prefix={<UserOutlined />} placeholder="Username" />
+      </Form.Item>
+      <Form.Item<FieldType>
+        name="password"
+        rules={[{ required: true, message: 'Please input your Password!' }]}
+      >
+        <Input
+          prefix={<LockOutlined />}
+          type="password"
+          placeholder="Password"
+        />
+      </Form.Item>
+      <HBox>
+        <Form.Item<FieldType> name="remember" valuePropName="checked" noStyle>
+          <Checkbox>Remember me</Checkbox>
+        </Form.Item>
+        <Link href="/user/login">Forgot password</Link>
+      </HBox>
+
+      <Form.Item<FieldType>>
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ width: '100%', marginTop: 10 }}
+        >
+          Log in
+        </Button>
+        Or <Link href="/user/login">register now!</Link>
+      </Form.Item>
+    </Form>
   );
-}
+};
+
+export default LoginForm;
