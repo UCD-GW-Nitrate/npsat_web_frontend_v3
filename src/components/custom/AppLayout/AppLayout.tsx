@@ -6,8 +6,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { PropsWithChildren, ReactNode } from 'react';
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/components/theme';
+import { clearModel } from '@/store/slices/modelSlice';
 
 import ProfileButton from './ProfileButton';
 
@@ -16,9 +18,14 @@ const ProLayout = dynamic(() => import('@ant-design/pro-layout'), {
 });
 
 const AppLayout = ({ children }: PropsWithChildren) => {
+  const dispatch = useDispatch();
   const titleRender = useCallback(
     (logo: ReactNode) => (
-      <Link href="/" style={{ marginLeft: 20 }}>
+      <Link
+        href="/"
+        style={{ marginLeft: 20 }}
+        onClick={() => dispatch(clearModel())}
+      >
         {logo}
       </Link>
     ),

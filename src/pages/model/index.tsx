@@ -13,15 +13,7 @@ import { VBox } from '@/components/custom/VBox/VBox';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useModelResults } from '@/hooks/useModelResults';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
-import {
-  useFetchB118BasinQuery,
-  useFetchBasinQuery,
-  useFetchCentralValleyQuery,
-  useFetchCountyQuery,
-  useFetchSubregionsQuery,
-  useFetchTownshipQuery,
-  useGetModelandBaseModelDetailQuery,
-} from '@/store';
+import { useGetModelandBaseModelDetailQuery } from '@/store';
 import type { ModelDetail } from '@/store/apis/modelApi';
 import type { RegionDetail } from '@/store/apis/regionApi';
 import { createNewModel } from '@/store/slices/modelSlice';
@@ -69,13 +61,7 @@ const ModelPage = () => {
     plotData: customModel,
   };
 
-  // fetch all map data beforehand
-  useFetchB118BasinQuery();
-  useFetchBasinQuery();
-  useFetchCentralValleyQuery();
-  useFetchCountyQuery();
-  useFetchSubregionsQuery();
-  useFetchTownshipQuery();
+  // fetch scenario group data beforehand
   useScenarioGroups();
 
   const linePlot = useMemo(

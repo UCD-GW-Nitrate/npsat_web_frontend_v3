@@ -36,7 +36,7 @@ export const SCREEN_LENGTH_RANGE_CONFIG = {
 
 export const COLUMNS: ColumnType<PlotModel>[] = [
   { dataIndex: 'name', title: 'Scenario Name', width: 150 },
-  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 130 },
+  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 200 },
   { dataIndex: 'loadScenario', title: 'Load Scenario', width: 130 },
   { dataIndex: 'unsatScenario', title: 'Unsat Scenario', width: 150 },
   { dataIndex: 'wellTypeScenario', title: 'Well Type Scenario', width: 130 },
@@ -44,12 +44,12 @@ export const COLUMNS: ColumnType<PlotModel>[] = [
   {
     dataIndex: 'reductionStartYear',
     title: 'Implementation Start Year',
-    width: 100,
+    width: 50,
   },
   {
     dataIndex: 'reductionEndYear',
     title: 'Implementation Complete Year',
-    width: 100,
+    width: 50,
   },
   { dataIndex: 'waterContent', title: 'Water Content', width: 80 },
   {

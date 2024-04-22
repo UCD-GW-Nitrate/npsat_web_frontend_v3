@@ -1,5 +1,5 @@
 import { Divider, Form, Select } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,29 +18,24 @@ import Step3Instructions from './Step3Instructions';
 
 interface Step3Props extends StepBase {}
 
+interface CropDict {
+  [key: string]: Crop;
+}
+
+interface LoadingDict {
+  [key: string]: number;
+}
+
 const Step3 = ({ onPrev, onNext }: Step3Props) => {
   const model = useSelector(selectCurrentModel);
   const { data: cropData } = useGetAllCropsByFlowScenarioQuery(1);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const [cropDict, setCropDict] = useState<CropDict>({});
+  const [loadingDict, setLoadingDict] = useState<LoadingDict>({});
 
-  const cropToString = (crop: Crop): string => {
-    return `${crop.id},${crop.name},${crop.caml_code},${crop.crop_type},${crop.swat_code}`;
-  };
-
-  const stringToCrop = (s: string): Crop => {
-    const arr = s.split(',');
-    return {
-      id: parseInt(arr[0]!, 10),
-      name: arr[1]!,
-      caml_code: arr[2]!,
-      crop_type: parseInt(arr[3]!, 10),
-      swat_code: parseInt(arr[4]!, 10),
-    };
-  };
-
-  const [selectedCrops, setSelectedCrops] = useState<string[]>(
-    model.modifications?.map((mod) => cropToString(mod.crop)) ?? [],
+  const [selectedCrops, setSelectedCrops] = useState<number[]>(
+    model.modifications?.map((mod) => mod.crop.id) ?? [],
   );
 
   const formItemLayout = {
@@ -53,26 +48,40 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
   };
 
   const onFormSubmit = (data: FieldValues) => {
-    console.log(data);
     const modifications: CropModification[] = [];
     selectedCrops.forEach((c) => {
-      const selectedCrop = stringToCrop(c);
-      modifications.push({
-        crop: {
-          id: selectedCrop.id,
-          name: selectedCrop.name,
-        },
-        proportion: data[selectedCrop.name] / 100,
-      });
+      if (cropDict[c]) {
+        modifications.push({
+          crop: {
+            id: cropDict[c]!.id,
+            name: cropDict[c]!.name,
+          },
+          proportion: parseFloat((data[cropDict[c]!.name] / 100).toFixed(2)),
+        });
+      }
     });
 
     dispatch(setModelModifications(modifications));
     onNext();
   };
 
+  console.log('model modififations', model.modifications);
+
   useEffect(() => {
+    const cropDictTemp: CropDict = {};
+    cropData?.results.forEach((crop) => {
+      cropDictTemp[crop.id] = crop;
+    });
+    setCropDict(cropDictTemp);
+
+    const loadingDictTemp: LoadingDict = {};
+    model.modifications?.forEach((mod) => {
+      loadingDictTemp[mod.crop.id] = mod.proportion;
+    });
+    setLoadingDict(loadingDictTemp);
+
     if (cropData && cropData.results[1] && selectedCrops.length === 0) {
-      const defaultVal = cropToString(cropData.results[1]);
+      const defaultVal = cropData.results[1].id;
       setSelectedCrops([defaultVal]);
       form.setFieldValue('crop_choice', [defaultVal]);
     } else {
@@ -80,9 +89,41 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
     }
   }, [cropData]);
 
-  if (model.modifications) {
-    console.log('Step 3 proportion', model.modifications[0]?.proportion);
-  }
+  const selectedCropCards = useMemo(
+    () =>
+      selectedCrops.map((crop) => {
+        return (
+          <>
+            {cropDict[crop] && (
+              <Form.Item
+                key={cropDict[crop]!.id}
+                name={cropDict[crop]!.name}
+                label=" "
+                colon={false}
+                rules={[
+                  {
+                    validator: () => Promise.resolve(),
+                  },
+                ]}
+                initialValue={((loadingDict[crop] ?? 1) * 100).toFixed()}
+              >
+                <CropCard
+                  crop={cropDict[crop]!}
+                  initialValue={parseInt(
+                    ((loadingDict[crop] ?? 1) * 100).toFixed(),
+                    10,
+                  )}
+                  onChange={(v) => {
+                    form.setFieldValue(cropDict[crop]!.name, v);
+                  }}
+                />
+              </Form.Item>
+            )}
+          </>
+        );
+      }),
+    [Object.keys(cropDict).length, selectedCrops],
+  );
 
   return (
     <>
@@ -109,46 +150,13 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
             placeholder="Please select a crop to start"
           >
             {cropData?.results.map((crop) => (
-              <Select.Option value={cropToString(crop)} key={crop.id}>
+              <Select.Option value={crop.id} key={crop.id}>
                 {crop.name}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
-        {selectedCrops.map((crop, index) => (
-          <>
-            {crop && (
-              <Form.Item
-                key={stringToCrop(crop).id}
-                name={stringToCrop(crop).name}
-                label=" "
-                colon={false}
-                rules={[
-                  {
-                    validator: () => Promise.resolve(),
-                  },
-                ]}
-                initialValue={
-                  model.modifications
-                    ? (model.modifications[index]?.proportion ?? 1) * 100
-                    : 100
-                }
-              >
-                <CropCard
-                  crop={stringToCrop(crop)}
-                  initialValue={
-                    model.modifications
-                      ? (model.modifications[index]?.proportion ?? 1) * 100
-                      : 100
-                  }
-                  onChange={(v) => {
-                    form.setFieldValue(stringToCrop(crop).name, v);
-                  }}
-                />
-              </Form.Item>
-            )}
-          </>
-        ))}
+        {selectedCropCards}
         <Form.Item
           style={{
             marginBottom: 8,
