@@ -1,10 +1,8 @@
-import { Box } from '@mui/material';
-
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 const Step3Instructions = () => {
   return (
-    <Box sx={{ mx: 4 }}>
+    <div style={{ marginInline: 20 }}>
       <StandardText variant="h4" color="description">
         Instructions
       </StandardText>
@@ -31,7 +29,7 @@ const Step3Instructions = () => {
         the nitrate loading from all land use types that are not specifically
         defined here by the user.
       </StandardText>
-    </Box>
+    </div>
   );
 };
 

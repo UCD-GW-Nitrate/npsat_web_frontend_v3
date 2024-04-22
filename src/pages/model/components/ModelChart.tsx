@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { Button, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
@@ -61,7 +60,7 @@ const ModelChart = ({
   }
 
   return (
-    <Box>
+    <div>
       <Select
         showSearch
         placeholder="Select Percentiles"
@@ -78,8 +77,8 @@ const ModelChart = ({
           </Select.Option>
         ))}
       </Select>
-      <HBox sx={{ mt: 2, mb: 4 }}>
-        <HBox spacing={1}>
+      <HBox style={{ marginTop: 20, marginBottom: 40 }}>
+        <HBox spacing="small">
           <Button
             type={
               percentileButtonClicked === 'Select 5th, 50th, 95th'
@@ -137,7 +136,7 @@ const ModelChart = ({
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
       />
-    </Box>
+    </div>
   );
 };
 

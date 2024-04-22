@@ -1,10 +1,8 @@
-import { Box } from '@mui/material';
-
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 const Step1Instructions = () => {
   return (
-    <Box sx={{ mx: 4 }}>
+    <div style={{ marginInline: 20 }}>
       <StandardText variant="h4" color="description">
         Instructions
       </StandardText>
@@ -55,7 +53,7 @@ const Step1Instructions = () => {
         Other selections:
       </StandardText>
       <StandardText color="description">Under development</StandardText>
-    </Box>
+    </div>
   );
 };
 

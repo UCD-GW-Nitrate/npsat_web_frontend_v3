@@ -1,9 +1,7 @@
-import { Box, CircularProgress } from '@mui/material';
-import { Button, Result } from 'antd';
+import { Button, Flex, Result, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { useGetModelStatusQuery } from '@/store';
 
 interface Step5Props {
@@ -44,22 +42,16 @@ const Step5 = ({ ids }: Step5Props) => {
   );
 
   return (
-    <Box sx={{ mx: 'auto' }}>
+    <div style={{ marginInline: 'auto' }}>
       {!(data && data.results[0] && data.results[0].status === 3) && (
-        <Box
-          display="flex"
-          alignItems="center"
-          flexDirection="column"
-          sx={{ mt: 5 }}
-        >
-          <CircularProgress size="4rem" />
-          <StandardText>Creating Scenario...</StandardText>
-        </Box>
+        <Flex align="center" justify="center">
+          <Spin size="large" tip="Running Simulation..." />
+        </Flex>
       )}
       {data && data.results[0] && data.results[0].status === 3 && (
         <Result status="success" title="Running simulation..." extra={extra} />
       )}
-    </Box>
+    </div>
   );
 };
 

@@ -2,14 +2,13 @@ import 'leaflet/dist/leaflet.css';
 import '@/components/maps/styles.css';
 import '../styles/global.css';
 
-import { ThemeProvider } from '@mui/material/styles';
 import { ConfigProvider } from 'antd';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Provider } from 'react-redux';
 
-import AppLayout from '@/components/custom/AppLayout/AppLayout';
-import theme, { PRIMARY_COLOR } from '@/components/theme';
+import CachedAuthState from '@/components/custom/CachedAuthState/CachedAuthState';
+import { PRIMARY_COLOR } from '@/components/theme';
 
 import { store } from '../store';
 
@@ -58,11 +57,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             },
           }}
         >
-          <ThemeProvider theme={theme}>
-            <AppLayout>
-              <Component {...pageProps} />
-            </AppLayout>
-          </ThemeProvider>
+          <CachedAuthState>
+            <Component {...pageProps} />
+          </CachedAuthState>
         </ConfigProvider>
       </Provider>
     </main>
