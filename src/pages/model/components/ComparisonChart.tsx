@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
@@ -59,7 +58,7 @@ const ComparisonChart = ({
   }
 
   return (
-    <Box>
+    <div>
       <Select
         value={percentilesDisplayed}
         onSelect={setPercentilesDisplayed}
@@ -76,7 +75,7 @@ const ComparisonChart = ({
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
       />
-    </Box>
+    </div>
   );
 };
 

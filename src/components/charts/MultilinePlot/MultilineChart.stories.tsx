@@ -1,7 +1,4 @@
-import { ThemeProvider } from '@emotion/react';
 import type { Meta, StoryObj } from '@storybook/react';
-
-import theme from '@/components/theme';
 
 import MultilineChart from './MultilineChart';
 import type { MultilineChartBaseProps } from './MultilineChartBase';
@@ -15,9 +12,7 @@ type Story = StoryObj<typeof MultilineChart>;
 
 export const Primary: Story = {
   render: ({ ...args }: MultilineChartBaseProps) => (
-    <ThemeProvider theme={theme}>
-      <MultilineChart {...args} />
-    </ThemeProvider>
+    <MultilineChart {...args} />
   ),
   args: {
     height: 400,

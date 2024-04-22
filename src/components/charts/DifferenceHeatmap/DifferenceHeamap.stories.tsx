@@ -1,7 +1,4 @@
-import { ThemeProvider } from '@emotion/react';
 import type { Meta, StoryObj } from '@storybook/react';
-
-import theme from '@/components/theme';
 
 import DifferenceHeatmap from './DifferenceHeatmap';
 
@@ -89,9 +86,5 @@ export default meta;
 type Story = StoryObj<typeof DifferenceHeatmap>;
 
 export const Primary: Story = {
-  render: () => (
-    <ThemeProvider theme={theme}>
-      <DifferenceHeatmap data={series} />
-    </ThemeProvider>
-  ),
+  render: () => <DifferenceHeatmap data={series} />,
 };

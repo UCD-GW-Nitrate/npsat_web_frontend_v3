@@ -13,7 +13,7 @@ export const PageAdvancementButtons = ({
   canGoBack = false,
   ...rest
 }: PageAdvancementButtonsProps) => (
-  <HBox spacing={2} {...rest}>
+  <HBox spacing="small" {...rest}>
     <Space>
       {canGoBack && (
         <Button

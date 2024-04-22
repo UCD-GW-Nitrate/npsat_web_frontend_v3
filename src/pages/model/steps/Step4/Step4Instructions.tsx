@@ -1,10 +1,8 @@
-import { Box } from '@mui/material';
-
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 const Step4Instructions = () => {
   return (
-    <Box sx={{ mx: 4 }}>
+    <div style={{ marginInline: 20 }}>
       <StandardText variant="h4" color="description">
         Instructions
       </StandardText>
@@ -25,7 +23,7 @@ const Step4Instructions = () => {
         Scenario will be running for a few seconds to up to a minute (based on
         number of wells selected) to generate results.
       </StandardText>
-    </Box>
+    </div>
   );
 };
 

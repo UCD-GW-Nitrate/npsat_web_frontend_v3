@@ -1,10 +1,8 @@
-import { Box } from '@mui/material';
-
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 const Step2Instructions = () => {
   return (
-    <Box sx={{ mx: 4 }}>
+    <div style={{ marginInline: 20 }}>
       <StandardText variant="h4" color="description">
         Instructions
       </StandardText>
@@ -54,7 +52,7 @@ const Step2Instructions = () => {
       <StandardText color="description">
         “Township” – select specific townships, typically a 36 square mile area.
       </StandardText>
-    </Box>
+    </div>
   );
 };
 
