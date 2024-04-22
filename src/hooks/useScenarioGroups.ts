@@ -51,6 +51,9 @@ export const useScenarioGroups = () => {
       })
       .then((res) => {
         callback(res.data);
+      })
+      .catch((err: any) => {
+        console.log(err);
       });
   };
 
