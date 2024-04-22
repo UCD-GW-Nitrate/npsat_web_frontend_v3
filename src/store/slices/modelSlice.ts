@@ -42,7 +42,6 @@ export interface Model {
   depth_range_max?: number;
   modifications?: CropModification[];
   advancedWellFilter?: boolean;
-  region_type?: number;
 }
 
 export interface ModelResult {
@@ -115,9 +114,6 @@ const modelSlice = createSlice({
     setAdvancedWellFilter(state, action: PayloadAction<boolean>) {
       return { ...state, advancedWellFilter: action.payload };
     },
-    setRegionType(state, action: PayloadAction<number>) {
-      return { ...state, region_type: action.payload };
-    },
     clearModel() {
       return {};
     },
@@ -148,7 +144,6 @@ export const {
   setModelDepthRangeMax,
   setModelModifications,
   setAdvancedWellFilter,
-  setRegionType,
   clearModel,
   createNewModel,
 } = modelSlice.actions;

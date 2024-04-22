@@ -22,6 +22,7 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
   };
 
   const onListSelect = (v: number) => {
+    console.log('onListSelect', [...selected, v]);
     if (onSelectRegion) {
       onSelectRegion([...selected, v]);
     }
@@ -75,6 +76,7 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
                     ),
                   ];
                 }
+                console.log('on region select', selectedRegions);
                 if (onSelectRegion) {
                   onSelectRegion(selectedRegions);
                 }
