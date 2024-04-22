@@ -70,13 +70,6 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
     },
   };
 
-  // useEffect(() => {
-  //   form.setFieldValue('region', model.regions?.map((region) => region.id));
-  // }, []);
-
-  console.log('step 2 model', model);
-  console.log('step 2 selected', selected);
-
   const handleTabChange = (tab: string) => {
     setSelected([]);
     form.setFieldValue('region', []);
@@ -84,7 +77,6 @@ const Step2 = ({ onPrev, onNext }: Step2Props) => {
   };
 
   const onFormSubmit = (formData: FieldValues) => {
-    console.log('step 2 submit', formData);
     if (showAdvancedFilter) {
       dispatch(
         setModelRegions(

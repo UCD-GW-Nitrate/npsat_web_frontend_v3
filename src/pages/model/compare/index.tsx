@@ -20,13 +20,9 @@ const CompareModelPage = () => {
   const [allModelDetailResults, allModelDetails, allModelNames] =
     useModelDetails(router.query.models as unknown as number[]);
 
-  console.log('all model details', allModelDetailResults);
-
   const [allModelResults, customPercentilesData] = useAllModelResults(
     allModelDetailResults,
   );
-
-  console.log('all model results', allModelResults);
 
   const getComparisonChartModels = (
     plotData: PercentileResultMap[],

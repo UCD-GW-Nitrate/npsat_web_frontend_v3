@@ -67,8 +67,6 @@ const Step1 = ({ onNext }: Step1Props) => {
     },
   };
 
-  console.log('modify', model);
-
   return (
     <>
       <Form
