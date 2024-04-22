@@ -5,15 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
-import {
-  useFetchB118BasinQuery,
-  useFetchBasinQuery,
-  useFetchCentralValleyQuery,
-  useFetchCountyQuery,
-  useFetchSubregionsQuery,
-  useFetchTownshipQuery,
-  useRunModelMutation,
-} from '@/store';
+import { useRunModelMutation } from '@/store';
 import { clearModel, type Model } from '@/store/slices/modelSlice';
 
 import Step1 from '../steps/Step1';
@@ -43,14 +35,6 @@ const CreateModelPage = () => {
     [k: number]: boolean;
   }>({});
   const dispatch = useDispatch();
-
-  // fetch all map data beforehand
-  useFetchB118BasinQuery();
-  useFetchBasinQuery();
-  useFetchCentralValleyQuery();
-  useFetchCountyQuery();
-  useFetchSubregionsQuery();
-  useFetchTownshipQuery();
 
   const [runModel, { data: modelData, isLoading: modelDataLoading }] =
     useRunModelMutation();
