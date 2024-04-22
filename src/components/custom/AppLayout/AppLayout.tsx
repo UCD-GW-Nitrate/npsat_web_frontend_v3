@@ -1,14 +1,17 @@
 import { LogoutOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-layout';
+import type { MenuProps } from 'antd';
 import { Dropdown } from 'antd';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import type { PropsWithChildren, ReactNode } from 'react';
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/components/theme';
+import { selectCurrentUser, setCredentials } from '@/store/slices/authSlice';
 import { clearModel } from '@/store/slices/modelSlice';
 
 import ProfileButton from './ProfileButton';
@@ -19,6 +22,8 @@ const ProLayout = dynamic(() => import('@ant-design/pro-layout'), {
 
 const AppLayout = ({ children }: PropsWithChildren) => {
   const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser);
+  const router = useRouter();
   const titleRender = useCallback(
     (logo: ReactNode) => (
       <Link
@@ -62,6 +67,18 @@ const AppLayout = ({ children }: PropsWithChildren) => {
     />
   );
 
+  const onClick: MenuProps['onClick'] = () => {
+    localStorage.removeItem('npsat_user_info');
+    dispatch(setCredentials({ user: null, token: null }));
+    router.push('/user/login');
+  };
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/user/login');
+    }
+  }, [user]);
+
   return (
     <ProLayout
       loading={false}
@@ -85,6 +102,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
                     label: 'Caden',
                   },
                 ],
+                onClick,
               }}
             >
               {dom}
@@ -97,7 +115,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
       layout="top"
       footerRender={defaultFooterDom}
     >
-      {children}
+      {user ? children : <div />}
     </ProLayout>
   );
 };
