@@ -65,8 +65,6 @@ const Step3 = ({ onPrev, onNext }: Step3Props) => {
     onNext();
   };
 
-  console.log('model modififations', model.modifications);
-
   useEffect(() => {
     const cropDictTemp: CropDict = {};
     cropData?.results.forEach((crop) => {

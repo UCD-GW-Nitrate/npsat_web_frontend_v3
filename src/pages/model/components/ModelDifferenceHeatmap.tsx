@@ -27,12 +27,7 @@ const ModelDifferenceHeatmap = ({
   percentiles,
 }: ModelDifferenceHeatmapProps) => {
   const [plotData, setPlotData] = useState<PercentileDifferenceMap>({});
-  const [selected, setSelected] = useState<number | undefined>(undefined);
   const [bucketSize, setBucketSize] = useState<number>(18.5);
-
-  console.log(plotData);
-  console.log(selected);
-  console.log(setSelected);
 
   useEffect(() => {
     if (baseResults && customResults) {

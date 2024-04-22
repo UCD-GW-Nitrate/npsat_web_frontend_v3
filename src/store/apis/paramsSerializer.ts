@@ -1,6 +1,5 @@
 export const paramsSerializer = (params: Record<string, any>): string => {
   const searchParams = new URLSearchParams();
-  console.log('params serializer', params);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const key in params) {
@@ -18,8 +17,5 @@ export const paramsSerializer = (params: Record<string, any>): string => {
       }
     }
   }
-
-  console.log('params serializer output', searchParams.toString());
-
   return searchParams.toString();
 };
