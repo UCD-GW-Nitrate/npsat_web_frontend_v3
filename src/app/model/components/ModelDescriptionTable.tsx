@@ -5,7 +5,7 @@ import type { RegionDetail } from '@/store/apis/regionApi';
 import {
   DEPTH_RANGE_CONFIG,
   SCREEN_LENGTH_RANGE_CONFIG,
-} from '@/utility/constants';
+} from '@/utils/constants';
 
 interface ModelDescriptionTableProps {
   modelDetail: ModelDetail | undefined;

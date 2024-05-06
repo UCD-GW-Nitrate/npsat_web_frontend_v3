@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import apiRoot from '@/config/apiRoot';
+
 export interface Crop {
   id: number;
   name: string;
@@ -18,7 +20,7 @@ export interface CropDetail {
 const cropApi = createApi({
   reducerPath: 'crop',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
+    baseUrl: apiRoot,
   }),
   endpoints(builder) {
     return {

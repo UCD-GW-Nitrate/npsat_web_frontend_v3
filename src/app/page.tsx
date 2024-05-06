@@ -14,7 +14,7 @@ import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useFetchFeedQuery } from '@/store';
 import type { PlotModel } from '@/store/apis/feedApi';
 
-import { COLUMNS } from '../utility/constants';
+import { COLUMNS } from '../utils/constants';
 
 const Index = () => {
   const { data, error } = useFetchFeedQuery();

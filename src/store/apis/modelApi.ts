@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import apiRoot from '@/config/apiRoot';
+
 import getAuth from '../getAuth';
 import type { Model } from '../slices/modelSlice';
 import { paramsSerializer } from './paramsSerializer';
@@ -89,7 +91,7 @@ export interface ModelStatusResults {
 const modelApi = createApi({
   reducerPath: 'mantis',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
+    baseUrl: apiRoot,
     prepareHeaders: (headers, { getState }) => {
       return getAuth(headers, getState);
     },
