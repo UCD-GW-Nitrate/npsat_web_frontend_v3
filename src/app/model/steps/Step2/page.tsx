@@ -38,8 +38,6 @@ import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';
 
-const { TabPane } = Tabs;
-
 const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
@@ -163,34 +161,33 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
         centered
         activeKey={`${mapType}`}
         onChange={handleTabChange}
-      >
-        <TabPane
-          tab="Central Valley"
-          key={REGION_MACROS.CENTRAL_VALLEY}
-          disabled={model.welltype_scenario?.id === 12}
-        />
-        <TabPane
-          tab="Basin"
-          key={REGION_MACROS.SUB_BASIN}
-          disabled={model.welltype_scenario?.id === 12}
-        />
-        <TabPane
-          tab="County"
-          key={REGION_MACROS.COUNTY}
-          disabled={model.welltype_scenario?.id === 12}
-        />
-        <TabPane
-          tab="B118 Basin"
-          key={REGION_MACROS.B118_BASIN}
-          disabled={model.welltype_scenario?.id === 12}
-        />
-        <TabPane
-          tab="Subregions"
-          key={REGION_MACROS.CVHM_FARM}
-          disabled={model.welltype_scenario?.id === 12}
-        />
-        <TabPane tab="Township" key={REGION_MACROS.TOWNSHIPS} />
-      </Tabs>
+        items={[
+          {
+            label: 'Central Valley',
+            key: `${REGION_MACROS.CENTRAL_VALLEY}`,
+          },
+          {
+            label: 'Basin',
+            key: `${REGION_MACROS.SUB_BASIN}`,
+          },
+          {
+            label: 'County',
+            key: `${REGION_MACROS.COUNTY}`,
+          },
+          {
+            label: 'B118 Basin',
+            key: `${REGION_MACROS.B118_BASIN}`,
+          },
+          {
+            label: 'Subregions',
+            key: `${REGION_MACROS.CVHM_FARM}`,
+          },
+          {
+            label: 'Township',
+            key: `${REGION_MACROS.TOWNSHIPS}`,
+          },
+        ]}
+      />
       <Form
         {...formItemLayout}
         form={form}
