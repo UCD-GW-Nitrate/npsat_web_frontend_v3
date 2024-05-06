@@ -1,3 +1,5 @@
+'use client';
+
 import { LogoutOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-layout';
 import type { MenuProps } from 'antd';
@@ -5,7 +7,7 @@ import { Dropdown } from 'antd';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import type { PropsWithChildren, ReactNode } from 'react';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

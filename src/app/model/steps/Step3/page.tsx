@@ -1,3 +1,5 @@
+'use client';
+
 import { Divider, Form, Select } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
@@ -12,11 +14,9 @@ import {
   setModelModifications,
 } from '@/store/slices/modelSlice';
 
-import type { StepBase } from '../../create';
+import type { StepBase } from '../../create/page';
 import CropCard from './CropCard';
 import Step3Instructions from './Step3Instructions';
-
-interface Step3Props extends StepBase {}
 
 interface CropDict {
   [key: string]: Crop;
@@ -26,7 +26,7 @@ interface LoadingDict {
   [key: string]: number;
 }
 
-const Step3 = ({ onPrev, onNext }: Step3Props) => {
+const Step3 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const { data: cropData } = useGetAllCropsByFlowScenarioQuery(1);
   const dispatch = useDispatch();

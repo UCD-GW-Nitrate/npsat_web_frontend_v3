@@ -1,11 +1,11 @@
 import { Descriptions } from 'antd';
 
+import type { ModelDetail } from '@/store/apis/modelApi';
+import type { RegionDetail } from '@/store/apis/regionApi';
 import {
   DEPTH_RANGE_CONFIG,
   SCREEN_LENGTH_RANGE_CONFIG,
-} from '@/pages/utility/constants';
-import type { ModelDetail } from '@/store/apis/modelApi';
-import type { RegionDetail } from '@/store/apis/regionApi';
+} from '@/utility/constants';
 
 interface ModelDescriptionTableProps {
   modelDetail: ModelDetail | undefined;

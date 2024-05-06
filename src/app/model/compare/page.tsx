@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from 'next/router';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 

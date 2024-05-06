@@ -1,9 +1,5 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-
-import type { RootState } from '@/store';
-import type { AuthState } from '@/store/apis/authApi';
 
 export const SCENARIO_MACROS = {
   TYPE_FLOW: 1,
@@ -32,19 +28,12 @@ export const useScenarioGroups = () => {
   const [unsatScenarios, setUnsatScenarios] = useState<Scenario[]>([]);
   const [welltypeScenarios, setWelltypeScenarios] = useState<Scenario[]>([]);
 
-  const auth = useSelector<RootState, AuthState>((state) => {
-    return state.auth;
-  });
-
   const getScenarios = (
     type: number,
     callback: (res: ScenarioResponse) => void,
   ) => {
     axios
       .get<ScenarioResponse, any>(`http://localhost:8010/api/scenario/`, {
-        headers: {
-          Authorization: `Token ${auth.token}`,
-        },
         params: {
           scenario_type: type,
         },

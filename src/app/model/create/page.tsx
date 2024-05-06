@@ -1,3 +1,5 @@
+'use client';
+
 import { Steps } from 'antd';
 import * as React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -16,11 +18,11 @@ import {
 } from '@/store';
 import { clearModel, type Model } from '@/store/slices/modelSlice';
 
-import Step1 from '../steps/Step1';
-import Step2 from '../steps/Step2';
-import Step3 from '../steps/Step3';
-import Step4 from '../steps/Step4';
-import Step5 from '../steps/Step5';
+import Step1 from '../steps/Step1/page';
+import Step2 from '../steps/Step2/page';
+import Step3 from '../steps/Step3/page';
+import Step4 from '../steps/Step4/page';
+import Step5 from '../steps/Step5/page';
 
 const { Step } = Steps;
 
@@ -81,7 +83,7 @@ const CreateModelPage = () => {
     setActiveStep(step);
   };
 
-  const handleCompleteSetp = () => {
+  const handleCompleteStep = () => {
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
@@ -90,7 +92,7 @@ const CreateModelPage = () => {
 
   const handleCompleteModel = (newModel: Model) => {
     runModel(newModel);
-    handleCompleteSetp();
+    handleCompleteStep();
     dispatch(clearModel());
   };
 
@@ -132,18 +134,18 @@ const CreateModelPage = () => {
           </Steps>
 
           {activeStep === 0 && (
-            <Step1 onPrev={handleBack} onNext={handleCompleteSetp} />
+            <Step1 onPrev={handleBack} onNext={handleCompleteStep} />
           )}
           {activeStep === 1 && (
-            <Step2 onPrev={handleBack} onNext={handleCompleteSetp} />
+            <Step2 onPrev={handleBack} onNext={handleCompleteStep} />
           )}
           {activeStep === 2 && (
-            <Step3 onPrev={handleBack} onNext={handleCompleteSetp} />
+            <Step3 onPrev={handleBack} onNext={handleCompleteStep} />
           )}
           {activeStep === 3 && (
             <Step4
               onPrev={handleBack}
-              onNext={handleCompleteSetp}
+              onNext={handleCompleteStep}
               onComplete={handleCompleteModel}
             />
           )}

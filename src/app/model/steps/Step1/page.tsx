@@ -1,3 +1,5 @@
+'use client';
+
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { DatePicker, Divider, Form, InputNumber, Select, Tooltip } from 'antd';
 import dayjs from 'dayjs';
@@ -19,15 +21,13 @@ import {
   setModelWelltypeScenario,
 } from '@/store/slices/modelSlice';
 
-import type { StepBase } from '../../create';
+import type { StepBase } from '../../create/page';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
 
 const { RangePicker } = DatePicker;
 
-interface Step1Props extends StepBase {}
-
-const Step1 = ({ onNext }: Step1Props) => {
+const Step1 = ({ onNext }: StepBase) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const {
