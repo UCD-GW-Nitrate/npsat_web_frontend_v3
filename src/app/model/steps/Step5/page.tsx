@@ -1,5 +1,7 @@
+'use client';
+
 import { Button, Flex, Result, Spin } from 'antd';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 import { useGetModelStatusQuery } from '@/store';

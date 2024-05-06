@@ -1,3 +1,5 @@
+'use client';
+
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
