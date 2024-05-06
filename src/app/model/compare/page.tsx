@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
@@ -17,10 +17,9 @@ import ComparisonChart from '../components/ComparisonChart';
 import { CropLoadingDetailsTable } from '../components/CropLoadingDetailsTable';
 
 const CompareModelPage = () => {
-  const router = useRouter();
-
+  const modelIds = useSearchParams().getAll('models') as unknown as number[];
   const [allModelDetailResults, allModelDetails, allModelNames] =
-    useModelDetails(router.query.models as unknown as number[]);
+    useModelDetails(modelIds);
 
   const [allModelResults, customPercentilesData] = useAllModelResults(
     allModelDetailResults,

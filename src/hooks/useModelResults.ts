@@ -112,7 +112,7 @@ export const useAllModelResults = (
       );
     });
     setPlotData(plotDataResult);
-  }, [modelResults]);
+  }, [modelResults.length]);
 
   return [plotData, percentilesData];
 };

@@ -132,7 +132,9 @@ const Index = () => {
           </HBox>
           <Button
             disabled={selected.length <= 1 || selected.length > 5}
-            onClick={() => router.push(`/model/compare/?models=${selected}`)}
+            onClick={() =>
+              router.push(`/model/compare/?models=${selected.join('&models=')}`)
+            }
           >
             Compare Scenario
           </Button>
