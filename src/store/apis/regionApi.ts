@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import apiRoot from '@/config/apiRoot';
+
 import { paramsSerializer } from './paramsSerializer';
 
 export interface ResultResponse {
@@ -73,7 +75,7 @@ export interface RegionDetail {
 const regionApi = createApi({
   reducerPath: 'region',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
+    baseUrl: apiRoot,
   }),
   endpoints(builder) {
     return {

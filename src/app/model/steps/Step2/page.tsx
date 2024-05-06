@@ -31,7 +31,7 @@ import {
   DEPTH_RANGE_CONFIG,
   REGION_MACROS,
   SCREEN_LENGTH_RANGE_CONFIG,
-} from '@/utility/constants';
+} from '@/utils/constants';
 
 import type { StepBase } from '../../create/page';
 import defaultRules from '../util/defaultRules';

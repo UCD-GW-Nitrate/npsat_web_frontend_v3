@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import apiRoot from '@/config/apiRoot';
+
 import getAuth from '../getAuth';
 
 interface Result {
@@ -68,10 +70,12 @@ interface FeedResponse {
   recent_completed_models: PlotModelResponse[];
 }
 
+console.log('api route', apiRoot);
+
 const feedApi = createApi({
   reducerPath: 'feed',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
+    baseUrl: apiRoot,
     prepareHeaders: (headers, { getState }) => {
       return getAuth(headers, getState);
     },
