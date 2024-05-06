@@ -40,7 +40,7 @@ const Index = () => {
     return <div />;
   }
 
-  const filterScenarios = (filter: string | undefined) => {
+  const filterScenarios = (filter: string | null) => {
     if (filter) {
       const newData = (data?.recentCompletedModels ?? []).filter(
         (d) =>

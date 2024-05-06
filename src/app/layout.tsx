@@ -5,12 +5,17 @@ import '@/components/maps/styles.css';
 import '../styles/global.css';
 
 import { ConfigProvider } from 'antd';
+import dynamic from 'next/dynamic';
 import { Provider } from 'react-redux';
 
-import CachedAuthState from '@/components/custom/CachedAuthState/CachedAuthState';
 import { PRIMARY_COLOR } from '@/components/theme';
 
 import { store } from '../store';
+
+const CachedAuthWithNoSSR = dynamic(
+  () => import('@/components/custom/CachedAuthState/CachedAuthState'),
+  { ssr: false },
+);
 
 export default function RootLayout({
   children,
@@ -62,7 +67,7 @@ export default function RootLayout({
               },
             }}
           >
-            <CachedAuthState>{children}</CachedAuthState>
+            <CachedAuthWithNoSSR>{children}</CachedAuthWithNoSSR>
           </ConfigProvider>
         </Provider>
       </body>

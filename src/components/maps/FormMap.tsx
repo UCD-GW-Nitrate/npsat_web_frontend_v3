@@ -1,8 +1,7 @@
 import { Select } from 'antd';
+import dynamic from 'next/dynamic';
 
 import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
-
-import RegionsMap from './RegionsMap';
 
 const { Option } = Select;
 
@@ -26,6 +25,10 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
       onSelectRegion([...selected, v]);
     }
   };
+
+  const RegionsMapNoSSR = dynamic(() => import('./RegionsMap'), {
+    ssr: false,
+  });
 
   return (
     <>
@@ -55,7 +58,7 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
           overflow: 'hidden',
         }}
       >
-        <RegionsMap
+        <RegionsMapNoSSR
           selected={selected}
           data={data.map((region) => configureData(region)) ?? []}
           onEachFeature={(feature: GeometryResponse, layer: any) => {

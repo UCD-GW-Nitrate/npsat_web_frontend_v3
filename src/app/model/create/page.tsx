@@ -18,18 +18,13 @@ import {
 } from '@/store';
 import { clearModel, type Model } from '@/store/slices/modelSlice';
 
-import Step1 from '../steps/Step1/page';
-import Step2 from '../steps/Step2/page';
-import Step3 from '../steps/Step3/page';
-import Step4 from '../steps/Step4/page';
-import Step5 from '../steps/Step5/page';
+import Step1 from '../../../components/steps/Step1/Step1';
+import Step2 from '../../../components/steps/Step2/Step2';
+import Step3 from '../../../components/steps/Step3/Step3';
+import Step4 from '../../../components/steps/Step4/Step4';
+import Step5 from '../../../components/steps/Step5/Step5';
 
 const { Step } = Steps;
-
-export interface StepBase {
-  onPrev: () => void;
-  onNext: () => void;
-}
 
 const steps = [
   'Select Settings',

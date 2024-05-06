@@ -8,7 +8,7 @@ import {
 } from '@/utils/constants';
 
 interface ModelDescriptionTableProps {
-  modelDetail: ModelDetail | undefined;
+  modelDetail: ModelDetail | null;
   regions: RegionDetail[];
 }
 

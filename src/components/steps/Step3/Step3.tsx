@@ -14,7 +14,7 @@ import {
   setModelModifications,
 } from '@/store/slices/modelSlice';
 
-import type { StepBase } from '../../create/page';
+import type StepBase from '../StepBase';
 import CropCard from './CropCard';
 import Step3Instructions from './Step3Instructions';
 

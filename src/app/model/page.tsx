@@ -20,12 +20,12 @@ import type { ModelDetail } from '@/store/apis/modelApi';
 import type { RegionDetail } from '@/store/apis/regionApi';
 import { createNewModel } from '@/store/slices/modelSlice';
 
-import type { ComparisonChartModel } from './components/ComparisonChart';
-import ComparisonChart from './components/ComparisonChart';
-import { CropLoadingDetailsBaseComparisonTable } from './components/CropLoadingDetailsTable';
-import ModelChart from './components/ModelChart';
-import ModelDescriptionTable from './components/ModelDescriptionTable';
-import ModelDifferenceHeatmap from './components/ModelDifferenceHeatmap';
+import type { ComparisonChartModel } from '../../components/model/ComparisonChart';
+import ComparisonChart from '../../components/model/ComparisonChart';
+import { CropLoadingDetailsBaseComparisonTable } from '../../components/model/CropLoadingDetailsTable';
+import ModelChart from '../../components/model/ModelChart';
+import ModelDescriptionTable from '../../components/model/ModelDescriptionTable';
+import ModelDifferenceHeatmap from '../../components/model/ModelDifferenceHeatmap';
 
 const ModelPage = () => {
   const params = useSearchParams();
@@ -39,10 +39,14 @@ const ModelPage = () => {
     ssr: false,
   });
 
-  const customModelDetail: ModelDetail | undefined =
-    ((modelDetail.data as any) ?? [undefined, undefined])[0];
-  const baseModelDetail: ModelDetail | undefined =
-    ((modelDetail.data as any) ?? [undefined, undefined])[1];
+  const customModelDetail: ModelDetail | null = ((modelDetail.data as any) ?? [
+    null,
+    null,
+  ])[0];
+  const baseModelDetail: ModelDetail | null = ((modelDetail.data as any) ?? [
+    null,
+    null,
+  ])[1];
 
   const [customModel, customPercentilesData] = useModelResults(
     customModelDetail?.results ?? [],
