@@ -14,7 +14,7 @@ import {
   setModelName,
 } from '@/store/slices/modelSlice';
 
-import type { StepBase } from '../../create/page';
+import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step4Instructions from './Step4Instructions';
 

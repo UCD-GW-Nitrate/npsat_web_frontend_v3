@@ -1,7 +1,6 @@
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-import Scrollable from '@/components/custom/Scrollable/Scrollable';
 import type { ModelDetail } from '@/store/apis/modelApi';
 
 interface CompareModelsTableProps {
@@ -84,9 +83,13 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
   ];
 
   return (
-    <Scrollable>
-      <Table pagination={false} bordered columns={columns} dataSource={data} />
-    </Scrollable>
+    <Table
+      pagination={false}
+      bordered
+      columns={columns}
+      dataSource={data}
+      scroll={{ x: 'max-content' }}
+    />
   );
 };
 

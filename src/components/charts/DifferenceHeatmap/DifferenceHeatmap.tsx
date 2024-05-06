@@ -1,5 +1,5 @@
 import type { ApexOptions } from 'apexcharts';
-import Chart from 'react-apexcharts';
+import dynamic from 'next/dynamic';
 
 const options: ApexOptions = {
   chart: {
@@ -25,13 +25,17 @@ const options: ApexOptions = {
   },
 };
 
+const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
+
 interface DifferenceHeatmapProps {
   data: ApexAxisChartSeries;
 }
 
 const DifferenceHeatmap = ({ data }: DifferenceHeatmapProps) => {
   return (
-    <Chart
+    <ChartNoSSR
       options={options}
       series={data}
       type="heatmap"

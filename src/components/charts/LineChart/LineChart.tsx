@@ -1,7 +1,11 @@
 import type { ApexOptions } from 'apexcharts';
-import Chart from 'react-apexcharts';
+import dynamic from 'next/dynamic';
 
 import { PRIMARY_COLOR } from '@/components/theme';
+
+const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
 
 interface LineChartProps {
   data: ApexAxisChartSeries;
@@ -82,7 +86,7 @@ const LineChart = ({
   };
 
   return (
-    <Chart
+    <ChartNoSSR
       type="line"
       options={options}
       series={data}

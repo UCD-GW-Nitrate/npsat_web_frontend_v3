@@ -33,7 +33,7 @@ import {
   SCREEN_LENGTH_RANGE_CONFIG,
 } from '@/utils/constants';
 
-import type { StepBase } from '../../create/page';
+import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';

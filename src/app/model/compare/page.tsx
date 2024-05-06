@@ -11,10 +11,10 @@ import { useModelDetails } from '@/hooks/useModelDetails';
 import type { PercentileResultMap } from '@/hooks/useModelResults';
 import { useAllModelResults } from '@/hooks/useModelResults';
 
-import CompareModelsTable from '../components/CompareModelsTable';
-import type { ComparisonChartModel } from '../components/ComparisonChart';
-import ComparisonChart from '../components/ComparisonChart';
-import { CropLoadingDetailsTable } from '../components/CropLoadingDetailsTable';
+import CompareModelsTable from '../../../components/model/CompareModelsTable';
+import type { ComparisonChartModel } from '../../../components/model/ComparisonChart';
+import ComparisonChart from '../../../components/model/ComparisonChart';
+import { CropLoadingDetailsTable } from '../../../components/model/CropLoadingDetailsTable';
 
 const CompareModelPage = () => {
   const modelIds = useSearchParams().getAll('models') as unknown as number[];

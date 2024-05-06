@@ -31,7 +31,7 @@ const ModelChart = ({
     const res: ApexAxisChartSeries = [];
     percentilesInput.forEach((p) => {
       const chartData: any = [];
-      ((plotData as any)[p] as ModelDisplay[] | undefined)?.forEach(
+      ((plotData as any)[p] as ModelDisplay[] | null)?.forEach(
         (data: ModelDisplay) => {
           chartData.push({
             x: data.year,

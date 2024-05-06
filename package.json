@@ -1,6 +1,8 @@
 {
-  "name": "next-js-boilerplate",
-  "version": "3.12.0",
+  "name": "npsat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NPSAT tools, UC Davis",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

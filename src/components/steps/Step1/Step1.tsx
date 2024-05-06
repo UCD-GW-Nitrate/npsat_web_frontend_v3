@@ -1,5 +1,3 @@
-'use client';
-
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { DatePicker, Divider, Form, InputNumber, Select, Tooltip } from 'antd';
 import dayjs from 'dayjs';
@@ -21,7 +19,7 @@ import {
   setModelWelltypeScenario,
 } from '@/store/slices/modelSlice';
 
-import type { StepBase } from '../../create/page';
+import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
 
@@ -163,9 +161,7 @@ const Step1 = ({ onNext }: StepBase) => {
           name="water_content"
           label="Unsaturated zone effective water content"
           rules={defaultRules('Please enter the water content')}
-          initialValue={
-            model.water_content ? model.water_content * 100 : undefined
-          }
+          initialValue={model.water_content ? model.water_content * 100 : null}
         >
           <InputNumber min={0} max={200} formatter={(v) => `${v}%`} />
         </Form.Item>
@@ -199,7 +195,7 @@ const Step1 = ({ onNext }: StepBase) => {
                   dayjs().year(model.reduction_start_year),
                   dayjs().year(model.reduction_end_year),
                 ]
-              : undefined
+              : null
           }
           rules={[
             ...defaultRules('Please enter the reduction year'),
