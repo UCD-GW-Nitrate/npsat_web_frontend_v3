@@ -1,3 +1,5 @@
+'use client';
+
 import { Divider, Form, Input } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React from 'react';
@@ -12,7 +14,7 @@ import {
   setModelName,
 } from '@/store/slices/modelSlice';
 
-import type { StepBase } from '../../create';
+import type { StepBase } from '../../create/page';
 import defaultRules from '../util/defaultRules';
 import Step4Instructions from './Step4Instructions';
 

@@ -1,7 +1,9 @@
+'use client';
+
 import { Button, Tabs } from 'antd';
-import TabPane from 'antd/es/tabs/TabPane';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
+import router from 'next/router';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -26,13 +28,12 @@ import ModelDescriptionTable from './components/ModelDescriptionTable';
 import ModelDifferenceHeatmap from './components/ModelDifferenceHeatmap';
 
 const ModelPage = () => {
-  const router = useRouter();
-  const modelDetail = useGetModelandBaseModelDetailQuery(+router.query.id!);
-  const dispatch = useDispatch();
-
-  const [selectedTab, setSelectedTab] = useState<string>(
-    'Comparison Line Plot',
+  const params = useSearchParams();
+  const modelDetail = useGetModelandBaseModelDetailQuery(
+    parseInt(params.get('id')!, 10),
   );
+  const dispatch = useDispatch();
+  const [selectedTab, setSelectedTab] = useState<string>('1');
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
     ssr: false,
@@ -170,16 +171,19 @@ const ModelPage = () => {
             centered
             activeKey={selectedTab}
             onChange={setSelectedTab}
-          >
-            <TabPane tab="Comparison Line Plot" key="Comparison Line Plot" />
-            <TabPane tab="Difference Heatmap" key="Difference Heatmap" />
-          </Tabs>
-          <div role="tabpanel" hidden={selectedTab !== 'Comparison Line Plot'}>
-            {linePlot}
-          </div>
-          <div role="tabpanel" hidden={selectedTab !== 'Difference Heatmap'}>
-            {heatmap}
-          </div>
+            items={[
+              {
+                label: 'Comparison Line Plot',
+                key: '1',
+                children: linePlot,
+              },
+              {
+                label: 'Difference Heatmap',
+                key: '2',
+                children: heatmap,
+              },
+            ]}
+          />
         </InfoContainer>
         <InfoContainer title="Crop loading details">
           {customModelDetail && baseModelDetail && (

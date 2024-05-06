@@ -1,9 +1,10 @@
+'use client';
+
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Button, Select, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import { HBox } from '@/components/custom/HBox/Hbox';
@@ -12,19 +13,16 @@ import { VBox } from '@/components/custom/VBox/VBox';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useFetchFeedQuery } from '@/store';
 import type { PlotModel } from '@/store/apis/feedApi';
-import { selectCurrentUser } from '@/store/slices/authSlice';
 
-import { COLUMNS } from './utility/constants';
+import { COLUMNS } from '../utility/constants';
 
 const Index = () => {
-  const { data, error, isFetching, refetch } = useFetchFeedQuery();
-  const [fetchedOnce, setFetechedOnce] = useState(false);
+  const { data, error } = useFetchFeedQuery();
   const [displayData, setDisplayData] = useState<PlotModel[]>(
     data?.recentCompletedModels ?? [],
   );
-  const router = useRouter();
-  const user = useSelector(selectCurrentUser);
   const [selected, setSelected] = useState<number[]>([]);
+  const router = useRouter();
 
   const {
     flowScenarios: flowScenarioOptions,
@@ -34,20 +32,10 @@ const Index = () => {
   } = useScenarioGroups();
 
   useEffect(() => {
-    if (user && fetchedOnce) {
-      refetch();
-    }
-  }, [user, fetchedOnce]);
-
-  useEffect(() => {
     setDisplayData(data?.recentCompletedModels ?? []);
   }, [data]);
 
-  if (!isFetching) {
-    if (!fetchedOnce) {
-      setFetechedOnce(true);
-    }
-  } else if (error) {
+  if (error) {
     console.log(error);
     return <div />;
   }
@@ -144,14 +132,7 @@ const Index = () => {
           </HBox>
           <Button
             disabled={selected.length <= 1 || selected.length > 5}
-            onClick={() =>
-              router.push({
-                pathname: '/model/compare',
-                query: {
-                  models: selected,
-                },
-              })
-            }
+            onClick={() => router.push(`/model/compare/?models=${selected}`)}
           >
             Compare Scenario
           </Button>
@@ -165,10 +146,7 @@ const Index = () => {
           onRow={(record) => {
             return {
               onClick: () => {
-                router.push({
-                  pathname: `/model/`,
-                  query: { id: record.id },
-                });
+                router.push(`/model/?id=${record.id}`);
               },
             };
           }}

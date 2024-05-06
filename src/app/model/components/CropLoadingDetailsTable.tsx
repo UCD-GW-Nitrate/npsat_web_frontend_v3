@@ -2,9 +2,8 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 
+import areaPerCrop from '@/logic/areaPerCrop';
 import type { ModelDetail, Modification, Region } from '@/store/apis/modelApi';
-
-import areaPerCrop from '../logic/areaPerCrop';
 
 interface CropLoadingDetailsTableProps {
   modelDetails: ModelDetail[];

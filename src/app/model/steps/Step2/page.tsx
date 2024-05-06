@@ -1,3 +1,5 @@
+'use client';
+
 import { Divider, Form, Switch, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -6,11 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { FormMap } from '@/components/maps/FormMap';
-import {
-  DEPTH_RANGE_CONFIG,
-  REGION_MACROS,
-  SCREEN_LENGTH_RANGE_CONFIG,
-} from '@/pages/utility/constants';
 import {
   useFetchB118BasinQuery,
   useFetchBasinQuery,
@@ -30,17 +27,20 @@ import {
   setModelScreenLenRangeMax,
   setModelScreenLenRangeMin,
 } from '@/store/slices/modelSlice';
+import {
+  DEPTH_RANGE_CONFIG,
+  REGION_MACROS,
+  SCREEN_LENGTH_RANGE_CONFIG,
+} from '@/utility/constants';
 
-import type { StepBase } from '../../create';
+import type { StepBase } from '../../create/page';
 import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';
 
 const { TabPane } = Tabs;
 
-interface Step2Props extends StepBase {}
-
-const Step2 = ({ onPrev, onNext }: Step2Props) => {
+const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
   const [depthMin, setDepthMin] = useState<number>(0);

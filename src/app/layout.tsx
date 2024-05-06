@@ -1,10 +1,10 @@
+'use client';
+
 import 'leaflet/dist/leaflet.css';
 import '@/components/maps/styles.css';
 import '../styles/global.css';
 
 import { ConfigProvider } from 'antd';
-import type { AppProps } from 'next/app';
-import Head from 'next/head';
 import { Provider } from 'react-redux';
 
 import CachedAuthState from '@/components/custom/CachedAuthState/CachedAuthState';
@@ -12,10 +12,14 @@ import { PRIMARY_COLOR } from '@/components/theme';
 
 import { store } from '../store';
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <main>
-      <Head>
+    <html lang="en">
+      <head>
         <title>NPSAT</title>
         <meta charSet="UTF-8" key="charset" />
         <meta
@@ -43,26 +47,25 @@ function MyApp({ Component, pageProps }: AppProps) {
           key="icon16"
         />
         <link rel="icon" href="/images/favicon.ico" key="favicon" />
-      </Head>
-      <Provider store={store}>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: PRIMARY_COLOR,
-            },
-            components: {
-              Button: {
-                primaryShadow: 'none',
+      </head>
+      <body>
+        <Provider store={store}>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: PRIMARY_COLOR,
               },
-            },
-          }}
-        >
-          <CachedAuthState>
-            <Component {...pageProps} />
-          </CachedAuthState>
-        </ConfigProvider>
-      </Provider>
-    </main>
+              components: {
+                Button: {
+                  primaryShadow: 'none',
+                },
+              },
+            }}
+          >
+            <CachedAuthState>{children}</CachedAuthState>
+          </ConfigProvider>
+        </Provider>
+      </body>
+    </html>
   );
 }
-export default MyApp;

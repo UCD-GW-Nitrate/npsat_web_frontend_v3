@@ -1,8 +1,10 @@
+'use client';
+
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -23,8 +25,8 @@ interface LoginFormProps {
 
 const LoginForm = ({ style }: LoginFormProps) => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const [login] = useLoginMutation();
+  const router = useRouter();
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     const username = values.username ?? '';
