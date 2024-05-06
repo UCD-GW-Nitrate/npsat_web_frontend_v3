@@ -75,7 +75,7 @@ const LineChart = ({
     yaxis: {
       labels: {
         formatter(val) {
-          return `${Math.floor(val)}`;
+          return val.toFixed(2);
         },
       },
     },

@@ -39,24 +39,30 @@ const getModelResult = (
         },
       ),
     ),
-  ).then((data) => {
-    const results = {};
-    data.forEach((percentile) => {
-      const res: ModelDisplay[] = percentile.data.values.map((value, index) =>
-        // start year is always 1945
-        ({
-          year: 1945 + index,
-          value,
-          percentile: `${ordinalSuffix(percentile.data.percentile)} percentile`,
-        }),
+  )
+    .then((data) => {
+      const results = {};
+      data.forEach((percentile) => {
+        const res: ModelDisplay[] = percentile.data.values.map((value, index) =>
+          // start year is always 1945
+          ({
+            year: 1945 + index,
+            value,
+            percentile: `${ordinalSuffix(
+              percentile.data.percentile,
+            )} percentile`,
+          }),
+        );
+        Object.assign(results, { [`${percentile.data.percentile}`]: res });
+      });
+      callback(
+        data.map((percentile) => percentile.data.percentile),
+        results,
       );
-      Object.assign(results, { [`${percentile.data.percentile}`]: res });
+    })
+    .catch((err: any) => {
+      console.log(err);
     });
-    callback(
-      data.map((percentile) => percentile.data.percentile),
-      results,
-    );
-  });
 };
 
 export const useModelResults = (

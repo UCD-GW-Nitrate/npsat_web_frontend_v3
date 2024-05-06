@@ -7,7 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { PropsWithChildren, ReactNode } from 'react';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/components/theme';
@@ -73,15 +73,9 @@ const AppLayout = ({ children }: PropsWithChildren) => {
     router.push('/user/login');
   };
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/user/login');
-    }
-  }, [user]);
-
   return (
     <ProLayout
-      loading={false}
+      loading={user === null}
       token={{
         header: {
           colorBgHeader: PRIMARY_COLOR,

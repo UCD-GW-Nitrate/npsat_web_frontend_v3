@@ -26,14 +26,18 @@ export const useModelRegions = (regionArray: Region[]) => {
             },
           ),
         ),
-      ).then((results) => {
-        const formattedRegions = results.map((region) => {
-          const result = region.data;
-          result.geometry.properties.name = region.data.name;
-          return result;
+      )
+        .then((results) => {
+          const formattedRegions = results.map((region) => {
+            const result = region.data;
+            result.geometry.properties.name = region.data.name;
+            return result;
+          });
+          setRegions(formattedRegions);
+        })
+        .catch((err: any) => {
+          console.log(err);
         });
-        setRegions(formattedRegions);
-      });
     }
   }, [regionArray]);
 
