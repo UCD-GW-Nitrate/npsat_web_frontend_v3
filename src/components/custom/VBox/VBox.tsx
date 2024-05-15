@@ -1,29 +1,21 @@
-import type { BoxProps } from '@mui/material';
-import { Box } from '@mui/material';
+import { Space } from 'antd';
+import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-interface VBoxProps extends BoxProps {
-  spacing?: number;
+interface VBoxProps {
+  spacing?: SizeType;
+  style?: React.CSSProperties;
 }
 
 export const VBox = ({
   children,
   spacing,
-  sx,
+  style,
 }: PropsWithChildren<VBoxProps>) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: spacing,
-        alignItems: 'center',
-        flexDirection: 'column',
-        ...sx,
-      }}
-    >
+    <Space direction="vertical" size={spacing} style={style}>
       {children}
-    </Box>
+    </Space>
   );
 };

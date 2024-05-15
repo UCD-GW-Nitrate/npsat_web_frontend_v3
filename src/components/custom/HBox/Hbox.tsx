@@ -1,29 +1,34 @@
-import type { BoxProps } from '@mui/material';
-import { Box } from '@mui/material';
+import { Flex, Space } from 'antd';
+import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import type { PropsWithChildren } from 'react';
 import React from 'react';
 
-export interface HBoxProps extends BoxProps {
-  spacing?: number;
+export interface HBoxProps {
+  spacing?: SizeType;
+  style?: React.CSSProperties;
 }
 
 export const HBox = ({
   children,
   spacing,
-  sx,
+  style,
 }: PropsWithChildren<HBoxProps>) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: spacing ?? 0,
-        alignItems: 'center',
-        flexDirection: 'row',
-        ...sx,
-      }}
-    >
-      {children}
-    </Box>
+    <>
+      {spacing ? (
+        <Space style={style} align="center" size={spacing}>
+          {children}
+        </Space>
+      ) : (
+        <Flex
+          vertical={false}
+          justify="space-between"
+          style={style}
+          align="center"
+        >
+          {children}
+        </Flex>
+      )}
+    </>
   );
 };

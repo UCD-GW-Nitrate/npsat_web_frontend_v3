@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import apiRoot from '@/config/apiRoot';
+
 import getAuth from '../getAuth';
 
 interface Result {
@@ -68,10 +70,12 @@ interface FeedResponse {
   recent_completed_models: PlotModelResponse[];
 }
 
+console.log('api route', apiRoot);
+
 const feedApi = createApi({
   reducerPath: 'feed',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
+    baseUrl: apiRoot,
     prepareHeaders: (headers, { getState }) => {
       return getAuth(headers, getState);
     },
@@ -108,7 +112,9 @@ const feedApi = createApi({
                 statusMessage: model.status_message,
                 unsatZoneTravelTime: model.unsaturated_zone_travel_time,
                 user: model.user,
-                waterContent: `${Number(model.water_content) * 100}%`,
+                waterContent: `${(
+                  Number(model.water_content) * 100
+                ).toFixed()}%`,
                 loadScenario: model.load_scenario.name,
                 flowScenario: model.flow_scenario.name,
                 wellTypeScenario: model.welltype_scenario.name,

@@ -1,11 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export interface RegionResponse {
-  count: number;
-  next: string;
-  previous: string | null;
-  results: [ResultResponse];
-}
+import apiRoot from '@/config/apiRoot';
+
+import { paramsSerializer } from './paramsSerializer';
 
 export interface ResultResponse {
   id: number;
@@ -41,6 +38,7 @@ export interface PropertyResponse {
   Regional_0: number;
   Shape_Area: number;
   id: number;
+  name: string;
 }
 
 export interface RegionGeometryResponse {
@@ -48,14 +46,40 @@ export interface RegionGeometryResponse {
   coordinates: [[number[]]];
 }
 
+export interface Property {
+  name: string;
+  fullname: string;
+  abbrev: string;
+  abcode: string;
+  ansi: string;
+}
+
+export interface RegionGeometry {
+  type: string;
+  coordinates: [[number[]]][];
+}
+
+export interface Geometry {
+  type: string;
+  properties: Property;
+}
+
+export interface RegionDetail {
+  id: number;
+  external_id: string;
+  name: string;
+  mantis_id: string;
+  geometry: Geometry;
+}
+
 const regionApi = createApi({
   reducerPath: 'region',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
+    baseUrl: apiRoot,
   }),
   endpoints(builder) {
     return {
-      fetchCentralValley: builder.query<RegionResponse, void>({
+      fetchCentralValley: builder.query<ResultResponse[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -64,7 +88,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchBasin: builder.query<RegionResponse, void>({
+      fetchBasin: builder.query<ResultResponse[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -73,7 +97,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchCounty: builder.query<RegionResponse, void>({
+      fetchCounty: builder.query<ResultResponse[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -82,7 +106,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchB118Basin: builder.query<RegionResponse, void>({
+      fetchB118Basin: builder.query<ResultResponse[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -91,7 +115,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchSubregions: builder.query<RegionResponse, void>({
+      fetchSubregions: builder.query<ResultResponse[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -100,7 +124,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchTownship: builder.query<RegionResponse, void>({
+      fetchTownship: builder.query<ResultResponse[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -108,6 +132,27 @@ const regionApi = createApi({
             params: { offset: 0, region_type: 5, limit: 2000 },
           };
         },
+      }),
+      fetchRegion: builder.query<ResultResponse[], number>({
+        query: (regionType) => {
+          return {
+            url: 'api/region/',
+            method: 'GET',
+            params: { offset: 0, region_type: regionType, limit: 2000 },
+          };
+        },
+      }),
+      getRegionDetail: builder.query<RegionDetail, number>({
+        query: (id) => ({
+          url: `api/region/${id}`,
+          method: 'GET',
+        }),
+      }),
+      getRegionByIds: builder.query<RegionDetail[], number[]>({
+        query: (regionIds) => ({
+          url: `api/model_run/?${paramsSerializer({ regionIds })}`,
+          method: 'GET',
+        }),
       }),
     };
   },
@@ -120,5 +165,8 @@ export const {
   useFetchBasinQuery,
   useFetchCountyQuery,
   useFetchSubregionsQuery,
+  useGetRegionDetailQuery,
+  useGetRegionByIdsQuery,
+  useFetchRegionQuery,
 } = regionApi;
 export { regionApi };

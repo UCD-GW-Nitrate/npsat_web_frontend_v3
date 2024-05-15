@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import getAuth from '../getAuth';
+import apiRoot from '@/config/apiRoot';
 
 export interface UserResponse {
   token: string;
@@ -31,10 +31,7 @@ export interface LoginRequest {
 
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8010',
-    prepareHeaders: (headers, { getState }) => {
-      return getAuth(headers, getState);
-    },
+    baseUrl: apiRoot,
   }),
   endpoints: (builder) => ({
     login: builder.mutation<AuthState, LoginRequest>({
@@ -44,16 +41,22 @@ export const authApi = createApi({
         body: credentials,
       }),
       transformResponse: (response: UserResponse) => {
-        return {
-          token: response.token,
-          user: {
-            userId: response.user_id,
-            username: response.username,
-            isStaff: response.is_staff,
-            isSuperuser: response.is_superuser,
-            email: response.email,
-          },
+        const user: User = {
+          userId: response.user_id,
+          username: response.username,
+          isStaff: response.is_staff,
+          isSuperuser: response.is_superuser,
+          email: response.email,
         };
+
+        const authState: AuthState = {
+          token: response.token,
+          user,
+        };
+
+        localStorage.setItem('npsat_user_info', JSON.stringify(authState));
+
+        return authState;
       },
     }),
     protected: builder.mutation<{ message: string }, void>({
