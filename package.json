@@ -26,7 +26,8 @@
     "serve-storybook": "run-s storybook:*",
     "test-storybook:ci": "start-server-and-test serve-storybook http://localhost:6006 test-storybook",
     "prepare": "husky install",
-    "postbuild": "next-sitemap"
+    "postbuild": "npm run sitemap",
+    "sitemap": "next-sitemap"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
