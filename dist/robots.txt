@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://npsat-dev.lawr.ucdavis.edu
+
+# Sitemaps
+Sitemap: https://npsat-dev.lawr.ucdavis.edu/sitemap.xml

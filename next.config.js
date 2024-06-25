@@ -12,6 +12,8 @@ module.exports = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  output: 'export',
+  distDir: 'dist',
 };
 
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
