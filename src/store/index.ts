@@ -49,17 +49,6 @@ export {
   useRunModelMutation,
 } from './apis/modelApi';
 export {
-  useGetAllModelDetailQuery,
-  useGetModelandBaseModelDetailQuery,
-  useGetModelDetailByIdsQuery,
-  useGetModelDetailQuery,
-  useGetModelResultsQuery,
-  useGetModelStatusQuery,
-  useGetModificationDetailQuery,
-  usePutModelMutation,
-  useRunModelMutation,
-} from './apis/modelApi';
-export {
   useFetchB118BasinQuery,
   useFetchBasinQuery,
   useFetchCentralValleyQuery,

@@ -192,37 +192,6 @@ const modelApi = createApi({
           },
         }),
       }),
-      getModelDetail: builder.query<ModelDetail, number>({
-        query: (id) => ({
-          url: `api/model_run/${id}/`,
-          method: 'GET',
-        }),
-      }),
-      getModelandBaseModelDetail: builder.query<ModelDetail[], number>({
-        query: (id) => ({
-          url: `api/model_run/${id}/`,
-          method: 'GET',
-          params: { includeBase: true },
-        }),
-      }),
-      getModificationDetail: builder.query<ModelResults, number>({
-        query: (id) => ({
-          url: `api/modification/${id}/`,
-          method: 'GET',
-        }),
-      }),
-      getModelResults: builder.query<ModelResult, number>({
-        query: (id) => ({
-          url: `api/model_result/${id}/`,
-          method: 'GET',
-        }),
-      }),
-      putModel: builder.mutation<ModelResults, number>({
-        query: (id) => ({
-          url: `api/model_run/${id}/`,
-          method: 'PUT',
-        }),
-      }),
     };
   },
 });
