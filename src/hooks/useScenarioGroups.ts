@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+import apiRoot from '@/config/apiRoot';
+
 export const SCENARIO_MACROS = {
   TYPE_FLOW: 1,
   TYPE_UNSAT: 2,
@@ -33,7 +35,7 @@ export const useScenarioGroups = () => {
     callback: (res: ScenarioResponse) => void,
   ) => {
     axios
-      .get<ScenarioResponse, any>(`http://localhost:8010/api/scenario/`, {
+      .get<ScenarioResponse, any>(`${apiRoot}/api/scenario/`, {
         params: {
           scenario_type: type,
         },

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import apiRoot from '@/config/apiRoot';
 import type { RootState } from '@/store';
 import type { AuthState } from '@/store/apis/authApi';
 import type { Result } from '@/store/apis/modelApi';
@@ -30,14 +31,11 @@ const getModelResult = (
 ) => {
   Promise.all(
     percentiles.map((percentile) =>
-      axios.get<ModelResult>(
-        `http://localhost:8010/api/model_result/${percentile.id}/`,
-        {
-          headers: {
-            Authorization: `Token ${authToken}`,
-          },
+      axios.get<ModelResult>(`${apiRoot}/api/model_result/${percentile.id}/`, {
+        headers: {
+          Authorization: `Token ${authToken}`,
         },
-      ),
+      }),
     ),
   )
     .then((data) => {

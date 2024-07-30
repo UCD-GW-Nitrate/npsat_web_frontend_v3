@@ -47,6 +47,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".storybook/*.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "dist/types/**/*.ts"
   ]
 }

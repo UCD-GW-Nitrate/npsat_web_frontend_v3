@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import apiRoot from '@/config/apiRoot';
 import type { RootState } from '@/store';
 import type { AuthState } from '@/store/apis/authApi';
 import type { Region } from '@/store/apis/modelApi';
@@ -17,14 +18,11 @@ export const useModelRegions = (regionArray: Region[]) => {
     if (regionArray) {
       Promise.all(
         regionArray.map((region) =>
-          axios.get<RegionDetail>(
-            `http://localhost:8010/api/region/${region.id}/`,
-            {
-              headers: {
-                Authorization: `Token ${auth.token}`,
-              },
+          axios.get<RegionDetail>(`${apiRoot}/api/region/${region.id}/`, {
+            headers: {
+              Authorization: `Token ${auth.token}`,
             },
-          ),
+          }),
         ),
       )
         .then((results) => {
