@@ -21,7 +21,7 @@ type FieldType = {
   remember?: string;
 };
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const dispatch = useDispatch();
   const [login] = useLoginMutation();
   const router = useRouter();
@@ -37,8 +37,8 @@ const LoginPage = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Login - NPSAT</title>
-        <meta name="description" content="Login - NPSAT" />
+        <title>Register - NPSAT</title>
+        <meta name="description" content="Register - NPSAT" />
       </Helmet>
       <LoginWrapper>
         <Form
@@ -90,4 +90,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
