@@ -1,6 +1,7 @@
 'use client';
 
 import { InfoCircleOutlined } from '@ant-design/icons';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { Button, Select, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
@@ -34,6 +35,13 @@ const Index = () => {
   useEffect(() => {
     setDisplayData(data?.recentCompletedModels ?? []);
   }, [data]);
+
+  useEffect(() => {
+    const e = error as FetchBaseQueryError;
+    if (e && e.status === 401) {
+      router.replace('user/login');
+    }
+  }, [error]);
 
   if (error) {
     console.log(error);
