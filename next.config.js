@@ -1,5 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
-module.exports = {
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -18,6 +21,8 @@ module.exports = {
     appDir: true,
   },
 };
+
+module.exports = nextConfig;
 
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: process.env.ANALYZE === 'true',

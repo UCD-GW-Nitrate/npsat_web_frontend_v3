@@ -31,7 +31,7 @@ const LoginForm = ({ style }: LoginFormProps) => {
     const password = values.password ?? '';
     const user = await login({ username, password }).unwrap();
     dispatch(setCredentials(user));
-    router.push('/');
+    router.push('/home');
   };
 
   return (
