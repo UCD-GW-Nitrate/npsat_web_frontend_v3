@@ -14,6 +14,9 @@ module.exports = {
   },
   output: 'export',
   distDir: 'dist',
+  experimental: {
+    appDir: true,
+  },
 };
 
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
