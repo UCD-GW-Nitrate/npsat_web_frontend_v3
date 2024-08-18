@@ -15,11 +15,11 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  output: 'export',
-  distDir: 'dist',
-  experimental: {
-    appDir: true,
-  },
+  // output: 'export',
+  // distDir: 'dist',
+  // experimental: {
+  //   appDir: true,
+  // },
 };
 
 module.exports = nextConfig;
