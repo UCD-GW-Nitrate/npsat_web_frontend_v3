@@ -36,7 +36,8 @@ const Index = () => {
   }, [data]);
 
   if (error) {
-    console.log(error);
+    console.log('error', error);
+    router.push('user/login');
     return <div />;
   }
 
