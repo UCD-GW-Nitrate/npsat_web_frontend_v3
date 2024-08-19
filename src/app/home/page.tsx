@@ -1,6 +1,7 @@
 'use client';
 
 import { InfoCircleOutlined } from '@ant-design/icons';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { Button, Select, Table } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
@@ -37,7 +38,10 @@ const Index = () => {
 
   if (error) {
     console.log('error', error);
-    router.push('user/login');
+    const e = error as FetchBaseQueryError;
+    if (e && e.status === 401) {
+      router.replace('user/login');
+    }
     return <div />;
   }
 
