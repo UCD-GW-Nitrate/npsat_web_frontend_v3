@@ -1,5 +1,7 @@
 import { Select } from 'antd';
-import dynamic from 'next/dynamic';
+import type { GeoJsonObject } from 'geojson';
+import type { Layer } from 'leaflet';
+import { GeoJSON, MapContainer, TileLayer } from 'react-leaflet';
 
 import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
 
@@ -25,10 +27,6 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
       onSelectRegion([...selected, v]);
     }
   };
-
-  const RegionsMapNoSSR = dynamic(() => import('./RegionsMap'), {
-    ssr: false,
-  });
 
   return (
     <>
@@ -58,34 +56,55 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
           overflow: 'hidden',
         }}
       >
-        <RegionsMapNoSSR
-          selected={selected}
-          data={data.map((region) => configureData(region)) ?? []}
-          onEachFeature={(feature: GeometryResponse, layer: any) => {
-            layer.on({
-              click: () => {
-                let selectedRegions = selected;
-                if (selectedRegions.indexOf(feature.properties.id) === -1) {
-                  selectedRegions = [...selectedRegions, feature.properties.id];
-                } else {
-                  selectedRegions = [
-                    ...selectedRegions.slice(
-                      0,
-                      selectedRegions.indexOf(feature.properties.id),
-                    ),
-                    ...selectedRegions.slice(
-                      selectedRegions.indexOf(feature.properties.id) + 1,
-                    ),
-                  ];
-                }
-                if (onSelectRegion) {
-                  onSelectRegion(selectedRegions);
-                }
-              },
-            });
-            layer.bindTooltip(feature.properties.name);
-          }}
-        />
+        <MapContainer center={[37.58, -119.4179]} zoom={6}>
+          <GeoJSON
+            key={data.length + (selected?.length ?? 0)}
+            data={
+              (data.map((region) => configureData(region)) ??
+                []) as unknown as GeoJsonObject
+            }
+            onEachFeature={(feature: any, layer: Layer) => {
+              layer.on({
+                click: () => {
+                  let selectedRegions = selected;
+                  if (selectedRegions.indexOf(feature.properties.id) === -1) {
+                    selectedRegions = [
+                      ...selectedRegions,
+                      feature.properties.id,
+                    ];
+                  } else {
+                    selectedRegions = [
+                      ...selectedRegions.slice(
+                        0,
+                        selectedRegions.indexOf(feature.properties.id),
+                      ),
+                      ...selectedRegions.slice(
+                        selectedRegions.indexOf(feature.properties.id) + 1,
+                      ),
+                    ];
+                  }
+                  if (onSelectRegion) {
+                    onSelectRegion(selectedRegions);
+                  }
+                },
+              });
+              layer.bindTooltip(feature.properties.name);
+            }}
+            style={(feature) =>
+              // eslint-disable-next-line no-nested-ternary
+              selected !== undefined
+                ? selected?.indexOf(feature?.properties.id) !== -1
+                  ? {
+                      color: 'red',
+                    }
+                  : {
+                      color: 'blue',
+                    }
+                : { color: 'blue' }
+            }
+          />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        </MapContainer>
       </div>
     </>
   );

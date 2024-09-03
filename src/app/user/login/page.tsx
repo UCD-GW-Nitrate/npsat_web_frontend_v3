@@ -31,7 +31,7 @@ const LoginPage = () => {
     const password = values.password ?? '';
     const user = await login({ username, password }).unwrap();
     dispatch(setCredentials(user));
-    router.push('/home');
+    router.push('/');
   };
 
   return (
