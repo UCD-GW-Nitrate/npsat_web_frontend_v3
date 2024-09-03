@@ -5,6 +5,7 @@ import '@/components/maps/styles.css';
 import '../styles/global.css';
 
 import { ConfigProvider } from 'antd';
+import enUS from 'antd/locale/en_US';
 import dynamic from 'next/dynamic';
 import { Provider } from 'react-redux';
 
@@ -56,6 +57,7 @@ export default function RootLayout({
       <body>
         <Provider store={store}>
           <ConfigProvider
+            locale={enUS}
             theme={{
               token: {
                 colorPrimary: PRIMARY_COLOR,
