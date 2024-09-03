@@ -1,13 +1,17 @@
 import { Avatar } from 'antd';
 import React from 'react';
 
-const ProfileButton = () => {
+interface ProfileButtonProps {
+  name: string;
+}
+
+const ProfileButton = ({ name }: ProfileButtonProps) => {
   return (
     <Avatar
       size="large"
       style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
     >
-      C
+      {name[0]?.toUpperCase()}
     </Avatar>
   );
 };

@@ -84,7 +84,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
       }}
       avatarProps={{
         size: 'small',
-        title: <ProfileButton />,
+        title: <ProfileButton name={user?.username ?? 'U'} />,
         render: (_props, dom) => {
           return (
             <Dropdown
@@ -93,7 +93,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
                   {
                     key: 'logout',
                     icon: <LogoutOutlined />,
-                    label: 'Caden',
+                    label: user?.username,
                   },
                 ],
                 onClick,
