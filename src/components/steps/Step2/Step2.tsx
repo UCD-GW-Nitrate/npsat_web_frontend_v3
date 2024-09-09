@@ -38,6 +38,10 @@ import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';
 import { ModelRegion } from '@/types/model/ModelRegion';
 
+interface RegionDict {
+  [key: number]: ModelRegion;
+}
+
 const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
@@ -59,6 +63,8 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   const { data: subregionsData } = useFetchSubregionsQuery();
   const { data: townshipData } = useFetchTownshipQuery();
 
+  const [regionDict, setRegionDict] = useState<RegionDict>({});
+
   const formItemLayout = {
     labelCol: {
       span: 5,
@@ -74,12 +80,36 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     setMapType(parseInt(tab, 10));
   };
 
+  useEffect(() => {
+    const regionDictTemp: RegionDict = {};
+    b118BasinData?.forEach((region) => {
+      regionDictTemp[region.id] = region;
+    });
+    basinData?.forEach((region) => {
+      regionDictTemp[region.id] = region;
+    });
+    centralValleyData?.forEach((region) => {
+      regionDictTemp[region.id] = region;
+    });
+    countyData?.forEach((region) => {
+      regionDictTemp[region.id] = region;
+    });
+    subregionsData?.forEach((region) => {
+      regionDictTemp[region.id] = region;
+    });
+    townshipData?.forEach((region) => {
+      regionDictTemp[region.id] = region;
+    });
+    setRegionDict(regionDictTemp);
+    console.log(regionDictTemp);
+  }, [b118BasinData, basinData, centralValleyData, countyData, subregionsData, townshipData]);
+
   const onFormSubmit = (formData: FieldValues) => {
     if (showAdvancedFilter) {
       dispatch(
         setModelRegions(
           (formData.region as number[]).map((val) => {
-            return { id: val } as ModelRegion;
+            return regionDict[val] as ModelRegion;
           }),
         ),
       );
@@ -91,7 +121,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       dispatch(
         setModelRegions(
           (formData.region as number[]).map((val) => {
-            return { id: val } as ModelRegion;
+            return regionDict[val] as ModelRegion;
           }),
         ),
       );

@@ -17,6 +17,7 @@ import type { CropModification } from '@/types/model/CropModification';
 import type StepBase from '../StepBase';
 import CropCard from './CropCard';
 import Step3Instructions from './Step3Instructions';
+import areaPerCrop, { CropAreaMap } from '@/logic/areaPerCrop';
 
 interface CropDict {
   [key: string]: Crop;
@@ -29,14 +30,16 @@ interface LoadingDict {
 const Step3 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const { data: cropData } = useGetAllCropsByFlowScenarioQuery(1);
+  const cropList: Crop[] = [];
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [cropDict, setCropDict] = useState<CropDict>({});
   const [loadingDict, setLoadingDict] = useState<LoadingDict>({});
-
   const [selectedCrops, setSelectedCrops] = useState<number[]>(
     model.modifications?.map((mod) => mod.crop.id) ?? [],
   );
+
+  var [cropAreaMap, setCropAreaMap] = useState<CropAreaMap>({});
 
   const formItemLayout = {
     labelCol: {
@@ -70,6 +73,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     const cropDictTemp: CropDict = {};
     cropData?.results.forEach((crop) => {
       cropDictTemp[crop.id] = crop;
+      cropList.push(crop);
     });
     setCropDict(cropDictTemp);
 
@@ -86,6 +90,19 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     } else {
       form.setFieldValue('crop_choice', selectedCrops);
     }
+
+    console.log("model", model)
+    console.log("cropList", cropList)
+    console.log("maptype", model.regions![0]!.region_type)
+
+    console.log(areaPerCrop(model.regions![0]!.region_type, 
+      model.flow_scenario!.scenario_type, 
+      cropList.map((crop) => crop.id), 
+      model.regions!.map((r) => r.mantis_id)))
+    setCropAreaMap(areaPerCrop(model.regions![0]!.region_type, 
+      model.flow_scenario!.scenario_type, 
+      cropList.map((crop) => crop.id), 
+      model.regions!.map((r) => r.mantis_id)));
   }, [cropData]);
 
   const selectedCropCards = useMemo(
@@ -112,6 +129,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
                     ((loadingDict[crop] ?? 1) * 100).toFixed(),
                     10,
                   )}
+                  cropArea={cropAreaMap[cropDict[crop]!.id]!}
                   onChange={(v) => {
                     form.setFieldValue(cropDict[crop]!.name, v);
                   }}

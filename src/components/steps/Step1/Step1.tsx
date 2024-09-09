@@ -1,7 +1,7 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { DatePicker, Divider, Form, InputNumber, Select, Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -22,8 +22,13 @@ import {
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
+import { Scenario } from '@/types/model/Scenario';
 
 const { RangePicker } = DatePicker;
+
+interface ScenarioDict {
+  [key: number]: Scenario;
+}
 
 const Step1 = ({ onNext }: StepBase) => {
   const [form] = Form.useForm();
@@ -35,12 +40,32 @@ const Step1 = ({ onNext }: StepBase) => {
     welltypeScenarios: welltypeScenarioOptions,
   } = useScenarioGroups();
   const model = useSelector(selectCurrentModel);
+  const [scenarios, setScenarios] = useState<ScenarioDict>({});
+
+  useEffect(() => {
+    const scenarioDictTemp: ScenarioDict = {};
+    flowScenarioOptions.forEach((scenario) => {
+      scenarioDictTemp[scenario.id] = scenario
+    });
+    loadScenarioOptions.forEach((scenario) => {
+      scenarioDictTemp[scenario.id] = scenario
+    });
+    unsatScenarioOptions.forEach((scenario) => {
+      scenarioDictTemp[scenario.id] = scenario
+    });
+    welltypeScenarioOptions.forEach((scenario) => {
+      scenarioDictTemp[scenario.id] = scenario
+    });
+    console.log(scenarioDictTemp)
+    setScenarios(scenarioDictTemp);
+  }, [flowScenarioOptions, loadScenarioOptions, unsatScenarioOptions, welltypeScenarioOptions]);
 
   const onFormSubmit = (data: FieldValues) => {
-    dispatch(setModelFlowScenario({ id: data.flow_scenario }));
-    dispatch(setModelLoadScenario({ id: data.load_scenario }));
-    dispatch(setModelWelltypeScenario({ id: data.welltype_scenario }));
-    dispatch(setModelUnsatScenario({ id: data.unsat_scenario }));
+    console.log(scenarios[data.flow_scenario]!)
+    dispatch(setModelFlowScenario(scenarios[data.flow_scenario]!));
+    dispatch(setModelLoadScenario(scenarios[data.load_scenario]!));
+    dispatch(setModelWelltypeScenario(scenarios[data.welltype_scenario]!));
+    dispatch(setModelUnsatScenario(scenarios[data.unsat_scenario]!));
     dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
     dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(

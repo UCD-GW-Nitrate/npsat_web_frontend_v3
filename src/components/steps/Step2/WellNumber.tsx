@@ -105,9 +105,9 @@ const WellNumber = ({
       case 1: // basin
         // Step1
         wellData.forEach((well) => {
-          console.log('well dic case 1.0', well);
+          // console.log('well dic case 1.0', well);
           if (!wellDic.hasOwnProperty(well.Basin)) {
-            console.log('well dic case 1.1', wellDic);
+            // console.log('well dic case 1.1', wellDic);
             if (filterOn) {
               if (
                 well.D >= depthFilter[0] &&
@@ -118,9 +118,9 @@ const WellNumber = ({
                 wellDic[well.Basin] = [1, well.D, well.SL];
               else wellDic[well.Basin] = [0, well.D, well.SL];
             } else {
-              console.log('well dic case 1.2', wellDic);
+              // console.log('well dic case 1.2', wellDic);
               wellDic[well.Basin] = [1, well.D, well.SL];
-              console.log('well dic case 1.3', wellDic);
+              // console.log('well dic case 1.3', wellDic);
             }
           } else if (filterOn) {
             if (
@@ -132,7 +132,7 @@ const WellNumber = ({
               wellDic[well.Basin][0] += 1;
           } else wellDic[well.Basin][0] += 1;
         });
-        console.log('well dic case 1', wellDic);
+        // console.log('well dic case 1', wellDic);
         // Step2
         mantisId.forEach((id) => {
           wellCount += wellDic[id][0];
@@ -168,13 +168,13 @@ const WellNumber = ({
           } else wellDic[well.Sub][0] += 1;
         });
 
-        console.log('mantis id', mantisId);
+        // console.log('mantis id', mantisId);
         // Step2
         mantisId.forEach((id) => {
           wellCount += wellDic[id][0];
         });
 
-        console.log('well count', wellCount);
+        // console.log('well count', wellCount);
         break;
       case 3: // B118 Basin
         // Step1

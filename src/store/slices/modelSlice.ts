@@ -6,7 +6,7 @@ import type { FormModel } from '@/types/model/FormModel';
 
 import type { RootState } from '..';
 import { ModelRegion } from '@/types/model/ModelRegion';
-import { PropertyId } from '@/types/model/PropertyId';
+import { Scenario } from '@/types/model/Scenario';
 
 const modelSlice = createSlice({
   name: 'model',
@@ -30,16 +30,16 @@ const modelSlice = createSlice({
     setModelReductionEndYear(state, action: PayloadAction<number>) {
       return { ...state, reduction_end_year: action.payload };
     },
-    setModelFlowScenario(state, action: PayloadAction<PropertyId>) {
+    setModelFlowScenario(state, action: PayloadAction<Scenario>) {
       return { ...state, flow_scenario: action.payload };
     },
-    setModelLoadScenario(state, action: PayloadAction<PropertyId>) {
+    setModelLoadScenario(state, action: PayloadAction<Scenario>) {
       return { ...state, load_scenario: action.payload };
     },
-    setModelUnsatScenario(state, action: PayloadAction<PropertyId>) {
+    setModelUnsatScenario(state, action: PayloadAction<Scenario>) {
       return { ...state, unsat_scenario: action.payload };
     },
-    setModelWelltypeScenario(state, action: PayloadAction<PropertyId>) {
+    setModelWelltypeScenario(state, action: PayloadAction<Scenario>) {
       return { ...state, welltype_scenario: action.payload };
     },
     setModelRegions(state, action: PayloadAction<ModelRegion[]>) {

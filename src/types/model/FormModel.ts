@@ -1,6 +1,6 @@
 import type { CropModification } from './CropModification';
 import { ModelRegion } from './ModelRegion';
-import { PropertyId } from './PropertyId';
+import { Scenario } from './Scenario';
 
 export interface FormModel {
   name?: string;
@@ -9,10 +9,10 @@ export interface FormModel {
   sim_end_year?: number;
   reduction_start_year?: number;
   reduction_end_year?: number;
-  flow_scenario?: PropertyId;
-  load_scenario?: PropertyId;
-  unsat_scenario?: PropertyId;
-  welltype_scenario?: PropertyId;
+  flow_scenario?: Scenario;
+  load_scenario?: Scenario;
+  unsat_scenario?: Scenario;
+  welltype_scenario?: Scenario;
   regions?: ModelRegion[];
   public?: boolean;
   is_base?: boolean;

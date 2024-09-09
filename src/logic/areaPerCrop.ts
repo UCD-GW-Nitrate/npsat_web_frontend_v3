@@ -5,7 +5,7 @@ interface CropAreaInfo {
   Area: number;
 }
 
-interface CropAreaMap {
+export interface CropAreaMap {
   [cropId: string]: number;
 }
 
@@ -34,12 +34,17 @@ const areaPerCrop = (
   let selectedCropAreas = 0;
   let totalAreas = 0;
 
+  console.log(mapType, load_scenario, crops, regions);
+
   // load data of selected regions
   if (load_scenario === 1) {
+    console.log('1')
     if (mapType === 0) {
+      console.log('0')
       cropsData = GNLMcropAreas[0]!.Regions[0]!.CropList;
       totalAreas = GNLMcropAreas[0]!.Regions[0]!.TotArea;
     } else if (mapType && mapType in regionMacros) {
+      console.log('not 0')
       GNLMcropAreas.forEach((maps) => {
         if (maps.Code === regionMacros[mapType])
           maps.Regions.forEach((region) => {
@@ -49,6 +54,7 @@ const areaPerCrop = (
             }
           });
       });
+      console.log(cropsData)
     }
   }
 
@@ -59,13 +65,13 @@ const areaPerCrop = (
         cropAreaMap[crop.CropId] = crop.Area;
         selectedCropAreas += crop.Area;
       } else {
-        cropAreaMap[crop.CropId] += crop.Area;
+        cropAreaMap[crop.CropId]! += crop.Area;
         selectedCropAreas += crop.Area;
       }
     }
   });
 
-  cropAreaMap[0] = totalAreas - selectedCropAreas;
+  cropAreaMap[1] = totalAreas - selectedCropAreas;
 
   return cropAreaMap;
 };

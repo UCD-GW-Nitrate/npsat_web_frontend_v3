@@ -6,14 +6,15 @@ import type { Crop } from '@/types/crop/Crop';
 interface CropCardProps {
   crop: Crop;
   initialValue?: number;
+  cropArea: number;
   onChange?: (input: number) => void;
 }
 
-const CropCard = ({ crop, initialValue, onChange }: CropCardProps) => {
+const CropCard = ({ crop, initialValue, cropArea, onChange }: CropCardProps) => {
   const [value, setValue] = useState<number>(initialValue ?? 0);
 
   return (
-    <Card title={crop.name}>
+    <Card title={crop.name} extra={cropArea && (`${cropArea * 0.25} ha / ${cropArea * 0.25 * 2.47} ac`)}>
       <Row gutter={16}>
         <Col span={3} style={{ margin: '5px 0' }}>
           Loading
