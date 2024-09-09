@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 
 import apiRoot from '@/config/apiRoot';
 import type { RootState } from '@/store';
-import type { AuthState } from '@/store/apis/authApi';
-import type { Region } from '@/store/apis/modelApi';
-import type { RegionDetail } from '@/store/apis/regionApi';
+import type { ModelRegion } from '@/types/model/ModelRegion';
+import type { Region } from '@/types/region/Region';
+import type { AuthState } from '@/types/user/User';
 
-export const useModelRegions = (regionArray: Region[]) => {
-  const [regions, setRegions] = useState<RegionDetail[]>([]);
+export const useModelRegions = (regionArray: ModelRegion[]) => {
+  const [regions, setRegions] = useState<Region[]>([]);
   const auth = useSelector<RootState, AuthState>((state) => {
     return state.auth;
   });
@@ -18,7 +18,7 @@ export const useModelRegions = (regionArray: Region[]) => {
     if (regionArray) {
       Promise.all(
         regionArray.map((region) =>
-          axios.get<RegionDetail>(`${apiRoot}/api/region/${region.id}/`, {
+          axios.get<Region>(`${apiRoot}/api/region/${region.id}/`, {
             headers: {
               Authorization: `Token ${auth.token}`,
             },

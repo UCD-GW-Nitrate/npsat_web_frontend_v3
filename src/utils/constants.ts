@@ -1,6 +1,5 @@
+import { PlotModel } from '@/types/feed/Feed';
 import type { ColumnType } from 'antd/es/table';
-
-import type { PlotModel } from '@/store/apis/feedApi';
 
 export const MODEL_STATUS_MACROS = {
   NOT_READY: 0,

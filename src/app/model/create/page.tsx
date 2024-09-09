@@ -16,13 +16,14 @@ import {
   useFetchTownshipQuery,
   useRunModelMutation,
 } from '@/store';
-import { clearModel, type Model } from '@/store/slices/modelSlice';
+import { clearModel} from '@/store/slices/modelSlice';
 
 import Step1 from '../../../components/steps/Step1/Step1';
 import Step2 from '../../../components/steps/Step2/Step2';
 import Step3 from '../../../components/steps/Step3/Step3';
 import Step4 from '../../../components/steps/Step4/Step4';
 import Step5 from '../../../components/steps/Step5/Step5';
+import { FormModel } from '@/types/model/FormModel';
 
 const { Step } = Steps;
 
@@ -85,7 +86,7 @@ const CreateModelPage = () => {
     handleNext();
   };
 
-  const handleCompleteModel = (newModel: Model) => {
+  const handleCompleteModel = (newModel: FormModel) => {
     runModel(newModel);
     handleCompleteStep();
     dispatch(clearModel());

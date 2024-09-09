@@ -7,7 +7,6 @@ import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import type { Model } from '@/store/slices/modelSlice';
 import {
   selectCurrentModel,
   setModelDescription,
@@ -17,9 +16,10 @@ import {
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step4Instructions from './Step4Instructions';
+import { FormModel } from '@/types/model/FormModel';
 
 interface Step4Props extends StepBase {
-  onComplete: (newModel: Model) => void;
+  onComplete: (newModel: FormModel) => void;
 }
 
 const Step4 = ({ onPrev, onComplete }: Step4Props) => {

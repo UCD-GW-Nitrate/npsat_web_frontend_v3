@@ -16,9 +16,9 @@ import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useModelResults } from '@/hooks/useModelResults';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useGetModelandBaseModelDetailQuery } from '@/store';
-import type { ModelDetail } from '@/store/apis/modelApi';
-import type { RegionDetail } from '@/store/apis/regionApi';
 import { createNewModel } from '@/store/slices/modelSlice';
+import type { ModelRun } from '@/types/model/ModelRun';
+import type { Region } from '@/types/region/Region';
 
 import type { ComparisonChartModel } from '../../components/model/ComparisonChart';
 import ComparisonChart from '../../components/model/ComparisonChart';
@@ -39,11 +39,11 @@ const ModelPage = () => {
     ssr: false,
   });
 
-  const customModelDetail: ModelDetail | null = ((modelDetail.data as any) ?? [
+  const customModelDetail: ModelRun | null = ((modelDetail.data as any) ?? [
     null,
     null,
   ])[0];
-  const baseModelDetail: ModelDetail | null = ((modelDetail.data as any) ?? [
+  const baseModelDetail: ModelRun | null = ((modelDetail.data as any) ?? [
     null,
     null,
   ])[1];
@@ -200,7 +200,7 @@ const ModelPage = () => {
         <InfoContainer title="Regions included in this scenario run">
           <div id="map" style={{ height: '600px', margin: 0 }}>
             <MapWithNoSSR
-              data={regions.map((region: RegionDetail) => region.geometry)}
+              data={regions.map((region: Region) => region.geometry)}
             />
           </div>
         </InfoContainer>

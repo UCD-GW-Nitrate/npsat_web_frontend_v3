@@ -3,16 +3,18 @@ import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 
 import areaPerCrop from '@/logic/areaPerCrop';
-import type { ModelDetail, Modification, Region } from '@/store/apis/modelApi';
+import type { CropModification } from '@/types/model/CropModification';
+import type { ModelRegion } from '@/types/model/ModelRegion';
+import type { ModelRun } from '@/types/model/ModelRun';
 
 interface CropLoadingDetailsTableProps {
-  modelDetails: ModelDetail[];
+  modelDetails: ModelRun[];
   compareWithBase?: boolean;
 }
 
 interface CropLoadingDetailsBaseComparisonTableProps {
-  customModelDetail: ModelDetail;
-  baseModelDetail: ModelDetail;
+  customModelDetail: ModelRun;
+  baseModelDetail: ModelRun;
 }
 
 interface CropLoadingDetailsTableData {
@@ -31,7 +33,7 @@ export const CropLoadingDetailsTable = ({
   const [crop, setCrop] = useState<CropLoadingDetailsTableData[]>([]);
   const [columns, setColumns] = useState<ColumnsType<any>>([]);
 
-  const getRegions = (regions: Region[]) => {
+  const getRegions = (regions: ModelRegion[]) => {
     const regionNames: string[] = [];
     regions.forEach((region) => {
       regionNames.push(region.mantis_id);
@@ -39,10 +41,10 @@ export const CropLoadingDetailsTable = ({
     return regionNames;
   };
 
-  const getCrops = (modifications: Modification[]): number[] => {
+  const getCrops = (modifications: CropModification[]): number[] => {
     const cropCAML: number[] = [];
     modifications.forEach((m) => {
-      cropCAML.push(m.crop.caml_code);
+      cropCAML.push(m.crop.caml_code ?? -1);
     });
     return cropCAML;
   };

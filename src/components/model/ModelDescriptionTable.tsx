@@ -1,15 +1,15 @@
 import { Descriptions } from 'antd';
 
-import type { ModelDetail } from '@/store/apis/modelApi';
-import type { RegionDetail } from '@/store/apis/regionApi';
+import type { ModelRegion } from '@/types/model/ModelRegion';
+import type { ModelRun } from '@/types/model/ModelRun';
 import {
   DEPTH_RANGE_CONFIG,
   SCREEN_LENGTH_RANGE_CONFIG,
 } from '@/utils/constants';
 
 interface ModelDescriptionTableProps {
-  modelDetail: ModelDetail | null;
-  regions: RegionDetail[];
+  modelDetail: ModelRun | null;
+  regions: ModelRegion[];
 }
 
 const ModelDescriptionTable = ({
@@ -71,7 +71,7 @@ const ModelDescriptionTable = ({
         {modelDetail?.description || 'no description'}
       </Descriptions.Item>
       <Descriptions.Item label="Region(s)" span={3}>
-        {regions.map((region: RegionDetail) => region.name).join(', ') || ''}
+        {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
       </Descriptions.Item>
       {modelDetail?.applied_simulation_filter ? (
         <>

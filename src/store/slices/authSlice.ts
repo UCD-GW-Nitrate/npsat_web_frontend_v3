@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { RootState } from '..';
-import type { AuthState } from '../apis/authApi';
+import { AuthState } from '@/types/user/User';
 
 const slice = createSlice({
   name: 'auth',

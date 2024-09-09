@@ -5,10 +5,10 @@ import LineChart from '@/components/charts/LineChart/LineChart';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import type { ModelDisplay } from '@/hooks/useModelResults';
 import { useModelResults } from '@/hooks/useModelResults';
-import type { Result } from '@/store/apis/modelApi';
+import type { MantisResultPercentile } from '@/types/model/MantisResult';
 
 interface ModelChartProps {
-  percentiles: Result[];
+  percentiles: MantisResultPercentile[];
   reductionStartYear: number;
   reductionCompleteYear: number;
 }

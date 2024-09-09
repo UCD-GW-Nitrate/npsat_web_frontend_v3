@@ -1,74 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
+import type { Feed, PlotModel } from '@/types/feed/Feed';
+import type { FeedResponse } from '@/types/feed/FeedResponse';
 
 import getAuth from '../getAuth';
-
-interface Result {
-  id: number;
-  percentile: number;
-  values: number[];
-}
-
-export interface PlotModel {
-  dateCompleted: string;
-  dateCreated: string;
-  description: string;
-  id: number;
-  isBase: boolean;
-  numWells: number;
-  name: string;
-  public: boolean;
-  reductionEndYear: number;
-  reductionStartYear: number;
-  simEndYear: string;
-  status: number;
-  statusMessage: string;
-  unsatZoneTravelTime: number;
-  user: number;
-  waterContent: string;
-  loadScenario: string;
-  flowScenario: string;
-  unsatScenario: string;
-  wellTypeScenario: string;
-}
-
-interface PlotModelResponse {
-  date_completed: string;
-  date_submitted: string;
-  description: string;
-  id: number;
-  is_base: boolean;
-  n_wells: number;
-  name: string;
-  public: boolean;
-  reduction_end_year: number;
-  reduction_start_year: number;
-  results: Result[];
-  sim_end_year: number;
-  status: number;
-  status_message: string;
-  unsaturated_zone_travel_time: number;
-  user: number;
-  water_content: string;
-  load_scenario: Scenario;
-  flow_scenario: Scenario;
-  unsat_scenario: Scenario;
-  welltype_scenario: Scenario;
-}
-
-interface Scenario {
-  name: string;
-  description: string;
-}
-
-export interface Feed {
-  recentCompletedModels: PlotModel[];
-}
-
-interface FeedResponse {
-  recent_completed_models: PlotModelResponse[];
-}
 
 console.log('api route', apiRoot);
 

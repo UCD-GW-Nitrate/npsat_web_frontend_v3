@@ -7,12 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { useGetAllCropsByFlowScenarioQuery } from '@/store';
-import type { Crop } from '@/store/apis/cropApi';
-import type { CropModification } from '@/store/slices/modelSlice';
 import {
   selectCurrentModel,
   setModelModifications,
 } from '@/store/slices/modelSlice';
+import type { Crop } from '@/types/crop/Crop';
+import type { CropModification } from '@/types/model/CropModification';
 
 import type StepBase from '../StepBase';
 import CropCard from './CropCard';
@@ -52,6 +52,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     selectedCrops.forEach((c) => {
       if (cropDict[c]) {
         modifications.push({
+          id: cropDict[c]!.id,
           crop: {
             id: cropDict[c]!.id,
             name: cropDict[c]!.name,

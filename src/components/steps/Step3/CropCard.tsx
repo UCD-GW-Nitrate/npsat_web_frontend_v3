@@ -1,7 +1,7 @@
 import { Card, Col, InputNumber, Row, Slider } from 'antd';
 import { useState } from 'react';
 
-import type { Crop } from '@/store/apis/cropApi';
+import type { Crop } from '@/types/crop/Crop';
 
 interface CropCardProps {
   crop: Crop;

@@ -4,18 +4,18 @@ import { Select } from 'antd';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 
-import type { GeometryResponse, ResultResponse } from '@/store/apis/regionApi';
+import type { Geometry, Region } from '@/types/region/Region';
 
 const { Option } = Select;
 
 export interface FormMapProps {
-  data: ResultResponse[];
+  data: Region[];
   selected: number[];
   onSelectRegion?: (input: number[]) => void;
 }
 
 export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
-  const configureData = (county: ResultResponse): GeometryResponse => {
+  const configureData = (county: Region): Geometry => {
     const { geometry } = county;
     return {
       ...geometry,
@@ -65,7 +65,7 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
         <RegionsMapNoSSR
           selected={selected}
           data={data.map((region) => configureData(region)) ?? []}
-          onEachFeature={(feature: GeometryResponse, layer: any) => {
+          onEachFeature={(feature: Geometry, layer: any) => {
             layer.on({
               click: () => {
                 let selectedRegions = selected;
