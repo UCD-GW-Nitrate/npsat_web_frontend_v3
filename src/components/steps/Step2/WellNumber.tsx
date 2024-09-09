@@ -2,8 +2,8 @@
 import { Card } from 'antd';
 import { useSelector } from 'react-redux';
 
-import type { ResultResponse } from '@/store/apis/regionApi';
 import { selectCurrentModel } from '@/store/slices/modelSlice';
+import type { Region } from '@/types/region/Region';
 
 import C2VSim_VI from './ScenariosWellData/C2VSim_II_VI_02';
 import TshipWell from './ScenariosWellData/TshipWell';
@@ -11,7 +11,7 @@ import TshipWell from './ScenariosWellData/TshipWell';
 interface WellNumberProps {
   selectedRegions: number[];
   regionType: number;
-  countyList: ResultResponse[];
+  countyList: Region[];
   depthMin: number;
   depthMax: number;
   screenLenMin: number;

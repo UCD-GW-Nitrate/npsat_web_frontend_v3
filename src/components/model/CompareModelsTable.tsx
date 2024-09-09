@@ -1,14 +1,14 @@
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-import type { ModelDetail } from '@/store/apis/modelApi';
+import type { ModelRun } from '@/types/model/ModelRun';
 
 interface CompareModelsTableProps {
-  data: ModelDetail[];
+  data: ModelRun[];
 }
 
 const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
-  const columns: ColumnsType<ModelDetail> = [
+  const columns: ColumnsType<ModelRun> = [
     {
       title: 'Name',
       dataIndex: 'name',

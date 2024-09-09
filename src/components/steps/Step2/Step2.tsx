@@ -16,8 +16,6 @@ import {
   useFetchSubregionsQuery,
   useFetchTownshipQuery,
 } from '@/store';
-import type { ResultResponse } from '@/store/apis/regionApi';
-import type { RegionID } from '@/store/slices/modelSlice';
 import {
   selectCurrentModel,
   setAdvancedWellFilter,
@@ -27,6 +25,7 @@ import {
   setModelScreenLenRangeMax,
   setModelScreenLenRangeMin,
 } from '@/store/slices/modelSlice';
+import type { Region } from '@/types/region/Region';
 import {
   DEPTH_RANGE_CONFIG,
   REGION_MACROS,
@@ -37,6 +36,7 @@ import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';
+import { ModelRegion } from '@/types/model/ModelRegion';
 
 const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
@@ -79,7 +79,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       dispatch(
         setModelRegions(
           (formData.region as number[]).map((val) => {
-            return { id: val } as RegionID;
+            return { id: val } as ModelRegion;
           }),
         ),
       );
@@ -91,7 +91,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       dispatch(
         setModelRegions(
           (formData.region as number[]).map((val) => {
-            return { id: val } as RegionID;
+            return { id: val } as ModelRegion;
           }),
         ),
       );
@@ -120,7 +120,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     form.setFieldValue('region', input);
   };
 
-  const getRegionData = (input: number): ResultResponse[] | undefined => {
+  const getRegionData = (input: number): Region[] | undefined => {
     if (input === REGION_MACROS.CENTRAL_VALLEY) {
       return centralValleyData;
     }

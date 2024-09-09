@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux';
 
 import apiRoot from '@/config/apiRoot';
 import type { RootState } from '@/store';
-import type { AuthState } from '@/store/apis/authApi';
-import type { Result } from '@/store/apis/modelApi';
-import type { ModelResult } from '@/store/slices/modelSlice';
+import type {
+  MantisResult,
+  MantisResultPercentile,
+} from '@/types/model/MantisResult';
+import type { AuthState } from '@/types/user/User';
 
 export interface ModelDisplay {
   year: number;
@@ -22,7 +24,7 @@ const ordinalSuffix = (num: number) =>
   `${num}${['st', 'nd', 'rd'][((((num + 90) % 100) - 10) % 10) - 1] || 'th'}`;
 
 const getModelResult = (
-  percentiles: Result[],
+  percentiles: MantisResultPercentile[],
   authToken: string | null,
   callback: (
     percentilesInput: number[],
@@ -31,7 +33,7 @@ const getModelResult = (
 ) => {
   Promise.all(
     percentiles.map((percentile) =>
-      axios.get<ModelResult>(`${apiRoot}/api/model_result/${percentile.id}/`, {
+      axios.get<MantisResult>(`${apiRoot}/api/model_result/${percentile.id}/`, {
         headers: {
           Authorization: `Token ${authToken}`,
         },
@@ -64,7 +66,7 @@ const getModelResult = (
 };
 
 export const useModelResults = (
-  percentiles: Result[],
+  percentiles: MantisResultPercentile[],
 ): [PercentileResultMap, number[]] => {
   const [plotData, setData] = useState<PercentileResultMap>({});
   const [percentilesData, setPercentilesData] = useState<number[]>([]);
@@ -89,7 +91,7 @@ export const useModelResults = (
 };
 
 export const useAllModelResults = (
-  modelResults: Result[][],
+  modelResults: MantisResultPercentile[][],
 ): [PercentileResultMap[], number[]] => {
   const [plotData, setPlotData] = useState<PercentileResultMap[]>([]);
   const [percentilesData, setPercentilesData] = useState<number[]>([]);

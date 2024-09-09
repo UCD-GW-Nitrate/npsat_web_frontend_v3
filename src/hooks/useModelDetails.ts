@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import {
-  type ModelDetail,
-  type Result,
-  useGetModelDetailByIdsQuery,
-} from '@/store/apis/modelApi';
+import { useGetModelDetailByIdsQuery } from '@/store/apis/modelApi';
+import type { MantisResultPercentile } from '@/types/model/MantisResult';
+import type { ModelRun } from '@/types/model/ModelRun';
 
 export const useModelDetails = (
   modelIds: number[],
-): [Result[][], ModelDetail[], string[]] => {
+): [MantisResultPercentile[][], ModelRun[], string[]] => {
   const [allModelDetailResults, setAllModelDetailResults] = useState<
-    Result[][]
+    MantisResultPercentile[][]
   >([]);
   const [allModelNames, setAllModelNames] = useState<string[]>([]);
   const { data } = useGetModelDetailByIdsQuery(modelIds);

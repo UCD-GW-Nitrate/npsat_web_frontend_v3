@@ -1,28 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
-
-export interface UserResponse {
-  token: string;
-  user_id: number;
-  username: string;
-  is_staff: boolean;
-  is_superuser: boolean;
-  email: string;
-}
-
-export interface User {
-  userId: number;
-  username: string;
-  isStaff: boolean;
-  isSuperuser: boolean;
-  email: string;
-}
-
-export interface AuthState {
-  token: string | null;
-  user: User | null;
-}
+import type { AuthState, User } from '@/types/user/User';
+import type { UserResponse } from '@/types/user/UserResponse';
 
 export interface LoginRequest {
   username: string;

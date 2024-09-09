@@ -2,10 +2,10 @@ import type { GeoJsonObject } from 'geojson';
 import type { Layer } from 'leaflet';
 import { GeoJSON, MapContainer, TileLayer } from 'react-leaflet';
 
-import type { Geometry, GeometryResponse } from '@/store/apis/regionApi';
+import type { Geometry } from '@/types/region/Region';
 
 export interface MapProps {
-  data: GeometryResponse[] | Geometry[];
+  data: Geometry[];
   onEachFeature?: (feature: any, layer: Layer) => void;
   selected?: number[];
 }

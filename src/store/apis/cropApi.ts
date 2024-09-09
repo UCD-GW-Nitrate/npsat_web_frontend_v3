@@ -1,21 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
-
-export interface Crop {
-  id: number;
-  name: string;
-  caml_code?: string;
-  crop_type?: number;
-  swat_code?: number;
-}
-
-export interface CropDetail {
-  count: number;
-  next: string;
-  previous: string;
-  results: Crop[];
-}
+import type { Crop } from '@/types/crop/Crop';
+import type { CropDetail } from '@/types/crop/CropDetail';
 
 const cropApi = createApi({
   reducerPath: 'crop',

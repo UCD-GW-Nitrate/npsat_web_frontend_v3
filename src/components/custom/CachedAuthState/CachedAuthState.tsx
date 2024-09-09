@@ -4,8 +4,8 @@ import type { PropsWithChildren } from 'react';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import type { AuthState } from '@/store/apis/authApi';
 import { setCredentials } from '@/store/slices/authSlice';
+import type { AuthState } from '@/types/user/User';
 
 import AppLayout from '../AppLayout/AppLayout';
 

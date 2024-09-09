@@ -1,76 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
+import type { Region } from '@/types/region/Region';
 
 import { paramsSerializer } from './paramsSerializer';
-
-export interface ResultResponse {
-  id: number;
-  external_id: string;
-  name: string;
-  mantis_id: string;
-  geometry: GeometryResponse;
-}
-
-export interface GeometryResponse {
-  type:
-    | 'Point'
-    | 'MultiPoint'
-    | 'LineString'
-    | 'MultiLineString'
-    | 'Polygon'
-    | 'MultiPolygon'
-    | 'GeometryCollection'
-    | 'Feature'
-    | 'FeatureCollection';
-  properties: PropertyResponse;
-  geometry: RegionGeometryResponse;
-}
-
-export interface PropertyResponse {
-  DWR_: string;
-  SUBBSN: string;
-  BAS_SBBSN: string;
-  GWBASIN: string;
-  SUBNAME: string;
-  ACRES: number;
-  BUDGET_TYP: string;
-  Regional_0: number;
-  Shape_Area: number;
-  id: number;
-  name: string;
-}
-
-export interface RegionGeometryResponse {
-  type: string;
-  coordinates: [[number[]]];
-}
-
-export interface Property {
-  name: string;
-  fullname: string;
-  abbrev: string;
-  abcode: string;
-  ansi: string;
-}
-
-export interface RegionGeometry {
-  type: string;
-  coordinates: [[number[]]][];
-}
-
-export interface Geometry {
-  type: string;
-  properties: Property;
-}
-
-export interface RegionDetail {
-  id: number;
-  external_id: string;
-  name: string;
-  mantis_id: string;
-  geometry: Geometry;
-}
 
 const regionApi = createApi({
   reducerPath: 'region',
@@ -79,7 +12,7 @@ const regionApi = createApi({
   }),
   endpoints(builder) {
     return {
-      fetchCentralValley: builder.query<ResultResponse[], void>({
+      fetchCentralValley: builder.query<Region[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -88,7 +21,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchBasin: builder.query<ResultResponse[], void>({
+      fetchBasin: builder.query<Region[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -97,7 +30,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchCounty: builder.query<ResultResponse[], void>({
+      fetchCounty: builder.query<Region[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -106,7 +39,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchB118Basin: builder.query<ResultResponse[], void>({
+      fetchB118Basin: builder.query<Region[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -115,7 +48,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchSubregions: builder.query<ResultResponse[], void>({
+      fetchSubregions: builder.query<Region[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -124,7 +57,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchTownship: builder.query<ResultResponse[], void>({
+      fetchTownship: builder.query<Region[], void>({
         query: () => {
           return {
             url: 'api/region/',
@@ -133,7 +66,7 @@ const regionApi = createApi({
           };
         },
       }),
-      fetchRegion: builder.query<ResultResponse[], number>({
+      fetchRegion: builder.query<Region[], number>({
         query: (regionType) => {
           return {
             url: 'api/region/',
@@ -142,13 +75,13 @@ const regionApi = createApi({
           };
         },
       }),
-      getRegionDetail: builder.query<RegionDetail, number>({
+      getRegionDetail: builder.query<Region, number>({
         query: (id) => ({
           url: `api/region/${id}`,
           method: 'GET',
         }),
       }),
-      getRegionByIds: builder.query<RegionDetail[], number[]>({
+      getRegionByIds: builder.query<Region[], number[]>({
         query: (regionIds) => ({
           url: `api/model_run/?${paramsSerializer({ regionIds })}`,
           method: 'GET',

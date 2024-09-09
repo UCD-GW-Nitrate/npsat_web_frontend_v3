@@ -13,9 +13,9 @@ import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useFetchFeedQuery } from '@/store';
-import type { PlotModel } from '@/store/apis/feedApi';
 
 import { COLUMNS } from '../utils/constants';
+import { PlotModel } from '@/types/feed/Feed';
 
 const Index = () => {
   const { data, error } = useFetchFeedQuery();

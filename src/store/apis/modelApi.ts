@@ -1,91 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
+import type { MantisResult } from '@/types/model/MantisResult';
+import type { ModelRun } from '@/types/model/ModelRun';
+import type { ModelStatus } from '@/types/model/ModelStatus';
 
 import getAuth from '../getAuth';
-import type { Model } from '../slices/modelSlice';
 import { paramsSerializer } from './paramsSerializer';
-
-export interface ModelResults {}
-
-export interface Region {
-  id: number;
-  exteral_id: string;
-  name: string;
-  mantis_id: string;
-  region_type: number;
-}
-
-export interface Crop {
-  id: number;
-  name: string;
-  caml_code: number;
-}
-
-export interface Modification {
-  id: number;
-  crop: Crop;
-  proportion: number;
-}
-
-export interface Result {
-  id: number;
-  percentile: number;
-}
-
-export interface Scenario {
-  name: string;
-  id: number;
-  description: string;
-  scenario_type: number;
-}
-
-export interface ModelDetail {
-  id: number;
-  user: number;
-  name: string;
-  description: string;
-  regions: Region[];
-  modifications: Modification[];
-  unsaturated_zone_travel_time: number;
-  date_submitted: Date;
-  date_completed: Date;
-  status: number;
-  status_message: string;
-  sim_end_year: number;
-  water_content: number;
-  reduction_start_year: number;
-  reduction_end_year: number;
-  is_base: boolean;
-  results: Result[];
-  n_wells: number;
-  public: boolean;
-  load_scenario: Scenario;
-  flow_scenario: Scenario;
-  unsat_scenario: Scenario;
-  welltype_scenario: Scenario;
-  applied_simulation_filter: boolean;
-  depth_range_min: number;
-  depth_range_max: number;
-  screen_length_range_min: number;
-  screen_length_range_max: number;
-}
-
-export interface ModelResult {
-  id: number;
-  values: number[];
-  percentile: number;
-}
-
-export interface ModelStatus {
-  results: ModelStatusResults[];
-}
-
-export interface ModelStatusResults {
-  id: number;
-  name: string;
-  status: number;
-}
+import { FormModel } from '@/types/model/FormModel';
 
 // https://npsat-dev.lawr.ucdavis.edu/services
 const modelApi = createApi({
@@ -98,7 +20,7 @@ const modelApi = createApi({
   }),
   endpoints(builder) {
     return {
-      runModel: builder.mutation<ModelResult, Model>({
+      runModel: builder.mutation<MantisResult, FormModel>({
         query(params) {
           console.log('run model query', {
             name: '03.03.541',
@@ -140,44 +62,44 @@ const modelApi = createApi({
           };
         },
       }),
-      getAllModelDetail: builder.query<ModelDetail[], number>({
+      getAllModelDetail: builder.query<ModelRun[], number>({
         query: () => ({
           url: `api/model_run/`,
           method: 'GET',
         }),
       }),
-      getModelDetailByIds: builder.query<ModelDetail[], number[]>({
+      getModelDetailByIds: builder.query<ModelRun[], number[]>({
         query: (modelIds) => ({
           url: `api/model_run/?${paramsSerializer({ modelIds })}`,
           method: 'GET',
         }),
       }),
-      getModelDetail: builder.query<ModelDetail, number>({
+      getModelDetail: builder.query<ModelRun, number>({
         query: (id) => ({
           url: `api/model_run/${id}/`,
           method: 'GET',
         }),
       }),
-      getModelandBaseModelDetail: builder.query<ModelDetail[], number>({
+      getModelandBaseModelDetail: builder.query<ModelRun[], number>({
         query: (id) => ({
           url: `api/model_run/${id}/`,
           method: 'GET',
           params: { includeBase: true },
         }),
       }),
-      getModificationDetail: builder.query<ModelResults, number>({
+      getModificationDetail: builder.query<any, number>({
         query: (id) => ({
           url: `api/modification/${id}/`,
           method: 'GET',
         }),
       }),
-      getModelResults: builder.query<ModelResult, number>({
+      getModelResults: builder.query<MantisResult, number>({
         query: (id) => ({
           url: `api/model_result/${id}/`,
           method: 'GET',
         }),
       }),
-      putModel: builder.mutation<ModelResults, number>({
+      putModel: builder.mutation<any, number>({
         query: (id) => ({
           url: `api/model_run/${id}/`,
           method: 'PUT',

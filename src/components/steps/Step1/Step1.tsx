@@ -37,10 +37,10 @@ const Step1 = ({ onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
 
   const onFormSubmit = (data: FieldValues) => {
-    dispatch(setModelFlowScenario({ id: data.flow_scenario }));
-    dispatch(setModelLoadScenario({ id: data.load_scenario }));
-    dispatch(setModelWelltypeScenario({ id: data.welltype_scenario }));
-    dispatch(setModelUnsatScenario({ id: data.unsat_scenario }));
+    dispatch(setModelFlowScenario(data.flow_scenario));
+    dispatch(setModelLoadScenario(data.load_scenario));
+    dispatch(setModelWelltypeScenario(data.welltype_scenario));
+    dispatch(setModelUnsatScenario(data.unsat_scenario));
     dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
     dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(
