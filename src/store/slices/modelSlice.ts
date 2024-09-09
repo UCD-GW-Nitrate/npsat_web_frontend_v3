@@ -1,12 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { Scenario } from '@/types/model/Scenario';
 import type { CropModification } from '@/types/model/CropModification';
 import type { FormModel } from '@/types/model/FormModel';
 
 import type { RootState } from '..';
 import { ModelRegion } from '@/types/model/ModelRegion';
+import { PropertyId } from '@/types/model/PropertyId';
 
 const modelSlice = createSlice({
   name: 'model',
@@ -30,16 +30,16 @@ const modelSlice = createSlice({
     setModelReductionEndYear(state, action: PayloadAction<number>) {
       return { ...state, reduction_end_year: action.payload };
     },
-    setModelFlowScenario(state, action: PayloadAction<Scenario>) {
+    setModelFlowScenario(state, action: PayloadAction<PropertyId>) {
       return { ...state, flow_scenario: action.payload };
     },
-    setModelLoadScenario(state, action: PayloadAction<Scenario>) {
+    setModelLoadScenario(state, action: PayloadAction<PropertyId>) {
       return { ...state, load_scenario: action.payload };
     },
-    setModelUnsatScenario(state, action: PayloadAction<Scenario>) {
+    setModelUnsatScenario(state, action: PayloadAction<PropertyId>) {
       return { ...state, unsat_scenario: action.payload };
     },
-    setModelWelltypeScenario(state, action: PayloadAction<Scenario>) {
+    setModelWelltypeScenario(state, action: PayloadAction<PropertyId>) {
       return { ...state, welltype_scenario: action.payload };
     },
     setModelRegions(state, action: PayloadAction<ModelRegion[]>) {
