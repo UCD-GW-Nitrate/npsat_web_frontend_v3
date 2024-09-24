@@ -130,9 +130,13 @@ const WellNumber = ({
     });
   }
 
+  function numberWithCommas(x: number) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   return (
     <div>
-      <Card>Number of Wells Selected: {wellCount}</Card>
+      <Card>Number of Wells Selected: {numberWithCommas(wellCount)}</Card>
     </div>
   );
 };
