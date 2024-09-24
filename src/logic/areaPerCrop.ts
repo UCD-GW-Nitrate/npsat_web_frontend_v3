@@ -39,7 +39,7 @@ const areaPerCrop = (
   // load data of selected regions
   if (load_scenario === 1) {
     console.log('1')
-    if (mapType === 0) {
+    if (mapType === 0) { // Central Valley
       console.log('0')
       cropsData = GNLMcropAreas[0]!.Regions[0]!.CropList;
       totalAreas = GNLMcropAreas[0]!.Regions[0]!.TotArea;
@@ -54,7 +54,8 @@ const areaPerCrop = (
             }
           });
       });
-      console.log(cropsData)
+      console.log("cropsData", cropsData);
+      console.log("crops area per crop", crops);
     }
   }
 

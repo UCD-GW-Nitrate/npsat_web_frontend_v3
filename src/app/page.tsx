@@ -40,7 +40,7 @@ const Index = () => {
     console.log('error', error);
     const e = error as FetchBaseQueryError;
     if (e && e.status === 401) {
-      router.replace('user/login');
+      router.push('/user/login');
     }
   }
 

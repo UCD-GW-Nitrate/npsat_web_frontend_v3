@@ -3,7 +3,7 @@
 import { Button, Tabs } from 'antd';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -38,6 +38,8 @@ const ModelPage = () => {
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
     ssr: false,
   });
+
+  const router = useRouter();
 
   const customModelDetail: ModelRun | null = ((modelDetail.data as any) ?? [
     null,

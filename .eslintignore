@@ -1,13 +1,11 @@
 node_modules
 out
 !.storybook
-C2VSim_II_VD_02.ts
-C2VSim_II_VI_02.ts
 cvhm.ts
 TshipWell.ts
-C2VSim_II_VD_02
-C2VSim_II_VI_02
+VDwellsCountMAR24V2.ts
+VIwellsCountMAR24V2.ts
 cvhm
 TshipWell
 
-src/pages/model/steps/Step2/ScenariosWellData
+src/components/steps/Step2/ScenariosWellData
