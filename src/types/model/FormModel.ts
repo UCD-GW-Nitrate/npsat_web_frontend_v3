@@ -6,6 +6,7 @@ export interface FormModel {
   name?: string;
   description?: string;
   water_content?: number;
+  porosity?: number;
   sim_end_year?: number;
   reduction_start_year?: number;
   reduction_end_year?: number;

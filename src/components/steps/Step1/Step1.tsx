@@ -16,6 +16,7 @@ import {
   setModelSimEndYear,
   setModelUnsatScenario,
   setModelWaterContent,
+  setModelPorosity,
   setModelWelltypeScenario,
 } from '@/store/slices/modelSlice';
 
@@ -67,6 +68,7 @@ const Step1 = ({ onNext }: StepBase) => {
     dispatch(setModelWelltypeScenario(scenarios[data.welltype_scenario]!));
     dispatch(setModelUnsatScenario(scenarios[data.unsat_scenario]!));
     dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
+    dispatch(setModelPorosity(Math.floor(data.porosity / 10) / 10));
     dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(
       setModelReductionStartYear(
@@ -120,6 +122,14 @@ const Step1 = ({ onNext }: StepBase) => {
           </Select>
         </Form.Item>
         <Form.Item
+          name="porosity"
+          label="Porosity"
+          rules={defaultRules('Please enter porosity')}
+          initialValue={model.porosity ? model.porosity * 100 : 10}
+        >
+          <InputNumber min={10} max={100} step={10} keyboard={false} formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`} />
+        </Form.Item>
+        <Form.Item
           name="load_scenario"
           label="Load scenario"
           rules={defaultRules('Please select a load scenario')}
@@ -148,7 +158,7 @@ const Step1 = ({ onNext }: StepBase) => {
         >
           <Select>
             {welltypeScenarioOptions.map((scen) => (
-              <Select.Option value={scen.id} key={scen.id}>
+              <Select.Option value={scen.id} key={scen.id} disabled={scen.id == 14}>
                 <>
                   {scen.name}{' '}
                   {scen.description ? (

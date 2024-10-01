@@ -21,6 +21,9 @@ const modelSlice = createSlice({
     setModelWaterContent(state, action: PayloadAction<number>) {
       return { ...state, water_content: action.payload };
     },
+    setModelPorosity(state, action: PayloadAction<number>) {
+      return { ...state, porosity: action.payload };
+    },
     setModelSimEndYear(state, action: PayloadAction<number>) {
       return { ...state, sim_end_year: action.payload };
     },
@@ -85,6 +88,7 @@ export const {
   setModelName,
   setModelDescription,
   setModelWaterContent,
+  setModelPorosity,
   setModelSimEndYear,
   setModelReductionStartYear,
   setModelReductionEndYear,
