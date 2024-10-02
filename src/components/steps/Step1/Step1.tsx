@@ -68,7 +68,7 @@ const Step1 = ({ onNext }: StepBase) => {
     dispatch(setModelWelltypeScenario(scenarios[data.welltype_scenario]!));
     dispatch(setModelUnsatScenario(scenarios[data.unsat_scenario]!));
     dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
-    dispatch(setModelPorosity(Math.floor(data.porosity / 10) / 10));
+    dispatch(setModelPorosity(Math.floor(data.porosity / 10) * 10));
     dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(
       setModelReductionStartYear(
