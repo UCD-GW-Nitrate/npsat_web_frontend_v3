@@ -125,7 +125,7 @@ const Step1 = ({ onNext }: StepBase) => {
           name="porosity"
           label="Porosity"
           rules={defaultRules('Please enter porosity')}
-          initialValue={model.porosity ? model.porosity * 100 : 10}
+          initialValue={model.porosity ? model.porosity : 10}
         >
           <InputNumber min={10} max={100} step={10} keyboard={false} formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`} />
         </Form.Item>

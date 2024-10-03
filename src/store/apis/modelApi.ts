@@ -26,6 +26,7 @@ const modelApi = createApi({
             name: '03.03.541',
             description: params.description,
             water_content: params.water_content,
+            porosity: params.porosity,
             sim_end_year: params.sim_end_year,
             reduction_start_year: params.reduction_start_year,
             reduction_end_year: params.reduction_end_year,
