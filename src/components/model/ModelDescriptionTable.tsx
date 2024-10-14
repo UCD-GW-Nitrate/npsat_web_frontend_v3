@@ -67,11 +67,14 @@ const ModelDescriptionTable = ({
       <Descriptions.Item label="Number of wells detected in selected region(s)">
         {modelDetail?.n_wells || 'scenario run not yet complete'}
       </Descriptions.Item>
+      <Descriptions.Item label="Porosity" span={1}>
+        `${modelDetail?.porosity}%`
+      </Descriptions.Item>
+      <Descriptions.Item label="Region(s)" span={2}>
+        {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
+      </Descriptions.Item>
       <Descriptions.Item label="Scenario description" span={3}>
         {modelDetail?.description || 'no description'}
-      </Descriptions.Item>
-      <Descriptions.Item label="Region(s)" span={3}>
-        {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
       </Descriptions.Item>
       {modelDetail?.applied_simulation_filter ? (
         <>

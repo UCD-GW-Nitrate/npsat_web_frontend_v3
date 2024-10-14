@@ -9,6 +9,7 @@ export interface ModelRun {
   name: string;
   description: string;
   regions: ModelRegion[];
+  porosity: number;
   modifications: CropModification[];
   unsaturated_zone_travel_time: number;
   date_submitted: Date;

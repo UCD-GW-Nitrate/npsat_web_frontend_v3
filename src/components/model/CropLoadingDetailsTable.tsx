@@ -44,7 +44,7 @@ export const CropLoadingDetailsTable = ({
   const getCrops = (modifications: CropModification[]): number[] => {
     const cropCAML: number[] = [];
     modifications.forEach((m) => {
-      cropCAML.push(m.crop.caml_code ?? -1);
+      cropCAML.push(m.crop.caml_code ?? m.crop.swat_code ?? -1);
     });
     return cropCAML;
   };
@@ -77,9 +77,9 @@ export const CropLoadingDetailsTable = ({
               [`model${model.id}AreaAcre`]: numberWithCommas(
                 Math.round(
                   (cropAreas[
-                    modification.crop.caml_code
-                      ? modification.crop.caml_code
-                      : 0
+                    modification.crop.caml_code ??
+                      modification.crop.swat_code ??
+                      0
                   ] ?? 0) *
                     0.25 *
                     2.47,
@@ -88,9 +88,9 @@ export const CropLoadingDetailsTable = ({
               [`model${model.id}AreaHectare`]: numberWithCommas(
                 Math.round(
                   (cropAreas[
-                    modification.crop.caml_code
-                      ? modification.crop.caml_code
-                      : 0
+                    modification.crop.caml_code ??
+                      modification.crop.swat_code ??
+                      0
                   ] ?? 0) * 0.25,
                 ),
               ),
