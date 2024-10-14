@@ -6,6 +6,8 @@ import { type FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
+import type { CropAreaMap } from '@/logic/areaPerCrop';
+import areaPerCrop from '@/logic/areaPerCrop';
 import { useGetAllCropsByFlowScenarioQuery } from '@/store';
 import {
   selectCurrentModel,
@@ -17,7 +19,6 @@ import type { CropModification } from '@/types/model/CropModification';
 import type StepBase from '../StepBase';
 import CropCard from './CropCard';
 import Step3Instructions from './Step3Instructions';
-import areaPerCrop, { CropAreaMap } from '@/logic/areaPerCrop';
 
 interface CropDict {
   [key: string]: Crop;
@@ -29,7 +30,9 @@ interface LoadingDict {
 
 const Step3 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
-  const { data: cropData } = useGetAllCropsByFlowScenarioQuery(model.load_scenario!.id);
+  const { data: cropData } = useGetAllCropsByFlowScenarioQuery(
+    model.load_scenario!.id,
+  );
   const [cropList, setCropList] = useState<Crop[]>([]);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
@@ -39,7 +42,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     model.modifications?.map((mod) => mod.crop.id) ?? [],
   );
 
-  var [cropAreaMap, setCropAreaMap] = useState<CropAreaMap>({});
+  const [cropAreaMap, setCropAreaMap] = useState<CropAreaMap>({});
 
   const formItemLayout = {
     labelCol: {
@@ -76,6 +79,9 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
       cropDictTemp[crop.id] = crop;
       cropListTemp.push(crop);
     });
+
+    console.log('crop dict', cropDictTemp);
+
     setCropDict(cropDictTemp);
     setCropList(cropListTemp);
 
@@ -86,7 +92,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     setLoadingDict(loadingDictTemp);
 
     if (cropData && cropData.results[1] && selectedCrops.length === 0) {
-      var defaultVal = cropData.results[1].id;
+      let defaultVal = cropData.results[1].id;
 
       cropData.results.forEach((crop) => {
         if (crop.name === 'All Other Crops') {
@@ -102,21 +108,33 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
   }, [cropData]);
 
   useEffect(() => {
-    if (model.load_scenario!.id == 1) {
-      console.log("model", model)
-      console.log("cropList", cropList)
-      console.log("maptype", model.regions![0]!.region_type)
-  
-      console.log("area per crop", areaPerCrop(model.regions![0]!.region_type, 
-        model.flow_scenario!.scenario_type, 
-        selectedCrops.map((crop) => cropDict[crop]!.caml_code!), 
-        model.regions!.map((r) => r.mantis_id)))
-      setCropAreaMap(areaPerCrop(model.regions![0]!.region_type, 
-        model.flow_scenario!.scenario_type, 
-        selectedCrops.map((crop) => cropDict[crop]!.caml_code!), 
-        model.regions!.map((r) => r.mantis_id)));
-    }
-  }, [selectedCrops]);
+    console.log('model', model);
+    console.log('cropList', cropList);
+    console.log('selected crops', selectedCrops);
+    console.log('maptype', model.regions![0]!.region_type);
+
+    console.log(
+      'area per crop',
+      areaPerCrop(
+        model.regions![0]!.region_type,
+        model.flow_scenario!.scenario_type,
+        selectedCrops.map(
+          (crop) => cropDict[crop]?.caml_code ?? cropDict[crop]?.swat_code ?? 0,
+        ),
+        model.regions!.map((r) => r.mantis_id),
+      ),
+    );
+    setCropAreaMap(
+      areaPerCrop(
+        model.regions![0]!.region_type,
+        model.flow_scenario!.scenario_type,
+        selectedCrops.map(
+          (crop) => cropDict[crop]?.caml_code ?? cropDict[crop]?.swat_code ?? 0,
+        ),
+        model.regions!.map((r) => r.mantis_id),
+      ),
+    );
+  }, [Object.keys(cropDict).length, selectedCrops]);
 
   const selectedCropCards = useMemo(
     () =>
@@ -142,7 +160,15 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
                     ((loadingDict[crop] ?? 1) * 100).toFixed(),
                     10,
                   )}
-                  cropArea={cropDict[crop]!.id == 1 ? cropAreaMap[1]! : cropAreaMap[cropDict[crop]!.caml_code!]!}
+                  cropArea={
+                    cropDict[crop]!.id === 1
+                      ? cropAreaMap[1]!
+                      : cropAreaMap[
+                          cropDict[crop]?.caml_code ??
+                            cropDict[crop]?.swat_code ??
+                            0
+                        ]!
+                  }
                   onChange={(v) => {
                     form.setFieldValue(cropDict[crop]!.name, v);
                   }}
@@ -152,7 +178,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
           </>
         );
       }),
-    [Object.keys(cropDict).length, Object.keys(cropAreaMap).length, selectedCrops],
+    [Object.keys(cropDict), Object.keys(cropAreaMap).length, selectedCrops],
   );
 
   return (

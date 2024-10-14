@@ -1,4 +1,5 @@
-import GNLMcropAreas from './CropAreasData/GNLM_AreaPerCrop';
+import GNLMcropAreas from './CropAreasData/GNLM_AreaPerCrop_OCT24';
+import SWATcropAreas from './CropAreasData/SWAT_AreaPerCrop_OCT24';
 
 interface CropAreaInfo {
   CropId: number;
@@ -19,6 +20,11 @@ const areaPerCrop = (
   crops: number[] = [],
   regions: string[] = [],
 ): CropAreaMap => {
+  var areaData = GNLMcropAreas;
+  if (load_scenario !== 1) {
+    areaData = SWATcropAreas;
+  }
+
   crops.shift();
 
   let cropsData: CropAreaInfo[] = [];
@@ -37,26 +43,24 @@ const areaPerCrop = (
   console.log(mapType, load_scenario, crops, regions);
 
   // load data of selected regions
-  if (load_scenario === 1) {
-    console.log('1')
-    if (mapType === 0) { // Central Valley
-      console.log('0')
-      cropsData = GNLMcropAreas[0]!.Regions[0]!.CropList;
-      totalAreas = GNLMcropAreas[0]!.Regions[0]!.TotArea;
-    } else if (mapType && mapType in regionMacros) {
-      console.log('not 0')
-      GNLMcropAreas.forEach((maps) => {
-        if (maps.Code === regionMacros[mapType])
-          maps.Regions.forEach((region) => {
-            if (regions.includes(region.Name)) {
-              cropsData = cropsData.concat(region.CropList);
-              totalAreas += region.TotArea;
-            }
-          });
-      });
-      console.log("cropsData", cropsData);
-      console.log("crops area per crop", crops);
-    }
+  if (mapType === 0) { // Central Valley
+    console.log('0');
+    cropsData = areaData[0]!.Regions[0]!.CropList;
+    totalAreas = areaData[0]!.Regions[0]!.TotArea;
+  } else if (mapType && mapType in regionMacros) {
+    console.log('not 0');
+    areaData.forEach((maps: any) => {
+      if (maps.Code === regionMacros[mapType]) {
+        maps.Regions.forEach((region: any) => {
+          if (regions.includes(region.Name)) {
+            cropsData = cropsData.concat(region.CropList);
+            totalAreas += region.TotArea;
+          }
+        });
+      }
+    });
+    console.log("cropsData", cropsData);
+    console.log("crops area per crop", crops);
   }
 
   // calculate total area for each selected crops
