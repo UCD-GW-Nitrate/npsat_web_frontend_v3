@@ -79,7 +79,7 @@ export const CropLoadingDetailsTable = ({
                   (cropAreas[
                     modification.crop.caml_code ??
                       modification.crop.swat_code ??
-                      0
+                      1
                   ] ?? 0) *
                     0.25 *
                     2.47,
@@ -90,7 +90,7 @@ export const CropLoadingDetailsTable = ({
                   (cropAreas[
                     modification.crop.caml_code ??
                       modification.crop.swat_code ??
-                      0
+                      1
                   ] ?? 0) * 0.25,
                 ),
               ),
@@ -104,7 +104,9 @@ export const CropLoadingDetailsTable = ({
             ] = numberWithCommas(
               Math.round(
                 (cropAreas[
-                  modification.crop.caml_code ? modification.crop.caml_code : 0
+                  modification.crop.caml_code ??
+                    modification.crop.swat_code ??
+                    1
                 ] ?? 0) *
                   0.25 *
                   2.47,
@@ -115,7 +117,9 @@ export const CropLoadingDetailsTable = ({
             ] = numberWithCommas(
               Math.round(
                 (cropAreas[
-                  modification.crop.caml_code ? modification.crop.caml_code : 0
+                  modification.crop.caml_code ??
+                    modification.crop.swat_code ??
+                    1
                 ] ?? 0) * 0.25,
               ),
             );

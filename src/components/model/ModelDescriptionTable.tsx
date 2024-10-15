@@ -68,7 +68,7 @@ const ModelDescriptionTable = ({
         {modelDetail?.n_wells || 'scenario run not yet complete'}
       </Descriptions.Item>
       <Descriptions.Item label="Porosity" span={1}>
-        `${modelDetail?.porosity}%`
+        {modelDetail?.porosity}%
       </Descriptions.Item>
       <Descriptions.Item label="Region(s)" span={2}>
         {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
