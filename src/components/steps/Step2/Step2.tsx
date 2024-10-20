@@ -135,16 +135,6 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     }
   };
 
-  const setScreenLenFilter = (input: [number, number]) => {
-    setScreenLenMin(input[0]);
-    setScreenLenMax(input[1]);
-  };
-
-  const setDepthFilter = (input: [number, number]) => {
-    setDepthMin(input[0]);
-    setDepthMax(input[1]);
-  };
-
   const onRegionSelect = (input: number[]) => {
     setSelected(input);
     form.setFieldValue('region', input);
@@ -244,7 +234,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             depthMin={depthMin}
             depthMax={depthMax}
             screenLenMin={screenLenMin}
-            screenLenMax={screenLenMax}
+           screenLenMax={screenLenMax}
             filterOn={model.advancedWellFilter ?? false}
           />
         </Form.Item>
@@ -277,7 +267,16 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             >
               <RangeFormItem
                 rangeConfig={DEPTH_RANGE_CONFIG}
-                onChange={setDepthFilter}
+                onChangeMin={(v) => {
+                  if (v != depthMin) {
+                    setDepthMin(v);
+                  }
+                }}
+                onChangeMax={(v) => {
+                  if (v != depthMax) {
+                    setDepthMax(v);
+                  }
+                }}
               />
             </Form.Item>
             <Form.Item
@@ -299,7 +298,16 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             >
               <RangeFormItem
                 rangeConfig={SCREEN_LENGTH_RANGE_CONFIG}
-                onChange={setScreenLenFilter}
+                onChangeMin={(v) => {
+                  if (v != screenLenMin) {
+                    setScreenLenMin(v);
+                  }
+                }}
+                onChangeMax={(v) => {
+                  if (v != screenLenMax) {
+                    setScreenLenMax(v);
+                  }
+                }}
               />
             </Form.Item>
           </>

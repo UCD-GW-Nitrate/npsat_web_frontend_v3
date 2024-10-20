@@ -1,6 +1,6 @@
 import type { CropModification } from './CropModification';
-import { ModelRegion } from './ModelRegion';
-import { Scenario } from './Scenario';
+import type { ModelRegion } from './ModelRegion';
+import type { Scenario } from './Scenario';
 
 export interface FormModel {
   name?: string;

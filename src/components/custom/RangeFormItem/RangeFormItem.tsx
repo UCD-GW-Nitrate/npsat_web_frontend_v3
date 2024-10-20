@@ -1,5 +1,5 @@
 import { Col, InputNumber, Row, Slider } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 interface RangeConfig {
   min: number;
@@ -10,7 +10,8 @@ interface RangeConfig {
 
 interface RangeFormItemProps {
   value?: [number, number];
-  onChange?: (input: [number, number]) => void;
+  onChangeMin?: (input: number) => void;
+  onChangeMax?: (input: number) => void;
   rangeConfig: RangeConfig;
 }
 
@@ -25,7 +26,8 @@ interface RangeFormItemProps {
  */
 const RangeFormItem = ({
   value,
-  onChange,
+  onChangeMin,
+  onChangeMax,
   rangeConfig,
 }: RangeFormItemProps) => {
   const { max, min, step, maxIdentifier = true } = rangeConfig;
@@ -40,35 +42,43 @@ const RangeFormItem = ({
     return (num ?? '').toString();
   };
 
-  useEffect(() => {
-    setLow(value ? value[0] : min);
-    setHigh(value ? value[1] : max);
-  }, [value]);
-
   const lowOnChange = (lowBound: number | null) => {
-    if (lowBound) {
+    if (lowBound && lowBound != low) {
       setLow(lowBound);
-      if (onChange) {
-        onChange([lowBound, high]);
-      }
     }
   };
+
   const highOnChange = (highBound: number | null) => {
-    if (highBound) {
+    if (highBound && highBound != high) {
       setHigh(highBound);
-      if (onChange) {
-        onChange([low, highBound]);
-      }
     }
   };
+
+  const highOnChangeComplete = (highBound: number | null) => {
+    if (highBound && onChangeMax) {
+      onChangeMax(highBound!);
+    }
+  }
+
+  const lowOnChangeComplete = (lowBound: number | null) => {
+    if (lowBound && onChangeMin) {
+      onChangeMin(lowBound!);
+    }
+  }
+
   const rangeOnChange = (range: number[]) => {
     if (range.length === 2) {
       const rangeChecked = range as [number, number];
-      setLow(rangeChecked[0]);
-      setHigh(rangeChecked[1]);
-      if (onChange) {
-        onChange([...rangeChecked]);
-      }
+      highOnChange(rangeChecked[1]);
+      lowOnChange(rangeChecked[0]);
+    }
+  };
+
+  const rangeOnChangeComplete = (range: number[]) => {
+    if (range.length === 2) {
+      const rangeChecked = range as [number, number];
+      highOnChangeComplete(rangeChecked[1]);
+      lowOnChangeComplete(rangeChecked[0]);
     }
   };
 
@@ -80,7 +90,8 @@ const RangeFormItem = ({
           value={[low, high]}
           max={maxIdentifier ? max + 1 : max}
           min={min}
-          onChange={(v) => rangeOnChange(v)}
+          onChange={rangeOnChange}
+          onChangeComplete={rangeOnChangeComplete}
         />
       </Col>
       <Col>
@@ -88,7 +99,7 @@ const RangeFormItem = ({
         <InputNumber
           value={low}
           step={step}
-          onChange={(v) => lowOnChange(v)}
+          onChange={lowOnChange}
           style={{ width: 60 }}
           max={maxIdentifier ? max + 1 : max}
           min={min}
@@ -100,7 +111,7 @@ const RangeFormItem = ({
         <InputNumber
           value={high}
           step={step}
-          onChange={(v) => highOnChange(v)}
+          onChange={highOnChange}
           style={{ width: 60 }}
           max={maxIdentifier ? max + 1 : max}
           min={min}

@@ -3,10 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { CropModification } from '@/types/model/CropModification';
 import type { FormModel } from '@/types/model/FormModel';
+import type { ModelRegion } from '@/types/model/ModelRegion';
+import type { Scenario } from '@/types/model/Scenario';
 
 import type { RootState } from '..';
-import { ModelRegion } from '@/types/model/ModelRegion';
-import { Scenario } from '@/types/model/Scenario';
 
 const modelSlice = createSlice({
   name: 'model',
