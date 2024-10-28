@@ -5,8 +5,19 @@ import type { AuthState, User } from '@/types/user/User';
 import type { UserResponse } from '@/types/user/UserResponse';
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  username: string;
+}
+
+export interface RegisterResponse {
+  email?: string;
+  username?: string;
 }
 
 export const authApi = createApi({
@@ -39,10 +50,14 @@ export const authApi = createApi({
         return authState;
       },
     }),
-    protected: builder.mutation<{ message: string }, void>({
-      query: () => 'protected',
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
+      query: (user) => ({
+        url: 'user/create/',
+        method: 'POST',
+        body: user,
+      }),
     }),
   }),
 });
 
-export const { useLoginMutation, useProtectedMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation } = authApi;

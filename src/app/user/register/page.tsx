@@ -2,36 +2,41 @@
 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input } from 'antd';
-import Link from 'next/link';
+import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { useDispatch } from 'react-redux';
 
-import { HBox } from '@/components/custom/HBox/Hbox';
-import { useLoginMutation } from '@/store';
-import { setCredentials } from '@/store/slices/authSlice';
+import { useRegisterMutation } from '@/store';
 
 import LoginWrapper from '../_components/LoginWrapper';
 
 type FieldType = {
   username?: string;
+  email?: string;
   password?: string;
-  remember?: string;
 };
 
 const RegisterPage = () => {
-  const dispatch = useDispatch();
-  const [login] = useLoginMutation();
+  const [register] = useRegisterMutation();
   const router = useRouter();
+  const [form] = Form.useForm();
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const email = values.email ?? '';
     const username = values.username ?? '';
     const password = values.password ?? '';
-    const user = await login({ username, password }).unwrap();
-    dispatch(setCredentials(user));
-    router.push('/home');
+    try {
+      await register({ email, username, password }).unwrap();
+      router.push('/user/login');
+    } catch {
+      form.setFields([
+        {
+          name: 'email',
+          errors: ['There is already an account with this email'],
+        },
+      ]);
+    }
   };
 
   return (
@@ -46,16 +51,23 @@ const RegisterPage = () => {
           name="normal_login"
           initialValues={{ remember: true }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item<FieldType>
             name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            rules={[{ required: true, message: 'Please input your name' }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Username" />
+            <Input prefix={<UserOutlined />} placeholder="Name" />
+          </Form.Item>
+          <Form.Item<FieldType>
+            name="email"
+            rules={[{ required: true, message: 'Please input your email' }]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
           <Form.Item<FieldType>
             name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
+            rules={[{ required: true, message: 'Please input your password' }]}
           >
             <Input
               prefix={<LockOutlined />}
@@ -63,26 +75,14 @@ const RegisterPage = () => {
               placeholder="Password"
             />
           </Form.Item>
-          <HBox>
-            <Form.Item<FieldType>
-              name="remember"
-              valuePropName="checked"
-              noStyle
-            >
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-            <Link href="/user/login">Forgot password</Link>
-          </HBox>
-
           <Form.Item<FieldType>>
             <Button
               type="primary"
               htmlType="submit"
               style={{ width: '100%', marginTop: 10 }}
             >
-              Log in
+              Register Now
             </Button>
-            Or <Link href="/user/login">register now!</Link>
           </Form.Item>
         </Form>
       </LoginWrapper>

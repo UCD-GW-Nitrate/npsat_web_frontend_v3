@@ -2,23 +2,21 @@
 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
 
-import { HBox } from '@/components/custom/HBox/Hbox';
 import { useLoginMutation } from '@/store';
 import { setCredentials } from '@/store/slices/authSlice';
 
 import LoginWrapper from '../_components/LoginWrapper';
 
 type FieldType = {
-  username?: string;
+  email?: string;
   password?: string;
-  remember?: string;
 };
 
 const LoginPage = () => {
@@ -27,9 +25,9 @@ const LoginPage = () => {
   const router = useRouter();
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-    const username = values.username ?? '';
+    const email = values.email ?? '';
     const password = values.password ?? '';
-    const user = await login({ username, password }).unwrap();
+    const user = await login({ email, password }).unwrap();
     dispatch(setCredentials(user));
     router.push('/');
   };
@@ -48,14 +46,14 @@ const LoginPage = () => {
           onFinish={onFinish}
         >
           <Form.Item<FieldType>
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please input your email' }]}
           >
             <Input prefix={<UserOutlined />} placeholder="Username" />
           </Form.Item>
           <Form.Item<FieldType>
             name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
+            rules={[{ required: true, message: 'Please input your password' }]}
           >
             <Input
               prefix={<LockOutlined />}
@@ -63,17 +61,6 @@ const LoginPage = () => {
               placeholder="Password"
             />
           </Form.Item>
-          <HBox>
-            <Form.Item<FieldType>
-              name="remember"
-              valuePropName="checked"
-              noStyle
-            >
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-            <Link href="/user/login">Forgot password</Link>
-          </HBox>
-
           <Form.Item<FieldType>>
             <Button
               type="primary"
@@ -82,7 +69,7 @@ const LoginPage = () => {
             >
               Log in
             </Button>
-            Or <Link href="/user/login">register now!</Link>
+            Or <Link href="/user/register">register now!</Link>
           </Form.Item>
         </Form>
       </LoginWrapper>

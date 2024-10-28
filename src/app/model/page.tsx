@@ -2,8 +2,7 @@
 
 import { Button, Tabs } from 'antd';
 import dynamic from 'next/dynamic';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
