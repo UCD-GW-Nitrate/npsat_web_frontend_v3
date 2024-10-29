@@ -45,11 +45,11 @@ interface RegionDict {
 const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
-  const [depthMin, setDepthMin] = useState<number>(0);
-  const [depthMax, setDepthMax] = useState<number>(801);
-  const [screenLenMin, setScreenLenMin] = useState<number>(0);
-  const [screenLenMax, setScreenLenMax] = useState<number>(801);
-  const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
+  const [depthMin, setDepthMin] = useState<number>(model.depth_range_min ?? 0);
+  const [depthMax, setDepthMax] = useState<number>(model.depth_range_max ?? 801);
+  const [screenLenMin, setScreenLenMin] = useState<number>(model.screen_length_range_min ?? 0);
+  const [screenLenMax, setScreenLenMax] = useState<number>(model.screen_length_range_max ?? 801);
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(model.advancedWellFilter ?? false);
   const [selected, setSelected] = useState<number[]>(
     model.regions?.map((region) => region.id) ?? [],
   );
