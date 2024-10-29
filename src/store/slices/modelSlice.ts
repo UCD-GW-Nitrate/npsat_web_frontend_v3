@@ -72,9 +72,6 @@ const modelSlice = createSlice({
     setModelModifications(state, action: PayloadAction<CropModification[]>) {
       return { ...state, modifications: action.payload };
     },
-    setAdvancedWellFilter(state, action: PayloadAction<boolean>) {
-      return { ...state, advancedWellFilter: action.payload };
-    },
     clearModel() {
       return {};
     },
@@ -105,7 +102,6 @@ export const {
   setModelDepthRangeMin,
   setModelDepthRangeMax,
   setModelModifications,
-  setAdvancedWellFilter,
   clearModel,
   createNewModel,
 } = modelSlice.actions;

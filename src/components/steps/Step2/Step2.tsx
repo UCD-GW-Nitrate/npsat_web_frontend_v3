@@ -18,7 +18,7 @@ import {
 } from '@/store';
 import {
   selectCurrentModel,
-  setAdvancedWellFilter,
+  setModelSimulationFilter,
   setModelDepthRangeMax,
   setModelDepthRangeMin,
   setModelRegions,
@@ -49,7 +49,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   const [depthMax, setDepthMax] = useState<number>(model.depth_range_max ?? 801);
   const [screenLenMin, setScreenLenMin] = useState<number>(model.screen_length_range_min ?? 0);
   const [screenLenMax, setScreenLenMax] = useState<number>(model.screen_length_range_max ?? 801);
-  const [showAdvancedFilter, setShowAdvancedFilter] = useState(model.advancedWellFilter ?? false);
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(model.applied_simulation_filter ?? false);
   const [selected, setSelected] = useState<number[]>(
     model.regions?.map((region) => region.id) ?? [],
   );
@@ -131,7 +131,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
 
   const onChangeAdvancedFilter = (formData: FieldValues) => {
     if (formData.advanced_filter) {
-      dispatch(setAdvancedWellFilter(formData.advanced_filter));
+      dispatch(setModelSimulationFilter(formData.advanced_filter));
     }
   };
 
@@ -234,8 +234,8 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             depthMin={depthMin}
             depthMax={depthMax}
             screenLenMin={screenLenMin}
-           screenLenMax={screenLenMax}
-            filterOn={model.advancedWellFilter ?? false}
+            screenLenMax={screenLenMax}
+            filterOn={model.applied_simulation_filter ?? false}
           />
         </Form.Item>
         <Form.Item label="Advanced filter" name="advanced_filter">
@@ -251,7 +251,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             <Form.Item
               label="Depth (m)"
               name="depth_range"
-              initialValue={[0, 801]}
+              initialValue={[depthMin, depthMax]}
               rules={[
                 {
                   validator: (_, value) => {
@@ -283,7 +283,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             <Form.Item
               label="ScreenLen (m)"
               name="screen_length_range"
-              initialValue={[0, 801]}
+              initialValue={[screenLenMin, screenLenMax]}
               rules={[
                 {
                   validator: (_, value) => {

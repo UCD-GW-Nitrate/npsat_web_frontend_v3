@@ -38,7 +38,7 @@ const modelApi = createApi({
             modifications: params.modifications,
             public: true,
             is_base: false,
-            applied_simulation_filter: params.advancedWellFilter,
+            applied_simulation_filter: params.applied_simulation_filter,
           });
           return {
             url: 'api/model_run/',
