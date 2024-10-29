@@ -49,7 +49,7 @@ const LoginPage = () => {
             name="email"
             rules={[{ required: true, message: 'Please input your email' }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Username" />
+            <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
           <Form.Item<FieldType>
             name="password"

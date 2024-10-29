@@ -5,7 +5,7 @@ import type { Scenario } from './Scenario';
 
 export interface ModelRun {
   id: number;
-  user_ref: number;
+  user: number;
   name: string;
   description: string;
   regions: ModelRegion[];
