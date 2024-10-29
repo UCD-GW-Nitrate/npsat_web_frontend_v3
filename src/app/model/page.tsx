@@ -141,7 +141,13 @@ const ModelPage = () => {
           modifications: customModelDetail.modifications,
           public: true,
           is_base: false,
-          applied_simulation_filter: false,
+          applied_simulation_filter:
+            customModelDetail.applied_simulation_filter,
+          screen_length_range_min: customModelDetail.screen_length_range_min,
+          screen_length_range_max: customModelDetail.screen_length_range_max,
+          depth_range_min: customModelDetail.depth_range_min,
+          depth_range_max: customModelDetail.depth_range_max,
+          porosity: customModelDetail.porosity,
         }),
       );
       router.push('/model/create');
