@@ -267,6 +267,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             >
               <RangeFormItem
                 rangeConfig={DEPTH_RANGE_CONFIG}
+                value={[depthMin, depthMax]}
                 onChangeMin={(v) => {
                   if (v != depthMin) {
                     setDepthMin(v);
@@ -298,6 +299,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             >
               <RangeFormItem
                 rangeConfig={SCREEN_LENGTH_RANGE_CONFIG}
+                value={[screenLenMin, screenLenMax]}
                 onChangeMin={(v) => {
                   if (v != screenLenMin) {
                     setScreenLenMin(v);
