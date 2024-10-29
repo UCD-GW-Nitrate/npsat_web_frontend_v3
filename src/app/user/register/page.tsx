@@ -15,6 +15,7 @@ type FieldType = {
   username?: string;
   email?: string;
   password?: string;
+  confirm_password?: string;
 };
 
 const RegisterPage = () => {
@@ -26,6 +27,16 @@ const RegisterPage = () => {
     const email = values.email ?? '';
     const username = values.username ?? '';
     const password = values.password ?? '';
+    const confirmPassword = values.confirm_password ?? '';
+    if (password !== confirmPassword) {
+      form.setFields([
+        {
+          name: 'confirm_password',
+          errors: ['Password does not match'],
+        },
+      ]);
+      return;
+    }
     try {
       await register({ email, username, password }).unwrap();
       router.push('/user/login');
@@ -73,6 +84,16 @@ const RegisterPage = () => {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Password"
+            />
+          </Form.Item>
+          <Form.Item<FieldType>
+            name="confirm_password"
+            rules={[{ required: true, message: 'Please input your password' }]}
+          >
+            <Input
+              prefix={<LockOutlined />}
+              type="password"
+              placeholder="Confirm Password"
             />
           </Form.Item>
           <Form.Item<FieldType>>

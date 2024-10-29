@@ -5,7 +5,7 @@ import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
 
@@ -23,13 +23,27 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const [login] = useLoginMutation();
   const router = useRouter();
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    router.refresh();
+  }, []);
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     const email = values.email ?? '';
     const password = values.password ?? '';
-    const user = await login({ email, password }).unwrap();
-    dispatch(setCredentials(user));
-    router.push('/');
+    try {
+      const user = await login({ email, password }).unwrap();
+      dispatch(setCredentials(user));
+      router.push('/');
+    } catch {
+      form.setFields([
+        {
+          name: 'email',
+          errors: ['Incorrect email or password'],
+        },
+      ]);
+    }
   };
 
   return (
@@ -44,6 +58,7 @@ const LoginPage = () => {
           name="normal_login"
           initialValues={{ remember: true }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item<FieldType>
             name="email"
