@@ -6,8 +6,10 @@ import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
 
-import { useRegisterMutation } from '@/store';
+import { useRegisterMutation, useLoginMutation } from '@/store';
+import { setCredentials } from '@/store/slices/authSlice';
 
 import LoginWrapper from '../_components/LoginWrapper';
 
@@ -20,6 +22,8 @@ type FieldType = {
 
 const RegisterPage = () => {
   const [register] = useRegisterMutation();
+  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
   const router = useRouter();
   const [form] = Form.useForm();
 
@@ -39,7 +43,9 @@ const RegisterPage = () => {
     }
     try {
       await register({ email, username, password }).unwrap();
-      router.push('/user/login');
+      const user = await login({ email, password }).unwrap();
+      dispatch(setCredentials(user));
+      router.push('/user/verify');
     } catch {
       form.setFields([
         {
@@ -58,9 +64,8 @@ const RegisterPage = () => {
       </Helmet>
       <LoginWrapper>
         <Form
+          name="normal_register"
           style={{ width: 360 }}
-          name="normal_login"
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           form={form}
         >

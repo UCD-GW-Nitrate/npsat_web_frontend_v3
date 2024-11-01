@@ -38,6 +38,7 @@ export const authApi = createApi({
           isStaff: response.is_staff,
           isSuperuser: response.is_superuser,
           email: response.email,
+          isVerified: response.is_verified,
         };
 
         const authState: AuthState = {
@@ -52,7 +53,7 @@ export const authApi = createApi({
     }),
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (user) => ({
-        url: 'user/create/',
+        url: 'register-user/',
         method: 'POST',
         body: user,
       }),

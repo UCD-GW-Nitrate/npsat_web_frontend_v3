@@ -35,7 +35,11 @@ const LoginPage = () => {
     try {
       const user = await login({ email, password }).unwrap();
       dispatch(setCredentials(user));
-      router.push('/');
+      if (user.user?.isVerified) {
+        router.push('/');
+      } else {
+        router.push('/user/verify');
+      }
     } catch {
       form.setFields([
         {
@@ -54,9 +58,8 @@ const LoginPage = () => {
       </Helmet>
       <LoginWrapper>
         <Form
-          style={{ width: 360 }}
           name="normal_login"
-          initialValues={{ remember: true }}
+          style={{ width: 360 }}
           onFinish={onFinish}
           form={form}
         >

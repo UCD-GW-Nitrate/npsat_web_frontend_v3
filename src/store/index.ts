@@ -5,6 +5,7 @@ import { cropApi } from './apis/cropApi';
 import { feedApi } from './apis/feedApi';
 import { modelApi } from './apis/modelApi';
 import { regionApi } from './apis/regionApi';
+import { userApi } from './apis/userApi';
 import authReducer from './slices/authSlice';
 import { modelReducer } from './slices/modelSlice';
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     [regionApi.reducerPath]: regionApi.reducer,
     [modelApi.reducerPath]: modelApi.reducer,
     [cropApi.reducerPath]: cropApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
     auth: authReducer,
     model: modelReducer,
   },
@@ -24,13 +26,15 @@ export const store = configureStore({
       .concat(feedApi.middleware)
       .concat(regionApi.middleware)
       .concat(modelApi.middleware)
-      .concat(cropApi.middleware),
+      .concat(cropApi.middleware)
+      .concat(userApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export { useLoginMutation, useRegisterMutation } from './apis/authApi';
+export { useSendVerificationEmailMutation, useSetPasswordMutation, useVerifyUserMutation } from './apis/userApi';
 export {
   useGetAllCropsByFlowScenarioQuery,
   useGetAllCropsQuery,

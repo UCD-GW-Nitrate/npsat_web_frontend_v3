@@ -3,6 +3,7 @@ export interface User {
   username: string;
   isStaff: boolean;
   isSuperuser: boolean;
+  isVerified: boolean;
   email: string;
 }
 
