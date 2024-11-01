@@ -33,8 +33,17 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export { useLoginMutation, useRegisterMutation } from './apis/authApi';
-export { useSendVerificationEmailMutation, useSetPasswordMutation, useVerifyUserMutation } from './apis/userApi';
+export { 
+  useLoginMutation,
+  useRegisterMutation,
+  useUnauthorizedVerifyEmailMutation,
+  useUnauthorizedVerifyCodeMutation
+} from './apis/authApi';
+export { 
+  useSendVerificationEmailMutation,
+  useSetPasswordMutation,
+  useVerifyUserMutation
+} from './apis/userApi';
 export {
   useGetAllCropsByFlowScenarioQuery,
   useGetAllCropsQuery,

@@ -20,6 +20,11 @@ export interface RegisterResponse {
   username?: string;
 }
 
+export interface VerifyCode {
+  email?: string;
+  verification_code?: string;
+}
+
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiRoot,
@@ -58,7 +63,45 @@ export const authApi = createApi({
         body: user,
       }),
     }),
+    unauthorizedVerifyEmail: builder.mutation<void, string>({
+      query: (email) => ({
+        url: 'unauthorized-verify/',
+        method: 'PUT',
+        body: { email },
+      }),
+    }),
+    unauthorizedVerifyCode: builder.mutation<AuthState, VerifyCode>({
+      query: (verifyCode) => ({
+        url: 'verify-code/',
+        method: 'PUT',
+        body: verifyCode,
+      }),
+      transformResponse: (response: UserResponse) => {
+        const user: User = {
+          userId: response.user_id,
+          username: response.username,
+          isStaff: response.is_staff,
+          isSuperuser: response.is_superuser,
+          email: response.email,
+          isVerified: response.is_verified,
+        };
+
+        const authState: AuthState = {
+          token: response.token,
+          user,
+        };
+
+        localStorage.setItem('npsat_user_info', JSON.stringify(authState));
+
+        return authState;
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const { 
+  useLoginMutation,
+  useRegisterMutation,
+  useUnauthorizedVerifyEmailMutation,
+  useUnauthorizedVerifyCodeMutation 
+} = authApi;

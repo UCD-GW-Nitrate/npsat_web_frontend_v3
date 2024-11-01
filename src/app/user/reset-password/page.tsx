@@ -1,50 +1,48 @@
 'use client';
 
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LockOutlined } from '@ant-design/icons';
 import type { FormProps } from 'antd';
 import { Button, Form, Input } from 'antd';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { useDispatch } from 'react-redux';
 
-import { useLoginMutation } from '@/store';
-import { setCredentials } from '@/store/slices/authSlice';
+import { useSetPasswordMutation } from '@/store';
 
 import LoginWrapper from '../_components/LoginWrapper';
 
 type FieldType = {
+  username?: string;
   email?: string;
   password?: string;
+  confirm_password?: string;
 };
 
-const LoginPage = () => {
-  const dispatch = useDispatch();
-  const [login] = useLoginMutation();
+const ResetPasswordPage = () => {
+  const [resetPassword] = useSetPasswordMutation();
   const router = useRouter();
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    router.refresh();
-  }, []);
-
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-    const email = values.email ?? '';
     const password = values.password ?? '';
+    const confirmPassword = values.confirm_password ?? '';
+    if (password !== confirmPassword) {
+      form.setFields([
+        {
+          name: 'confirm_password',
+          errors: ['Password does not match'],
+        },
+      ]);
+      return;
+    }
     try {
-      const user = await login({ email, password }).unwrap();
-      dispatch(setCredentials(user));
-      if (user.user?.isVerified) {
-        router.push('/');
-      } else {
-        router.push('/user/verify');
-      }
+      await resetPassword(password).unwrap();
+      router.push('/user/login');
     } catch {
       form.setFields([
         {
-          name: 'email',
-          errors: ['Incorrect email or password'],
+          name: 'password',
+          errors: ['Unable to reset password'],
         },
       ]);
     }
@@ -53,22 +51,16 @@ const LoginPage = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Login - NPSAT</title>
-        <meta name="description" content="Login - NPSAT" />
+        <title>Reset Password - NPSAT</title>
+        <meta name="description" content="Reset Password - NPSAT" />
       </Helmet>
       <LoginWrapper>
         <Form
-          name="normal_login"
+          name="normal_reset_password"
           style={{ width: 360 }}
           onFinish={onFinish}
           form={form}
         >
-          <Form.Item<FieldType>
-            name="email"
-            rules={[{ required: true, message: 'Please input your email' }]}
-          >
-            <Input prefix={<UserOutlined />} placeholder="Email" />
-          </Form.Item>
           <Form.Item<FieldType>
             name="password"
             rules={[{ required: true, message: 'Please input your password' }]}
@@ -79,15 +71,24 @@ const LoginPage = () => {
               placeholder="Password"
             />
           </Form.Item>
+          <Form.Item<FieldType>
+            name="confirm_password"
+            rules={[{ required: true, message: 'Please input your password' }]}
+          >
+            <Input
+              prefix={<LockOutlined />}
+              type="password"
+              placeholder="Confirm Password"
+            />
+          </Form.Item>
           <Form.Item<FieldType>>
             <Button
               type="primary"
               htmlType="submit"
               style={{ width: '100%', marginTop: 10 }}
             >
-              Log in
+              Reset Password
             </Button>
-            <Link href="/user/register">Register now</Link> or <Link href="/user/forgot-password-email">forgot password</Link>
           </Form.Item>
         </Form>
       </LoginWrapper>
@@ -95,4 +96,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default ResetPasswordPage;
