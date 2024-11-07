@@ -70,31 +70,31 @@ const ModelDescriptionTable = ({
       <Descriptions.Item label="Region(s)" span={2}>
         {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
       </Descriptions.Item>
-      <Descriptions.Item label="Scenario description" span={3}>
-        {modelDetail?.description || 'no description'}
-      </Descriptions.Item>
       {modelDetail?.applied_simulation_filter ? (
         <>
           <Descriptions.Item
             label="Depth range"
             span={1.5}
-          >{`${modelDetail?.depth_range_min} ~ ${
+          >{`${modelDetail?.depth_range_min} - ${
             // intentionally using "==" instead of "===" to compare float and string
             modelDetail?.depth_range_max === DEPTH_RANGE_CONFIG.max + 1
               ? 'max'
               : modelDetail?.depth_range_max
-          }`}</Descriptions.Item>
+          } meters`}</Descriptions.Item>
           <Descriptions.Item
             label="Screen length range"
             span={1.5}
-          >{`${modelDetail?.unsat_range_min} ~ ${
+          >{`${modelDetail?.unsat_range_min} - ${
             // intentionally using "==" instead of "===" to compare float and string
             modelDetail?.unsat_range_max === UNSAT_RANGE_CONFIG.max + 1
               ? 'max'
               : modelDetail?.unsat_range_max
-          }`}</Descriptions.Item>
+          } meters`}</Descriptions.Item>
         </>
       ) : null}
+      <Descriptions.Item label="Scenario description" span={3}>
+        {modelDetail?.description || 'no description'}
+      </Descriptions.Item>
     </Descriptions>
   );
 };
