@@ -31,6 +31,6 @@ export interface ModelRun {
   applied_simulation_filter: boolean;
   depth_range_min: number;
   depth_range_max: number;
-  screen_length_range_min: number;
-  screen_length_range_max: number;
+  unsat_range_min: number;
+  unsat_range_max: number;
 }

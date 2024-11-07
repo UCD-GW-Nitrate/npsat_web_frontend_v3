@@ -1,5 +1,6 @@
-import { PlotModel } from '@/types/feed/Feed';
 import type { ColumnType } from 'antd/es/table';
+
+import type { PlotModel } from '@/types/feed/Feed';
 
 export const MODEL_STATUS_MACROS = {
   NOT_READY: 0,
@@ -26,7 +27,7 @@ export const DEPTH_RANGE_CONFIG = {
   maxIdentifier: true,
 };
 
-export const SCREEN_LENGTH_RANGE_CONFIG = {
+export const UNSAT_RANGE_CONFIG = {
   min: 0,
   max: 800,
   step: 1,

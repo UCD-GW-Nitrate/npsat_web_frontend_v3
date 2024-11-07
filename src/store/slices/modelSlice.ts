@@ -57,11 +57,11 @@ const modelSlice = createSlice({
     setModelSimulationFilter(state, action: PayloadAction<boolean>) {
       return { ...state, applied_simulation_filter: action.payload };
     },
-    setModelScreenLenRangeMin(state, action: PayloadAction<number>) {
-      return { ...state, screen_length_range_min: action.payload };
+    setModelUnsatRangeMin(state, action: PayloadAction<number>) {
+      return { ...state, unsat_range_min: action.payload };
     },
-    setModelScreenLenRangeMax(state, action: PayloadAction<number>) {
-      return { ...state, screen_length_range_max: action.payload };
+    setModelUnsatRangeMax(state, action: PayloadAction<number>) {
+      return { ...state, unsat_range_max: action.payload };
     },
     setModelDepthRangeMin(state, action: PayloadAction<number>) {
       return { ...state, depth_range_min: action.payload };
@@ -97,8 +97,8 @@ export const {
   setModelPublic,
   setModelIsBase,
   setModelSimulationFilter,
-  setModelScreenLenRangeMin,
-  setModelScreenLenRangeMax,
+  setModelUnsatRangeMin,
+  setModelUnsatRangeMax,
   setModelDepthRangeMin,
   setModelDepthRangeMax,
   setModelModifications,

@@ -18,25 +18,25 @@ import {
 } from '@/store';
 import {
   selectCurrentModel,
-  setModelSimulationFilter,
   setModelDepthRangeMax,
   setModelDepthRangeMin,
   setModelRegions,
-  setModelScreenLenRangeMax,
-  setModelScreenLenRangeMin,
+  setModelSimulationFilter,
+  setModelUnsatRangeMax,
+  setModelUnsatRangeMin,
 } from '@/store/slices/modelSlice';
+import type { ModelRegion } from '@/types/model/ModelRegion';
 import type { Region } from '@/types/region/Region';
 import {
   DEPTH_RANGE_CONFIG,
   REGION_MACROS,
-  SCREEN_LENGTH_RANGE_CONFIG,
+  UNSAT_RANGE_CONFIG,
 } from '@/utils/constants';
 
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellNumber from './WellNumber';
-import { ModelRegion } from '@/types/model/ModelRegion';
 
 interface RegionDict {
   [key: number]: ModelRegion;
@@ -46,10 +46,16 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
   const [depthMin, setDepthMin] = useState<number>(model.depth_range_min ?? 0);
-  const [depthMax, setDepthMax] = useState<number>(model.depth_range_max ?? 801);
-  const [screenLenMin, setScreenLenMin] = useState<number>(model.screen_length_range_min ?? 0);
-  const [screenLenMax, setScreenLenMax] = useState<number>(model.screen_length_range_max ?? 801);
-  const [showAdvancedFilter, setShowAdvancedFilter] = useState(model.applied_simulation_filter ?? false);
+  const [depthMax, setDepthMax] = useState<number>(
+    model.depth_range_max ?? 801,
+  );
+  const [unsatMin, setUnsatMin] = useState<number>(model.unsat_range_min ?? 0);
+  const [unsatMax, setUnsatMax] = useState<number>(
+    model.unsat_range_max ?? 801,
+  );
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(
+    model.applied_simulation_filter ?? false,
+  );
   const [selected, setSelected] = useState<number[]>(
     model.regions?.map((region) => region.id) ?? [],
   );
@@ -102,7 +108,14 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     });
     setRegionDict(regionDictTemp);
     console.log(regionDictTemp);
-  }, [b118BasinData, basinData, centralValleyData, countyData, subregionsData, townshipData]);
+  }, [
+    b118BasinData,
+    basinData,
+    centralValleyData,
+    countyData,
+    subregionsData,
+    townshipData,
+  ]);
 
   const onFormSubmit = (formData: FieldValues) => {
     if (showAdvancedFilter) {
@@ -115,8 +128,8 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       );
       dispatch(setModelDepthRangeMax(formData.depth_range[0]));
       dispatch(setModelDepthRangeMin(formData.depth_range[1]));
-      dispatch(setModelScreenLenRangeMin(formData.screen_length_range[0]));
-      dispatch(setModelScreenLenRangeMax(formData.screen_length_range[1]));
+      dispatch(setModelUnsatRangeMin(formData.unsat_range[0]));
+      dispatch(setModelUnsatRangeMax(formData.unsat_range[1]));
     } else {
       dispatch(
         setModelRegions(
@@ -233,8 +246,8 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             countyList={getRegionData(mapType) ?? []}
             depthMin={depthMin}
             depthMax={depthMax}
-            screenLenMin={screenLenMin}
-            screenLenMax={screenLenMax}
+            unsatMin={unsatMin}
+            unsatMax={unsatMax}
             filterOn={model.applied_simulation_filter ?? false}
           />
         </Form.Item>
@@ -249,7 +262,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
         {showAdvancedFilter ? (
           <>
             <Form.Item
-              label="Depth (m)"
+              label="Depth Range (m)"
               name="depth_range"
               initialValue={[depthMin, depthMax]}
               rules={[
@@ -269,21 +282,21 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
                 rangeConfig={DEPTH_RANGE_CONFIG}
                 value={[depthMin, depthMax]}
                 onChangeMin={(v) => {
-                  if (v != depthMin) {
+                  if (v !== depthMin) {
                     setDepthMin(v);
                   }
                 }}
                 onChangeMax={(v) => {
-                  if (v != depthMax) {
+                  if (v !== depthMax) {
                     setDepthMax(v);
                   }
                 }}
               />
             </Form.Item>
             <Form.Item
-              label="ScreenLen (m)"
-              name="screen_length_range"
-              initialValue={[screenLenMin, screenLenMax]}
+              label="Unsat Range (m)"
+              name="unsat_range"
+              initialValue={[unsatMin, unsatMax]}
               rules={[
                 {
                   validator: (_, value) => {
@@ -298,16 +311,16 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
               ]}
             >
               <RangeFormItem
-                rangeConfig={SCREEN_LENGTH_RANGE_CONFIG}
-                value={[screenLenMin, screenLenMax]}
+                rangeConfig={UNSAT_RANGE_CONFIG}
+                value={[unsatMin, unsatMax]}
                 onChangeMin={(v) => {
-                  if (v != screenLenMin) {
-                    setScreenLenMin(v);
+                  if (v !== unsatMin) {
+                    setUnsatMin(v);
                   }
                 }}
                 onChangeMax={(v) => {
-                  if (v != screenLenMax) {
-                    setScreenLenMax(v);
+                  if (v !== unsatMax) {
+                    setUnsatMax(v);
                   }
                 }}
               />

@@ -4,10 +4,20 @@ import { useSelector } from 'react-redux';
 
 import { selectCurrentModel } from '@/store/slices/modelSlice';
 import type { Region } from '@/types/region/Region';
-
-import { C2VSimRun04VIPadj, C2VSimRun04VIRadj, CVHM2Run1VIPadj, CVHM2Run1VIRadj } from './ScenariosWellData/VIwellsCountMAR24V2';
-import { C2VSimRun04VDPadj, C2VSimRun04VDRadj, CVHM2Run1VDPadj, CVHM2Run1VDRadj } from './ScenariosWellData/VDwellsCountMAR24V2';
 import { REGION_MACROS } from '@/utils/constants';
+
+import {
+  C2VSimRun04VDPadj,
+  C2VSimRun04VDRadj,
+  CVHM2Run1VDPadj,
+  CVHM2Run1VDRadj,
+} from './ScenariosWellData/VDwellsCountMAR24V3';
+import {
+  C2VSimRun04VIPadj,
+  C2VSimRun04VIRadj,
+  CVHM2Run1VIPadj,
+  CVHM2Run1VIRadj,
+} from './ScenariosWellData/VIwellsCountMAR24V3';
 
 interface WellNumberProps {
   selectedRegions: number[];
@@ -15,14 +25,14 @@ interface WellNumberProps {
   countyList: Region[];
   depthMin: number;
   depthMax: number;
-  screenLenMin: number;
-  screenLenMax: number;
+  unsatMin: number;
+  unsatMax: number;
   filterOn: boolean;
 }
 
 interface WellInfo {
   depth: number;
-  screenLen: number;
+  unsat: number;
   count: number;
 }
 
@@ -32,15 +42,15 @@ const WellNumber = ({
   regionType,
   depthMax,
   depthMin,
-  screenLenMax,
-  screenLenMin,
+  unsatMin,
+  unsatMax,
   filterOn,
 }: WellNumberProps) => {
   // console.log(
   //   `${selectedRegions} + ${countyList} + ${regionType} + ${depthMax} + ${depthMin} + ${screenLenMax} + ${screenLenMin} + ${filterOn}`,
   // );
   const depthFilter: [number, number] = [depthMin, depthMax];
-  const screenLenFilter: [number, number] = [screenLenMin, screenLenMax];
+  const unsatFilter: [number, number] = [unsatMin, unsatMax];
 
   const model = useSelector(selectCurrentModel);
   const flowScenario = model.flow_scenario?.id;
@@ -55,22 +65,27 @@ const WellNumber = ({
   // console.log('region type well number', regionType);
 
   // load well data based on scenario
-  var wellData: any[] = [];
+  let wellData: any[] = [];
 
-  if (welltypeScenario == 12) { // Public supply wells
+  if (welltypeScenario === 12) {
+    // Public supply wells
     if (flowScenario === 10) wellData = C2VSimRun04VIPadj;
     else if (flowScenario === 11) wellData = C2VSimRun04VIRadj;
     else if (flowScenario === 8) wellData = CVHM2Run1VIPadj;
     else if (flowScenario === 9) wellData = CVHM2Run1VIRadj;
-  } else if (welltypeScenario == 13) { // Domestic wells
+  } else if (welltypeScenario === 13) {
+    // Domestic wells
     if (flowScenario === 10) wellData = C2VSimRun04VDPadj;
     else if (flowScenario === 11) wellData = C2VSimRun04VDRadj;
     else if (flowScenario === 8) wellData = CVHM2Run1VDPadj;
     else if (flowScenario === 9) wellData = CVHM2Run1VDRadj;
   }
 
+  // console.log('wellData: ', wellData);
+
   let wellCount: number = 0;
-  if (welltypeScenario !== 14) { // Exclude virtual monitoring well
+  if (welltypeScenario !== 14) {
+    // Exclude virtual monitoring well
 
     countyList.forEach((county) => {
       countyDic[county.id] = county.mantis_id;
@@ -87,22 +102,29 @@ const WellNumber = ({
 
     const storeInWellDic = (well: any, key: string) => {
       if (!wellDic.hasOwnProperty(key)) {
-        wellDic[key] = {count: 0, depth: well.D, screenLen: well.SL};
+        wellDic[key] = {
+          count: 0,
+          depth: well.UNSAT + well.WT2T + well.SLmod,
+          unsat: well.UNSAT,
+        };
       }
 
-      if ((filterOn && 
-          well.D >= depthFilter[0] &&
-          well.D <= depthFilter[1] &&
-          well.SL >= screenLenFilter[0] &&
-          well.SL <= screenLenFilter[1]) || !filterOn) {
+      if (
+        (filterOn &&
+          well.UNSAT + well.WT2T + well.SLmod >= depthFilter[0] &&
+          well.UNSAT + well.WT2T + well.SLmod <= depthFilter[1] &&
+          well.UNSAT >= unsatFilter[0] &&
+          well.UNSAT <= unsatFilter[1]) ||
+        !filterOn
+      ) {
         wellDic[key]!.count += 1;
       }
-    }
+    };
 
     switch (regionType) {
       case REGION_MACROS.CENTRAL_VALLEY: // central valley
         console.log('Central Valley');
-        wellData.forEach((well) => storeInWellDic(well, "CentralValley"));
+        wellData.forEach((well) => storeInWellDic(well, 'CentralValley'));
         break;
       case REGION_MACROS.SUB_BASIN: // basin
         console.log('Sub Basin');
@@ -131,7 +153,7 @@ const WellNumber = ({
   }
 
   function numberWithCommas(x: number) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
   return (

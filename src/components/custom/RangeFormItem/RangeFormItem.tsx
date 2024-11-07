@@ -43,13 +43,13 @@ const RangeFormItem = ({
   };
 
   const lowOnChange = (lowBound: number | null) => {
-    if (lowBound && lowBound != low) {
+    if (lowBound && lowBound !== low) {
       setLow(lowBound);
     }
   };
 
   const highOnChange = (highBound: number | null) => {
-    if (highBound && highBound != high) {
+    if (highBound && highBound !== high) {
       setHigh(highBound);
     }
   };
@@ -58,13 +58,13 @@ const RangeFormItem = ({
     if (highBound && onChangeMax) {
       onChangeMax(highBound!);
     }
-  }
+  };
 
   const lowOnChangeComplete = (lowBound: number | null) => {
     if (lowBound && onChangeMin) {
       onChangeMin(lowBound!);
     }
-  }
+  };
 
   const rangeOnChange = (range: number[]) => {
     if (range.length === 2) {
@@ -79,6 +79,20 @@ const RangeFormItem = ({
       const rangeChecked = range as [number, number];
       highOnChangeComplete(rangeChecked[1]);
       lowOnChangeComplete(rangeChecked[0]);
+    }
+  };
+
+  const highStep = (highBound: number | null) => {
+    if (highBound && highBound !== high) {
+      setHigh(highBound);
+      highOnChangeComplete(highBound);
+    }
+  };
+
+  const lowStep = (lowBound: number | null) => {
+    if (lowBound && lowBound !== low) {
+      setLow(lowBound);
+      lowOnChangeComplete(lowBound);
     }
   };
 
@@ -99,7 +113,7 @@ const RangeFormItem = ({
         <InputNumber
           value={low}
           step={step}
-          onChange={lowOnChange}
+          onChange={lowStep}
           style={{ width: 60 }}
           max={maxIdentifier ? max + 1 : max}
           min={min}
@@ -111,7 +125,7 @@ const RangeFormItem = ({
         <InputNumber
           value={high}
           step={step}
-          onChange={highOnChange}
+          onChange={highStep}
           style={{ width: 60 }}
           max={maxIdentifier ? max + 1 : max}
           min={min}

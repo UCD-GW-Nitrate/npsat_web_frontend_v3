@@ -18,8 +18,8 @@ export interface FormModel {
   public?: boolean;
   is_base?: boolean;
   applied_simulation_filter?: boolean;
-  screen_length_range_min?: number;
-  screen_length_range_max?: number;
+  unsat_range_min?: number;
+  unsat_range_max?: number;
   depth_range_min?: number;
   depth_range_max?: number;
   modifications?: CropModification[];

@@ -143,8 +143,8 @@ const ModelPage = () => {
           is_base: false,
           applied_simulation_filter:
             customModelDetail.applied_simulation_filter,
-          screen_length_range_min: customModelDetail.screen_length_range_min,
-          screen_length_range_max: customModelDetail.screen_length_range_max,
+          unsat_range_min: customModelDetail.unsat_range_min,
+          unsat_range_max: customModelDetail.unsat_range_max,
           depth_range_min: customModelDetail.depth_range_min,
           depth_range_max: customModelDetail.depth_range_max,
           porosity: customModelDetail.porosity,

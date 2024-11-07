@@ -2,10 +2,7 @@ import { Descriptions } from 'antd';
 
 import type { ModelRegion } from '@/types/model/ModelRegion';
 import type { ModelRun } from '@/types/model/ModelRun';
-import {
-  DEPTH_RANGE_CONFIG,
-  SCREEN_LENGTH_RANGE_CONFIG,
-} from '@/utils/constants';
+import { DEPTH_RANGE_CONFIG, UNSAT_RANGE_CONFIG } from '@/utils/constants';
 
 interface ModelDescriptionTableProps {
   modelDetail: ModelRun | null;
@@ -90,12 +87,11 @@ const ModelDescriptionTable = ({
           <Descriptions.Item
             label="Screen length range"
             span={1.5}
-          >{`${modelDetail?.screen_length_range_min} ~ ${
+          >{`${modelDetail?.unsat_range_min} ~ ${
             // intentionally using "==" instead of "===" to compare float and string
-            modelDetail?.screen_length_range_max ===
-            SCREEN_LENGTH_RANGE_CONFIG.max + 1
+            modelDetail?.unsat_range_max === UNSAT_RANGE_CONFIG.max + 1
               ? 'max'
-              : modelDetail?.screen_length_range_max
+              : modelDetail?.unsat_range_max
           }`}</Descriptions.Item>
         </>
       ) : null}
