@@ -126,10 +126,11 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           }),
         ),
       );
-      dispatch(setModelDepthRangeMax(formData.depth_range[0]));
-      dispatch(setModelDepthRangeMin(formData.depth_range[1]));
-      dispatch(setModelUnsatRangeMin(formData.unsat_range[0]));
-      dispatch(setModelUnsatRangeMax(formData.unsat_range[1]));
+      dispatch(setModelSimulationFilter(showAdvancedFilter));
+      dispatch(setModelDepthRangeMax(depthMax));
+      dispatch(setModelDepthRangeMin(depthMin));
+      dispatch(setModelUnsatRangeMin(unsatMin));
+      dispatch(setModelUnsatRangeMax(unsatMax));
     } else {
       dispatch(
         setModelRegions(
