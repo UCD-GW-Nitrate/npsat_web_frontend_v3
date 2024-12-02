@@ -33,17 +33,12 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export { 
+export {
   useLoginMutation,
   useRegisterMutation,
+  useUnauthorizedVerifyCodeMutation,
   useUnauthorizedVerifyEmailMutation,
-  useUnauthorizedVerifyCodeMutation
 } from './apis/authApi';
-export { 
-  useSendVerificationEmailMutation,
-  useSetPasswordMutation,
-  useVerifyUserMutation
-} from './apis/userApi';
 export {
   useGetAllCropsByFlowScenarioQuery,
   useGetAllCropsQuery,
@@ -60,6 +55,7 @@ export {
   useGetModificationDetailQuery,
   usePutModelMutation,
   useRunModelMutation,
+  useDeleteModelMutation,
 } from './apis/modelApi';
 export {
   useFetchB118BasinQuery,
@@ -72,3 +68,8 @@ export {
   useGetRegionByIdsQuery,
   useGetRegionDetailQuery,
 } from './apis/regionApi';
+export {
+  useSendVerificationEmailMutation,
+  useSetPasswordMutation,
+  useVerifyUserMutation,
+} from './apis/userApi';

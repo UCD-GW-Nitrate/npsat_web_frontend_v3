@@ -16,6 +16,7 @@ import { useModelResults } from '@/hooks/useModelResults';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useGetModelandBaseModelDetailQuery } from '@/store';
 import { createNewModel } from '@/store/slices/modelSlice';
+import { useDeleteModelMutation } from '@/store';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { Region } from '@/types/region/Region';
 
@@ -31,6 +32,7 @@ const ModelPage = () => {
   const modelDetail = useGetModelandBaseModelDetailQuery(
     parseInt(params.get('id')!, 10),
   );
+  const [deleteModel] = useDeleteModelMutation();
   const dispatch = useDispatch();
   const [selectedTab, setSelectedTab] = useState<string>('1');
 
@@ -158,9 +160,14 @@ const ModelPage = () => {
     <AppLayout>
       <HBox>
         <StandardText variant="h1">Details and Results</StandardText>
-        <Button type="primary" size="large" onClick={copyAndModifyModel}>
-          Copy and Modify Scenario
-        </Button>
+        <HBox spacing="small">
+          <Button size="large" onClick={() => deleteModel(parseInt(params.get('id')!, 10))}>
+            Delete Scenario
+          </Button>
+          <Button type="primary" size="large" onClick={copyAndModifyModel}>
+            Copy and Modify Scenario
+          </Button>
+        </HBox>
       </HBox>
       <VBox spacing="large">
         <InfoContainer title="Scenario info">

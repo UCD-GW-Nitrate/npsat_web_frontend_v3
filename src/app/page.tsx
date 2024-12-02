@@ -132,10 +132,10 @@ const Index = () => {
         >
           <HBox spacing="small">
             <InfoCircleOutlined />
-            You may select two or more models to compare. Maximum of 5.
+            You may select two or more models to compare. Maximum of 32.
           </HBox>
           <Button
-            disabled={selected.length <= 1 || selected.length > 5}
+            disabled={selected.length <= 1 || selected.length > 32}
             onClick={() =>
               router.push(`/model/compare/?models=${selected.join('&models=')}`)
             }

@@ -1,4 +1,4 @@
-import { ModelRegion } from "../model/ModelRegion";
+import type { ModelRegion } from '../model/ModelRegion';
 
 export interface Region extends ModelRegion {
   geometry: Geometry;

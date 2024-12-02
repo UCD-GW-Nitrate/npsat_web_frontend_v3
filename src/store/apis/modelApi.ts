@@ -33,6 +33,14 @@ const modelApi = createApi({
           };
         },
       }),
+      deleteModel: builder.mutation<MantisResult, number>({
+        query(params) {
+          return {
+            url: `api/model_run/${params}/`,
+            method: 'DELETE',
+          };
+        },
+      }),
       getAllModelDetail: builder.query<ModelRun[], number>({
         query: () => ({
           url: `api/model_run/`,
@@ -91,6 +99,7 @@ const modelApi = createApi({
 
 export const {
   useRunModelMutation,
+  useDeleteModelMutation,
   useGetModelDetailQuery,
   useGetModelandBaseModelDetailQuery,
   useGetModelResultsQuery,
