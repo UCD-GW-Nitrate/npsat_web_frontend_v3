@@ -125,6 +125,11 @@ const ModelPage = () => {
     console.log(modelDetail.error);
   }
 
+  const deleteScenario = () => {
+    deleteModel(parseInt(params.get('id')!, 10));
+    router.push('/');
+  }
+
   const copyAndModifyModel = () => {
     if (customModelDetail) {
       dispatch(
@@ -161,7 +166,7 @@ const ModelPage = () => {
       <HBox>
         <StandardText variant="h1">Details and Results</StandardText>
         <HBox spacing="small">
-          <Button size="large" onClick={() => deleteModel(parseInt(params.get('id')!, 10))}>
+          <Button size="large" onClick={deleteScenario}>
             Delete Scenario
           </Button>
           <Button type="primary" size="large" onClick={copyAndModifyModel}>
