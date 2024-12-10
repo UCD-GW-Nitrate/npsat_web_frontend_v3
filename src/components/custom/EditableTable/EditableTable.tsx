@@ -128,7 +128,12 @@ function EditableTable<T extends AnyObject>({
             <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
           </span>
         ) : (
-          <Typography.Link onClick={() => edit(record)}>Edit</Typography.Link>
+          <Typography.Link onClick={(event) => {
+            event.stopPropagation();
+            edit(record);
+          }}>
+            Edit
+          </Typography.Link>
         );
       },
     },
