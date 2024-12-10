@@ -158,6 +158,14 @@ function EditableTable<T extends AnyObject>({
     },
   );
 
+  const rowClicked = (record: T) => {
+    if (editingKey == 0) {
+      if (onRow) {
+        return onRow(record);
+      }
+    }
+  }
+
   return (
     <Form form={form}>
       <Table
@@ -172,7 +180,7 @@ function EditableTable<T extends AnyObject>({
         scroll={scroll}
         rowSelection={rowSelection}
         rowKey={rowKey}
-        onRow={onRow}
+        onRow={rowClicked}
       />
     </Form>
   );
