@@ -2,7 +2,7 @@
 
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { Button, Select, Table } from 'antd';
+import { Button, Select } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -16,9 +16,10 @@ import { useFetchFeedQuery } from '@/store';
 import type { PlotModel } from '@/types/feed/Feed';
 
 import { COLUMNS } from '../utils/constants';
+import EditableTable from '@/components/custom/EditableTable/EditableTable';
 
 const Index = () => {
-  const { data, error } = useFetchFeedQuery();
+  const { data, error, refetch } = useFetchFeedQuery();
   const [displayData, setDisplayData] = useState<PlotModel[]>(
     data?.recentCompletedModels ?? [],
   );
@@ -35,6 +36,10 @@ const Index = () => {
   useEffect(() => {
     setDisplayData(data?.recentCompletedModels ?? []);
   }, [data]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (error) {
     console.log('error', error);
@@ -143,7 +148,7 @@ const Index = () => {
             Compare Scenario
           </Button>
         </HBox>
-        <Table
+        <EditableTable
           scroll={{ x: 'max-content' }}
           rowSelection={rowSelection}
           columns={COLUMNS}

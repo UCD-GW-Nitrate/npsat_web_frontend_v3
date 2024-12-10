@@ -1,7 +1,3 @@
-import type { ColumnType } from 'antd/es/table';
-
-import type { PlotModel } from '@/types/feed/Feed';
-
 export const MODEL_STATUS_MACROS = {
   NOT_READY: 0,
   READY: 1,
@@ -34,9 +30,9 @@ export const UNSAT_RANGE_CONFIG = {
   maxIdentifier: true,
 };
 
-export const COLUMNS: ColumnType<PlotModel>[] = [
-  { dataIndex: 'name', title: 'Scenario Name', width: 150 },
-  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 200 },
+export const COLUMNS: any[] = [
+  { dataIndex: 'name', title: 'Scenario Name', width: 150, editable: true },
+  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 200, editable: true },
   { dataIndex: 'loadScenario', title: 'Load Scenario', width: 130 },
   { dataIndex: 'unsatScenario', title: 'Unsat Scenario', width: 150 },
   { dataIndex: 'wellTypeScenario', title: 'Well Type Scenario', width: 130 },

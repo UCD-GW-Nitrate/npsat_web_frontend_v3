@@ -16,7 +16,7 @@ import {
   useFetchTownshipQuery,
   useRunModelMutation,
 } from '@/store';
-import { clearModel} from '@/store/slices/modelSlice';
+import { clearModel } from '@/store/slices/modelSlice';
 
 import Step1 from '../../../components/steps/Step1/Step1';
 import Step2 from '../../../components/steps/Step2/Step2';
