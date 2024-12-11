@@ -1,7 +1,7 @@
 'use client';
 
 import type { TableProps } from 'antd';
-import { Form, Input, Select, Table, Typography } from 'antd';
+import { Form, Input, Table, Typography } from 'antd';
 import type { AnyObject } from 'immer/dist/internal';
 import { useState } from 'react';
 import type { TableRowSelection, GetRowKey } from 'antd/es/table/interface';
@@ -27,8 +27,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   children,
   ...restProps
 }) => {
-  const inputNode = inputType === 'select' ? <Select /> : <Input />;
-
   return (
     <td {...restProps}>
       {editing ? (
@@ -36,7 +34,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
           name={dataIndex}
           style={{ margin: 0 }}
         >
-          {inputNode}
+          <Input defaultValue={record[dataIndex]}/>
         </Form.Item>
       ) : (
         children
