@@ -32,7 +32,7 @@ export const UNSAT_RANGE_CONFIG = {
 
 export const COLUMNS: any[] = [
   { dataIndex: 'name', title: 'Scenario Name', width: 150, isEditable: true },
-  { dataIndex: 'description', title: 'Description', width: 200 },
+  { dataIndex: 'description', title: 'Description', width: 200, isEditable: true },
   { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 200 },
   { dataIndex: 'loadScenario', title: 'Load Scenario', width: 130 },
   { dataIndex: 'unsatScenario', title: 'Unsat Scenario', width: 150 },

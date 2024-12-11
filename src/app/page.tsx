@@ -156,8 +156,8 @@ const Index = () => {
           dataSource={displayData}
           rowKey={(model) => model.id}
           updateCallback={async (data) => {
-            patchModel({id: data.id, name: data.name, description: data.description});
-            refetch();
+            await patchModel({id: data.id, name: data.name, description: data.description});
+            await refetch();
           }}
           onRow={(record) => {
             return {
