@@ -55,6 +55,7 @@ export {
   useGetModificationDetailQuery,
   usePutModelMutation,
   useRunModelMutation,
+  usePatchModelMutation,
   useDeleteModelMutation,
 } from './apis/modelApi';
 export {

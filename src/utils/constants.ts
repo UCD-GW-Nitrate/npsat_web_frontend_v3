@@ -31,8 +31,9 @@ export const UNSAT_RANGE_CONFIG = {
 };
 
 export const COLUMNS: any[] = [
-  { dataIndex: 'name', title: 'Scenario Name', width: 150, editable: true },
-  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 200, editable: true },
+  { dataIndex: 'name', title: 'Scenario Name', width: 150, isEditable: true },
+  { dataIndex: 'description', title: 'Description', width: 200 },
+  { dataIndex: 'flowScenario', title: 'Flow Scenario', width: 200 },
   { dataIndex: 'loadScenario', title: 'Load Scenario', width: 130 },
   { dataIndex: 'unsatScenario', title: 'Unsat Scenario', width: 150 },
   { dataIndex: 'wellTypeScenario', title: 'Well Type Scenario', width: 130 },
@@ -48,6 +49,7 @@ export const COLUMNS: any[] = [
     width: 50,
   },
   { dataIndex: 'waterContent', title: 'Water Content', width: 80 },
+  { dataIndex: 'porosity', title: 'Porosity', width: 80 },
   {
     dataIndex: 'dateCreated',
     title: 'Date Created',

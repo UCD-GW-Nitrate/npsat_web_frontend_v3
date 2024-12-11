@@ -12,7 +12,7 @@ import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
-import { useFetchFeedQuery } from '@/store';
+import { useFetchFeedQuery, usePatchModelMutation } from '@/store';
 import type { PlotModel } from '@/types/feed/Feed';
 
 import { COLUMNS } from '../utils/constants';
@@ -20,6 +20,7 @@ import EditableTable from '@/components/custom/EditableTable/EditableTable';
 
 const Index = () => {
   const { data, error, refetch } = useFetchFeedQuery();
+  const [ patchModel ] = usePatchModelMutation();
   const [displayData, setDisplayData] = useState<PlotModel[]>(
     data?.recentCompletedModels ?? [],
   );
@@ -148,12 +149,15 @@ const Index = () => {
             Compare Scenario
           </Button>
         </HBox>
-        <EditableTable
+        <EditableTable<PlotModel>
           scroll={{ x: 'max-content' }}
           rowSelection={rowSelection}
           columns={COLUMNS}
           dataSource={displayData}
           rowKey={(model) => model.id}
+          updateCallback={async (data) => {
+            patchModel({id: data.id, name: data.name, description: data.description});
+          }}
           onRow={(record) => {
             return {
               onClick: () => {

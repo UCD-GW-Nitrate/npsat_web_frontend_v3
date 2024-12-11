@@ -33,6 +33,15 @@ const modelApi = createApi({
           };
         },
       }),
+      patchModel: builder.mutation<MantisResult, Partial<ModelRun>>({
+        query(params) {
+          return {
+            url: `api/model_run/${params.id}/`,
+            method: 'PATCH',
+            body: params,
+          };
+        },
+      }),
       deleteModel: builder.mutation<MantisResult, number>({
         query(params) {
           return {
@@ -100,6 +109,7 @@ const modelApi = createApi({
 export const {
   useRunModelMutation,
   useDeleteModelMutation,
+  usePatchModelMutation,
   useGetModelDetailQuery,
   useGetModelandBaseModelDetailQuery,
   useGetModelResultsQuery,

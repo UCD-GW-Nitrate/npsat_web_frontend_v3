@@ -73,19 +73,19 @@ function EditableTable<T extends AnyObject>({
   rowSelection?: TableRowSelection<T>;
   rowKey?: string | GetRowKey<T>;
   onRow?: ((record: T) => any);
-  updateCallback?: (data: Partial<T> & { id: number }) => Promise<void>;
+  updateCallback?: (data: Partial<T>) => Promise<void>;
 }) {
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<number>(0);
 
   const isEditing = (record: T) => record.id === editingKey;
 
-  const edit = (record: Partial<T> & { id: number }) => {
+  const edit = (record: Partial<T>) => {
     form.setFieldsValue({
       name: record.name ?? '',
       program: record.programId ?? 0,
     });
-    setEditingKey(record.id);
+    setEditingKey(record.id!);
   };
 
   const cancel = () => {
