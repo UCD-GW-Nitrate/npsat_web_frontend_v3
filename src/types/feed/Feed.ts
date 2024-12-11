@@ -18,6 +18,7 @@ export interface PlotModel {
   statusMessage: string;
   unsatZoneTravelTime: number;
   user: number;
+  porosity: string;
   waterContent: string;
   loadScenario: string;
   flowScenario: string;

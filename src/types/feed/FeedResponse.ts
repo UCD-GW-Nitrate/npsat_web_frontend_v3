@@ -22,6 +22,7 @@ export interface PlotModelResponse {
   status_message: string;
   unsaturated_zone_travel_time: number;
   user: number;
+  porosity: string;
   water_content: string;
   load_scenario: Scenario;
   flow_scenario: Scenario;

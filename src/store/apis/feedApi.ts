@@ -51,6 +51,9 @@ const feedApi = createApi({
                 waterContent: `${(
                   Number(model.water_content) * 100
                 ).toFixed()}%`,
+                porosity: `${(
+                  Number(model.porosity) * 100
+                ).toFixed()}%`,
                 loadScenario: model.load_scenario.name,
                 flowScenario: model.flow_scenario.name,
                 wellTypeScenario: model.welltype_scenario.name,
