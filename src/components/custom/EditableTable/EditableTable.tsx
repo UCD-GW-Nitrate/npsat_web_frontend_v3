@@ -35,12 +35,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
         <Form.Item
           name={dataIndex}
           style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
         >
           {inputNode}
         </Form.Item>
@@ -112,6 +106,7 @@ function EditableTable<T extends AnyObject>({
       title: 'Actions',
       dataIndex: 'actions',
       width: 150,
+      fixed: 'right',
       render: (_: any, record: T & { id: number }) => {
         const editable = isEditing(record);
 

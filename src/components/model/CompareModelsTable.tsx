@@ -72,6 +72,11 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
       render: (value) => `${(value * 100).toFixed(0)}%`,
     },
     {
+      title: 'Porosity',
+      dataIndex: 'porosity',
+      render: (value) => `${value}%`,
+    },
+    {
       title: 'Date Created',
       dataIndex: 'date_submitted',
       render: (value: string) => {
