@@ -11,19 +11,19 @@ import {
   selectCurrentModel,
   setModelFlowScenario,
   setModelLoadScenario,
+  setModelPorosity,
   setModelReductionEndYear,
   setModelReductionStartYear,
   setModelSimEndYear,
   setModelUnsatScenario,
   setModelWaterContent,
-  setModelPorosity,
   setModelWelltypeScenario,
 } from '@/store/slices/modelSlice';
+import type { Scenario } from '@/types/model/Scenario';
 
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
-import { Scenario } from '@/types/model/Scenario';
 
 const { RangePicker } = DatePicker;
 
@@ -46,23 +46,28 @@ const Step1 = ({ onNext }: StepBase) => {
   useEffect(() => {
     const scenarioDictTemp: ScenarioDict = {};
     flowScenarioOptions.forEach((scenario) => {
-      scenarioDictTemp[scenario.id] = scenario
+      scenarioDictTemp[scenario.id] = scenario;
     });
     loadScenarioOptions.forEach((scenario) => {
-      scenarioDictTemp[scenario.id] = scenario
+      scenarioDictTemp[scenario.id] = scenario;
     });
     unsatScenarioOptions.forEach((scenario) => {
-      scenarioDictTemp[scenario.id] = scenario
+      scenarioDictTemp[scenario.id] = scenario;
     });
     welltypeScenarioOptions.forEach((scenario) => {
-      scenarioDictTemp[scenario.id] = scenario
+      scenarioDictTemp[scenario.id] = scenario;
     });
-    console.log(scenarioDictTemp)
+    console.log(scenarioDictTemp);
     setScenarios(scenarioDictTemp);
-  }, [flowScenarioOptions, loadScenarioOptions, unsatScenarioOptions, welltypeScenarioOptions]);
+  }, [
+    flowScenarioOptions,
+    loadScenarioOptions,
+    unsatScenarioOptions,
+    welltypeScenarioOptions,
+  ]);
 
   const onFormSubmit = (data: FieldValues) => {
-    console.log(scenarios[data.flow_scenario]!)
+    console.log(scenarios[data.flow_scenario]!);
     dispatch(setModelFlowScenario(scenarios[data.flow_scenario]!));
     dispatch(setModelLoadScenario(scenarios[data.load_scenario]!));
     dispatch(setModelWelltypeScenario(scenarios[data.welltype_scenario]!));
@@ -127,7 +132,13 @@ const Step1 = ({ onNext }: StepBase) => {
           rules={defaultRules('Please enter porosity')}
           initialValue={model.porosity ? model.porosity : 10}
         >
-          <InputNumber min={10} max={100} step={10} keyboard={false} formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`} />
+          <InputNumber
+            min={10}
+            max={100}
+            step={10}
+            keyboard={false}
+            formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`}
+          />
         </Form.Item>
         <Form.Item
           name="load_scenario"
@@ -158,7 +169,11 @@ const Step1 = ({ onNext }: StepBase) => {
         >
           <Select>
             {welltypeScenarioOptions.map((scen) => (
-              <Select.Option value={scen.id} key={scen.id} disabled={scen.id == 14}>
+              <Select.Option
+                value={scen.id}
+                key={scen.id}
+                disabled={scen.id === 14}
+              >
                 <>
                   {scen.name}{' '}
                   {scen.description ? (

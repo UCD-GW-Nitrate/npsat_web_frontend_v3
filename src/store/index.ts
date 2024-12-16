@@ -6,6 +6,7 @@ import { feedApi } from './apis/feedApi';
 import { modelApi } from './apis/modelApi';
 import { regionApi } from './apis/regionApi';
 import { userApi } from './apis/userApi';
+import { wellApi } from './apis/wellApi';
 import authReducer from './slices/authSlice';
 import { modelReducer } from './slices/modelSlice';
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     [modelApi.reducerPath]: modelApi.reducer,
     [cropApi.reducerPath]: cropApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [wellApi.reducerPath]: wellApi.reducer,
     auth: authReducer,
     model: modelReducer,
   },
@@ -27,7 +29,8 @@ export const store = configureStore({
       .concat(regionApi.middleware)
       .concat(modelApi.middleware)
       .concat(cropApi.middleware)
-      .concat(userApi.middleware),
+      .concat(userApi.middleware)
+      .concat(wellApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -46,6 +49,7 @@ export {
 } from './apis/cropApi';
 export { useFetchFeedQuery } from './apis/feedApi';
 export {
+  useDeleteModelMutation,
   useGetAllModelDetailQuery,
   useGetModelandBaseModelDetailQuery,
   useGetModelDetailByIdsQuery,
@@ -53,10 +57,9 @@ export {
   useGetModelResultsQuery,
   useGetModelStatusQuery,
   useGetModificationDetailQuery,
+  usePatchModelMutation,
   usePutModelMutation,
   useRunModelMutation,
-  usePatchModelMutation,
-  useDeleteModelMutation,
 } from './apis/modelApi';
 export {
   useFetchB118BasinQuery,
@@ -74,3 +77,4 @@ export {
   useSetPasswordMutation,
   useVerifyUserMutation,
 } from './apis/userApi';
+export { useGetWellsQuery } from './apis/wellApi';

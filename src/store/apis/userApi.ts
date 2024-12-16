@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { UserResponse } from '@/types/user/UserResponse';
 
 import apiRoot from '@/config/apiRoot';
+import type { UserResponse } from '@/types/user/UserResponse';
+
 import getAuth from '../getAuth';
 
 export const userApi = createApi({
@@ -42,8 +43,8 @@ export const userApi = createApi({
   }),
 });
 
-export const { 
+export const {
   useSendVerificationEmailMutation,
   useVerifyUserMutation,
-  useSetPasswordMutation
+  useSetPasswordMutation,
 } = userApi;

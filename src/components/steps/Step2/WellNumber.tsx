@@ -1,23 +1,11 @@
-/* eslint-disable no-prototype-builtins */
 import { Card } from 'antd';
 import { useSelector } from 'react-redux';
 
+import { useGetWellsQuery } from '@/store';
 import { selectCurrentModel } from '@/store/slices/modelSlice';
 import type { Region } from '@/types/region/Region';
+import type { WellRequest } from '@/types/well/Well';
 import { REGION_MACROS } from '@/utils/constants';
-
-import {
-  C2VSimRun04VDPadj,
-  C2VSimRun04VDRadj,
-  CVHM2Run1VDPadj,
-  CVHM2Run1VDRadj,
-} from './ScenariosWellData/VDwellsCountMAR24V3';
-import {
-  C2VSimRun04VIPadj,
-  C2VSimRun04VIRadj,
-  CVHM2Run1VIPadj,
-  CVHM2Run1VIRadj,
-} from './ScenariosWellData/VIwellsCountMAR24V3';
 
 interface WellNumberProps {
   selectedRegions: number[];
@@ -30,12 +18,6 @@ interface WellNumberProps {
   filterOn: boolean;
 }
 
-interface WellInfo {
-  depth: number;
-  unsat: number;
-  count: number;
-}
-
 const WellNumber = ({
   selectedRegions,
   countyList,
@@ -46,9 +28,6 @@ const WellNumber = ({
   unsatMax,
   filterOn,
 }: WellNumberProps) => {
-  // console.log(
-  //   `${selectedRegions} + ${countyList} + ${regionType} + ${depthMax} + ${depthMin} + ${screenLenMax} + ${screenLenMin} + ${filterOn}`,
-  // );
   const depthFilter: [number, number] = [depthMin, depthMax];
   const unsatFilter: [number, number] = [unsatMin, unsatMax];
 
@@ -56,109 +35,96 @@ const WellNumber = ({
   const flowScenario = model.flow_scenario?.id;
   const welltypeScenario = model.welltype_scenario?.id;
 
-  // store countyList in dictionary for easy lookup
-  const countyDic: any = {};
-
-  // console.log('selected:', selectedRegions);
-  // console.log('flow_scenario: ', flowScenario);
-  // console.log('welltype: ', welltypeScenario);
-  // console.log('region type well number', regionType);
-
-  // load well data based on scenario
-  let wellData: any[] = [];
-
-  if (welltypeScenario === 12) {
-    // Public supply wells
-    if (flowScenario === 10) wellData = C2VSimRun04VIPadj;
-    else if (flowScenario === 11) wellData = C2VSimRun04VIRadj;
-    else if (flowScenario === 8) wellData = CVHM2Run1VIPadj;
-    else if (flowScenario === 9) wellData = CVHM2Run1VIRadj;
-  } else if (welltypeScenario === 13) {
-    // Domestic wells
-    if (flowScenario === 10) wellData = C2VSimRun04VDPadj;
-    else if (flowScenario === 11) wellData = C2VSimRun04VDRadj;
-    else if (flowScenario === 8) wellData = CVHM2Run1VDPadj;
-    else if (flowScenario === 9) wellData = CVHM2Run1VDRadj;
-  }
-
-  // console.log('wellData: ', wellData);
-
-  let wellCount: number = 0;
-  if (welltypeScenario !== 14) {
-    // Exclude virtual monitoring well
+  const getWellRegions = () => {
+    // store countyList in dictionary for easy lookup
+    const countyDic: any = {};
 
     countyList.forEach((county) => {
       countyDic[county.id] = county.mantis_id;
     });
 
     // populate mantis_id for data lookup
-    const mantisId: number[] = [];
+    const mantisId: string[] = [];
     selectedRegions.forEach((id) => mantisId.push(countyDic[id]));
-    console.log('mantis_id: ', mantisId);
+    return mantisId;
+  };
 
-    const wellDic: {
-      [key: string]: WellInfo;
-    } = {};
-
-    const storeInWellDic = (well: any, key: string) => {
-      if (!wellDic.hasOwnProperty(key)) {
-        wellDic[key] = {
-          count: 0,
-          depth: well.UNSAT + well.WT2T + well.SLmod,
-          unsat: well.UNSAT,
-        };
-      }
-
-      if (
-        (filterOn &&
-          well.UNSAT + well.WT2T + well.SLmod >= depthFilter[0] &&
-          well.UNSAT + well.WT2T + well.SLmod <= depthFilter[1] &&
-          well.UNSAT >= unsatFilter[0] &&
-          well.UNSAT <= unsatFilter[1]) ||
-        !filterOn
-      ) {
-        wellDic[key]!.count += 1;
-      }
-    };
-
-    switch (regionType) {
-      case REGION_MACROS.CENTRAL_VALLEY: // central valley
-        console.log('Central Valley');
-        wellData.forEach((well) => storeInWellDic(well, 'CentralValley'));
-        break;
-      case REGION_MACROS.SUB_BASIN: // basin
-        console.log('Sub Basin');
-        wellData.forEach((well) => storeInWellDic(well, well.Basin));
-        break;
-      case REGION_MACROS.CVHM_FARM: // subRegion
-        wellData.forEach((well) => storeInWellDic(well, well.Sub));
-        break;
-      case REGION_MACROS.B118_BASIN: // B118 Basin
-        wellData.forEach((well) => storeInWellDic(well, well.B118));
-        break;
-      case REGION_MACROS.COUNTY: // county
-        wellData.forEach((well) => storeInWellDic(well, well.County));
-        break;
-      case REGION_MACROS.TOWNSHIPS: // Township
-        wellData.forEach((well) => storeInWellDic(well, well.Tship));
-        break;
-      default:
-        console.log('RegionType Error: Type cannot be found!');
-        break;
+  const getWellParams = () => {
+    const queryParams: Partial<WellRequest> = {};
+    if (welltypeScenario === 12) {
+      queryParams.well_type = 'VI'; // Public supply wells
+    } else if (welltypeScenario === 13) {
+      queryParams.well_type = 'VD'; // Domestic wells
     }
 
-    mantisId.forEach((id) => {
-      wellCount += wellDic[id]?.count ?? 0;
-    });
-  }
+    if (flowScenario === 10) {
+      queryParams.rch_type = 'Padj'; // Pump adjusted
+      queryParams.flow_model = 'C2VSim';
+    } else if (flowScenario === 11) {
+      queryParams.rch_type = 'Radj'; // Recharge adjusted
+      queryParams.flow_model = 'C2VSim';
+    } else if (flowScenario === 8) {
+      queryParams.rch_type = 'Padj'; // Pump adjusted
+      queryParams.flow_model = 'CVHM2';
+    } else if (flowScenario === 9) {
+      queryParams.rch_type = 'Radj'; // Recharge adjusted
+      queryParams.flow_model = 'CVHM2';
+    }
+
+    if (welltypeScenario !== 14) {
+      switch (regionType) {
+        case REGION_MACROS.CENTRAL_VALLEY: // central valley
+          break;
+        case REGION_MACROS.SUB_BASIN: // basin
+          queryParams.basin = getWellRegions();
+          break;
+        case REGION_MACROS.CVHM_FARM: // subRegion
+          queryParams.subreg = getWellRegions();
+          break;
+        case REGION_MACROS.B118_BASIN: // B118 Basin
+          queryParams.b118 = getWellRegions();
+          break;
+        case REGION_MACROS.COUNTY: // county
+          queryParams.county = getWellRegions();
+          break;
+        case REGION_MACROS.TOWNSHIPS: // Township
+          queryParams.tship = getWellRegions();
+          break;
+        default:
+          console.log('RegionType Error: Type cannot be found!');
+          break;
+      }
+    }
+
+    if (filterOn) {
+      queryParams.depth_range_min = depthFilter[0];
+      queryParams.depth_range_max = depthFilter[1];
+      queryParams.unsat_range_min = unsatFilter[0];
+      queryParams.unsat_range_max = unsatFilter[1];
+    }
+
+    return queryParams;
+  };
+
+  const { data: wellData, isLoading } = useGetWellsQuery(getWellParams());
 
   function numberWithCommas(x: number) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
+  const getWellCount = () => {
+    if (selectedRegions.length === 0) {
+      return '0';
+    }
+    if (isLoading) {
+      return '';
+    }
+    return numberWithCommas(wellData?.count ?? 0);
+  };
+
   return (
     <div>
-      <Card>Number of Wells Selected: {numberWithCommas(wellCount)}</Card>
+      <Card>Number of Wells Selected: {getWellCount()}</Card>
     </div>
   );
 };

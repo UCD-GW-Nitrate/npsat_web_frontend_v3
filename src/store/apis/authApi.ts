@@ -99,9 +99,9 @@ export const authApi = createApi({
   }),
 });
 
-export const { 
+export const {
   useLoginMutation,
   useRegisterMutation,
   useUnauthorizedVerifyEmailMutation,
-  useUnauthorizedVerifyCodeMutation 
+  useUnauthorizedVerifyCodeMutation,
 } = authApi;
