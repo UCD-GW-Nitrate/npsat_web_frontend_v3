@@ -37,7 +37,9 @@ const ModelPage = () => {
   );
   const [deleteModel] = useDeleteModelMutation();
   const dispatch = useDispatch();
-  const [selectedTab, setSelectedTab] = useState<string>('1');
+  const [selectedModelTab, setSelectedModelTab] = useState<string>('1');
+  const [selectedComparisonTab, setSelectedComparisonTab] =
+    useState<string>('1');
 
   const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
     ssr: false,
@@ -75,7 +77,7 @@ const ModelPage = () => {
   // fetch scenario group data beforehand
   useScenarioGroups();
 
-  const linePlot = useMemo(
+  const comparisonLinePlot = useMemo(
     () => (
       <>
         {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
@@ -96,7 +98,7 @@ const ModelPage = () => {
     ],
   );
 
-  const heatmap = useMemo(
+  const comparisonHeatmap = useMemo(
     () => (
       <>
         {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
@@ -111,7 +113,22 @@ const ModelPage = () => {
     [baseModel, customModel, customPercentilesData],
   );
 
-  const boxPlot = useMemo(
+  const modelLinePlot = useMemo(
+    () => (
+      <>
+        {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
+          <ModelChart
+            percentiles={customModelDetail.results}
+            reductionStartYear={customModelDetail!.reduction_start_year}
+            reductionCompleteYear={customModelDetail!.reduction_end_year}
+          />
+        )}
+      </>
+    ),
+    [customModel],
+  );
+
+  const modelBoxPlot = useMemo(
     () => (
       <>
         {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
@@ -191,33 +208,41 @@ const ModelPage = () => {
           />
         </InfoContainer>
         <InfoContainer title="Run results">
-          <ModelChart
-            percentiles={customModelDetail.results}
-            reductionStartYear={customModelDetail.reduction_start_year}
-            reductionCompleteYear={customModelDetail.reduction_end_year}
+          <Tabs
+            tabPosition="top"
+            centered
+            activeKey={selectedModelTab}
+            onChange={setSelectedModelTab}
+            items={[
+              {
+                label: 'Line Chart',
+                key: '1',
+                children: modelLinePlot,
+              },
+              {
+                label: 'Box Plot',
+                key: '2',
+                children: modelBoxPlot,
+              },
+            ]}
           />
         </InfoContainer>
         <InfoContainer title="BAU comparison">
           <Tabs
             tabPosition="top"
             centered
-            activeKey={selectedTab}
-            onChange={setSelectedTab}
+            activeKey={selectedComparisonTab}
+            onChange={setSelectedComparisonTab}
             items={[
               {
                 label: 'Comparison Line Plot',
                 key: '1',
-                children: linePlot,
+                children: comparisonLinePlot,
               },
               {
                 label: 'Difference Heatmap',
                 key: '2',
-                children: heatmap,
-              },
-              {
-                label: 'Box Plot',
-                key: '3',
-                children: boxPlot,
+                children: comparisonHeatmap,
               },
             ]}
           />

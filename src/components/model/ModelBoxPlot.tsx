@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useModelResults } from '@/hooks/useModelResults';
 
-import type { ModelDisplay } from '@/hooks/useModelResults';
+import type {
+  ModelDisplay,
+  PercentileResultMap,
+} from '@/hooks/useModelResults';
+import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
-import type { PercentileResultMap } from '@/hooks/useModelResults';
 
 import BoxPlot from '../charts/BoxPlot/BoxPlot';
 
@@ -21,9 +23,9 @@ const ModelBoxPlot = ({
   const [plotData] = useModelResults(percentiles);
 
   function configureDisplayData(
-    plotData: PercentileResultMap,
+    data: PercentileResultMap,
   ): ApexAxisChartSeries {
-    console.log("plotData", plotData);
+    console.log('plotData', data);
     const res: ApexAxisChartSeries = [
       {
         type: 'boxPlot',
@@ -31,16 +33,16 @@ const ModelBoxPlot = ({
       },
     ];
 
-    if ((plotData as any)[5] as ModelDisplay[]) {
-      const dataLen = ((plotData as any)[5] as ModelDisplay[])!.length;
+    if ((data as any)[5] as ModelDisplay[]) {
+      const dataLen = ((data as any)[5] as ModelDisplay[])!.length;
 
-      const fifthPercentile = ((plotData as any)[5] as ModelDisplay[])!;
-      const lowerQuartile = ((plotData as any)[25] as ModelDisplay[])!;
-      const median = ((plotData as any)[50] as ModelDisplay[])!;
-      const upperQuartile = ((plotData as any)[75] as ModelDisplay[])!;
-      const ninetyFifthPercentile = ((plotData as any)[95] as ModelDisplay[])!;
+      const fifthPercentile = ((data as any)[5] as ModelDisplay[])!;
+      const lowerQuartile = ((data as any)[25] as ModelDisplay[])!;
+      const median = ((data as any)[50] as ModelDisplay[])!;
+      const upperQuartile = ((data as any)[75] as ModelDisplay[])!;
+      const ninetyFifthPercentile = ((data as any)[95] as ModelDisplay[])!;
 
-      console.log("5th", fifthPercentile);
+      console.log('5th', fifthPercentile);
       for (let i = 0; i < dataLen; i += 10) {
         const dataPoint: any = {
           x: fifthPercentile[i]!.year,
