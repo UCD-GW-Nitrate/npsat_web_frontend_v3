@@ -29,7 +29,7 @@ const ModelChart = ({
     percentilesInput: number[],
   ): ApexAxisChartSeries {
     const res: ApexAxisChartSeries = [];
-    percentilesInput.sort(function(a, b) {
+    percentilesInput.sort(function (a, b) {
       return a - b;
     });
     percentilesInput.forEach((p) => {

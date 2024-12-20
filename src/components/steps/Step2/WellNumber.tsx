@@ -1,4 +1,5 @@
 import { Card } from 'antd';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useGetWellsQuery } from '@/store';
@@ -112,19 +113,21 @@ const WellNumber = ({
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  const getWellCount = () => {
+  const [displayData, setDisplayData] = useState<string>('0');
+
+  useEffect(() => {
     if (selectedRegions.length === 0) {
-      return '0';
+      setDisplayData('0');
+    } else if (isLoading) {
+      setDisplayData('');
+    } else {
+      setDisplayData(numberWithCommas(wellData?.count ?? 0));
     }
-    if (isLoading) {
-      return '';
-    }
-    return numberWithCommas(wellData?.count ?? 0);
-  };
+  }, [wellData]);
 
   return (
     <div>
-      <Card>Number of Wells Selected: {getWellCount()}</Card>
+      <Card>Number of Wells Selected: {displayData}</Card>
     </div>
   );
 };
