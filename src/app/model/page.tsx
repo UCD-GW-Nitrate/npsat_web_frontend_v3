@@ -11,12 +11,15 @@ import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
+import ModelBoxPlot from '@/components/model/ModelBoxPlot';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useModelResults } from '@/hooks/useModelResults';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
-import { useGetModelandBaseModelDetailQuery } from '@/store';
+import {
+  useDeleteModelMutation,
+  useGetModelandBaseModelDetailQuery,
+} from '@/store';
 import { createNewModel } from '@/store/slices/modelSlice';
-import { useDeleteModelMutation } from '@/store';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { Region } from '@/types/region/Region';
 
@@ -75,20 +78,14 @@ const ModelPage = () => {
   const linePlot = useMemo(
     () => (
       <>
-        {!modelDetail.isFetching &&
-          !modelDetail.error &&
-          customModelDetail &&
-          !modelDetail.error && (
-            <ComparisonChart
-              comparisonChartModels={[
-                baseComparisonModel,
-                customComparisonModel,
-              ]}
-              percentiles={customPercentilesData}
-              reductionStartYear={customModelDetail!.reduction_start_year}
-              reductionCompleteYear={customModelDetail!.reduction_end_year}
-            />
-          )}
+        {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
+          <ComparisonChart
+            comparisonChartModels={[baseComparisonModel, customComparisonModel]}
+            percentiles={customPercentilesData}
+            reductionStartYear={customModelDetail!.reduction_start_year}
+            reductionCompleteYear={customModelDetail!.reduction_end_year}
+          />
+        )}
       </>
     ),
     [
@@ -102,19 +99,31 @@ const ModelPage = () => {
   const heatmap = useMemo(
     () => (
       <>
-        {!modelDetail.isFetching &&
-          !modelDetail.error &&
-          customModelDetail &&
-          !modelDetail.error && (
-            <ModelDifferenceHeatmap
-              baseResults={baseModel}
-              customResults={customModel}
-              percentiles={customPercentilesData}
-            />
-          )}
+        {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
+          <ModelDifferenceHeatmap
+            baseResults={baseModel}
+            customResults={customModel}
+            percentiles={customPercentilesData}
+          />
+        )}
       </>
     ),
     [baseModel, customModel, customPercentilesData],
+  );
+
+  const boxPlot = useMemo(
+    () => (
+      <>
+        {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
+          <ModelBoxPlot
+            percentiles={customModelDetail.results}
+            reductionStartYear={customModelDetail!.reduction_start_year}
+            reductionCompleteYear={customModelDetail!.reduction_end_year}
+          />
+        )}
+      </>
+    ),
+    [customModel],
   );
 
   if (modelDetail.isFetching || modelDetail.error || !customModelDetail) {
@@ -128,7 +137,7 @@ const ModelPage = () => {
   const deleteScenario = () => {
     deleteModel(parseInt(params.get('id')!, 10));
     router.push('/');
-  }
+  };
 
   const copyAndModifyModel = () => {
     if (customModelDetail) {
@@ -204,6 +213,11 @@ const ModelPage = () => {
                 label: 'Difference Heatmap',
                 key: '2',
                 children: heatmap,
+              },
+              {
+                label: 'Box Plot',
+                key: '3',
+                children: boxPlot,
               },
             ]}
           />
