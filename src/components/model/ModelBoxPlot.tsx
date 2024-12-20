@@ -25,7 +25,6 @@ const ModelBoxPlot = ({
   function configureDisplayData(
     data: PercentileResultMap,
   ): ApexAxisChartSeries {
-    console.log('plotData', data);
     const res: ApexAxisChartSeries = [
       {
         type: 'boxPlot',
@@ -42,7 +41,6 @@ const ModelBoxPlot = ({
       const upperQuartile = ((data as any)[75] as ModelDisplay[])!;
       const ninetyFifthPercentile = ((data as any)[95] as ModelDisplay[])!;
 
-      console.log('5th', fifthPercentile);
       for (let i = 0; i < dataLen; i += 10) {
         const dataPoint: any = {
           x: fifthPercentile[i]!.year,
@@ -57,7 +55,6 @@ const ModelBoxPlot = ({
         res[0]?.data.push(dataPoint);
       }
     }
-    console.log(res);
     return res;
   }
 

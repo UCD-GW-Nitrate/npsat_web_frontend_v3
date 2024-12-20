@@ -2,15 +2,8 @@ import { Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
-import type {
-  ModelDisplay,
-  PercentileResultMap,
-} from '@/hooks/useModelResults';
-
-export interface ComparisonChartModel {
-  plotData: PercentileResultMap;
-  name: string;
-}
+import type { ModelDisplay } from '@/hooks/useModelResults';
+import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
 
 interface ComparisonChartProps {
   comparisonChartModels: ComparisonChartModel[];

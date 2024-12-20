@@ -20,10 +20,10 @@ import {
   useGetModelandBaseModelDetailQuery,
 } from '@/store';
 import { createNewModel } from '@/store/slices/modelSlice';
+import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { Region } from '@/types/region/Region';
 
-import type { ComparisonChartModel } from '../../components/model/ComparisonChart';
 import ComparisonChart from '../../components/model/ComparisonChart';
 import { CropLoadingDetailsBaseComparisonTable } from '../../components/model/CropLoadingDetailsTable';
 import ModelChart from '../../components/model/ModelChart';

@@ -74,6 +74,25 @@ const BoxPlot = ({
         },
       },
     },
+    colors: [
+      '#54478C',
+      '#2C699A',
+      '#048BA8',
+      '#0DB39E',
+      '#16DB93',
+      '#83E377',
+      '#B9E769',
+      '#EFEA5A',
+      '#F1C453',
+      '#F29E4C',
+      '#FF4D6D',
+      '#E63946',
+    ],
+    plotOptions: {
+      boxPlot: {
+        colors: undefined,
+      },
+    },
   };
 
   return (

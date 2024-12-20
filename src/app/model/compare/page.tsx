@@ -1,18 +1,21 @@
 'use client';
 
+import { Tabs } from 'antd';
 import { useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
+import ComparisonBoxPlot from '@/components/model/ComparisonBoxPlot';
 import { useModelDetails } from '@/hooks/useModelDetails';
 import type { PercentileResultMap } from '@/hooks/useModelResults';
 import { useAllModelResults } from '@/hooks/useModelResults';
+import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
 
 import CompareModelsTable from '../../../components/model/CompareModelsTable';
-import type { ComparisonChartModel } from '../../../components/model/ComparisonChart';
 import ComparisonChart from '../../../components/model/ComparisonChart';
 import { CropLoadingDetailsTable } from '../../../components/model/CropLoadingDetailsTable';
 
@@ -24,6 +27,9 @@ const CompareModelPage = () => {
   const [allModelResults, customPercentilesData] = useAllModelResults(
     allModelDetailResults,
   );
+
+  const [selectedComparisonTab, setSelectedComparisonTab] =
+    useState<string>('1');
 
   const getComparisonChartModels = (
     plotData: PercentileResultMap[],
@@ -38,6 +44,31 @@ const CompareModelPage = () => {
     }
     return chartInfo;
   };
+
+  const comparisonChart = useMemo(
+    () => (
+      <ComparisonChart
+        comparisonChartModels={getComparisonChartModels(
+          allModelResults,
+          allModelNames,
+        )}
+        percentiles={customPercentilesData}
+      />
+    ),
+    [allModelResults, allModelNames, customPercentilesData],
+  );
+
+  const comparisonBoxPlot = useMemo(
+    () => (
+      <ComparisonBoxPlot
+        comparisonChartModels={getComparisonChartModels(
+          allModelResults,
+          allModelNames,
+        )}
+      />
+    ),
+    [allModelResults, allModelNames, customPercentilesData],
+  );
 
   return (
     <AppLayout>
@@ -55,12 +86,23 @@ const CompareModelPage = () => {
             <CropLoadingDetailsTable modelDetails={allModelDetails} />
           </InfoContainer>
           <InfoContainer title="Comparison Line Chart">
-            <ComparisonChart
-              comparisonChartModels={getComparisonChartModels(
-                allModelResults,
-                allModelNames,
-              )}
-              percentiles={customPercentilesData}
+            <Tabs
+              tabPosition="top"
+              centered
+              activeKey={selectedComparisonTab}
+              onChange={setSelectedComparisonTab}
+              items={[
+                {
+                  label: 'Line Chart',
+                  key: '1',
+                  children: comparisonChart,
+                },
+                {
+                  label: 'Box Plot',
+                  key: '2',
+                  children: comparisonBoxPlot,
+                },
+              ]}
             />
           </InfoContainer>
         </VBox>
