@@ -90,7 +90,10 @@ const BoxPlot = ({
     ],
     plotOptions: {
       boxPlot: {
-        colors: undefined,
+        colors: {
+          lower: undefined,
+          upper: undefined,
+        },
       },
     },
   };

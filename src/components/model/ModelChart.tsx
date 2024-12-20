@@ -29,6 +29,9 @@ const ModelChart = ({
     percentilesInput: number[],
   ): ApexAxisChartSeries {
     const res: ApexAxisChartSeries = [];
+    percentilesInput.sort(function(a, b) {
+      return a - b;
+    });
     percentilesInput.forEach((p) => {
       const chartData: any = [];
       ((plotData as any)[p] as ModelDisplay[] | null)?.forEach(
