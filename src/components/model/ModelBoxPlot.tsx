@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useModelResults } from '@/hooks/useModelResults';
 
 import type { ModelDisplay } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
+import type { PercentileResultMap } from '@/hooks/useModelResults';
 
 import BoxPlot from '../charts/BoxPlot/BoxPlot';
 
@@ -16,9 +18,12 @@ const ModelBoxPlot = ({
   reductionStartYear,
   reductionCompleteYear,
 }: ModelBoxPlotProps) => {
+  const [plotData] = useModelResults(percentiles);
+
   function configureDisplayData(
-    plotData: MantisResultPercentile[],
+    plotData: PercentileResultMap,
   ): ApexAxisChartSeries {
+    console.log("plotData", plotData);
     const res: ApexAxisChartSeries = [
       {
         type: 'boxPlot',
@@ -35,6 +40,7 @@ const ModelBoxPlot = ({
       const upperQuartile = ((plotData as any)[75] as ModelDisplay[])!;
       const ninetyFifthPercentile = ((plotData as any)[95] as ModelDisplay[])!;
 
+      console.log("5th", fifthPercentile);
       for (let i = 0; i < dataLen; i += 10) {
         const dataPoint: any = {
           x: fifthPercentile[i]!.year,
@@ -49,16 +55,17 @@ const ModelBoxPlot = ({
         res[0]?.data.push(dataPoint);
       }
     }
+    console.log(res);
     return res;
   }
 
   const [displayData, setDisplayData] = useState<ApexAxisChartSeries>(
-    configureDisplayData(percentiles),
+    configureDisplayData(plotData),
   );
 
   useEffect(() => {
-    setDisplayData(configureDisplayData(percentiles));
-  }, []);
+    setDisplayData(configureDisplayData(plotData));
+  }, [plotData]);
 
   return (
     <BoxPlot
