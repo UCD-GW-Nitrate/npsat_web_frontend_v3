@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
+import EditableTable from '@/components/custom/EditableTable/EditableTable';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
@@ -16,11 +17,10 @@ import { useFetchFeedQuery, usePatchModelMutation } from '@/store';
 import type { PlotModel } from '@/types/feed/Feed';
 
 import { COLUMNS } from '../utils/constants';
-import EditableTable from '@/components/custom/EditableTable/EditableTable';
 
 const Index = () => {
   const { data, error, refetch } = useFetchFeedQuery();
-  const [ patchModel ] = usePatchModelMutation();
+  const [patchModel] = usePatchModelMutation();
   const [displayData, setDisplayData] = useState<PlotModel[]>(
     data?.recentCompletedModels ?? [],
   );
@@ -108,21 +108,21 @@ const Index = () => {
             </Select.OptGroup>
             <Select.OptGroup label="Load Scenario">
               {loadScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.id}>
+                <Select.Option key={item.id} value={item.name}>
                   {item.name}
                 </Select.Option>
               ))}
             </Select.OptGroup>
             <Select.OptGroup label="Unsat Scenario">
               {unsatScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.id}>
+                <Select.Option key={item.id} value={item.name}>
                   {item.name}
                 </Select.Option>
               ))}
             </Select.OptGroup>
             <Select.OptGroup label="Well Type Scenario">
               {welltypeScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.id}>
+                <Select.Option key={item.id} value={item.name}>
                   {item.name}
                 </Select.Option>
               ))}
@@ -155,8 +155,12 @@ const Index = () => {
           columns={COLUMNS}
           dataSource={displayData}
           rowKey={(model) => model.id}
-          updateCallback={async (data) => {
-            await patchModel({id: data.id, name: data.name, description: data.description});
+          updateCallback={async (m) => {
+            await patchModel({
+              id: m.id,
+              name: m.name,
+              description: m.description,
+            });
             await refetch();
           }}
           onRow={(record) => {

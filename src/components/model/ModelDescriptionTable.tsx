@@ -67,10 +67,10 @@ const ModelDescriptionTable = ({
       <Descriptions.Item label="Porosity" span={1}>
         {modelDetail?.porosity}%
       </Descriptions.Item>
-      <Descriptions.Item label="Region(s)" span={2}>
+      <Descriptions.Item label="Region(s)" span={1}>
         {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
       </Descriptions.Item>
-      <Descriptions.Item label="Mantis Version" span={2}>
+      <Descriptions.Item label="Mantis Version" span={1}>
         {modelDetail?.mantis_version}
       </Descriptions.Item>
       {modelDetail?.applied_simulation_filter ? (
