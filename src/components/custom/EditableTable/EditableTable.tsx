@@ -2,9 +2,9 @@
 
 import type { TableProps } from 'antd';
 import { Form, Input, Table, Typography } from 'antd';
+import type { GetRowKey, TableRowSelection } from 'antd/es/table/interface';
 import type { AnyObject } from 'immer/dist/internal';
 import { useState } from 'react';
-import type { TableRowSelection, GetRowKey } from 'antd/es/table/interface';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -30,11 +30,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   return (
     <td {...restProps}>
       {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-        >
-          <Input defaultValue={record[dataIndex]}/>
+        <Form.Item name={dataIndex} style={{ margin: 0 }}>
+          <Input defaultValue={record[dataIndex]} />
         </Form.Item>
       ) : (
         children
@@ -56,15 +53,15 @@ function EditableTable<T extends AnyObject>({
   columns: any[];
   dataSource: T[];
   footer?: any;
-  scroll?: ({
+  scroll?: {
     x?: number | true | string;
     y?: number | string;
   } & {
     scrollToFirstRowOnChange?: boolean;
-  });
+  };
   rowSelection?: TableRowSelection<T>;
   rowKey?: string | GetRowKey<T>;
-  onRow?: ((record: T) => any);
+  onRow?: (record: T) => any;
   updateCallback?: (data: Partial<T>) => Promise<void>;
 }) {
   const [form] = Form.useForm();
@@ -121,10 +118,12 @@ function EditableTable<T extends AnyObject>({
             <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
           </span>
         ) : (
-          <Typography.Link onClick={(event) => {
-            event.stopPropagation();
-            edit(record);
-          }}>
+          <Typography.Link
+            onClick={(event) => {
+              event.stopPropagation();
+              edit(record);
+            }}
+          >
             Edit
           </Typography.Link>
         );
@@ -152,12 +151,11 @@ function EditableTable<T extends AnyObject>({
   );
 
   const rowClicked = (record: T) => {
-    if (editingKey == 0) {
-      if (onRow) {
-        return onRow(record);
-      }
+    if (editingKey === 0 && onRow) {
+      return onRow(record);
     }
-  }
+    return null;
+  };
 
   return (
     <Form form={form}>

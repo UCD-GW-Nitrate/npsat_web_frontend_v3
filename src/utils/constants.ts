@@ -63,3 +63,11 @@ export const COLUMNS: any[] = [
 ];
 
 export const mantisVersion = '2.2.04';
+
+export const modelRunStatus = [
+  'Not Ready',
+  'Waiting',
+  'Running',
+  'Completed',
+  'Error',
+];

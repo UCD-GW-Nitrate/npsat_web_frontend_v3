@@ -70,7 +70,7 @@ const ModelDescriptionTable = ({
       <Descriptions.Item label="Region(s)" span={1}>
         {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
       </Descriptions.Item>
-      <Descriptions.Item label="Mantis Version" span={1}>
+      <Descriptions.Item label="Simulator Version" span={1}>
         {modelDetail?.mantis_version}
       </Descriptions.Item>
       {modelDetail?.applied_simulation_filter ? (
@@ -79,7 +79,6 @@ const ModelDescriptionTable = ({
             label="Depth range"
             span={1.5}
           >{`${modelDetail?.depth_range_min} - ${
-            // intentionally using "==" instead of "===" to compare float and string
             modelDetail?.depth_range_max === DEPTH_RANGE_CONFIG.max + 1
               ? 'max'
               : modelDetail?.depth_range_max
