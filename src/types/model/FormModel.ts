@@ -23,4 +23,5 @@ export interface FormModel {
   depth_range_min?: number;
   depth_range_max?: number;
   modifications?: CropModification[];
+  mantis_version?: string;
 }

@@ -5,11 +5,11 @@ import type { FormModel } from '@/types/model/FormModel';
 import type { MantisResult } from '@/types/model/MantisResult';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { ModelStatus } from '@/types/model/ModelStatus';
+import { mantisVersion } from '@/utils/constants';
 
 import getAuth from '../getAuth';
 import { paramsSerializer } from './paramsSerializer';
 
-// https://npsat-dev.lawr.ucdavis.edu/services
 const modelApi = createApi({
   reducerPath: 'mantis',
   baseQuery: fetchBaseQuery({
@@ -25,6 +25,7 @@ const modelApi = createApi({
           const query: FormModel = params;
           query.public = true;
           query.is_base = false;
+          query.mantis_version = mantisVersion;
           console.log('run model query', query);
           return {
             url: 'api/model_run/',

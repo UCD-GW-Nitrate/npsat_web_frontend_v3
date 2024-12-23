@@ -33,4 +33,5 @@ export interface ModelRun {
   depth_range_max: number;
   unsat_range_min: number;
   unsat_range_max: number;
+  mantis_version: string;
 }

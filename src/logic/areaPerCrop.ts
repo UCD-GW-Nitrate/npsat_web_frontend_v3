@@ -20,7 +20,7 @@ const areaPerCrop = (
   crops: number[] = [],
   regions: string[] = [],
 ): CropAreaMap => {
-  var areaData = GNLMcropAreas;
+  let areaData = GNLMcropAreas;
   if (load_scenario !== 1) {
     areaData = SWATcropAreas;
   }
@@ -43,7 +43,8 @@ const areaPerCrop = (
   console.log(mapType, load_scenario, crops, regions);
 
   // load data of selected regions
-  if (mapType === 0) { // Central Valley
+  if (mapType === 0) {
+    // Central Valley
     console.log('0');
     cropsData = areaData[0]!.Regions[0]!.CropList;
     totalAreas = areaData[0]!.Regions[0]!.TotArea;
@@ -59,8 +60,8 @@ const areaPerCrop = (
         });
       }
     });
-    console.log("cropsData", cropsData);
-    console.log("crops area per crop", crops);
+    console.log('cropsData', cropsData);
+    console.log('crops area per crop', crops);
   }
 
   // calculate total area for each selected crops

@@ -70,6 +70,9 @@ const ModelDescriptionTable = ({
       <Descriptions.Item label="Region(s)" span={2}>
         {regions.map((region: ModelRegion) => region.name).join(', ') || ''}
       </Descriptions.Item>
+      <Descriptions.Item label="Mantis Version" span={2}>
+        {modelDetail?.mantis_version}
+      </Descriptions.Item>
       {modelDetail?.applied_simulation_filter ? (
         <>
           <Descriptions.Item
