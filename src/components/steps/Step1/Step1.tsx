@@ -221,11 +221,7 @@ const Step1 = ({ onNext }: StepBase) => {
           rules={defaultRules(
             'Please enter numbers of years to simulate the scenario',
           )}
-          initialValue={
-            model.sim_end_year
-              ? dayjs().year(model.sim_end_year)
-              : dayjs().year(2100)
-          }
+          initialValue={dayjs().year(model?.sim_end_year ?? 2100)}
         >
           <DatePicker
             picker="year"

@@ -1,5 +1,5 @@
 import { Col, InputNumber, Row, Slider } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface RangeConfig {
   min: number;
@@ -9,7 +9,8 @@ interface RangeConfig {
 }
 
 interface RangeFormItemProps {
-  value?: [number, number];
+  valueLow?: number;
+  valueHigh?: number;
   onChangeMin?: (input: number) => void;
   onChangeMax?: (input: number) => void;
   rangeConfig: RangeConfig;
@@ -25,14 +26,24 @@ interface RangeFormItemProps {
  * @constructor
  */
 const RangeFormItem = ({
-  value,
+  valueLow,
+  valueHigh,
   onChangeMin,
   onChangeMax,
   rangeConfig,
 }: RangeFormItemProps) => {
   const { max, min, step, maxIdentifier = true } = rangeConfig;
-  const [low, setLow] = useState<number>(value ? value[0] : min);
-  const [high, setHigh] = useState<number>(value ? value[1] : max);
+  const [low, setLow] = useState<number>(valueLow || min);
+  const [high, setHigh] = useState<number>(valueHigh || max);
+
+  useEffect(() => {
+    if (valueLow) {
+      setLow(valueLow);
+    }
+    if (valueHigh) {
+      setHigh(valueHigh);
+    }
+  }, [valueLow, valueHigh]);
 
   // used to represent the maximum value
   const maxIdentifierFormatter = (num: number | undefined) => {

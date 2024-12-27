@@ -2,7 +2,7 @@
 
 import { Button, Result, Spin } from 'antd';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useGetModelStatusQuery } from '@/store';
 import { modelRunStatus } from '@/utils/constants';
@@ -19,10 +19,6 @@ const Step5 = ({ ids }: Step5Props) => {
     },
   );
   const router = useRouter();
-
-  useEffect(() => {
-    console.log('model data is', data);
-  }, [data]);
 
   const extra = (
     <>

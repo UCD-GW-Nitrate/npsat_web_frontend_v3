@@ -1,12 +1,11 @@
 'use client';
 
 import { Divider, Form, Switch, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
-import type { FieldValues } from 'react-hook-form';
+import React, { useEffect, useMemo, useState } from 'react';
+import { type FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
-import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { FormMap } from '@/components/maps/FormMap';
 import {
   useFetchB118BasinQuery,
@@ -27,15 +26,13 @@ import {
 } from '@/store/slices/modelSlice';
 import type { ModelRegion } from '@/types/model/ModelRegion';
 import type { Region } from '@/types/region/Region';
-import {
-  DEPTH_RANGE_CONFIG,
-  REGION_MACROS,
-  UNSAT_RANGE_CONFIG,
-} from '@/utils/constants';
+import type { WellRequest } from '@/types/well/Well';
+import { REGION_MACROS } from '@/utils/constants';
 
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
+import WellFilterRange from './WellFilterRange';
 import WellNumber from './WellNumber';
 
 interface RegionDict {
@@ -45,12 +42,16 @@ interface RegionDict {
 const Step2 = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
-  const [depthMin, setDepthMin] = useState<number>(model.depth_range_min ?? 0);
-  const [depthMax, setDepthMax] = useState<number>(
+  const [selectedDepthMin, setSelectedDepthMin] = useState<number>(
+    model.depth_range_min ?? 0,
+  );
+  const [selectedDepthMax, setSelectedDepthMax] = useState<number>(
     model.depth_range_max ?? 801,
   );
-  const [unsatMin, setUnsatMin] = useState<number>(model.unsat_range_min ?? 0);
-  const [unsatMax, setUnsatMax] = useState<number>(
+  const [selectedUnsatMin, setSelectedUnsatMin] = useState<number>(
+    model.unsat_range_min ?? 0,
+  );
+  const [selectedUnsatMax, setSelectedUnsatMax] = useState<number>(
     model.unsat_range_max ?? 801,
   );
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(
@@ -127,10 +128,10 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
         ),
       );
       dispatch(setModelSimulationFilter(showAdvancedFilter));
-      dispatch(setModelDepthRangeMax(depthMax));
-      dispatch(setModelDepthRangeMin(depthMin));
-      dispatch(setModelUnsatRangeMin(unsatMin));
-      dispatch(setModelUnsatRangeMax(unsatMax));
+      dispatch(setModelDepthRangeMax(selectedDepthMax));
+      dispatch(setModelDepthRangeMin(selectedDepthMin));
+      dispatch(setModelUnsatRangeMin(selectedUnsatMin));
+      dispatch(setModelUnsatRangeMax(selectedUnsatMax));
     } else {
       dispatch(
         setModelRegions(
@@ -188,6 +189,113 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     }
   }, []);
 
+  const getWellRegions = () => {
+    // store countyList in dictionary for easy lookup
+    const countyList = getRegionData(mapType) ?? [];
+    const countyDic: any = {};
+
+    countyList.forEach((county) => {
+      countyDic[county.id] = county.mantis_id;
+    });
+
+    // populate mantis_id for data lookup
+    const mantisId: string[] = [];
+    selected.forEach((id) => mantisId.push(countyDic[id]));
+    return mantisId;
+  };
+
+  const getWellParams = () => {
+    const flowScenario = model.flow_scenario?.id;
+    const welltypeScenario = model.welltype_scenario?.id;
+
+    const queryParams: Partial<WellRequest> = {};
+    if (welltypeScenario === 12) {
+      queryParams.well_type = 'VI'; // Public supply wells
+    } else if (welltypeScenario === 13) {
+      queryParams.well_type = 'VD'; // Domestic wells
+    }
+
+    if (flowScenario === 10) {
+      queryParams.rch_type = 'Padj'; // Pump adjusted
+      queryParams.flow_model = 'C2VSim';
+    } else if (flowScenario === 11) {
+      queryParams.rch_type = 'Radj'; // Recharge adjusted
+      queryParams.flow_model = 'C2VSim';
+    } else if (flowScenario === 8) {
+      queryParams.rch_type = 'Padj'; // Pump adjusted
+      queryParams.flow_model = 'CVHM2';
+    } else if (flowScenario === 9) {
+      queryParams.rch_type = 'Radj'; // Recharge adjusted
+      queryParams.flow_model = 'CVHM2';
+    }
+
+    if (welltypeScenario !== 14) {
+      switch (mapType) {
+        case REGION_MACROS.CENTRAL_VALLEY: // central valley
+          break;
+        case REGION_MACROS.SUB_BASIN: // basin
+          queryParams.basin = getWellRegions();
+          break;
+        case REGION_MACROS.CVHM_FARM: // subRegion
+          queryParams.subreg = getWellRegions();
+          break;
+        case REGION_MACROS.B118_BASIN: // B118 Basin
+          queryParams.b118 = getWellRegions();
+          break;
+        case REGION_MACROS.COUNTY: // county
+          queryParams.county = getWellRegions();
+          break;
+        case REGION_MACROS.TOWNSHIPS: // Township
+          queryParams.tship = getWellRegions();
+          break;
+        default:
+          console.log('RegionType Error: Type cannot be found!');
+          break;
+      }
+    }
+
+    return queryParams;
+  };
+
+  const getWellFilterParams = () => {
+    const queryParams = getWellParams();
+
+    if (model.applied_simulation_filter ?? false) {
+      queryParams.depth_range_min = selectedDepthMin;
+      queryParams.depth_range_max = selectedDepthMax;
+      queryParams.unsat_range_min = selectedUnsatMin;
+      queryParams.unsat_range_max = selectedUnsatMax;
+    }
+
+    return queryParams;
+  };
+
+  const wellFilter = useMemo(
+    () => (
+      <>
+        <WellFilterRange
+          wellParamsMin={{ ...getWellParams(), min_depth: true }}
+          wellParamsMax={{ ...getWellParams(), max_depth: true }}
+          setSelectedMinCallback={setSelectedDepthMin}
+          setSelectedMaxCallback={setSelectedDepthMax}
+          label="Depth Range (m)"
+          name="depth_range"
+          type="depth"
+        />
+        <WellFilterRange
+          wellParamsMin={{ ...getWellParams(), min_unsat: true }}
+          wellParamsMax={{ ...getWellParams(), max_unsat: true }}
+          setSelectedMinCallback={setSelectedUnsatMin}
+          setSelectedMaxCallback={setSelectedUnsatMax}
+          label="Unsat Range (m)"
+          name="unsat_range"
+          type="unsat"
+        />
+      </>
+    ),
+    [selected.length],
+  );
+
   return (
     <>
       <Tabs
@@ -243,13 +351,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           />
           <WellNumber
             selectedRegions={selected}
-            regionType={mapType}
-            countyList={getRegionData(mapType) ?? []}
-            depthMin={depthMin}
-            depthMax={depthMax}
-            unsatMin={unsatMin}
-            unsatMax={unsatMax}
-            filterOn={model.applied_simulation_filter ?? false}
+            wellParams={getWellFilterParams()}
           />
         </Form.Item>
         <Form.Item label="Advanced filter" name="advanced_filter">
@@ -260,74 +362,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             onClick={(checked) => setShowAdvancedFilter(checked)}
           />
         </Form.Item>
-        {showAdvancedFilter ? (
-          <>
-            <Form.Item
-              label="Depth Range (m)"
-              name="depth_range"
-              initialValue={[depthMin, depthMax]}
-              rules={[
-                {
-                  validator: (_, value) => {
-                    if (value[0] >= value[1]) {
-                      return Promise.reject(
-                        new Error('Range min should be less than max'),
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <RangeFormItem
-                rangeConfig={DEPTH_RANGE_CONFIG}
-                value={[depthMin, depthMax]}
-                onChangeMin={(v) => {
-                  if (v !== depthMin) {
-                    setDepthMin(v);
-                  }
-                }}
-                onChangeMax={(v) => {
-                  if (v !== depthMax) {
-                    setDepthMax(v);
-                  }
-                }}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Unsat Range (m)"
-              name="unsat_range"
-              initialValue={[unsatMin, unsatMax]}
-              rules={[
-                {
-                  validator: (_, value) => {
-                    if (value[0] >= value[1]) {
-                      return Promise.reject(
-                        new Error('Range min should be less than max'),
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <RangeFormItem
-                rangeConfig={UNSAT_RANGE_CONFIG}
-                value={[unsatMin, unsatMax]}
-                onChangeMin={(v) => {
-                  if (v !== unsatMin) {
-                    setUnsatMin(v);
-                  }
-                }}
-                onChangeMax={(v) => {
-                  if (v !== unsatMax) {
-                    setUnsatMax(v);
-                  }
-                }}
-              />
-            </Form.Item>
-          </>
-        ) : null}
+        {showAdvancedFilter ? wellFilter : null}
         <Form.Item
           wrapperCol={{
             xs: {

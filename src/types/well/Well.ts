@@ -8,6 +8,7 @@ export interface Well {
   lat: number;
   lon: number;
   unsat: number;
+  depth: number;
   wt2t: number;
   slmod: number;
   basin: string;
@@ -31,4 +32,8 @@ export interface WellRequest {
   depth_range_max: number;
   unsat_range_min: number;
   unsat_range_max: number;
+  max_depth: boolean;
+  min_depth: boolean;
+  max_unsat: boolean;
+  min_unsat: boolean;
 }
