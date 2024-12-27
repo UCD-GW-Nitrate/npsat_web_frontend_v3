@@ -151,6 +151,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   };
 
   const onRegionSelect = (input: number[]) => {
+    console.log('selected input', input);
     setSelected(input);
     form.setFieldValue('region', input);
   };
@@ -352,6 +353,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           <WellNumber
             selectedRegions={selected}
             wellParams={getWellFilterParams()}
+            mapType={mapType}
           />
         </Form.Item>
         <Form.Item label="Advanced filter" name="advanced_filter">

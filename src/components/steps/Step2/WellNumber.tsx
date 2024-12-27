@@ -3,13 +3,19 @@ import { useEffect, useState } from 'react';
 
 import { useGetWellsQuery } from '@/store';
 import type { WellRequest } from '@/types/well/Well';
+import { REGION_MACROS } from '@/utils/constants';
 
 interface WellNumberProps {
   selectedRegions: number[];
   wellParams: Partial<WellRequest>;
+  mapType: number;
 }
 
-const WellNumber = ({ selectedRegions, wellParams }: WellNumberProps) => {
+const WellNumber = ({
+  selectedRegions,
+  wellParams,
+  mapType,
+}: WellNumberProps) => {
   const { data: wellData, isLoading } = useGetWellsQuery(wellParams);
 
   function numberWithCommas(x: number) {
@@ -30,7 +36,12 @@ const WellNumber = ({ selectedRegions, wellParams }: WellNumberProps) => {
 
   return (
     <div>
-      <Card>Number of Wells Selected: {displayData}</Card>
+      <Card>
+        Number of Wells Selected:{' '}
+        {mapType === REGION_MACROS.CENTRAL_VALLEY && selectedRegions.length > 0
+          ? wellData?.count
+          : displayData}
+      </Card>
     </div>
   );
 };
