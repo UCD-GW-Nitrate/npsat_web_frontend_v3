@@ -107,7 +107,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     setCropAreaMap(
       areaPerCrop(
         model.regions![0]!.region_type,
-        model.flow_scenario!.scenario_type,
+        model.load_scenario!.id,
         selectedCrops.map(
           (crop) => cropDict[crop]?.caml_code ?? cropDict[crop]?.swat_code ?? 0,
         ),

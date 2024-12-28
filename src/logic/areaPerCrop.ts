@@ -22,6 +22,7 @@ const areaPerCrop = (
 ): CropAreaMap => {
   let areaData = GNLMcropAreas;
   if (load_scenario !== 1) {
+    // load scenario is not GNLM
     areaData = SWATcropAreas;
   }
 

@@ -60,7 +60,7 @@ export const CropLoadingDetailsTable = ({
       modelDetails.forEach((model) => {
         const { modifications, name, regions } = model;
         const mapType = model.regions[0]?.region_type;
-        const loadScenario = model.flow_scenario.scenario_type; // load_scenario type was assigned to flow_scenario, needs to be fixed
+        const loadScenario = model.load_scenario.id;
         const cropAreas = areaPerCrop(
           mapType,
           loadScenario,
