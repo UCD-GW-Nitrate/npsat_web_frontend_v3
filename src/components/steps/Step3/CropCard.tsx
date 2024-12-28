@@ -10,15 +10,26 @@ interface CropCardProps {
   onChange?: (input: number) => void;
 }
 
-const CropCard = ({ crop, initialValue, cropArea, onChange }: CropCardProps) => {
+const CropCard = ({
+  crop,
+  initialValue,
+  cropArea,
+  onChange,
+}: CropCardProps) => {
   const [value, setValue] = useState<number>(initialValue ?? 0);
 
   function numberWithCommas(x: number) {
-    return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
   return (
-    <Card title={crop.name} extra={cropArea && (`${numberWithCommas(cropArea * 0.25)} ha / ${numberWithCommas(cropArea * 0.25 * 2.47)} ac`)}>
+    <Card
+      title={crop.name}
+      extra={
+        cropArea &&
+        `${numberWithCommas(cropArea * 0.25)} ha / ${numberWithCommas(cropArea * 0.25 * 2.47)} ac`
+      }
+    >
       <Row gutter={16}>
         <Col span={3} style={{ margin: '5px 0' }}>
           Loading

@@ -16,20 +16,6 @@ export const REGION_MACROS = {
   C2V_SIM_SUBREGIONS: 6,
 };
 
-export const DEPTH_RANGE_CONFIG = {
-  min: 0,
-  max: 800,
-  step: 1,
-  maxIdentifier: true,
-};
-
-export const UNSAT_RANGE_CONFIG = {
-  min: 0,
-  max: 800,
-  step: 1,
-  maxIdentifier: true,
-};
-
 export const COLUMNS: any[] = [
   { dataIndex: 'name', title: 'Scenario Name', width: 150, isEditable: true },
   {

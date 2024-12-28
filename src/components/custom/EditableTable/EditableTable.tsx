@@ -78,12 +78,10 @@ function EditableTable<T extends AnyObject>({
   };
 
   const cancel = () => {
-    console.log('cancel');
     setEditingKey(0);
   };
 
   const save = async (id: number) => {
-    console.log('save');
     try {
       const row = (await form.validateFields()) as Partial<T>;
       if (updateCallback) {

@@ -12,11 +12,11 @@ import {
   setModelDescription,
   setModelName,
 } from '@/store/slices/modelSlice';
+import type { FormModel } from '@/types/model/FormModel';
 
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step4Instructions from './Step4Instructions';
-import { FormModel } from '@/types/model/FormModel';
 
 interface Step4Props extends StepBase {
   onComplete: (newModel: FormModel) => void;

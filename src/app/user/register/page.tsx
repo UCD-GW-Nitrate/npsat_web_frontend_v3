@@ -8,7 +8,7 @@ import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useDispatch } from 'react-redux';
 
-import { useRegisterMutation, useLoginMutation } from '@/store';
+import { useLoginMutation, useRegisterMutation } from '@/store';
 import { setCredentials } from '@/store/slices/authSlice';
 
 import LoginWrapper from '../_components/LoginWrapper';

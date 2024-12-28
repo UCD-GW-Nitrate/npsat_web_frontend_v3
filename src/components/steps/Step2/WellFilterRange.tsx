@@ -40,7 +40,6 @@ const WellFilterRange = ({
       const min = Math.floor((rangeMinData.results[0] as any)[type]);
       setSelectedMin(min);
       setSelectedMinCallback(min);
-      console.log(`${label} min`, min);
       return min;
     }
 
@@ -52,7 +51,6 @@ const WellFilterRange = ({
       const max = Math.ceil((rangeMaxData.results[0] as any)[type]);
       setSelectedMax(max);
       setSelectedMaxCallback(max);
-      console.log(`${label} max`, max);
       return max;
     }
 

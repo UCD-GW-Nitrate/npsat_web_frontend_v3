@@ -1,29 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
+import type { LoginRequest } from '@/types/auth/Login';
+import type { RegisterRequest, RegisterResponse } from '@/types/auth/Register';
+import type { VerifyCode } from '@/types/auth/VerifiyCode';
 import type { AuthState, User } from '@/types/user/User';
 import type { UserResponse } from '@/types/user/UserResponse';
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  username: string;
-}
-
-export interface RegisterResponse {
-  email?: string;
-  username?: string;
-}
-
-export interface VerifyCode {
-  email?: string;
-  verification_code?: string;
-}
 
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({

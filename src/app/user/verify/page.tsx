@@ -1,12 +1,15 @@
 'use client';
 
 import type { FormProps } from 'antd';
-import { Button, Form, Input, Flex } from 'antd';
+import { Button, Flex, Form, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import { useSendVerificationEmailMutation, useVerifyUserMutation } from '@/store';
+import {
+  useSendVerificationEmailMutation,
+  useVerifyUserMutation,
+} from '@/store';
 
 import LoginWrapper from '../_components/LoginWrapper';
 
@@ -51,9 +54,11 @@ const VerifyPage = () => {
           <Flex align="center" vertical>
             <Form.Item<FieldType>
               name="code"
-              rules={[{ required: true, message: 'Enter the code emailed to you' }]}
+              rules={[
+                { required: true, message: 'Enter the code emailed to you' },
+              ]}
             >
-              <Input.OTP length={6} size="large"/>
+              <Input.OTP length={6} size="large" />
             </Form.Item>
           </Flex>
           <Form.Item<FieldType>>
@@ -65,11 +70,7 @@ const VerifyPage = () => {
             </Button>
           </Form.Item>
           <Form.Item<FieldType>>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ width: '100%' }}
-            >
+            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
               Verify Email
             </Button>
           </Form.Item>

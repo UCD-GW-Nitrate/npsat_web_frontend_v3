@@ -33,7 +33,6 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
   const { data: cropData } = useGetAllCropsByFlowScenarioQuery(
     model.load_scenario!.id,
   );
-  const [cropList, setCropList] = useState<Crop[]>([]);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [cropDict, setCropDict] = useState<CropDict>({});
@@ -80,10 +79,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
       cropListTemp.push(crop);
     });
 
-    console.log('crop dict', cropDictTemp);
-
     setCropDict(cropDictTemp);
-    setCropList(cropListTemp);
 
     const loadingDictTemp: LoadingDict = {};
     model.modifications?.forEach((mod) => {
@@ -108,22 +104,6 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
   }, [cropData]);
 
   useEffect(() => {
-    console.log('model', model);
-    console.log('cropList', cropList);
-    console.log('selected crops', selectedCrops);
-    console.log('maptype', model.regions![0]!.region_type);
-
-    console.log(
-      'area per crop',
-      areaPerCrop(
-        model.regions![0]!.region_type,
-        model.flow_scenario!.scenario_type,
-        selectedCrops.map(
-          (crop) => cropDict[crop]?.caml_code ?? cropDict[crop]?.swat_code ?? 0,
-        ),
-        model.regions!.map((r) => r.mantis_id),
-      ),
-    );
     setCropAreaMap(
       areaPerCrop(
         model.regions![0]!.region_type,

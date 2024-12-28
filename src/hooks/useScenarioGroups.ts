@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import apiRoot from '@/config/apiRoot';
-import { Scenario } from '@/types/model/Scenario';
+import type { Scenario } from '@/types/model/Scenario';
 
 export const SCENARIO_MACROS = {
   TYPE_FLOW: 1,

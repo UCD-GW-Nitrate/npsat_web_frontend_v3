@@ -29,7 +29,7 @@ const LoginPage = () => {
     try {
       await sendVerificationEmail(email);
       const params = new URLSearchParams();
-      params.set("email", email);
+      params.set('email', email);
       router.push(`/user/forgot-password?${params.toString()}`);
     } catch {
       form.setFields([

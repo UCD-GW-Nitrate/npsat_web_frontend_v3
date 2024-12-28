@@ -57,7 +57,6 @@ const Step1 = ({ onNext }: StepBase) => {
     welltypeScenarioOptions.forEach((scenario) => {
       scenarioDictTemp[scenario.id] = scenario;
     });
-    console.log(scenarioDictTemp);
     setScenarios(scenarioDictTemp);
   }, [
     flowScenarioOptions,
@@ -67,7 +66,6 @@ const Step1 = ({ onNext }: StepBase) => {
   ]);
 
   const onFormSubmit = (data: FieldValues) => {
-    console.log(scenarios[data.flow_scenario]!);
     dispatch(setModelFlowScenario(scenarios[data.flow_scenario]!));
     dispatch(setModelLoadScenario(scenarios[data.load_scenario]!));
     dispatch(setModelWelltypeScenario(scenarios[data.welltype_scenario]!));

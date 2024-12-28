@@ -87,7 +87,8 @@ const LoginPage = () => {
             >
               Log in
             </Button>
-            <Link href="/user/register">Register now</Link> or <Link href="/user/forgot-password-email">forgot password</Link>
+            <Link href="/user/register">Register now</Link> or{' '}
+            <Link href="/user/forgot-password-email">forgot password</Link>
           </Form.Item>
         </Form>
       </LoginWrapper>

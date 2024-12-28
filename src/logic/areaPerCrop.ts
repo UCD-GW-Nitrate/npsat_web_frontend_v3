@@ -40,16 +40,12 @@ const areaPerCrop = (
   let selectedCropAreas = 0;
   let totalAreas = 0;
 
-  console.log(mapType, load_scenario, crops, regions);
-
   // load data of selected regions
   if (mapType === 0) {
     // Central Valley
-    console.log('0');
     cropsData = areaData[0]!.Regions[0]!.CropList;
     totalAreas = areaData[0]!.Regions[0]!.TotArea;
   } else if (mapType && mapType in regionMacros) {
-    console.log('not 0');
     areaData.forEach((maps: any) => {
       if (maps.Code === regionMacros[mapType]) {
         maps.Regions.forEach((region: any) => {
@@ -60,8 +56,6 @@ const areaPerCrop = (
         });
       }
     });
-    console.log('cropsData', cropsData);
-    console.log('crops area per crop', crops);
   }
 
   // calculate total area for each selected crops

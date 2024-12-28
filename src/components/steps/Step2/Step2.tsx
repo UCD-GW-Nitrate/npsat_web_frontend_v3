@@ -108,7 +108,6 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       regionDictTemp[region.id] = region;
     });
     setRegionDict(regionDictTemp);
-    console.log(regionDictTemp);
   }, [
     b118BasinData,
     basinData,
@@ -151,7 +150,6 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   };
 
   const onRegionSelect = (input: number[]) => {
-    console.log('selected input', input);
     setSelected(input);
     form.setFieldValue('region', input);
   };
