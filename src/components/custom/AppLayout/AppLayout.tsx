@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/components/theme';
 import { selectCurrentUser, setCredentials } from '@/store/slices/authSlice';
-import { clearModel } from '@/store/slices/modelSlice';
 
 import ProfileButton from './ProfileButton';
 
@@ -26,11 +25,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
   const router = useRouter();
   const titleRender = useCallback(
     (logo: ReactNode) => (
-      <Link
-        href="/"
-        style={{ marginLeft: 20 }}
-        onClick={() => dispatch(clearModel())}
-      >
+      <Link href="/" style={{ marginLeft: 20 }}>
         {logo}
       </Link>
     ),

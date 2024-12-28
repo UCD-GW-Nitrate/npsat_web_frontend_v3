@@ -6,6 +6,7 @@ import { Button, Select } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import EditableTable from '@/components/custom/EditableTable/EditableTable';
@@ -14,6 +15,7 @@ import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import { useFetchFeedQuery, usePatchModelMutation } from '@/store';
+import { clearModel } from '@/store/slices/modelSlice';
 import type { PlotModel } from '@/types/feed/Feed';
 
 import { COLUMNS } from '../utils/constants';
@@ -26,6 +28,7 @@ const Index = () => {
   );
   const [selected, setSelected] = useState<number[]>([]);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const {
     flowScenarios: flowScenarioOptions,
@@ -39,6 +42,7 @@ const Index = () => {
   }, [data]);
 
   useEffect(() => {
+    dispatch(clearModel());
     refetch();
   }, []);
 
