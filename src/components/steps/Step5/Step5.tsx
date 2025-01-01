@@ -42,7 +42,11 @@ const Step5 = ({ ids }: Step5Props) => {
 
   return (
     <div>
-      {!(data && data.results[0] && data.results[0].status === 3) && (
+      {!(
+        data &&
+        data.results[0] &&
+        (data.results[0].status === 3 || data.results[0].status === 4)
+      ) && (
         <div style={{ height: 80 }}>
           <Spin
             size="large"

@@ -52,7 +52,7 @@ export const mantisVersion = '2.2.04';
 
 export const modelRunStatus = [
   'Not Ready',
-  'Waiting',
+  'In Queue',
   'Running',
   'Completed',
   'Error',
