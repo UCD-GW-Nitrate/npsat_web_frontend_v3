@@ -13,7 +13,6 @@
     "clean": "rimraf .next .swc out coverage",
     "lint": "next lint",
     "format": "next lint --fix && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore",
-    "prepare": "husky install",
     "postbuild": "npm run sitemap",
     "sitemap": "next-sitemap"
   },
