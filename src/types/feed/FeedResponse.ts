@@ -1,5 +1,5 @@
 import type { MantisResult } from '../model/MantisResult';
-import { Scenario } from '../model/Scenario';
+import type { Scenario } from '../model/Scenario';
 
 export interface FeedResponse {
   recent_completed_models: PlotModelResponse[];
@@ -28,4 +28,5 @@ export interface PlotModelResponse {
   flow_scenario: Scenario;
   unsat_scenario: Scenario;
   welltype_scenario: Scenario;
+  mantis_version: string;
 }

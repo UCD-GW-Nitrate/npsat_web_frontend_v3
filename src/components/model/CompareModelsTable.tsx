@@ -48,7 +48,7 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
       width: 200,
     },
     {
-      title: 'Wells included',
+      title: 'Wells Included',
       dataIndex: 'n_wells',
       render: (value) => value || 'Not completed',
     },
@@ -59,15 +59,15 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
       width: 250,
     },
     {
-      title: 'Implementation start year',
+      title: 'Implementation Start Year',
       dataIndex: 'reduction_start_year',
     },
     {
-      title: 'Implementation complete year',
+      title: 'Implementation Complete Year',
       dataIndex: 'reduction_end_year',
     },
     {
-      title: 'Water content',
+      title: 'Water Content',
       dataIndex: 'water_content',
       render: (value) => `${(value * 100).toFixed(0)}%`,
     },
@@ -84,6 +84,10 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
         return date.toISOString().substring(0, 10);
       },
       width: 250,
+    },
+    {
+      title: 'Simulator Version',
+      dataIndex: 'mantis_version',
     },
   ];
 

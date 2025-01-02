@@ -46,6 +46,11 @@ export const COLUMNS: any[] = [
     title: 'Date Created',
     width: 120,
   },
+  {
+    dataIndex: 'mantisVersion',
+    title: 'Simulator Version',
+    width: 80,
+  },
 ];
 
 export const mantisVersion = '2.2.04';

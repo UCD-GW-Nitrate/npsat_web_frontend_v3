@@ -24,4 +24,5 @@ export interface PlotModel {
   flowScenario: string;
   unsatScenario: string;
   wellTypeScenario: string;
+  mantisVersion: string;
 }

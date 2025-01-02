@@ -56,6 +56,7 @@ const feedApi = createApi({
                 flowScenario: model.flow_scenario.name,
                 wellTypeScenario: model.welltype_scenario.name,
                 unsatScenario: model.unsat_scenario.name,
+                mantisVersion: model.mantis_version,
               };
             },
           );
