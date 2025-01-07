@@ -14,7 +14,11 @@ import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
-import { useFetchFeedQuery, usePatchModelMutation } from '@/store';
+import {
+  useDeleteModelMutation,
+  useFetchFeedQuery,
+  usePatchModelMutation,
+} from '@/store';
 import { clearModel } from '@/store/slices/modelSlice';
 import type { PlotModel } from '@/types/feed/Feed';
 
@@ -77,6 +81,8 @@ const Index = () => {
     selectedRowKeys: selected,
     onChange: onSelectChange,
   };
+
+  const [deleteModel] = useDeleteModelMutation();
 
   return (
     <AppLayout>
@@ -165,6 +171,10 @@ const Index = () => {
               name: m.name,
               description: m.description,
             });
+            await refetch();
+          }}
+          deleteCallback={async (id) => {
+            await deleteModel(id);
             await refetch();
           }}
           onRow={(record) => {

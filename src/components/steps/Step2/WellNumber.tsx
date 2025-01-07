@@ -39,7 +39,7 @@ const WellNumber = ({
       <Card>
         Number of Wells Selected:{' '}
         {mapType === REGION_MACROS.CENTRAL_VALLEY && selectedRegions.length > 0
-          ? wellData?.count
+          ? numberWithCommas(wellData?.count ?? 0)
           : displayData}
       </Card>
     </div>

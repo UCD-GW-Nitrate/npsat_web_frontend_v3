@@ -45,6 +45,7 @@ function EditableTable<T extends AnyObject>({
   dataSource,
   footer,
   updateCallback,
+  deleteCallback,
   scroll,
   rowSelection,
   rowKey,
@@ -63,6 +64,7 @@ function EditableTable<T extends AnyObject>({
   rowKey?: string | GetRowKey<T>;
   onRow?: (record: T) => any;
   updateCallback?: (data: Partial<T>) => Promise<void>;
+  deleteCallback?: (id: number) => Promise<void>;
 }) {
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<number>(0);
@@ -93,6 +95,16 @@ function EditableTable<T extends AnyObject>({
     }
   };
 
+  const deleteModel = async (id: number) => {
+    try {
+      if (deleteCallback) {
+        await deleteCallback(id);
+      }
+    } catch (errInfo) {
+      console.log('Delete Failed:', errInfo);
+    }
+  };
+
   const editableColumns = [
     ...columns,
     {
@@ -116,14 +128,24 @@ function EditableTable<T extends AnyObject>({
             <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
           </span>
         ) : (
-          <Typography.Link
-            onClick={(event) => {
-              event.stopPropagation();
-              edit(record);
-            }}
-          >
-            Edit
-          </Typography.Link>
+          <span>
+            <Typography.Link
+              onClick={(event) => {
+                event.stopPropagation();
+                edit(record);
+              }}
+            >
+              Edit
+            </Typography.Link>
+            <Typography.Link
+              onClick={(event) => {
+                event.stopPropagation();
+                deleteModel(record.id);
+              }}
+            >
+              Delete
+            </Typography.Link>
+          </span>
         );
       },
     },
