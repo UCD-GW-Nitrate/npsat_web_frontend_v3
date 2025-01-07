@@ -130,6 +130,7 @@ function EditableTable<T extends AnyObject>({
         ) : (
           <span>
             <Typography.Link
+              style={{ marginRight: 8 }}
               onClick={(event) => {
                 event.stopPropagation();
                 edit(record);
