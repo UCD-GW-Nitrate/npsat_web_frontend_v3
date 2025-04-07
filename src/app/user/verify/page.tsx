@@ -2,7 +2,7 @@
 
 import type { FormProps } from 'antd';
 import { Button, Flex, Form, Input } from 'antd';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -12,6 +12,7 @@ import {
 } from '@/store';
 
 import LoginWrapper from '../_components/LoginWrapper';
+import { setCredentials } from '@/store/slices/authSlice';
 
 type FieldType = {
   code?: string;
@@ -20,13 +21,17 @@ type FieldType = {
 const VerifyPage = () => {
   const [sendVerificationEmail] = useSendVerificationEmailMutation();
   const [verify] = useVerifyUserMutation();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [form] = Form.useForm();
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     const code = values.code ?? '';
     try {
-      await verify(code).unwrap();
+      await verify({
+        verification_code: code,
+        email: searchParams.get('email') ?? '',
+      }).unwrap();
       router.push('/');
     } catch {
       form.setFields([
@@ -63,7 +68,9 @@ const VerifyPage = () => {
           </Flex>
           <Form.Item<FieldType>>
             <Button
-              onClick={() => sendVerificationEmail()}
+              onClick={() =>
+                sendVerificationEmail(searchParams.get('email') ?? '')
+              }
               style={{ width: '100%', marginTop: 10 }}
             >
               Resend Code

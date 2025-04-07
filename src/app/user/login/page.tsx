@@ -38,7 +38,9 @@ const LoginPage = () => {
       if (user.user?.isVerified) {
         router.push('/');
       } else {
-        router.push('/user/verify');
+        const params = new URLSearchParams();
+        params.set('email', email);
+        router.push(`/user/verify?${params.toString()}`);
       }
     } catch {
       form.setFields([

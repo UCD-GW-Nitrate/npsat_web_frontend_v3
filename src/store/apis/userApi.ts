@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
+import type { VerifyCode } from '@/types/auth/VerifiyCode';
 import type { UserResponse } from '@/types/user/UserResponse';
 
 import getAuth from '../getAuth';
@@ -14,17 +15,18 @@ export const userApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    sendVerificationEmail: builder.mutation<void, void>({
-      query: () => ({
-        url: 'api/user/verify/',
+    sendVerificationEmail: builder.mutation<void, string>({
+      query: (email) => ({
+        url: 'unauthorized-verify/',
         method: 'PUT',
+        body: { email },
       }),
     }),
-    verifyUser: builder.mutation<void, string>({
-      query: (verification_code) => ({
-        url: 'api/user/me/',
-        method: 'PATCH',
-        body: { verification_code },
+    verifyUser: builder.mutation<void, VerifyCode>({
+      query: (verifyObj) => ({
+        url: 'verify-code/',
+        method: 'PUT',
+        body: verifyObj,
       }),
     }),
     setPassword: builder.mutation<void, string>({
