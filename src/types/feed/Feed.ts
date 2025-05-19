@@ -1,5 +1,6 @@
 export interface Feed {
-  recentCompletedModels: PlotModel[];
+  recentModels: PlotModel[];
+  pending_model_ids: number[];
 }
 
 export interface PlotModel {

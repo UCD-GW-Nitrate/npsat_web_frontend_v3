@@ -1,10 +1,11 @@
 'use client';
 
+import { useGetModelStatusQuery } from '@/store';
 import type { TableProps } from 'antd';
 import { Form, Input, Table, Typography } from 'antd';
 import type { GetRowKey, TableRowSelection } from 'antd/es/table/interface';
 import type { AnyObject } from 'immer/dist/internal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -16,6 +17,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   index: number;
 }
 
+// define component used to render each cell (of table body)
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   editing,
   isEditable = false,
@@ -50,6 +52,7 @@ function EditableTable<T extends AnyObject>({
   rowSelection,
   rowKey,
   onRow,
+  pendingModelIds,
 }: {
   columns: any[];
   dataSource: T[];
@@ -65,9 +68,53 @@ function EditableTable<T extends AnyObject>({
   onRow?: (record: T) => any;
   updateCallback?: (data: Partial<T>) => Promise<void>;
   deleteCallback?: (id: number) => Promise<void>;
+  pendingModelIds: number[];
 }) {
+  const [ids, setIds] = useState<number[]>(pendingModelIds)
+  const [latestData, setLatestData] = useState<T[]>(dataSource)
+  const { data } = useGetModelStatusQuery(
+    { ids },
+    {
+      pollingInterval: ids.length > 0 ? 1000 : 0,
+      skip: ids.length === 0,
+      refetchOnMountOrArgChange: true,
+    },
+  );
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<number>(0);
+
+   useEffect(()=>{
+    if (data) {
+      data.results.forEach(statusObj => {
+        const modelId = statusObj.id;
+        const status = statusObj.status;
+        const idx = pendingModelIds.indexOf(modelId)
+        setLatestData((prev)=>{
+          const newArray = [...prev]
+          if (newArray[idx]) {
+            newArray[idx] = {...newArray[idx], status}
+          }
+          return newArray
+        })
+        if (ids.includes(modelId) && status>2) {
+          setIds((prev)=>{
+            const newArray = [...prev]
+            newArray.splice(newArray.indexOf(modelId), 1)
+            return newArray
+          })
+        }
+      })
+    }
+  }, [data])
+
+  useEffect(() => {
+    setIds(pendingModelIds);
+  }, [pendingModelIds]);
+
+  useEffect(() => {
+    setLatestData(dataSource);
+  }, [dataSource]);
+
 
   const isEditing = (record: T) => record.id === editingKey;
 
@@ -135,6 +182,7 @@ function EditableTable<T extends AnyObject>({
                 event.stopPropagation();
                 edit(record);
               }}
+              disabled={record.status<3}
             >
               Edit
             </Typography.Link>
@@ -143,6 +191,7 @@ function EditableTable<T extends AnyObject>({
                 event.stopPropagation();
                 deleteModel(record.id);
               }}
+              disabled={record.status<3}
             >
               Delete
             </Typography.Link>
@@ -187,12 +236,16 @@ function EditableTable<T extends AnyObject>({
           },
         }}
         columns={mergedColumns}
-        dataSource={dataSource}
+        dataSource={latestData}
         footer={footer}
         scroll={scroll}
         rowSelection={rowSelection}
         rowKey={rowKey}
         onRow={rowClicked}
+        rowClassName={(record) => {
+          if (record.status !== 3) return 'row-disabled';
+          return '';
+        }}
       />
     </Form>
   );
