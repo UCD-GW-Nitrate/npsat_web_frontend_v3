@@ -239,7 +239,14 @@ function EditableTable<T extends AnyObject>({
         dataSource={latestData}
         footer={footer}
         scroll={scroll}
-        rowSelection={rowSelection}
+        rowSelection={{
+          ...rowSelection,
+          getCheckboxProps: (record) => ({
+            disabled: record.status !== 3,
+            style: record.status !== 3 ? { display: 'none' } : undefined,
+          }),
+        }}
+
         rowKey={rowKey}
         onRow={rowClicked}
         rowClassName={(record) => {
