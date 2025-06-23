@@ -29,6 +29,9 @@ import { CropLoadingDetailsBaseComparisonTable } from '../../components/model/Cr
 import ModelChart from '../../components/model/ModelChart';
 import ModelDescriptionTable from '../../components/model/ModelDescriptionTable';
 import ModelDifferenceHeatmap from '../../components/model/ModelDifferenceHeatmap';
+import ExploreModelWells from '@/components/model/ExploreModelWells';
+import WellsMap from '@/components/maps/WellsMap';
+import WellsMap2 from '@/components/maps/WellsMapcopy';
 
 const ModelPage = () => {
   const params = useSearchParams();
@@ -41,9 +44,7 @@ const ModelPage = () => {
   const [selectedComparisonTab, setSelectedComparisonTab] =
     useState<string>('1');
 
-  const MapWithNoSSR = dynamic(() => import('@/components/maps/RegionsMap'), {
-    ssr: false,
-  });
+  
 
   const router = useRouter();
 
@@ -187,6 +188,8 @@ const ModelPage = () => {
     }
   };
 
+  console.log("REGION DATA ", regions)
+
   return (
     <AppLayout>
       <HBox>
@@ -255,12 +258,12 @@ const ModelPage = () => {
             />
           )}
         </InfoContainer>
-        <InfoContainer title="Regions included in this scenario run">
-          <div id="map" style={{ height: '600px', margin: 0 }}>
-            <MapWithNoSSR
-              data={regions.map((region: Region) => region.geometry)}
-            />
-          </div>
+        
+        <InfoContainer title="Wells included in this scenario run">
+          <ExploreModelWells 
+            regions={regions} 
+            customModelDetail={customModelDetail}
+          />
         </InfoContainer>
       </VBox>
     </AppLayout>
