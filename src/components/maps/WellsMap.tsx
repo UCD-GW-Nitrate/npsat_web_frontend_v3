@@ -4,6 +4,7 @@ import type { Geometry } from '@/types/region/Region';
 import { Well } from '@/types/well/Well';
 import RegionsMap from './RegionsMap';
 import { useMemo, useState } from 'react';
+import { Tooltip } from 'antd';
 
 export interface MapProps {
   path: Geometry[];
@@ -67,7 +68,11 @@ const WellsMap = ({ path, wells, wellProperty, setEid }: MapProps) => {
             eventHandlers={{
               click: () => handleClick(well)
             }}
-          />
+          >
+            <Tooltip direction="top" offset={[0, -10]} opacity={0.9}>
+              <span>{`${well[wellProperty]}`}</span>
+            </Tooltip>
+          </CircleMarker>
         ))
       }
     </RegionsMap>
