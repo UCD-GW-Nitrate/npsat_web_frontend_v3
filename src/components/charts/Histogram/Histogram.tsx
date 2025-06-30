@@ -33,9 +33,13 @@ const Histogram = ({
       title: {
         text: `${xTitle ?? ''}`,
       },
-      type: 'category',
-      tickPlacement: 'on'
+      type: 'numeric',
+      tickPlacement: 'on',
+      labels: {
+        formatter: (val) => Number(val).toFixed(0),
+      },
     },
+
     yaxis: {
       title: {
         text: `${yTitle ?? ''}`,

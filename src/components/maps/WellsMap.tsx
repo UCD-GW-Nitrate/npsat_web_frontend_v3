@@ -5,7 +5,6 @@ import { Well } from '@/types/well/Well';
 import RegionsMap from './RegionsMap';
 import { useMemo, useState } from 'react';
 
-
 export interface MapProps {
   path: Geometry[];
   wells: Well[];
@@ -15,7 +14,7 @@ export interface MapProps {
 
 // eslint-disable-next-line no-empty-pattern
 const WellsMap = ({ path, wells, wellProperty, setEid }: MapProps) => {
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState<null | number>(null)
 
   const minValue = useMemo(
     () => {
