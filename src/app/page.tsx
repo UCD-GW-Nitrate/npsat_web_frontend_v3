@@ -37,7 +37,6 @@ const Index = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  console.log(displayData)
   const {
     flowScenarios: flowScenarioOptions,
     loadScenarios: loadScenarioOptions,
@@ -46,8 +45,8 @@ const Index = () => {
   } = useScenarioGroups();
 
   useEffect(() => {
-    setDisplayData(data?.recentModels ?? []);
-    setPendingModelIds(data?.pending_model_ids ?? [])
+    setDisplayData(data?.recentModels ?? displayData);
+    setPendingModelIds(data?.pending_model_ids ?? pendingModelIds)
   }, [data]);
 
   useEffect(() => {
