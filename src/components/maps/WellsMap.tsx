@@ -9,7 +9,7 @@ import { Tooltip } from 'antd';
 export interface MapProps {
   path: Geometry[];
   wells: Well[];
-  wellProperty: 'depth' | 'wt2t';
+  wellProperty: 'depth' | 'wt2t' | 'unsat' | 'slmod';
   setEid: (arg: number) => void;
 }
 

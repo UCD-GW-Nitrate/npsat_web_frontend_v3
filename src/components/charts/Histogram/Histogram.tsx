@@ -18,6 +18,13 @@ const Histogram = ({
   xTitle,
   yTitle,
 }: HistogramProps) => {
+  // const transformedData = data.map(series => {
+  //   return {
+  //     ...series,
+  //     data: series.data.map(value => (value.y < 0.5 ? {...value, y: 0.5 : value))
+  //   };
+  // });
+
   const options: ApexOptions = {
     title: {
       text: `${title ?? ''}`,
@@ -25,6 +32,9 @@ const Histogram = ({
     },
     tooltip: {
       inverseOrder: true,
+      y: {
+        formatter: val => `${val.toFixed(5)}%`
+      },
     },
     dataLabels: {
       enabled: false
@@ -34,7 +44,7 @@ const Histogram = ({
         text: `${xTitle ?? ''}`,
       },
       type: 'numeric',
-      tickPlacement: 'on',
+      tickPlacement: 'between',
       labels: {
         formatter: (val) => Number(val).toFixed(0),
       },
@@ -67,7 +77,7 @@ const Histogram = ({
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '80%',
+        columnWidth: '100%',
         borderRadius: 4,
       },
     },

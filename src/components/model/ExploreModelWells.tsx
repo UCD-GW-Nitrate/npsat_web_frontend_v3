@@ -135,12 +135,13 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     [allWells]
   );
 
-  const histData = (wellProperty: 'depth' | 'unsat' | 'slmod' | 'wt2t', title: string, binSize: number) => {
+  const histData = (wellProperty: 'depth' | 'unsat' | 'slmod' | 'wt2t', title: string) => {
     const allVals = allWells?.map((well: Well) => well[wellProperty]);
-    if (!allVals) return []
-    const minVal = Math.min(0)
+    if (!allVals) return ([{ name: title, data: [] }])
+    const numBins = Math.ceil(Math.sqrt(allVals.length/10));
+    const minVal = 0
     const maxVal = Math.max(...allVals)
-    const numBins = Math.ceil((maxVal - minVal) / binSize);
+    const binSize = Math.ceil((maxVal - minVal) / numBins);
     const count = new Array(numBins+1).fill(0);
     allVals?.forEach(val => {
       const binIndex = Math.floor(val / binSize);
@@ -149,20 +150,20 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     const data = [];
     for (let i = 0; i < numBins+1; i++) {
       const binCenter = minVal + i * binSize + binSize / 2;
-      data.push({x: binCenter, y: count[i] / allVals.length});
+      data.push({x: binCenter, y: count[i] / allVals.length * 100});
     }
     return ([
       {
         name: title,
-        data: data
+        data: data,
       }]
     )
   }
 
-  const depthChart = histData("depth", "Percentage of Wells", 50)
-  const unsatChart = histData("unsat", "Percentage of Wells", 10)
-  const slChart = histData("slmod", "Percentage of Wells", 30)
-  const wt2tChart = histData("wt2t", "Percentage of Wells", 30)
+  const depthChart = histData("depth", "Percentage of Wells")
+  const unsatChart = histData("unsat", "Percentage of Wells")
+  const slChart = histData("slmod", "Percentage of Wells")
+  const wt2tChart = histData("wt2t", "Percentage of Wells")
   
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     console.log('click', e);
