@@ -1,20 +1,51 @@
-import { CircleMarker } from 'react-leaflet';
+import { CircleMarker, Tooltip } from 'react-leaflet';
 
 import type { Geometry } from '@/types/region/Region';
-import { Well } from '@/types/well/Well';
+import { Well } from '@/types/well/WellExplorer';
 import RegionsMap from './RegionsMap';
 import { useMemo, useState } from 'react';
-import { Tooltip } from 'antd';
 
 export interface MapProps {
   path: Geometry[];
   wells: Well[];
   wellProperty: 'depth' | 'wt2t' | 'unsat' | 'slmod';
-  setEid: (arg: number) => void;
 }
 
+const Legend = ({ min, max }: { min: number; max: number }) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        backgroundColor: "white",
+        padding: "10px",
+        borderRadius: "8px",
+        boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+        fontSize: "12px",
+        zIndex: 1000,
+      }}
+    >
+      <div style={{ fontWeight: "bold", marginBottom: "4px" }}>Legend</div>
+      <div
+        style={{
+          background: "linear-gradient(to right, rgb(255,165,0), rgb(0,128,0))",
+          height: "12px",
+          width: "150px",
+          marginBottom: "4px",
+        }}
+      />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span>{min.toFixed(2)+'m'}</span>
+        <span>{max.toFixed(2)+'m'}</span>
+      </div>
+    </div>
+  );
+};
+
+
 // eslint-disable-next-line no-empty-pattern
-const WellsMap = ({ path, wells, wellProperty, setEid }: MapProps) => {
+const WellsMap = ({ path, wells, wellProperty }: MapProps) => {
   const [selected, setSelected] = useState<null | number>(null)
 
   const minValue = useMemo(
@@ -46,7 +77,6 @@ const WellsMap = ({ path, wells, wellProperty, setEid }: MapProps) => {
   }
 
   function handleClick(well: Well) {
-    setEid(well.eid);
     setSelected(well.eid);
   }
 
@@ -69,12 +99,19 @@ const WellsMap = ({ path, wells, wellProperty, setEid }: MapProps) => {
               click: () => handleClick(well)
             }}
           >
-            <Tooltip direction="top" offset={[0, -10]} opacity={0.9}>
+            <Tooltip 
+              direction="top" 
+              offset={[0, -10]}
+              opacity={0.9}
+              permanent={selected === well.eid}
+              interactive
+            >
               <span>{`${well[wellProperty]}`}</span>
             </Tooltip>
           </CircleMarker>
         ))
       }
+      <Legend min={minValue} max={maxValue} />
     </RegionsMap>
   );
 };

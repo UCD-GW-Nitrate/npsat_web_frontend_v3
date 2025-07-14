@@ -15,7 +15,7 @@ export interface MapProps {
 // eslint-disable-next-line no-empty-pattern
 const RegionsMap = ({ data, onEachFeature, selected, children }: MapProps) => {
   return (
-    <MapContainer center={[37.58, -119.4179]} zoom={6}>
+    <MapContainer center={[37.58, -119.4179]} zoom={6} maxZoom={18}>
       <GeoJSON
         key={data.length + (selected?.length ?? 0)}
         data={data as unknown as GeoJsonObject}

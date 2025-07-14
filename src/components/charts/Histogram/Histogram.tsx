@@ -10,6 +10,7 @@ interface HistogramProps {
   title?: string;
   xTitle?: string;
   yTitle?: string;
+  binSize?: number;
 }
 
 const Histogram = ({
@@ -17,6 +18,7 @@ const Histogram = ({
   title,
   xTitle,
   yTitle,
+  binSize,
 }: HistogramProps) => {
   // const transformedData = data.map(series => {
   //   return {
@@ -32,6 +34,15 @@ const Histogram = ({
     },
     tooltip: {
       inverseOrder: true,
+      x: {
+        formatter: (value) : string => {
+          if (binSize && binSize!=0) { 
+            return (value-binSize/2).toString() + ' - ' + (value+binSize/2).toString();
+          } else {
+            return value.toString();
+          }
+        },
+      },
       y: {
         formatter: val => `${val.toFixed(5)}%`
       },

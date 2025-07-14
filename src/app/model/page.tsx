@@ -188,7 +188,7 @@ const ModelPage = () => {
     }
   };
 
-  console.log("REGION DATA ", regions)
+  console.log("REGION DATA ", customModelDetail)
 
   return (
     <AppLayout>
