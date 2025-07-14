@@ -3,17 +3,19 @@ import type { Layer } from 'leaflet';
 import { GeoJSON, MapContainer, TileLayer } from 'react-leaflet';
 
 import type { Geometry } from '@/types/region/Region';
+import { ReactNode } from 'react';
 
 export interface MapProps {
   data: Geometry[];
-  onEachFeature?: (feature: any, layer: Layer) => void;
+  onEachFeature?: (feature: any, layer: Layer) => void; // function that binds event handlers (click, hover) to layers
   selected?: number[];
+  children?: ReactNode; // allows the injection of markers (ex. well markers) into the component
 }
 
 // eslint-disable-next-line no-empty-pattern
-const RegionsMap = ({ data, onEachFeature, selected }: MapProps) => {
+const RegionsMap = ({ data, onEachFeature, selected, children }: MapProps) => {
   return (
-    <MapContainer center={[37.58, -119.4179]} zoom={6}>
+    <MapContainer center={[37.58, -119.4179]} zoom={6} maxZoom={18}>
       <GeoJSON
         key={data.length + (selected?.length ?? 0)}
         data={data as unknown as GeoJsonObject}
@@ -31,6 +33,7 @@ const RegionsMap = ({ data, onEachFeature, selected }: MapProps) => {
             : { color: 'blue' }
         }
       />
+      { children }
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     </MapContainer>
   );

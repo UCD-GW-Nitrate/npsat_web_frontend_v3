@@ -1,0 +1,19 @@
+@keyframes grow {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.icon-grow {
+  display: inline-block;
+  animation: grow 500ms ease forwards;
+}
+
+.row-disabled {
+  background-color: rgb(248, 248, 248);
+}

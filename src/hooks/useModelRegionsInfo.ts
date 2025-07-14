@@ -31,6 +31,7 @@ export const useModelRegions = (regionArray: ModelRegion[]) => {
             result.geometry.properties.name = region.data.name;
             return result;
           });
+          console.log(formattedRegions)
           setRegions(formattedRegions);
         })
         .catch((err: any) => {

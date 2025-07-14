@@ -26,7 +26,7 @@ const feedApi = createApi({
           };
         },
         transformResponse: (response: FeedResponse) => {
-          const plotModels: PlotModel[] = response.recent_completed_models.map(
+          const plotModels: PlotModel[] = response.recent_models.map(
             (model) => {
               return {
                 dateCompleted: new Date(model.date_completed)
@@ -61,7 +61,8 @@ const feedApi = createApi({
             },
           );
           return {
-            recentCompletedModels: plotModels,
+            recentModels: plotModels,
+            pending_model_ids: response.pending_model_ids
           };
         },
       }),

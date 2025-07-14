@@ -16,6 +16,26 @@ export const REGION_MACROS = {
   C2V_SIM_SUBREGIONS: 6,
 };
 
+export const MANTIS_REGION_TYPES: number[] = [
+  0,
+  1,
+  5,
+  3,
+  2,
+  4,
+  5,
+];
+
+export const WELLS_REGION_BINS = [
+  null,
+  'basin',
+  'subreg',
+  'b118',
+  'county',
+  'tship',
+  'subreg',
+];
+
 export const COLUMNS: any[] = [
   { dataIndex: 'name', title: 'Scenario Name', width: 150, isEditable: true },
   {

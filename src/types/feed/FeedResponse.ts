@@ -2,7 +2,8 @@ import type { MantisResult } from '../model/MantisResult';
 import type { Scenario } from '../model/Scenario';
 
 export interface FeedResponse {
-  recent_completed_models: PlotModelResponse[];
+  recent_models: PlotModelResponse[];
+  pending_model_ids: number[];
 }
 
 export interface PlotModelResponse {

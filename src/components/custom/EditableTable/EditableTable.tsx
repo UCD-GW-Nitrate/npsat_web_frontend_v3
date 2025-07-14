@@ -1,10 +1,15 @@
 'use client';
 
+import { useGetModelStatusQuery } from '@/store';
+import { MODEL_STATUS_MACROS } from '@/utils/constants';
+import { CheckCircleFilled, CloseCircleFilled, CloseCircleTwoTone } from '@ant-design/icons';
 import type { TableProps } from 'antd';
-import { Form, Input, Table, Typography } from 'antd';
+import { Form, Input, Table, Tooltip, Typography } from 'antd';
 import type { GetRowKey, TableRowSelection } from 'antd/es/table/interface';
 import type { AnyObject } from 'immer/dist/internal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import './styles.css';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -16,6 +21,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   index: number;
 }
 
+// define component used to render each cell (of table body)
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   editing,
   isEditable = false,
@@ -50,6 +56,7 @@ function EditableTable<T extends AnyObject>({
   rowSelection,
   rowKey,
   onRow,
+  pendingModelIds,
 }: {
   columns: any[];
   dataSource: T[];
@@ -65,9 +72,73 @@ function EditableTable<T extends AnyObject>({
   onRow?: (record: T) => any;
   updateCallback?: (data: Partial<T>) => Promise<void>;
   deleteCallback?: (id: number) => Promise<void>;
+  pendingModelIds: number[];
 }) {
+  const [ids, setIds] = useState<number[]>(pendingModelIds)
+  const [latestData, setLatestData] = useState<T[]>(dataSource)
+  const { data } = useGetModelStatusQuery(
+    { ids },
+    {
+      pollingInterval: ids.length > 0 ? 1000 : 0,
+      skip: ids.length === 0,
+      refetchOnMountOrArgChange: true,
+    },
+  );
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<number>(0);
+
+  useEffect(() => {
+    setIds(pendingModelIds);
+  }, [pendingModelIds]);
+
+  useEffect(() => {
+    setLatestData(dataSource);
+  }, [dataSource]);
+
+
+  useEffect(()=>{
+    if (data) {
+      data.results.forEach(statusObj => {
+        const modelId = statusObj.id;
+        const status = statusObj.status;
+
+        setLatestData(prev => 
+          prev.map(row =>
+            row.id === modelId ? { ...row, status: status } : row
+          )
+        );
+
+        console.log("Checking ", ids)
+
+        if (ids.includes(modelId) && status>2) {
+          setIds(prev => {
+            const newArray = [...prev]
+            newArray.splice(newArray.indexOf(modelId), 1)
+            return newArray
+          })
+          if (status==MODEL_STATUS_MACROS.COMPLETED) showNewStatus(modelId)
+        }
+      })
+    }
+  }, [data])
+
+
+  const showNewStatus = (modelId: number) => {
+    setLatestData(prev =>
+      prev.map(row =>
+        row.id === modelId ? { ...row, status: 5 } : row
+      )
+    );
+
+    setTimeout(() => {
+      setLatestData(prev =>
+        prev.map(row =>
+          row.id === modelId ? { ...row, status: MODEL_STATUS_MACROS.COMPLETED } : row
+        )
+      );
+    }, 5000);
+  };
+
 
   const isEditing = (record: T) => record.id === editingKey;
 
@@ -115,8 +186,6 @@ function EditableTable<T extends AnyObject>({
       render: (_: any, record: T & { id: number }) => {
         const editable = isEditing(record);
 
-        console.log('editable', editable, record.id, editingKey);
-
         return editable ? (
           <span>
             <Typography.Link
@@ -135,6 +204,7 @@ function EditableTable<T extends AnyObject>({
                 event.stopPropagation();
                 edit(record);
               }}
+              disabled={record.status !== MODEL_STATUS_MACROS.COMPLETED}
             >
               Edit
             </Typography.Link>
@@ -143,6 +213,7 @@ function EditableTable<T extends AnyObject>({
                 event.stopPropagation();
                 deleteModel(record.id);
               }}
+              disabled={record.status !== MODEL_STATUS_MACROS.COMPLETED}
             >
               Delete
             </Typography.Link>
@@ -151,6 +222,44 @@ function EditableTable<T extends AnyObject>({
       },
     },
   ];
+
+  const customRowSelection: TableRowSelection<T> = {
+    ...rowSelection,
+    getCheckboxProps: (record) => ({
+      disabled: record.status !== 3,
+    }),
+    renderCell: (_checked, record, _index, originNode) => {
+      if (record.status === MODEL_STATUS_MACROS.READY) {
+        return (
+          <Tooltip title="Model Queued">
+            <CloseCircleTwoTone twoToneColor={['#E5E5BF', '#E5E5BF']} style={{ fontSize: 15 }} />
+          </Tooltip>
+        )
+      } else if (record.status === MODEL_STATUS_MACROS.RUNNING) {
+        return (
+          <Tooltip title="Running">
+            <CloseCircleTwoTone twoToneColor={['#FDDA0D', '#FDDA0D']} style={{ fontSize: 15 }} />
+          </Tooltip>
+        )
+      } else if (record.status === MODEL_STATUS_MACROS.ERROR) {
+        return (
+          <Tooltip title="Run Failed">
+            <CloseCircleFilled style={{ fontSize: 15, color: "#ff4d4f" }} />
+          </Tooltip>
+        )
+      } else if (record.status === 5) {
+        return (
+          <Tooltip title="Run Completed">
+            <div className="icon-grow">
+              <CheckCircleFilled style={{ fontSize: 15, color: "#52c41a" }} />
+            </div>
+          </Tooltip>
+        )
+      }
+      return originNode;
+    },
+  };
+
 
   const mergedColumns: TableProps<T>['columns'] = editableColumns.map(
     (col: any) => {
@@ -187,12 +296,16 @@ function EditableTable<T extends AnyObject>({
           },
         }}
         columns={mergedColumns}
-        dataSource={dataSource}
+        dataSource={latestData}
         footer={footer}
         scroll={scroll}
-        rowSelection={rowSelection}
+        rowSelection={customRowSelection}
         rowKey={rowKey}
         onRow={rowClicked}
+        rowClassName={(record) => {
+          if (record.status !== MODEL_STATUS_MACROS.COMPLETED) return 'row-disabled';
+          return '';
+        }}
       />
     </Form>
   );

@@ -28,7 +28,10 @@ const Index = () => {
   const { data, error, refetch } = useFetchFeedQuery();
   const [patchModel] = usePatchModelMutation();
   const [displayData, setDisplayData] = useState<PlotModel[]>(
-    data?.recentCompletedModels ?? [],
+    data?.recentModels ?? [],
+  );
+  const [pendingModelIds, setPendingModelIds] = useState<number[]>(
+    data?.pending_model_ids ?? [],
   );
   const [selected, setSelected] = useState<number[]>([]);
   const router = useRouter();
@@ -42,7 +45,8 @@ const Index = () => {
   } = useScenarioGroups();
 
   useEffect(() => {
-    setDisplayData(data?.recentCompletedModels ?? []);
+    setDisplayData(data?.recentModels ?? displayData);
+    setPendingModelIds(data?.pending_model_ids ?? pendingModelIds)
   }, [data]);
 
   useEffect(() => {
@@ -60,7 +64,7 @@ const Index = () => {
 
   const filterScenarios = (filter: string | null) => {
     if (filter) {
-      const newData = (data?.recentCompletedModels ?? []).filter(
+      const newData = (data?.recentModels ?? []).filter(
         (d) =>
           d.flowScenario === filter ||
           d.unsatScenario === filter ||
@@ -69,7 +73,7 @@ const Index = () => {
       );
       setDisplayData(newData);
     } else {
-      setDisplayData(data?.recentCompletedModels ?? []);
+      setDisplayData(data?.recentModels ?? []);
     }
   };
 
@@ -184,6 +188,7 @@ const Index = () => {
               },
             };
           }}
+          pendingModelIds={pendingModelIds}
         />
       </VBox>
     </AppLayout>
