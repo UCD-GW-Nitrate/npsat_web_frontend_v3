@@ -1,7 +1,6 @@
 'use client';
 
 import { Button, Tabs } from 'antd';
-import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -22,7 +21,6 @@ import {
 import { createNewModel } from '@/store/slices/modelSlice';
 import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
 import type { ModelRun } from '@/types/model/ModelRun';
-import type { Region } from '@/types/region/Region';
 
 import ComparisonChart from '../../components/model/ComparisonChart';
 import { CropLoadingDetailsBaseComparisonTable } from '../../components/model/CropLoadingDetailsTable';
@@ -30,8 +28,6 @@ import ModelChart from '../../components/model/ModelChart';
 import ModelDescriptionTable from '../../components/model/ModelDescriptionTable';
 import ModelDifferenceHeatmap from '../../components/model/ModelDifferenceHeatmap';
 import ExploreModelWells from '@/components/model/ExploreModelWells';
-import WellsMap from '@/components/maps/WellsMap';
-import WellsMap2 from '@/components/maps/WellsMapcopy';
 
 const ModelPage = () => {
   const params = useSearchParams();

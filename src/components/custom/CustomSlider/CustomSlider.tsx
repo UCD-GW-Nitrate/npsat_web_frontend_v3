@@ -1,17 +1,43 @@
-import { InputNumber, Row, Slider } from "antd";
-import { useEffect } from "react";
+import { InputNumber, Slider } from "antd";
+import debounce from "lodash.debounce";
+import { useCallback, useEffect } from "react";
 import { useState } from "react";
 
 interface SliderProps {
   value: number,
-  debounceChange: (value: number) => void;
-  onAfterChange: (value: number) => void;
+  onAfterChange: (value: number) => Promise<void>;
 }
 
-export default function CustomSlider({ value, debounceChange, onAfterChange }: SliderProps) {
+export default function CustomSlider({ value, onAfterChange }: SliderProps) {
   const [slider, setSlider] = useState(value)
-  useEffect(()=> setSlider(value), [value])
-  useEffect(()=> {debounceChange(slider)}, [slider])
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(
+    () => setSlider(value), 
+    [value]
+  );
+
+  useEffect(
+    () => {
+      hydrated ? debounceChange(slider) : setHydrated(true);
+    },
+    [slider]
+  );
+
+  const debounceChange = useCallback(
+    debounce(async (val: number) => {
+      console.log("Debounced value:", val);
+      await onAfterChange(val);
+    }, 500),
+    [onAfterChange]
+  );
+
+  const handleSubmit = async (val: number) => {
+    debounceChange.cancel;
+    setSlider(val);
+    await onAfterChange(val);
+  }
+
   return (
     <div style={{display: 'flex', flexDirection: 'row', flex: 1, justifyContent: 'flex-start'}}>
       <div style={{width: '80%'}}>
@@ -19,7 +45,6 @@ export default function CustomSlider({ value, debounceChange, onAfterChange }: S
           min={0}
           max={1000}
           onChange={(value)=>setSlider(value)}
-          onAfterChange={onAfterChange}
           value={slider}
           step={1}
         />
@@ -29,7 +54,7 @@ export default function CustomSlider({ value, debounceChange, onAfterChange }: S
         max={1000}
         style={{ margin: '0 16px' }}
         value={slider}
-        onChange={value => value && onAfterChange(value)}
+        onChange={val => val && handleSubmit(val)}
       />
     </div>
   );
