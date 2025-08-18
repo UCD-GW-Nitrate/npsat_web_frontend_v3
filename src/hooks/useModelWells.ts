@@ -26,14 +26,14 @@ export default function useModelWells({ regions, customModelDetail }: Props) {
 
   const getWellsParams = useMemo(
     () => {
-      if (!(regions && regions[0]?.region_type)) return []
+      if (!regions || !regions[0]) return []
       if (regions[0].region_type == 0) {
         return Array(3).fill(0).map((_, idx) => ({
             flow: flow,
             scen: scen,
             wtype: wType, 
             bmap: 1, 
-            idmap: idx,
+            idmap: idx+1,
             por: por
           })
         ); 
@@ -105,7 +105,7 @@ export default function useModelWells({ regions, customModelDetail }: Props) {
       setLoading(false);
     }
 
-    if (regions && regions[0]?.region_type) getWells()
+    if (regions && regions[0]) getWells()
   }, [regions])
 
   const getWellsByAgeThres = async (agethres: number) => {

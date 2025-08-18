@@ -134,7 +134,7 @@ export const WellsAndUrfData = ({
       </Select>
       <div
         style={{
-          height: '600px',
+          height: '500px',
           width: '100%',
           marginTop: 20,
           borderRadius: 6,
