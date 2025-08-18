@@ -6,9 +6,10 @@ import { useState } from "react";
 interface SliderProps {
   value: number,
   onAfterChange: (value: number) => Promise<void>;
+  maxValue?: number
 }
 
-export default function CustomSlider({ value, onAfterChange }: SliderProps) {
+export default function CustomSlider({ value, onAfterChange, maxValue }: SliderProps) {
   const [slider, setSlider] = useState(value)
   const [hydrated, setHydrated] = useState(false)
 
@@ -43,15 +44,15 @@ export default function CustomSlider({ value, onAfterChange }: SliderProps) {
       <div style={{width: '80%'}}>
         <Slider
           min={0}
-          max={1000}
+          max={maxValue ? maxValue : 1000}
           onChange={(value)=>setSlider(value)}
           value={slider}
-          step={1}
+          step={maxValue && maxValue < 1 ? 0.1 : 1}
         />
       </div>
       <InputNumber
         min={0}
-        max={1000}
+        max={maxValue ? maxValue : 1000}
         style={{ margin: '0 16px' }}
         value={slider}
         onChange={val => val && handleSubmit(val)}

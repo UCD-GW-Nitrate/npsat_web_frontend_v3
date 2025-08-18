@@ -2,6 +2,7 @@
 
 import LineChart from "@/components/charts/LineChart/LineChart";
 import Scatterplot from "@/components/charts/Scatterplot/Scatterplot";
+import AppLayout from "@/components/custom/AppLayout/AppLayout";
 import CustomSlider from "@/components/custom/CustomSlider/CustomSlider";
 import { WellsAndUrfData } from "@/components/maps/WellsAndUrfData";
 import useWells, { useWellsUrfData } from "@/hooks/useWellsUrfData";
@@ -47,6 +48,7 @@ const ExploreWellsPage = () => {
   const { allWells, loading: allWellsLoading, getWellsByAgeThres } = useWells({regions, requestDetail});
   const [displayData, setDisplayData] = useState<null | Well[]>(null);
   const [wellProperty, setWellProperty] = useState<'depth' | 'unsat' | 'slmod' | 'wt2t'>('depth');
+  const [ageThres, setAgeThres] = useState(0);
   const [porosity, setPorosity] = useState(0.2);
 
   const [eid, setEid] = useState<number | null>(null);
@@ -59,13 +61,25 @@ const ExploreWellsPage = () => {
   }, [allWells])
 
   const onFormSubmit = (formData: FieldValues) => {
-    setRegions(form.getFieldValue('regions'))
-    console.log(form.getFieldValue('regions'))
+    if (form.getFieldValue('regions')) {
+      setRegions(form.getFieldValue('regions'))
+      setMapEditing(false)
+    }
     setRequestDetail({
       flow: formData.flow,
       scen: formData.scen,
       wType: formData.wType
     })
+
+    if (!form.getFieldValue('regions') || form.getFieldValue('regions').length == 0) {
+      form.setFields([
+        {
+          name: "select_regions",
+          errors: ["Please select at least 1 Region"],
+        },
+      ]);
+      setMapEditing(true)
+    }
   }
 
   const [depthAgeChart, ecdfChart, urfChart] = useMemo(() => {
@@ -105,18 +119,26 @@ const ExploreWellsPage = () => {
     onClick: handleMenuClick,
   };
 
+  useEffect(() => {
+      async function refetchWells () { ageThres==0 ? setDisplayData(allWells) : setDisplayData(await getWellsByAgeThres(ageThres, porosity) ?? []) }
+      if (!allWellsLoading) { refetchWells() }
+    },
+    [allWellsLoading, ageThres, porosity]
+  )
+
 
   return (
-    <div>
+    <AppLayout>
       <Form
         form={form}
         name="control-hooks"
         onFinish={onFormSubmit}
         layout="inline"
+        style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, paddingBottom: 40}}
       >
-        <Form.Item name="select_regions" label="Select Regions From Map" >
+        <Form.Item name="select_regions" label="Select Region(s) From Map" required rules={[]} >
           {mapEditing ?
-            <Button type="link" onClick={() => setMapEditing(prev => !prev)} style={{width: 120}}>
+            <Button type="link" onClick={() => { setMapEditing(prev => !prev); form.setFields([{ name: "select_regions", errors: [] }]); }} style={{width: 120}}>
               Cancel Edit Mode
             </Button> 
             :
@@ -150,17 +172,17 @@ const ExploreWellsPage = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item style={{paddingLeft: 100}}>
           <Button type="primary" htmlType="submit">
             Fetch Wells
           </Button>
         </Form.Item>
       </Form>
-      <Row gutter={[24, 16]}>
+      <Row gutter={[24, 16]} style={{width: '100%'}}>
         <Col span={12}>
           <div style={{width: '100%'}}>
             <WellsAndUrfData
-              onSelectRegion={(regions: Region[]) => form.setFieldValue('regions', regions)}
+              onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: [] }]); form.setFieldValue('regions', regions) }}
               wellProperty={wellProperty}
               wells={displayData ? displayData : allWells}
               onSelectWell={setEid}
@@ -169,9 +191,9 @@ const ExploreWellsPage = () => {
             />
           </div>
         </Col>
-        <Col span={12}>
-          <Card style={{ width: '100%' }}>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+        <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 10 }} title="Change Data Display:">
+            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0}}>
               <p style={{width: 250, paddingRight: 20}}>Colorcode by Well Property:</p>
               <Dropdown menu={menuProps}>
                 <Button>
@@ -182,9 +204,15 @@ const ExploreWellsPage = () => {
                 </Button>
               </Dropdown>
             </div>
+          </Card>
+          <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 30 }} title="Filter by Age Fraction:" extra={<div>Displaying {displayData?.length ?? allWells.length} of {allWells.length} fetched Wells</div>}>
             <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-              <p style={{width: 250, paddingRight: 20}}>Filter by Age Fraction:</p>
-              <CustomSlider value={0} onAfterChange={async (val) => { setDisplayData(await getWellsByAgeThres(val, porosity)) }} />
+              <p style={{width: 250, paddingRight: 20}}>Set Minimum Age Thres:</p>
+              <CustomSlider value={ageThres} onAfterChange={async (val) => { setAgeThres(val) }} />
+            </div>
+            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+              <p style={{width: 250, paddingRight: 20}}>Set Porosity:</p>
+              <CustomSlider value={porosity} onAfterChange={async (val) => { setPorosity(val) }} maxValue={0.9} />
             </div>
           </Card>
         </Col>
@@ -199,7 +227,7 @@ const ExploreWellsPage = () => {
           <LineChart data={urfChart}title="URFs" />
         </Col>
       </Row>
-    </div>
+    </AppLayout>
   )
 }
 

@@ -145,7 +145,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
             </Dropdown>
           </div>
           <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-            <p style={{width: 250, paddingRight: 20}}>Filter by Age Fraction:</p>
+            <p style={{width: 250, paddingRight: 20}}>Set Minimum Age Thres</p>
             <CustomSlider value={0} onAfterChange={async (val) => { setDisplayData(await getWellsByAgeThres(val)) }} />
           </div>
         </Card>
