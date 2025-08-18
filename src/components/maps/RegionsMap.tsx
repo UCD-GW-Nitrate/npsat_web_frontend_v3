@@ -9,28 +9,28 @@ export interface MapProps {
   data: Geometry[];
   onEachFeature?: (feature: any, layer: Layer) => void; // function that binds event handlers (click, hover) to layers
   selected?: number[];
+  interactive?: boolean;
   children?: ReactNode; // allows the injection of markers (ex. well markers) into the component
 }
 
 // eslint-disable-next-line no-empty-pattern
-const RegionsMap = ({ data, onEachFeature, selected, children }: MapProps) => {
+const RegionsMap = ({ data, onEachFeature, selected, interactive=true, children }: MapProps) => {
   return (
     <MapContainer center={[37.58, -119.4179]} zoom={6} maxZoom={18}>
       <GeoJSON
-        key={data.length + (selected?.length ?? 0)}
+        key={data.length + (selected?.length ?? 0) + `${interactive ? 'selectable' : 'disable'}`}
         data={data as unknown as GeoJsonObject}
         onEachFeature={onEachFeature}
         style={(feature) =>
           // eslint-disable-next-line no-nested-ternary
-          selected !== undefined
-            ? selected?.indexOf(feature?.properties.id) !== -1
-              ? {
-                  color: 'red',
-                }
-              : {
-                  color: 'blue',
-                }
-            : { color: 'blue' }
+          selected !== undefined && selected?.indexOf(feature?.properties.id) !== -1 ? 
+            {
+              color: 'red',
+            }
+            : 
+            {
+              color: 'blue',
+            }
         }
       />
       { children }

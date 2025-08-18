@@ -23,7 +23,7 @@ export function getRegionParams (region: Region) {
     idmapIndex = Number(region.external_id)
   }
   else if (bmapIndex == 3) { // b118
-    bmaps[3].properties.features.forEach((row: any) => {
+    bmaps[3].features.forEach((row: any) => {
       if (row.properties.Basin_Subb == region.external_id) {
         idmapIndex = row.properties.ID
       }

@@ -1,4 +1,4 @@
-import type { Region } from '@/types/region/Region';
+import type { Geometry, Region } from '@/types/region/Region';
 import { Button, Card, Col, Dropdown, MenuProps, Row, Space } from 'antd';
 import Histogram from '../charts/Histogram/Histogram';
 import { ModelRun } from '@/types/model/ModelRun';
@@ -44,6 +44,14 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   const { allWells, loading, getWellsByAgeThres } = useModelWells({regions, customModelDetail});
   const [wellProperty, setWellProperty] = useState<'depth' | 'unsat' | 'slmod' | 'wt2t'>('depth');
   const [displayData, setDisplayData] = useState<null | Well[]>(null)
+
+  const configureData = (region: Region): Geometry => {
+    const { geometry } = region;
+    return {
+      ...geometry,
+      properties: { ...geometry.properties, id: region.id, name: region.name },
+    };
+  };
 
   const histData = (wellProperty: 'depth' | 'unsat' | 'slmod' | 'wt2t', title: string) => {
     const allVals = allWells.map((well: Well) => well[wellProperty]);
@@ -116,7 +124,8 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
       <Col span={12}>
         <div style={{width: '100%', height: 500}}>
           <WellsMap
-            path={regions.map((region: Region) => region.geometry)}
+            path={regions.map((region: Region) => configureData(region))}
+            selectedRegions={regions.map((region: Region) => region.id)}
             wellProperty={wellProperty}
             wells={displayData ? displayData : allWells}
           />

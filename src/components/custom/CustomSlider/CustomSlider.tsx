@@ -28,7 +28,7 @@ export default function CustomSlider({ value, onAfterChange }: SliderProps) {
     debounce(async (val: number) => {
       console.log("Debounced value:", val);
       await onAfterChange(val);
-    }, 500),
+    }, 300),
     [onAfterChange]
   );
 

@@ -8,15 +8,10 @@ export interface Well {
   depth: number
 }
 
-export interface WellExplorerRequest {
-  qType: number,
-  flow: number,
-  scen: number,
-  wType: number,
-  bmap: number,
-  idmap: number,
-  por?: number,
-  agethres?: number
+export interface WellExplorerRequestDetail {
+  flow: string,
+  scen: string,
+  wType: string,
 }
 
 export interface ResponseWell {
@@ -29,4 +24,26 @@ export interface ResponseWell {
   WT2T: number,
   SLmod: number,
   age?: number
+}
+
+
+export interface ResponseUrfDataDetail {
+  Sid: number,
+  Lat: number,
+  Lon: number,
+  Len: number,
+  InRiver: number,
+  WT2D: number,
+  Age_a: number,
+  Age_b: number,
+}
+
+export interface UrfData {
+  sid: number,
+  lat: number,
+  lon: number,
+  len: number,
+  wt2d: number,
+  ageA: number,
+  ageB: number,
 }
