@@ -200,3 +200,5 @@ export const WellsAndUrfData = ({
     </>
   );
 };
+
+export default WellsAndUrfData;

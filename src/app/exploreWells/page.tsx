@@ -4,16 +4,19 @@ import LineChart from "@/components/charts/LineChart/LineChart";
 import Scatterplot from "@/components/charts/Scatterplot/Scatterplot";
 import AppLayout from "@/components/custom/AppLayout/AppLayout";
 import CustomSlider from "@/components/custom/CustomSlider/CustomSlider";
-import { WellsAndUrfData } from "@/components/maps/WellsAndUrfData";
 import useWells, { useWellsUrfData } from "@/hooks/useWellsUrfData";
 import { ADEurf } from "@/logic/ExploreModelWells/ADEurf";
 import { Region } from "@/types/region/Region";
 import { Well, WellExplorerRequestDetail } from "@/types/well/WellExplorer";
 import { DownOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Dropdown, Form, MenuProps, Row, Select, Space } from "antd";
+import dynamic from "next/dynamic";
 import { useEffect, useMemo, useState } from "react";
 import { FieldValues } from "react-hook-form";
 
+const WellsAndUrfData = dynamic(() => import("@/components/maps/WellsAndUrfData"), {
+  ssr: false,
+});
 const { Option } = Select;
 
 const dropdownItems = [
@@ -138,7 +141,7 @@ const ExploreWellsPage = () => {
       >
         <Form.Item name="select_regions" label="Select Region(s) From Map" required rules={[]} >
           {mapEditing ?
-            <Button type="link" onClick={() => { setMapEditing(prev => !prev); form.setFields([{ name: "select_regions", errors: [] }]); }} style={{width: 120}}>
+            <Button type="link" onClick={() => { setMapEditing(prev => !prev); form.setFields([{ name: "select_regions", errors: undefined }]); }} style={{width: 120}}>
               Cancel Edit Mode
             </Button> 
             :
@@ -182,7 +185,7 @@ const ExploreWellsPage = () => {
         <Col span={12}>
           <div style={{width: '100%'}}>
             <WellsAndUrfData
-              onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: [] }]); form.setFieldValue('regions', regions) }}
+              onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: undefined }]); form.setFieldValue('regions', regions) }}
               wellProperty={wellProperty}
               wells={displayData ? displayData : allWells}
               onSelectWell={setEid}

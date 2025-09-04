@@ -2,9 +2,9 @@ import { CircleMarker, LayerGroup, Pane, Tooltip } from 'react-leaflet';
 
 import type { Geometry } from '@/types/region/Region';
 import { Well } from '@/types/well/WellExplorer';
-import RegionsMap from './RegionsMap';
 import { ReactNode, useMemo, useState } from 'react';
 import { Layer } from 'leaflet';
+import dynamic from 'next/dynamic';
 
 export interface MapProps {
   path: Geometry[];
@@ -90,8 +90,13 @@ const WellsMap = ({ path, wells, wellProperty, selectedRegions, regionsEditable,
     }
   }
 
+  const RegionsMapNoSSR = useMemo(
+    () => dynamic(() => import('./RegionsMap'), { ssr: false }),
+    [],
+  );
+
   return (
-    <RegionsMap
+    <RegionsMapNoSSR
       data={path}
       selected={selectedRegions}
       onEachFeature={onEachFeature}
@@ -130,7 +135,7 @@ const WellsMap = ({ path, wells, wellProperty, selectedRegions, regionsEditable,
         {children}
       </Pane>
       <Legend min={minValue} max={maxValue} />
-    </RegionsMap>
+    </RegionsMapNoSSR>
   );
 };
 
