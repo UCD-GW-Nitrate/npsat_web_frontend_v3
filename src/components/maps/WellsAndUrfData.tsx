@@ -43,13 +43,22 @@ export const WellsAndUrfData = ({
   const { data: townshipData } = useFetchTownshipQuery();
 
   const getMap = (): Region[] | undefined => {
-    if (mapType === 0) return centralValleyData;
-    if (mapType === 3) return b118BasinData;
-    if (mapType === 5) return subregionsData;
-    if (mapType === 2) return countyData;
-    if (mapType === 1) return basinData;
-    if (mapType === 4) return townshipData;
-    return [];
+    switch (mapType) {
+      case REGION_MACROS.CENTRAL_VALLEY: // central valley
+        return centralValleyData;
+      case REGION_MACROS.SUB_BASIN: // basin
+        return basinData;
+      case REGION_MACROS.CVHM_FARM: // subRegion
+        return subregionsData;
+      case REGION_MACROS.B118_BASIN: // B118 Basin
+        return b118BasinData;
+      case REGION_MACROS.COUNTY: // county
+        return countyData;
+      case REGION_MACROS.TOWNSHIPS: // Township
+        return townshipData;
+      default:
+        return [];
+    }
   };
 
   const handleTabChange = (tab: string) => {
