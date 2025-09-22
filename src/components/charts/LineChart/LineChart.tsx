@@ -79,6 +79,14 @@ const LineChart = ({
     yaxis: {
       labels: {
         formatter(val) {
+          if (title === "URFs") {
+            if (!val.toFixed(3).endsWith('0')) {
+              if (!val.toFixed(4).endsWith('0')) {
+                return val.toFixed(3);
+              }
+              return val.toFixed(3);
+            }
+          }
           return val.toFixed(2);
         },
       },

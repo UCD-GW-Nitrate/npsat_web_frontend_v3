@@ -4,6 +4,8 @@ import LineChart from "@/components/charts/LineChart/LineChart";
 import Scatterplot from "@/components/charts/Scatterplot/Scatterplot";
 import AppLayout from "@/components/custom/AppLayout/AppLayout";
 import CustomSlider from "@/components/custom/CustomSlider/CustomSlider";
+import { InfoContainer } from "@/components/custom/InfoContainer/InfoContainer";
+import { VBox } from "@/components/custom/VBox/VBox";
 import useWells, { useWellsUrfData } from "@/hooks/useWellsUrfData";
 import { ADEurf } from "@/logic/ExploreModelWells/ADEurf";
 import { Region } from "@/types/region/Region";
@@ -181,55 +183,61 @@ const ExploreWellsPage = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Row gutter={[24, 16]} style={{width: '100%'}}>
-        <Col span={12}>
-          <div style={{width: '100%'}}>
-            <WellsAndUrfData
-              onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: undefined }]); form.setFieldValue('regions', regions) }}
-              wellProperty={wellProperty}
-              wells={displayData ? displayData : allWells}
-              onSelectWell={setEid}
-              urfData={urfData}
-              disableRegionSelection={!mapEditing}
-            />
-          </div>
-        </Col>
-        <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 10 }} title="Change Data Display:">
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0}}>
-              <p style={{width: 250, paddingRight: 20}}>Colorcode by Well Property:</p>
-              <Dropdown menu={menuProps}>
-                <Button>
-                  {dropdownLabels[wellProperty]}
-                  <Space>
-                    <DownOutlined />
-                  </Space>
-                </Button>
-              </Dropdown>
+      <VBox spacing="large">
+        <Row gutter={[24, 8]} style={{width: '100%'}}>
+          <Col span={12}>
+            <div style={{width: '100%'}}>
+              <WellsAndUrfData
+                onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: undefined }]); form.setFieldValue('regions', regions) }}
+                wellProperty={wellProperty}
+                wells={displayData ? displayData : allWells}
+                onSelectWell={setEid}
+                urfData={urfData}
+                disableRegionSelection={!mapEditing}
+              />
             </div>
-          </Card>
-          <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 30 }} title="Filter by Age Fraction:" extra={<div>Displaying {displayData?.length ?? allWells.length} of {allWells.length} fetched Wells</div>}>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-              <p style={{width: 250, paddingRight: 20}}>Set Minimum Age Thres:</p>
-              <CustomSlider value={ageThres} onAfterChange={async (val) => { setAgeThres(val) }} />
-            </div>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-              <p style={{width: 250, paddingRight: 20}}>Set Porosity:</p>
-              <CustomSlider value={porosity} onAfterChange={async (val) => { setPorosity(val) }} maxValue={0.9} />
-            </div>
-          </Card>
-        </Col>
+          </Col>
+          <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 10 }} title="Change Data Display:">
+              <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0}}>
+                <p style={{width: 250, paddingRight: 20}}>Colorcode by Well Property:</p>
+                <Dropdown menu={menuProps}>
+                  <Button>
+                    {dropdownLabels[wellProperty]}
+                    <Space>
+                      <DownOutlined />
+                    </Space>
+                  </Button>
+                </Dropdown>
+              </div>
+            </Card>
+            <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 30 }} title="Filter by Age Fraction:" extra={<div>Displaying {displayData?.length ?? allWells.length} of {allWells.length} fetched Wells</div>}>
+              <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                <p style={{width: 250, paddingRight: 20}}>Set Minimum Age Thres:</p>
+                <CustomSlider value={ageThres} onAfterChange={async (val) => { setAgeThres(val) }} />
+              </div>
+              <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                <p style={{width: 250, paddingRight: 20}}>Set Porosity:</p>
+                <CustomSlider value={porosity} onAfterChange={async (val) => { setPorosity(val) }} maxValue={0.9} />
+              </div>
+            </Card>
+          </Col>
+        </Row> 
 
-        <Col span={12}>
-          <Scatterplot data={depthAgeChart} title="Depth vs Age" />
-        </Col>
-        <Col span={12}>
-          <LineChart data={ecdfChart} title="ECDF" />
-        </Col>
-        <Col span={12}>
-          <LineChart data={urfChart}title="URFs" />
-        </Col>
-      </Row>
+        <InfoContainer title={allWells.length==0 ? "Select a well to get started" : "Well Streampoints Data"}>
+          <Row gutter={[24, 16]} style={{width: '100%'}}>
+            <Col span={12}>
+              <Scatterplot data={depthAgeChart} title="Depth vs Age" />
+            </Col>
+            <Col span={12}>
+              <LineChart data={ecdfChart} title="ECDF" />
+            </Col>
+            <Col span={12}>
+              <LineChart data={urfChart}title="URFs" />
+            </Col>
+          </Row>
+        </InfoContainer>
+      </VBox>
     </AppLayout>
   )
 }
