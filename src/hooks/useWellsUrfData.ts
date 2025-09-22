@@ -13,7 +13,7 @@ export interface UseWellsProps {
 }
 
 export default function useWells({ regions, requestDetail }: UseWellsProps) {
-  const flow = requestDetail.flow === "C2VSIM" ? 0 : 1;
+  const flow = requestDetail.flow === "C2VSim" ? 0 : 1;
   const scen = requestDetail.scen === "Pump adjusted" ? 0 : 1;
   const wType = requestDetail.wType === "Irrigation" ? 0 : 1;
   const [allWells, setAllWells] = useState<Well[]>([]);
@@ -46,7 +46,7 @@ export default function useWells({ regions, requestDetail }: UseWellsProps) {
           });
         });
     }, 
-    [regions]
+    [regions, requestDetail]
   );
 
   useEffect(()=>{
@@ -95,7 +95,7 @@ export default function useWells({ regions, requestDetail }: UseWellsProps) {
     }
 
     if (regions && regions[0]) getWells()
-  }, [regions])
+  }, [regions, getWellsParams])
 
   const getWellsByAgeThres = async (agethres: number, por: number) => {
     let tempWells : Well[] = [];
@@ -152,7 +152,7 @@ export interface Props {
 }
 
 export function useWellsUrfData({ eid, requestDetail } : Props) {
-  const flow = requestDetail.flow === "C2VSIM" ? 0 : 1;
+  const flow = requestDetail.flow === "C2VSim" ? 0 : 1;
   const scen = requestDetail.scen === "Pump adjusted" ? 0 : 1;
   const wType = requestDetail.wType === "Irrigation" ? 0 : 1;
   const [urfData, setData] = useState<UrfData[]>([])

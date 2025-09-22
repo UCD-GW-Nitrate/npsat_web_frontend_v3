@@ -17,7 +17,7 @@ export default function useModelWells({ regions, customModelDetail }: Props) {
   const flow = customModelDetail.flow_scenario.name.includes("C2VSIM") ? 0 : 1;
   const scen = customModelDetail.flow_scenario.name.includes("Pumping") ? 0 : 1;
   const wType = customModelDetail.welltype_scenario.name.includes("Irrigation") ? 0 : 1;
-  const por = customModelDetail.porosity;
+  const por = customModelDetail.porosity / 100;
   const [allWells, setAllWells] = useState<Well[]>([]);
   const [loading, setLoading] = useState(true);
   const auth = useSelector<RootState, AuthState>((state) => {
