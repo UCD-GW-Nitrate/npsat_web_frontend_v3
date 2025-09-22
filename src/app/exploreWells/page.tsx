@@ -44,7 +44,7 @@ const ExploreWellsPage = () => {
   const [form] = Form.useForm()
   const [regions, setRegions] = useState<Region[]>([]);
   const [requestDetail, setRequestDetail] = useState<WellExplorerRequestDetail>({
-    flow: "C2VSIM", 
+    flow: "C2VSim", 
     scen: "Pump adjusted", 
     wType: "Irrigation"
   })
