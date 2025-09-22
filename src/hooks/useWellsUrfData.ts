@@ -152,7 +152,7 @@ export interface Props {
 }
 
 export function useWellsUrfData({ eid, requestDetail } : Props) {
-  const flow = requestDetail.flow === "C2VSIM" ? 0 : 1;
+  const flow = requestDetail.flow === "C2VSim" ? 0 : 1;
   const scen = requestDetail.scen === "Pump adjusted" ? 0 : 1;
   const wType = requestDetail.wType === "Irrigation" ? 0 : 1;
   const [urfData, setData] = useState<UrfData[]>([])
