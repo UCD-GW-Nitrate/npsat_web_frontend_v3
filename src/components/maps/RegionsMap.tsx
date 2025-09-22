@@ -35,7 +35,7 @@ const RegionsMap = ({ data, onEachFeature, selected, interactive=true, children 
 
   return (
     <MapContainer center={[37.58, -119.4179]} zoom={6} maxZoom={18} ref={map}>
-      <Pane name="regions-layer" style={{ zIndex: 700 }}>
+      <Pane name="regions-layer">
         <GeoJSON
           key={data.length + (selected?.length ?? 0) + `${interactive ? 'selectable' : 'disable'}`}
           data={data as unknown as GeoJsonObject}
