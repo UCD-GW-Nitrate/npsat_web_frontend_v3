@@ -177,14 +177,15 @@ const ExploreWellsPage = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item style={{paddingLeft: 100}}>
+        <Form.Item style={{margin: 0, paddingLeft: 100}}>
           <Button type="primary" htmlType="submit">
             Fetch Wells
           </Button>
         </Form.Item>
       </Form>
+      
       <VBox spacing="large">
-        <Row gutter={[24, 8]} style={{width: '100%'}}>
+        <Row gutter={[24, 8]} style={{ width: '100%', justifySelf: 'center' }}>
           <Col span={12}>
             <div style={{width: '100%'}}>
               <WellsAndUrfData
