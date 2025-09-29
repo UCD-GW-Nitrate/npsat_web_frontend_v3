@@ -4,7 +4,9 @@ import LineChart from "@/components/charts/LineChart/LineChart";
 import Scatterplot from "@/components/charts/Scatterplot/Scatterplot";
 import AppLayout from "@/components/custom/AppLayout/AppLayout";
 import CustomSlider from "@/components/custom/CustomSlider/CustomSlider";
+import { HBox } from "@/components/custom/HBox/Hbox";
 import { InfoContainer } from "@/components/custom/InfoContainer/InfoContainer";
+import { StandardText } from "@/components/custom/StandardText/StandardText";
 import { VBox } from "@/components/custom/VBox/VBox";
 import useWells, { useWellsUrfData } from "@/hooks/useWellsUrfData";
 import { ADEurf } from "@/logic/ExploreModelWells/ADEurf";
@@ -134,6 +136,10 @@ const ExploreWellsPage = () => {
 
   return (
     <AppLayout>
+      <StandardText variant="h1" style={{ marginTop: 10 }}>
+        Explore Wells
+      </StandardText>
+
       <Form
         form={form}
         name="control-hooks"
@@ -141,7 +147,7 @@ const ExploreWellsPage = () => {
         layout="inline"
         style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, paddingBottom: 40}}
       >
-        <Form.Item name="select_regions" label="Select Region(s) From Map" required rules={[]} >
+        <Form.Item name="select_regions" label="Select Region(s) From Map" required rules={[]}>
           {mapEditing ?
             <Button type="link" onClick={() => { setMapEditing(prev => !prev); form.setFields([{ name: "select_regions", errors: undefined }]); }} style={{width: 120}}>
               Cancel Edit Mode
@@ -155,75 +161,87 @@ const ExploreWellsPage = () => {
         </Form.Item>
 
         <Form.Item name="flow" label="Base Model" rules={[{ required: true }]}>
-          <Select style={{ width: 120 }}>
+          <Select style={{ width: 170 }}>
             <Option value="C2VSim">C2VSim</Option>
             <Option value="CVHM2">CVHM2</Option>
           </Select>
         </Form.Item>
 
         <Form.Item name="scen" label="Scenario" rules={[{ required: true }]}>
-          <Select style={{ width: 180 }}>
+          <Select style={{ width: 170 }}>
             <Option value="Pump adjusted">Pump adjusted</Option>
             <Option value="Recharge adjusted">Recharge adjusted</Option>
           </Select>
         </Form.Item>
 
         <Form.Item name="wType" label="Well Type" rules={[{ required: true }]}>
-          <Select
-            style={{ width: 120 }}
-          >
+          <Select style={{ width: 170 }}>
             <Option value="Irrigation">Irrigation</Option>
             <Option value="Domestic">Domestic</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item style={{paddingLeft: 100}}>
+        <Form.Item style={{margin: 0, paddingLeft: 100}}>
           <Button type="primary" htmlType="submit">
             Fetch Wells
           </Button>
         </Form.Item>
       </Form>
+      
       <VBox spacing="large">
-        <Row gutter={[24, 8]} style={{width: '100%'}}>
-          <Col span={12}>
-            <div style={{width: '100%'}}>
-              <WellsAndUrfData
-                onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: undefined }]); form.setFieldValue('regions', regions) }}
-                wellProperty={wellProperty}
-                wells={displayData ? displayData : allWells}
-                onSelectWell={setEid}
-                urfData={urfData}
-                disableRegionSelection={!mapEditing}
-              />
-            </div>
-          </Col>
-          <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 10 }} title="Change Data Display:">
-              <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0}}>
-                <p style={{width: 250, paddingRight: 20}}>Colorcode by Well Property:</p>
-                <Dropdown menu={menuProps}>
-                  <Button>
-                    {dropdownLabels[wellProperty]}
-                    <Space>
-                      <DownOutlined />
-                    </Space>
-                  </Button>
-                </Dropdown>
+        <Card>
+          <Row gutter={[24, 8]} style={{ width: '100%', justifySelf: 'center' }}>
+            <Col span={12} style={{padding: 0}}>
+              <StandardText variant="h4" style={{marginTop: 0}}>
+                Select Region(s) From Map
+              </StandardText>
+              <div style={{width: '100%'}}>
+                <WellsAndUrfData
+                  onSelectRegion={(regions: Region[]) => { if (regions.length > 0) form.setFields([{ name: "select_regions", errors: undefined }]); form.setFieldValue('regions', regions) }}
+                  wellProperty={wellProperty}
+                  wells={displayData ? displayData : allWells}
+                  onSelectWell={setEid}
+                  urfData={urfData}
+                  disableRegionSelection={!mapEditing}
+                />
               </div>
-            </Card>
-            <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', marginBottom: 30 }} title="Filter by Age Fraction:" extra={<div>Displaying {displayData?.length ?? allWells.length} of {allWells.length} fetched Wells</div>}>
-              <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                <p style={{width: 250, paddingRight: 20}}>Set Minimum Age Thres:</p>
-                <CustomSlider value={ageThres} onAfterChange={async (val) => { setAgeThres(val) }} />
-              </div>
-              <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                <p style={{width: 250, paddingRight: 20}}>Set Porosity:</p>
-                <CustomSlider value={porosity} onAfterChange={async (val) => { setPorosity(val) }} maxValue={0.9} />
-              </div>
-            </Card>
-          </Col>
-        </Row> 
-
+            </Col>
+            <Col span={12} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <Card style={{width: '100%'}} title="Results">
+                <Card.Grid style={{ width: '100%', display: 'flex', flexDirection: 'column', paddingTop: 10 }}>
+                  <StandardText variant="h5">Display Settings</StandardText>
+                  <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0}}>
+                    <p style={{width: 250, paddingRight: 20}}>Colorcode by Well Property:</p>
+                    <Dropdown menu={menuProps}>
+                      <Button>
+                        {dropdownLabels[wellProperty]}
+                        <Space>
+                          <DownOutlined />
+                        </Space>
+                      </Button>
+                    </Dropdown>
+                  </div>
+                </Card.Grid>
+                <Card.Grid style={{ width: '100%', display: 'flex', flexDirection: 'column', paddingTop: 10 }}>
+                  <HBox>
+                    <StandardText variant="h5">Filter By Age Fraction</StandardText>
+                    <div>Displaying {displayData?.length ?? allWells.length} of {allWells.length} fetched Wells</div>
+                  </HBox>
+                  
+                  <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                    <p style={{width: 250, paddingRight: 20}}>{'Set Minimum Age Threshold (>):'}</p>
+                    <CustomSlider value={ageThres} onAfterChange={async (val) => { setAgeThres(val) }} />
+                  </div>
+                  <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                    <p style={{width: 250, paddingRight: 20}}>Set Porosity:</p>
+                    <CustomSlider value={porosity} onAfterChange={async (val) => { setPorosity(val) }} maxValue={0.9} />
+                  </div>
+                </Card.Grid>
+              </Card>
+            </Col>
+          </Row> 
+        </Card>
+        
         <InfoContainer title={allWells.length==0 ? "Select a well to get started" : "Well Streampoints Data"}>
           <Row gutter={[24, 16]} style={{width: '100%'}}>
             <Col span={12}>
