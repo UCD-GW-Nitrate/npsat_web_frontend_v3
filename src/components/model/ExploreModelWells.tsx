@@ -25,15 +25,15 @@ const dropdownItems = [
     key: 'depth',
   },
   {
-    label: 'Unsat',
+    label: 'Unsaturated Zone Depth',
     key: 'unsat',
   },
   {
-    label: 'WT2T',
+    label: 'Water Table to Top',
     key: 'wt2t',
   },
   {
-    label: 'SL',
+    label: 'Screen Length',
     key: 'slmod',
   },
 ];
@@ -56,9 +56,9 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   const histData = (wellProperty: 'depth' | 'unsat' | 'slmod' | 'wt2t', title: string) => {
     const allVals = allWells.map((well: Well) => well[wellProperty]);
     if (allVals.length == 0) return ([{ name: title, data: [], binSize: 0 }])
-    const numBins = Math.ceil(Math.sqrt(allVals.length/10));
     const minVal = 0
     const maxVal = Math.max(...allVals)
+    const numBins = 20;
     const binSize = Math.ceil((maxVal - minVal) / numBins);
     const count = new Array(numBins+1).fill(0);
     allVals?.forEach(val => {
@@ -148,7 +148,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         <Card style={{ width: '100%', display: 'flex', flexDirection: 'column', paddingTop: 10 }} title="Filter By Age Fraction" extra={<div>Displaying {displayData?.length ?? allWells.length} of {allWells.length} fetched Wells</div>}>                          
           <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
             <p style={{width: 250, paddingRight: 20}}>{'Set Minimum Age Threshold (>):'}</p>
-            <CustomSlider value={0} onAfterChange={async (val) => { setDisplayData(await getWellsByAgeThres(val)) }} />
+            <CustomSlider value={0} onAfterChange={async (val) => { setDisplayData(await getWellsByAgeThres(val) ?? null) }} />
           </div>
         </Card>
       </Col>
@@ -157,14 +157,14 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         <Histogram key={depthChart[0]?.binSize ?? 0} data={depthChart} xTitle='Depth [m]' yTitle='%' binSize={depthChart[0]?.binSize} title='Well Depths Histogram' />
       </Col>
       <Col span={12}>
-        <Histogram key={unsatChart[0]?.binSize ?? 0} data={unsatChart} xTitle='Unsaturated depth [m]' yTitle='%' binSize={unsatChart[0]?.binSize} title='Well Unsaturated Depths Histogram' />
+        <Histogram key={unsatChart[0]?.binSize ?? 0} data={unsatChart} xTitle='Unsaturated zone depth [m]' yTitle='%' binSize={unsatChart[0]?.binSize} title='Well Unsaturated Zone Depths Histogram' />
       </Col>
 
       <Col span={12}>
         <Histogram key={slChart[0]?.binSize ?? 0} data={slChart} xTitle='Screen length [m]' yTitle='%' binSize={slChart[0]?.binSize} title='Screen Lengths Histogram' />
       </Col>
       <Col span={12}>
-        <Histogram key={wt2tChart[0]?.binSize ?? 0} data={wt2tChart} xTitle='Water table to top [m]' yTitle='%' binSize={wt2tChart[0]?.binSize} title='WT2T Histogram' />
+        <Histogram key={wt2tChart[0]?.binSize ?? 0} data={wt2tChart} xTitle='Water table to top [m]' yTitle='%' binSize={wt2tChart[0]?.binSize} title='Water Table to Top Histogram' />
       </Col>
 
       <Col span={12}>
@@ -174,9 +174,9 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               type: "boxPlot",
               data: [
                 {x: "Depth", y: getBoxPlotData("depth")},
-                {x: "Unsat", y: getBoxPlotData("unsat")},
-                {x: "WT2T", y: getBoxPlotData("wt2t")},
-                {x: "SL", y: getBoxPlotData("slmod")}
+                {x: "Unsaturated Zone Depth", y: getBoxPlotData("unsat")},
+                {x: "Water Table to Top", y: getBoxPlotData("wt2t")},
+                {x: "Screen Length", y: getBoxPlotData("slmod")}
               ],
             },
           ]}
