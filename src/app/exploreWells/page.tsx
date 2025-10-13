@@ -29,15 +29,15 @@ const dropdownItems = [
     key: 'depth',
   },
   {
-    label: 'Unsat',
+    label: 'Unsaturated Zone Depth',
     key: 'unsat',
   },
   {
-    label: 'WT2T',
+    label: 'Water Table to Top',
     key: 'wt2t',
   },
   {
-    label: 'SL',
+    label: 'Screen Length',
     key: 'slmod',
   },
 ];
