@@ -8,11 +8,15 @@ const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
 interface LineChartProps {
   data: ApexAxisChartSeries;
   title?: string;
+  xTitle?: string;
+  yTitle?: string;
 }
 
 const Scatterplot = ({
   data,
   title,
+  xTitle,
+  yTitle,
 }: LineChartProps) => {
 
   const options: ApexOptions = {
@@ -24,12 +28,18 @@ const Scatterplot = ({
       align: 'left',
     },
     xaxis: {
+      title: {
+        text: `${xTitle ?? ''}`,
+      },
       tickAmount: 21,
     },
     tooltip: {
       inverseOrder: true,
     },
     yaxis: {
+      title: {
+        text: `${yTitle ?? ''}`,
+      },
       labels: {
         formatter(val) {
           return val.toFixed(2);
