@@ -242,16 +242,16 @@ const ExploreWellsPage = () => {
           </Row> 
         </Card>
         
-        <InfoContainer title={allWells.length==0 ? "Select a well to get started" : "Well Streampoints Data"}>
+        <InfoContainer title={eid==null ? "Select a well to get started" : "Well Streampoints Data"}>
           <Row gutter={[24, 16]} style={{width: '100%'}}>
             <Col span={12}>
-              <Scatterplot data={depthAgeChart} title="Depth vs Age" />
+              <Scatterplot data={depthAgeChart} title="Depth vs Age" xTitle="Depth (m)" yTitle="Age (years)" />
             </Col>
             <Col span={12}>
-              <LineChart data={ecdfChart} title="ECDF" />
+              <LineChart data={ecdfChart} title="ECDF" xTitle="Age (years)" yTitle="Percentage" />
             </Col>
             <Col span={12}>
-              <LineChart data={urfChart}title="URFs" />
+              <LineChart data={urfChart} title="URFs" xTitle="Time (years)" />
             </Col>
           </Row>
         </InfoContainer>

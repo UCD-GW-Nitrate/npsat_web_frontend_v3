@@ -12,6 +12,8 @@ interface LineChartProps {
   reductionStartYear?: number;
   reductionEndYear?: number;
   title?: string;
+  xTitle?: string;
+  yTitle?: string;
 }
 
 const LineChart = ({
@@ -19,6 +21,8 @@ const LineChart = ({
   reductionEndYear,
   reductionStartYear,
   title,
+  xTitle,
+  yTitle,
 }: LineChartProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
     const annotations: XAxisAnnotations[] = [];
@@ -71,12 +75,18 @@ const LineChart = ({
       align: 'left',
     },
     xaxis: {
+      title: {
+        text: `${xTitle ?? ''}`,
+      },
       tickAmount: 21,
     },
     tooltip: {
       inverseOrder: true,
     },
     yaxis: {
+      title: {
+        text: `${yTitle ?? ''}`,
+      },
       labels: {
         formatter(val) {
           if (title === "URFs") {
