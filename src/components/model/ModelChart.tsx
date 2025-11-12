@@ -1,4 +1,4 @@
-import { Button, Select } from 'antd';
+import { Button, Card, Select, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
@@ -11,12 +11,18 @@ interface ModelChartProps {
   percentiles: MantisResultPercentile[];
   reductionStartYear: number;
   reductionCompleteYear: number;
+  setDepthRangeMin?: React.Dispatch<React.SetStateAction<number | null>>;
+  setDepthRangeMax?: React.Dispatch<React.SetStateAction<number | null>>;
+  dynamicPercentiles?: any;
 }
 
 const ModelChart = ({
   percentiles,
   reductionStartYear,
   reductionCompleteYear,
+  setDepthRangeMin,
+  setDepthRangeMax,
+  dynamicPercentiles
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -28,13 +34,14 @@ const ModelChart = ({
   function configureDisplayData(
     percentilesInput: number[],
   ): ApexAxisChartSeries {
+    const data = dynamicPercentiles ?? plotData
     const res: ApexAxisChartSeries = [];
     percentilesInput.sort(function (a, b) {
       return a - b;
     });
     percentilesInput.forEach((p) => {
       const chartData: any = [];
-      ((plotData as any)[p] as ModelDisplay[] | null)?.forEach(
+      ((data as any)[p] as ModelDisplay[] | null)?.forEach(
         (data: ModelDisplay) => {
           chartData.push({
             x: data.year,
@@ -56,11 +63,13 @@ const ModelChart = ({
 
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
-  }, [plotData, percentilesDisplayed]);
+  }, [plotData, percentilesDisplayed, dynamicPercentiles]);
 
   if (!plotData) {
     return <div />;
   }
+
+  const [range, setRange] = useState<[number, number]>([0, 200]);
 
   return (
     <div>
@@ -139,6 +148,21 @@ const ModelChart = ({
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
       />
+      {setDepthRangeMin && setDepthRangeMax &&
+        <HBox style={{ marginTop: 20, marginBottom: 40 }}>
+          <Card title="Filter results by wells' depth" >
+            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+              <p style={{width: 150, paddingRight: 20}}>{'Depth range:'}</p>
+              <Slider range defaultValue={[0, 200]} max={200} style={{width: 250, marginRight: 20}}
+                onChange={(value) => {
+                  setRange(value as [number, number]);
+                }}
+              />
+              <Button type="primary" onClick={() => {setDepthRangeMin(range[0]); setDepthRangeMax(range[1])}}>Apply</Button>
+            </div>
+          </Card>
+        </HBox>
+      }
     </div>
   );
 };
