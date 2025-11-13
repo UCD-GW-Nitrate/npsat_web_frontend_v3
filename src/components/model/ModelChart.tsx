@@ -14,6 +14,8 @@ interface ModelChartProps {
   setDepthRangeMin?: React.Dispatch<React.SetStateAction<number | null>>;
   setDepthRangeMax?: React.Dispatch<React.SetStateAction<number | null>>;
   dynamicPercentiles?: any;
+  rangeMin: number,
+  rangeMax: number
 }
 
 const ModelChart = ({
@@ -22,7 +24,9 @@ const ModelChart = ({
   reductionCompleteYear,
   setDepthRangeMin,
   setDepthRangeMax,
-  dynamicPercentiles
+  dynamicPercentiles,
+  rangeMin,
+  rangeMax
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -148,12 +152,12 @@ const ModelChart = ({
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
       />
-      {setDepthRangeMin && setDepthRangeMax &&
+      {dynamicPercentiles && setDepthRangeMin && setDepthRangeMax &&
         <HBox style={{ marginTop: 20, marginBottom: 40 }}>
           <Card title="Filter results by wells' depth" >
             <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
               <p style={{width: 150, paddingRight: 20}}>{'Depth range:'}</p>
-              <Slider range defaultValue={[0, 200]} max={200} style={{width: 250, marginRight: 20}}
+              <Slider range defaultValue={[rangeMin, rangeMax]} max={rangeMax} style={{width: 250, marginRight: 20}}
                 onChange={(value) => {
                   setRange(value as [number, number]);
                 }}

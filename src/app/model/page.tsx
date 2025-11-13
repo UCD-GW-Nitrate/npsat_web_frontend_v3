@@ -2,7 +2,7 @@
 
 import { Button, Tabs } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
@@ -28,7 +28,7 @@ import ModelChart from '../../components/model/ModelChart';
 import ModelDescriptionTable from '../../components/model/ModelDescriptionTable';
 import ModelDifferenceHeatmap from '../../components/model/ModelDifferenceHeatmap';
 import ExploreModelWells from '@/components/model/ExploreModelWells';
-import useDynamicPercentiles from '@/hooks/useDynamicPercentiles';
+import useDynamicPercentiles, { useWellDepthRange } from '@/hooks/useDynamicPercentiles';
 
 const ModelPage = () => {
   const params = useSearchParams();
@@ -62,10 +62,19 @@ const ModelPage = () => {
 
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
+  const { rangeMin, rangeMax } = useWellDepthRange(customModelDetail);
+  console.log("found range min as ", rangeMin)
+  console.log("found range max as ", rangeMax)
+
   const [depth_range_min, setDepthRangeMin] = useState<number | null>(null);
   const [depth_range_max, setDepthRangeMax] = useState<number | null>(null);
+
+  useEffect(() => {
+    setDepthRangeMin(rangeMin);
+    setDepthRangeMax(rangeMax);
+  }, [rangeMin, rangeMax])
+
   const { dynamicPercentiles } = useDynamicPercentiles({
-    regions: regions,
     customModelDetail: customModelDetail,
     depth_range_min: depth_range_min,
     depth_range_max: depth_range_max
@@ -131,6 +140,8 @@ const ModelPage = () => {
             setDepthRangeMin={setDepthRangeMin}
             setDepthRangeMax={setDepthRangeMax}
             dynamicPercentiles={Object.keys(dynamicPercentiles).length === 0 ? null : dynamicPercentiles}
+            rangeMin={rangeMin}
+            rangeMax={rangeMax}
           />
         )}
       </>
