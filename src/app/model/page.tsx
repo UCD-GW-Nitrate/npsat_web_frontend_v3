@@ -74,7 +74,7 @@ const ModelPage = () => {
     setDepthRangeMax(rangeMax);
   }, [rangeMin, rangeMax])
 
-  const { dynamicPercentiles } = useDynamicPercentiles({
+  const { dynamicPercentiles, expiration, loading } = useDynamicPercentiles({
     customModelDetail: customModelDetail,
     depth_range_min: depth_range_min,
     depth_range_max: depth_range_max
@@ -142,6 +142,8 @@ const ModelPage = () => {
             dynamicPercentiles={Object.keys(dynamicPercentiles).length === 0 ? null : dynamicPercentiles}
             rangeMin={rangeMin}
             rangeMax={rangeMax}
+            expiration={expiration}
+            dynamicPercentilesLoading={loading}
           />
         )}
       </>

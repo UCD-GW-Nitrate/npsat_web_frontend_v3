@@ -1,4 +1,4 @@
-import { Button, Card, Select, Slider } from 'antd';
+import { Alert, Button, Card, Select, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
@@ -15,7 +15,9 @@ interface ModelChartProps {
   setDepthRangeMax?: React.Dispatch<React.SetStateAction<number | null>>;
   dynamicPercentiles?: any;
   rangeMin: number,
-  rangeMax: number
+  rangeMax: number,
+  expiration?: Date | null,
+  dynamicPercentilesLoading?: boolean
 }
 
 const ModelChart = ({
@@ -26,7 +28,9 @@ const ModelChart = ({
   setDepthRangeMax,
   dynamicPercentiles,
   rangeMin,
-  rangeMax
+  rangeMax,
+  expiration,
+  dynamicPercentilesLoading
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -77,6 +81,29 @@ const ModelChart = ({
 
   return (
     <div>
+      {expiration &&
+        <Alert
+          message="Notice"
+          description={
+            "Raw breakthrough curve data will be permanently deleted on "
+            + expiration.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              })
+            + ". Aggregated results will remain, but filtering by well depth will no longer be available."
+          }
+          type="warning"
+          showIcon
+          closable
+          style={{
+            width: '80%', 
+            marginLeft: 'auto', 
+            marginRight: 'auto',
+            marginBottom: 20 
+          }}
+        />
+      }
       <Select
         showSearch
         placeholder="Select Percentiles"
@@ -154,7 +181,7 @@ const ModelChart = ({
       />
       {dynamicPercentiles && setDepthRangeMin && setDepthRangeMax &&
         <HBox style={{ marginTop: 20, marginBottom: 40 }}>
-          <Card title="Filter results by wells' depth" >
+          <Card title="Filter results by well depth" >
             <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
               <p style={{width: 150, paddingRight: 20}}>{'Depth range:'}</p>
               <Slider range defaultValue={[rangeMin, rangeMax]} max={rangeMax} style={{width: 250, marginRight: 20}}

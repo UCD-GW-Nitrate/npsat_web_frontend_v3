@@ -97,7 +97,7 @@ const LineChart = ({
               return val.toFixed(3);
             }
           }
-          return val.toFixed(2);
+          return (val ?? 0).toFixed(2);
         },
       },
     },

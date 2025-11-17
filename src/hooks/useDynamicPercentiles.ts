@@ -28,6 +28,7 @@ const ordinalSuffix = (num: number) =>
 
 export default function useDynamicPercentiles({ customModelDetail, depth_range_min, depth_range_max }: Props) {
   const [dynamicPercentiles, setData] = useState<PercentileResultMap>({});
+  const [expiration, setExpiration] = useState<Date | null>();
   const [loading, setLoading] = useState(true);
   const model_id = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
@@ -54,8 +55,10 @@ export default function useDynamicPercentiles({ customModelDetail, depth_range_m
         return;
       }
       const data = await res.json();
+      const expiration = new Date(data.expiration);
+      const percentiles = data.data;
       const results = Object.fromEntries(
-        Object.entries(data).map(([key, arr]): [string, any[]] => [
+        Object.entries(percentiles).map(([key, arr]): [string, any[]] => [
           key,
           (arr as number[]).map((value: number, index: number) => ({
             year: 1945 + index,
@@ -67,13 +70,14 @@ export default function useDynamicPercentiles({ customModelDetail, depth_range_m
         ])
       );
       setData(results)
+      setExpiration(expiration)
       setLoading(false)
     }
 
     if (model_id && depth_range_min && depth_range_max) getPercentiles()
   }, [model_id, depth_range_min, depth_range_max])
 
-  return { dynamicPercentiles, loading }
+  return { dynamicPercentiles, expiration, loading }
 }
 
 
