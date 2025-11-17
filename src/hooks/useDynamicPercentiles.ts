@@ -1,7 +1,6 @@
 import apiRoot from "@/config/apiRoot";
 import { RootState, useGetWellsQuery } from "@/store";
 import { ModelRun } from "@/types/model/ModelRun";
-import { Region } from "@/types/region/Region";
 import { AuthState } from "@/types/user/User";
 import { WellRequest } from "@/types/well/Well";
 import { REGION_MACROS } from "@/utils/constants";
