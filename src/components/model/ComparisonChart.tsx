@@ -57,7 +57,8 @@ const ComparisonChart = ({
         onSelect={setPercentilesDisplayed}
         style={{ width: '100%', marginBottom: 4 }}
       >
-        {percentiles.map((p) => (
+        {percentiles.sort(function (a, b) {
+          return a - b;}).map((p) => (
           <Select.Option value={p} key={p}>
             {p}th percentile
           </Select.Option>

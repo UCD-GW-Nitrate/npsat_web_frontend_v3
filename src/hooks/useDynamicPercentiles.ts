@@ -1,7 +1,6 @@
 import apiRoot from "@/config/apiRoot";
 import { RootState, useGetWellsQuery } from "@/store";
 import { ModelRun } from "@/types/model/ModelRun";
-import { Region } from "@/types/region/Region";
 import { AuthState } from "@/types/user/User";
 import { WellRequest } from "@/types/well/Well";
 import { REGION_MACROS } from "@/utils/constants";
@@ -24,11 +23,18 @@ export interface PercentileResultMap {
   [percentile: string]: ModelDisplay[];
 }
 
-const ordinalSuffix = (num: number) =>
-  `${num}${['st', 'nd', 'rd'][((((num + 90) % 100) - 10) % 10) - 1] || 'th'}`;
+const ordinalSuffix = (num: number) => {
+  // const idx = (num == 11 || num == 12 || num == 13) ? -1 : num % 10 - 1;
+  // const suffix = ['st', 'nd', 'rd'][idx] ?? 'th'
+  // return `${num}${suffix}`;
+  return `${num}${['st', 'nd', 'rd'][((((num + 90) % 100) - 10) % 10) - 1] || 'th'}`;
+}
 
 export default function useDynamicPercentiles({ customModelDetail, depth_range_min, depth_range_max }: Props) {
   const [dynamicPercentiles, setData] = useState<PercentileResultMap>({});
+  const [expiration, setExpiration] = useState<Date | null>();
+  const [numBreakthroughCurves, setNumBreakthroughCurves] = useState<number>(0);
+  const [totalBreakthroughCurves, setTotalBreakthroughCurves] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const model_id = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
@@ -55,8 +61,12 @@ export default function useDynamicPercentiles({ customModelDetail, depth_range_m
         return;
       }
       const data = await res.json();
+      const expiration = new Date(data.expiration);
+      const num_breakthrough_curves = data.num_curves;
+      const total_breakthrough_curves = data.total_curves;
+      const percentiles = data.data;
       const results = Object.fromEntries(
-        Object.entries(data).map(([key, arr]): [string, any[]] => [
+        Object.entries(percentiles).map(([key, arr]): [string, any[]] => [
           key,
           (arr as number[]).map((value: number, index: number) => ({
             year: 1945 + index,
@@ -68,13 +78,16 @@ export default function useDynamicPercentiles({ customModelDetail, depth_range_m
         ])
       );
       setData(results)
+      setExpiration(expiration)
+      setNumBreakthroughCurves(num_breakthrough_curves)
+      setTotalBreakthroughCurves(total_breakthrough_curves)
       setLoading(false)
     }
 
     if (model_id && depth_range_min && depth_range_max) getPercentiles()
   }, [model_id, depth_range_min, depth_range_max])
 
-  return { dynamicPercentiles, loading }
+  return { dynamicPercentiles, expiration, numBreakthroughCurves, totalBreakthroughCurves, loading }
 }
 
 

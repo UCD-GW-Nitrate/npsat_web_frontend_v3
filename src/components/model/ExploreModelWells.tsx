@@ -38,12 +38,36 @@ const dropdownItems = [
   },
 ];
 
+const selectChartItems = [
+  {
+    label: 'Well Depths Histogram',
+    key: 'Well Depths Histogram',
+  },
+  {
+    label: 'Well Unsaturated Zone Depths Histogram',
+    key: 'Well Unsaturated Zone Depths Histogram',
+  },
+  {
+    label: 'Water Table to Top Histogram',
+    key: 'Water Table to Top Histogram',
+  },
+  {
+    label: 'Screen Lengths Histogram',
+    key: 'Screen Lengths Histogram',
+  },
+  {
+    label: 'Boxplot',
+    key: 'Boxplot',
+  },
+];
+
 const dropdownLabels = Object.fromEntries(dropdownItems.map(item => [item.key, item.label]));
 
 const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   const { allWells, loading, getWellsByAgeThres } = useModelWells({regions, customModelDetail});
   const [wellProperty, setWellProperty] = useState<'depth' | 'unsat' | 'slmod' | 'wt2t'>('depth');
   const [displayData, setDisplayData] = useState<null | Well[]>(null)
+  const [selectChart, setSelectChart] = useState("Well Depths Histogram")
 
   const configureData = (region: Region): Geometry => {
     const { geometry } = region;
@@ -119,6 +143,16 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     onClick: handleMenuClick,
   };
 
+  const handleSelectChartMenuClick: MenuProps['onClick'] = (e) => {
+    console.log('click', e);
+    setSelectChart(e.key)
+  };
+
+  const selectChartMenuProps = {
+    items: selectChartItems,
+    onClick: handleSelectChartMenuClick,
+  };
+
   return (
     <Row gutter={[24, 16]}>
       <Col span={12}>
@@ -153,35 +187,53 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         </Card>
       </Col>
 
-      <Col span={12}>
-        <Histogram key={depthChart[0]?.binSize ?? 0} data={depthChart} xTitle='Depth [m]' yTitle='%' binSize={depthChart[0]?.binSize} title='Well Depths Histogram' />
-      </Col>
-      <Col span={12}>
-        <Histogram key={unsatChart[0]?.binSize ?? 0} data={unsatChart} xTitle='Unsaturated zone depth [m]' yTitle='%' binSize={unsatChart[0]?.binSize} title='Well Unsaturated Zone Depths Histogram' />
-      </Col>
+      <Col span={24}>
+        <Card
+          extra={
+            <Dropdown menu={selectChartMenuProps}>
+              <Button>
+                {selectChart}
+                <Space>
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
+          } 
+          style={{ width: '100%', display: 'flex', flexDirection: 'column', paddingTop: 10 }}
+        >
+          {selectChart === "Well Depths Histogram" &&
+            <Histogram key={depthChart[0]?.binSize ?? 0} data={depthChart} xTitle='Depth [m]' yTitle='%' binSize={depthChart[0]?.binSize} title='Well Depths Histogram' />
+          }
 
-      <Col span={12}>
-        <Histogram key={slChart[0]?.binSize ?? 0} data={slChart} xTitle='Screen length [m]' yTitle='%' binSize={slChart[0]?.binSize} title='Screen Lengths Histogram' />
-      </Col>
-      <Col span={12}>
-        <Histogram key={wt2tChart[0]?.binSize ?? 0} data={wt2tChart} xTitle='Water table to top [m]' yTitle='%' binSize={wt2tChart[0]?.binSize} title='Water Table to Top Histogram' />
-      </Col>
+          {selectChart === "Well Unsaturated Zone Depths Histogram" &&
+            <Histogram key={unsatChart[0]?.binSize ?? 0} data={unsatChart} xTitle='Unsaturated zone depth [m]' yTitle='%' binSize={unsatChart[0]?.binSize} title='Well Unsaturated Zone Depths Histogram' />
+          }
 
-      <Col span={12}>
-        <BoxPlot 
-          data={[
-            {
-              type: "boxPlot",
-              data: [
-                {x: "Depth", y: getBoxPlotData("depth")},
-                {x: "Unsaturated Zone Depth", y: getBoxPlotData("unsat")},
-                {x: "Water Table to Top", y: getBoxPlotData("wt2t")},
-                {x: "Screen Length", y: getBoxPlotData("slmod")}
-              ],
-            },
-          ]}
-          title="Boxplot" 
-        />
+          {selectChart === "Water Table to Top Histogram" &&
+            <Histogram key={wt2tChart[0]?.binSize ?? 0} data={wt2tChart} xTitle='Water table to top [m]' yTitle='%' binSize={wt2tChart[0]?.binSize} title='Water Table to Top Histogram' />
+          }
+
+          {selectChart === "Screen Lengths Histogram" &&
+            <Histogram key={slChart[0]?.binSize ?? 0} data={slChart} xTitle='Screen length [m]' yTitle='%' binSize={slChart[0]?.binSize} title='Screen Lengths Histogram' />
+          }
+
+          {selectChart === "Boxplot" &&
+            <BoxPlot 
+              data={[
+                {
+                  type: "boxPlot",
+                  data: [
+                    {x: "Depth", y: getBoxPlotData("depth")},
+                    {x: "Unsaturated Zone Depth", y: getBoxPlotData("unsat")},
+                    {x: "Water Table to Top", y: getBoxPlotData("wt2t")},
+                    {x: "Screen Length", y: getBoxPlotData("slmod")}
+                  ],
+                },
+              ]}
+              title="Boxplot" 
+            />
+          }
+        </Card>
       </Col>
     </Row>
   );
