@@ -18,6 +18,8 @@ interface ModelChartProps {
   rangeMax: number,
   expiration?: Date | null,
   dynamicPercentilesLoading?: boolean
+  numBreakthroughCurves?: number
+  totalBreakthroughCurves?: number
 }
 
 const ModelChart = ({
@@ -30,7 +32,9 @@ const ModelChart = ({
   rangeMin,
   rangeMax,
   expiration,
-  dynamicPercentilesLoading
+  dynamicPercentilesLoading,
+  numBreakthroughCurves=0,
+  totalBreakthroughCurves=0
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -180,8 +184,8 @@ const ModelChart = ({
         reductionStartYear={reductionStartYear}
       />
       {dynamicPercentiles && setDepthRangeMin && setDepthRangeMax &&
-        <HBox style={{ marginTop: 20, marginBottom: 40 }}>
-          <Card title="Filter results by well depth" >
+        <div style={{width: '50%'}}>
+          <Card title="Filter Results By Well Depth" extra={<div>Aggregating {numBreakthroughCurves} of {totalBreakthroughCurves} breakthrough curves</div>}>
             <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
               <p style={{width: 150, paddingRight: 20}}>{'Depth range:'}</p>
               <Slider range defaultValue={[rangeMin, rangeMax]} max={rangeMax} style={{width: 250, marginRight: 20}}
@@ -192,7 +196,7 @@ const ModelChart = ({
               <Button type="primary" onClick={() => {setDepthRangeMin(range[0]); setDepthRangeMax(range[1])}}>Apply</Button>
             </div>
           </Card>
-        </HBox>
+        </div>
       }
     </div>
   );

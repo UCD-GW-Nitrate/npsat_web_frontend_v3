@@ -63,8 +63,6 @@ const ModelPage = () => {
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
   const { rangeMin, rangeMax } = useWellDepthRange(customModelDetail);
-  console.log("found range min as ", rangeMin)
-  console.log("found range max as ", rangeMax)
 
   const [depth_range_min, setDepthRangeMin] = useState<number | null>(null);
   const [depth_range_max, setDepthRangeMax] = useState<number | null>(null);
@@ -74,7 +72,7 @@ const ModelPage = () => {
     setDepthRangeMax(rangeMax);
   }, [rangeMin, rangeMax])
 
-  const { dynamicPercentiles, expiration, loading } = useDynamicPercentiles({
+  const { dynamicPercentiles, expiration, numBreakthroughCurves, totalBreakthroughCurves, loading } = useDynamicPercentiles({
     customModelDetail: customModelDetail,
     depth_range_min: depth_range_min,
     depth_range_max: depth_range_max
@@ -144,6 +142,8 @@ const ModelPage = () => {
             rangeMax={rangeMax}
             expiration={expiration}
             dynamicPercentilesLoading={loading}
+            numBreakthroughCurves={numBreakthroughCurves}
+            totalBreakthroughCurves={totalBreakthroughCurves}
           />
         )}
       </>
