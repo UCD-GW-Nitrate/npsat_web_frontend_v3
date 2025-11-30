@@ -11,6 +11,7 @@ export interface Props {
   customModelDetail: ModelRun | null;
   depth_range_min: number | null;
   depth_range_max: number | null;
+  polygonCoords: [number, number][] | null,
 }
 
 export interface ModelDisplay {
@@ -30,7 +31,12 @@ const ordinalSuffix = (num: number) => {
   return `${num}${['st', 'nd', 'rd'][((((num + 90) % 100) - 10) % 10) - 1] || 'th'}`;
 }
 
-export default function useDynamicPercentiles({ customModelDetail, depth_range_min, depth_range_max }: Props) {
+export default function useDynamicPercentiles({
+  customModelDetail,
+  depth_range_min,
+  depth_range_max,
+  polygonCoords
+}: Props) {
   const [dynamicPercentiles, setData] = useState<PercentileResultMap>({});
   const [expiration, setExpiration] = useState<Date | null>();
   const [numBreakthroughCurves, setNumBreakthroughCurves] = useState<number>(0);
@@ -48,7 +54,12 @@ export default function useDynamicPercentiles({ customModelDetail, depth_range_m
         `${apiRoot}/api/dynamic_percentiles/get_dynamic_percentiles/`, 
         {
           method:"POST",
-          body:JSON.stringify({ model_id: model_id, depth_range_min: depth_range_min, depth_range_max: depth_range_max}),
+          body:JSON.stringify({
+            model_id: model_id,
+            depth_range_min: depth_range_min,
+            depth_range_max: depth_range_max,
+            polygonCoords: polygonCoords ?? [],
+          }),
           headers:{
             'Content-Type': 'application/json',
             Authorization: `Token ${auth.token}`,
@@ -85,7 +96,7 @@ export default function useDynamicPercentiles({ customModelDetail, depth_range_m
     }
 
     if (model_id && depth_range_min && depth_range_max) getPercentiles()
-  }, [model_id, depth_range_min, depth_range_max])
+  }, [model_id, depth_range_min, depth_range_max, polygonCoords])
 
   return { dynamicPercentiles, expiration, numBreakthroughCurves, totalBreakthroughCurves, loading }
 }

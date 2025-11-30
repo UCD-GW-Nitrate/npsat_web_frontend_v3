@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Select, Slider } from 'antd';
+import { Alert, Button, Card, Modal, Select, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
@@ -6,6 +6,9 @@ import { HBox } from '@/components/custom/HBox/Hbox';
 import type { ModelDisplay } from '@/hooks/useModelResults';
 import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
+import { Region } from '@/types/region/Region';
+import { ModelRun } from '@/types/model/ModelRun';
+import ModelWellsModal from './ModelWellsModal';
 
 interface ModelChartProps {
   percentiles: MantisResultPercentile[];
@@ -20,6 +23,9 @@ interface ModelChartProps {
   dynamicPercentilesLoading?: boolean
   numBreakthroughCurves?: number
   totalBreakthroughCurves?: number
+  regions?: Region[];
+  customModelDetail?: ModelRun;
+  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][] | null>>;
 }
 
 const ModelChart = ({
@@ -34,7 +40,10 @@ const ModelChart = ({
   expiration,
   dynamicPercentilesLoading,
   numBreakthroughCurves=0,
-  totalBreakthroughCurves=0
+  totalBreakthroughCurves=0,
+  regions,
+  customModelDetail,
+  setPolygonCoords,
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -82,6 +91,33 @@ const ModelChart = ({
   }
 
   const [range, setRange] = useState<[number, number]>([0, 200]);
+  const [polygons, setPolygons] = useState<[number, number][]>([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleFilterSubmit = () => {
+    if (setDepthRangeMin) {
+      setDepthRangeMin(range[0]);
+    }
+    if (setDepthRangeMax) {
+      setDepthRangeMax(range[1]);
+    }
+    if (setPolygonCoords) {
+      setPolygonCoords(polygons);
+    }
+  }
 
   return (
     <div>
@@ -185,7 +221,7 @@ const ModelChart = ({
       />
       {dynamicPercentiles && setDepthRangeMin && setDepthRangeMax &&
         <div style={{width: '50%'}}>
-          <Card title="Filter Results By Well Depth" extra={<div>Aggregating {numBreakthroughCurves} of {totalBreakthroughCurves} breakthrough curves</div>}>
+          <Card title="Filter Results" extra={<div>Aggregating {numBreakthroughCurves} of {totalBreakthroughCurves} breakthrough curves</div>}>
             <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
               <p style={{width: 150, paddingRight: 20}}>{'Depth range:'}</p>
               <Slider range defaultValue={[rangeMin, rangeMax]} max={rangeMax} style={{width: 250, marginRight: 20}}
@@ -193,10 +229,40 @@ const ModelChart = ({
                   setRange(value as [number, number]);
                 }}
               />
-              <Button type="primary" onClick={() => {setDepthRangeMin(range[0]); setDepthRangeMax(range[1])}}>Apply</Button>
+            </div>
+            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+              <p style={{width: 150, paddingRight: 20}}>{'Geographic region:'}</p>
+              <Button type="default" onClick={showModal}>
+                Open modal
+              </Button>
+            </div>
+            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
+              <Button
+                type="primary"
+                onClick={handleFilterSubmit}
+              >
+                Apply
+              </Button>
             </div>
           </Card>
         </div>
+      }
+      {dynamicPercentiles && regions && customModelDetail &&
+        <Modal
+          title="Draw polygon"
+          closable={{ 'aria-label': 'Custom Close Button' }}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          width={1000}
+          style={{ top: 50 }}
+        >
+          <ModelWellsModal
+            regions={regions}
+            customModelDetail={customModelDetail}
+            setPolygonCoords={setPolygons}
+          />
+        </Modal>
       }
     </div>
   );

@@ -67,6 +67,8 @@ const ModelPage = () => {
   const [depth_range_min, setDepthRangeMin] = useState<number | null>(null);
   const [depth_range_max, setDepthRangeMax] = useState<number | null>(null);
 
+  const [polygonCoords, setPolygonCoords] = useState<[number, number][] | null>(null);
+
   useEffect(() => {
     setDepthRangeMin(rangeMin);
     setDepthRangeMax(rangeMax);
@@ -75,7 +77,8 @@ const ModelPage = () => {
   const { dynamicPercentiles, expiration, numBreakthroughCurves, totalBreakthroughCurves, loading } = useDynamicPercentiles({
     customModelDetail: customModelDetail,
     depth_range_min: depth_range_min,
-    depth_range_max: depth_range_max
+    depth_range_max: depth_range_max,
+    polygonCoords: polygonCoords,
   });
 
   const baseComparisonModel: ComparisonChartModel = {
@@ -144,6 +147,9 @@ const ModelPage = () => {
             dynamicPercentilesLoading={loading}
             numBreakthroughCurves={numBreakthroughCurves}
             totalBreakthroughCurves={totalBreakthroughCurves}
+            regions={regions} 
+            customModelDetail={customModelDetail}
+            setPolygonCoords={setPolygonCoords}
           />
         )}
       </>
