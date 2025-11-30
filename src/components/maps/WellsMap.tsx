@@ -16,6 +16,9 @@ export interface MapProps {
   onSelectWell?: (eid: number) => void;
   onEachFeature?: (feature: any, layer: Layer) => void;
   children?: ReactNode;
+  // params passed by ModelWellsModel parent component:
+  allowDraw?: boolean;
+  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
 const Legend = ({ min, max }: { min: number; max: number }) => {
@@ -52,7 +55,18 @@ const Legend = ({ min, max }: { min: number; max: number }) => {
 
 
 // eslint-disable-next-line no-empty-pattern
-const WellsMap = ({ path, wells, wellProperty, selectedRegions, regionsEditable, onEachFeature, onSelectWell, children }: MapProps) => {
+const WellsMap = ({
+  path,
+  wells,
+  wellProperty,
+  selectedRegions,
+  regionsEditable,
+  onEachFeature,
+  onSelectWell,
+  children,
+  allowDraw,
+  setPolygonCoords,
+}: MapProps) => {
   const [selected, setSelected] = useState<null | number>(null)
 
   const minValue = useMemo(
@@ -101,6 +115,8 @@ const WellsMap = ({ path, wells, wellProperty, selectedRegions, regionsEditable,
       selected={selectedRegions}
       onEachFeature={onEachFeature}
       interactive={regionsEditable}
+      allowDraw={allowDraw}
+      setPolygonCoords={setPolygonCoords}
     >
       <Pane name="markers-layer" style={{ zIndex: 650 }}>
         <LayerGroup>
