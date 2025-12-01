@@ -1,7 +1,8 @@
-import type { Geometry, Region } from '@/types/region/Region';
-import { ModelRun } from '@/types/model/ModelRun';
 import dynamic from 'next/dynamic';
+
 import useModelWells from '@/hooks/useModelWells';
+import type { ModelRun } from '@/types/model/ModelRun';
+import type { Geometry, Region } from '@/types/region/Region';
 
 const WellsMap = dynamic(() => import('../maps/WellsMap'), {
   ssr: false,
@@ -13,9 +14,12 @@ export interface MapProps {
   setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
-
-const ModelWellsModal = ({ regions, customModelDetail, setPolygonCoords }: MapProps) => {
-  const { allWells } = useModelWells({regions, customModelDetail});
+const ModelWellsModal = ({
+  regions,
+  customModelDetail,
+  setPolygonCoords,
+}: MapProps) => {
+  const { allWells } = useModelWells({ regions, customModelDetail });
 
   const configureData = (region: Region): Geometry => {
     const { geometry } = region;
@@ -26,13 +30,13 @@ const ModelWellsModal = ({ regions, customModelDetail, setPolygonCoords }: MapPr
   };
 
   return (
-    <div style={{width: '100%', height: 500}}>
+    <div style={{ width: '100%', height: 500 }}>
       <WellsMap
         path={regions.map((region: Region) => configureData(region))}
         selectedRegions={regions.map((region: Region) => region.id)}
         wellProperty="depth"
         wells={allWells}
-        allowDraw={true}
+        allowDraw
         setPolygonCoords={setPolygonCoords}
       />
     </div>

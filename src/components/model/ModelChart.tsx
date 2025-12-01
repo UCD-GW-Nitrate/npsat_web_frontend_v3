@@ -1,49 +1,27 @@
-import { Alert, Button, Card, Modal, Select, Slider } from 'antd';
+import { Button, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
 import { HBox } from '@/components/custom/HBox/Hbox';
-import type { ModelDisplay } from '@/hooks/useModelResults';
+import type {
+  ModelDisplay,
+  PercentileResultMap,
+} from '@/hooks/useModelResults';
 import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
-import { Region } from '@/types/region/Region';
-import { ModelRun } from '@/types/model/ModelRun';
-import ModelWellsModal from './ModelWellsModal';
 
 interface ModelChartProps {
   percentiles: MantisResultPercentile[];
   reductionStartYear: number;
   reductionCompleteYear: number;
-  setDepthRangeMin?: React.Dispatch<React.SetStateAction<number | null>>;
-  setDepthRangeMax?: React.Dispatch<React.SetStateAction<number | null>>;
-  dynamicPercentiles?: any;
-  rangeMin: number,
-  rangeMax: number,
-  expiration?: Date | null,
-  dynamicPercentilesLoading?: boolean
-  numBreakthroughCurves?: number
-  totalBreakthroughCurves?: number
-  regions?: Region[];
-  customModelDetail?: ModelRun;
-  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][] | null>>;
+  dynamicPercentiles?: PercentileResultMap | null;
 }
 
 const ModelChart = ({
   percentiles,
   reductionStartYear,
   reductionCompleteYear,
-  setDepthRangeMin,
-  setDepthRangeMax,
   dynamicPercentiles,
-  rangeMin,
-  rangeMax,
-  expiration,
-  dynamicPercentilesLoading,
-  numBreakthroughCurves=0,
-  totalBreakthroughCurves=0,
-  regions,
-  customModelDetail,
-  setPolygonCoords,
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -55,18 +33,18 @@ const ModelChart = ({
   function configureDisplayData(
     percentilesInput: number[],
   ): ApexAxisChartSeries {
-    const data = dynamicPercentiles ?? plotData
+    const data = dynamicPercentiles ?? plotData;
     const res: ApexAxisChartSeries = [];
-    percentilesInput.sort(function (a, b) {
+    percentilesInput.sort((a, b) => {
       return a - b;
     });
     percentilesInput.forEach((p) => {
       const chartData: any = [];
       ((data as any)[p] as ModelDisplay[] | null)?.forEach(
-        (data: ModelDisplay) => {
+        (percentileDataPoint: ModelDisplay) => {
           chartData.push({
-            x: data.year,
-            y: data.value,
+            x: percentileDataPoint.year,
+            y: percentileDataPoint.value,
           });
         },
       );
@@ -90,60 +68,8 @@ const ModelChart = ({
     return <div />;
   }
 
-  const [range, setRange] = useState<[number, number]>([0, 200]);
-  const [polygons, setPolygons] = useState<[number, number][]>([]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleFilterSubmit = () => {
-    if (setDepthRangeMin) {
-      setDepthRangeMin(range[0]);
-    }
-    if (setDepthRangeMax) {
-      setDepthRangeMax(range[1]);
-    }
-    if (setPolygonCoords) {
-      setPolygonCoords(polygons);
-    }
-  }
-
   return (
     <div>
-      {expiration &&
-        <Alert
-          message="Notice"
-          description={
-            "Raw breakthrough curve data will be permanently deleted on "
-            + expiration.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              })
-            + ". Aggregated results will remain, but filtering by well depth will no longer be available."
-          }
-          type="warning"
-          showIcon
-          closable
-          style={{
-            width: '80%', 
-            marginLeft: 'auto', 
-            marginRight: 'auto',
-            marginBottom: 20 
-          }}
-        />
-      }
       <Select
         showSearch
         placeholder="Select Percentiles"
@@ -219,51 +145,6 @@ const ModelChart = ({
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
       />
-      {dynamicPercentiles && setDepthRangeMin && setDepthRangeMax &&
-        <div style={{width: '50%'}}>
-          <Card title="Filter Results" extra={<div>Aggregating {numBreakthroughCurves} of {totalBreakthroughCurves} breakthrough curves</div>}>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-              <p style={{width: 150, paddingRight: 20}}>{'Depth range:'}</p>
-              <Slider range defaultValue={[rangeMin, rangeMax]} max={rangeMax} style={{width: 250, marginRight: 20}}
-                onChange={(value) => {
-                  setRange(value as [number, number]);
-                }}
-              />
-            </div>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-              <p style={{width: 150, paddingRight: 20}}>{'Geographic region:'}</p>
-              <Button type="default" onClick={showModal}>
-                Open modal
-              </Button>
-            </div>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
-              <Button
-                type="primary"
-                onClick={handleFilterSubmit}
-              >
-                Apply
-              </Button>
-            </div>
-          </Card>
-        </div>
-      }
-      {dynamicPercentiles && regions && customModelDetail &&
-        <Modal
-          title="Draw polygon"
-          closable={{ 'aria-label': 'Custom Close Button' }}
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          width={1000}
-          style={{ top: 50 }}
-        >
-          <ModelWellsModal
-            regions={regions}
-            customModelDetail={customModelDetail}
-            setPolygonCoords={setPolygons}
-          />
-        </Modal>
-      }
     </div>
   );
 };

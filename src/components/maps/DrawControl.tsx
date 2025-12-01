@@ -1,9 +1,10 @@
-import { useEffect } from "react";
-import { useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet-draw";  
-import "leaflet-draw/dist/leaflet.draw.css";
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw';
+import 'leaflet-draw/dist/leaflet.draw.css';
+
+import L from 'leaflet';
+import { useEffect } from 'react';
+import { useMap } from 'react-leaflet';
 
 export function DrawControl({ onCreated, onEdited, onDeleted }) {
   const map = useMap();
@@ -16,12 +17,12 @@ export function DrawControl({ onCreated, onEdited, onDeleted }) {
     map.addLayer(drawnItems);
     const pane = drawnItems.getPane();
     if (pane) {
-      pane.style.zIndex = "1000";
+      pane.style.zIndex = '1000';
     }
 
     // Create the draw control
     const drawControl = new L.Control.Draw({
-      position: "topright",
+      position: 'topright',
       draw: {
         marker: false,
         circle: false,
@@ -44,7 +45,7 @@ export function DrawControl({ onCreated, onEdited, onDeleted }) {
 
     // Handle events
     map.on(L.Draw.Event.CREATED, (event) => {
-      const layer = event.layer;
+      const { layer } = event;
       drawnItems.addLayer(layer);
       onCreated?.(event, layer);
     });
