@@ -62,3 +62,53 @@ export const modelRunStatus = [
   'Completed',
   'Error',
 ];
+
+export const wellPropertyDropdownItems = [
+  {
+    label: 'Depth',
+    key: 'depth',
+  },
+  {
+    label: 'Unsaturated Zone Depth',
+    key: 'unsat',
+  },
+  {
+    label: 'Water Table to Top',
+    key: 'wt2t',
+  },
+  {
+    label: 'Screen Length',
+    key: 'slmod',
+  },
+];
+
+export const wellPropertyDropdownLabels = Object.fromEntries(
+  wellPropertyDropdownItems.map((item) => [item.key, item.label]),
+);
+
+export const mapTabs = [
+  {
+    label: 'Central Valley',
+    key: `${REGION_MACROS.CENTRAL_VALLEY}`,
+  },
+  {
+    label: 'Basin',
+    key: `${REGION_MACROS.SUB_BASIN}`,
+  },
+  {
+    label: 'County',
+    key: `${REGION_MACROS.COUNTY}`,
+  },
+  {
+    label: 'B118 Basin',
+    key: `${REGION_MACROS.B118_BASIN}`,
+  },
+  {
+    label: 'Subregions',
+    key: `${REGION_MACROS.CVHM_FARM}`,
+  },
+  {
+    label: 'Township',
+    key: `${REGION_MACROS.TOWNSHIPS}`,
+  },
+];

@@ -2,7 +2,7 @@
 
 import { Button, Tabs } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
@@ -10,6 +10,8 @@ import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
+import DynamicPercentilesChart from '@/components/model/DynamicPercentilesChart';
+import ExploreModelWells from '@/components/model/ExploreModelWells';
 import ModelBoxPlot from '@/components/model/ModelBoxPlot';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
 import { useModelResults } from '@/hooks/useModelResults';
@@ -24,11 +26,8 @@ import type { ModelRun } from '@/types/model/ModelRun';
 
 import ComparisonChart from '../../components/model/ComparisonChart';
 import { CropLoadingDetailsBaseComparisonTable } from '../../components/model/CropLoadingDetailsTable';
-import ModelChart from '../../components/model/ModelChart';
 import ModelDescriptionTable from '../../components/model/ModelDescriptionTable';
 import ModelDifferenceHeatmap from '../../components/model/ModelDifferenceHeatmap';
-import ExploreModelWells from '@/components/model/ExploreModelWells';
-import useDynamicPercentiles, { useWellDepthRange } from '@/hooks/useDynamicPercentiles';
 
 const ModelPage = () => {
   const params = useSearchParams();
@@ -40,8 +39,6 @@ const ModelPage = () => {
   const [selectedModelTab, setSelectedModelTab] = useState<string>('1');
   const [selectedComparisonTab, setSelectedComparisonTab] =
     useState<string>('1');
-
-  
 
   const router = useRouter();
 
@@ -61,22 +58,6 @@ const ModelPage = () => {
   const [baseModel] = useModelResults(baseModelDetail?.results ?? []);
 
   const regions = useModelRegions(customModelDetail?.regions ?? []);
-
-  const { rangeMin, rangeMax } = useWellDepthRange(customModelDetail);
-
-  const [depth_range_min, setDepthRangeMin] = useState<number | null>(null);
-  const [depth_range_max, setDepthRangeMax] = useState<number | null>(null);
-
-  useEffect(() => {
-    setDepthRangeMin(rangeMin);
-    setDepthRangeMax(rangeMax);
-  }, [rangeMin, rangeMax])
-
-  const { dynamicPercentiles, expiration, numBreakthroughCurves, totalBreakthroughCurves, loading } = useDynamicPercentiles({
-    customModelDetail: customModelDetail,
-    depth_range_min: depth_range_min,
-    depth_range_max: depth_range_max
-  });
 
   const baseComparisonModel: ComparisonChartModel = {
     name: 'base',
@@ -131,24 +112,14 @@ const ModelPage = () => {
     () => (
       <>
         {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
-          <ModelChart
+          <DynamicPercentilesChart
             percentiles={customModelDetail.results}
-            reductionStartYear={customModelDetail!.reduction_start_year}
-            reductionCompleteYear={customModelDetail!.reduction_end_year}
-            setDepthRangeMin={setDepthRangeMin}
-            setDepthRangeMax={setDepthRangeMax}
-            dynamicPercentiles={Object.keys(dynamicPercentiles).length === 0 ? null : dynamicPercentiles}
-            rangeMin={rangeMin}
-            rangeMax={rangeMax}
-            expiration={expiration}
-            dynamicPercentilesLoading={loading}
-            numBreakthroughCurves={numBreakthroughCurves}
-            totalBreakthroughCurves={totalBreakthroughCurves}
+            customModelDetail={customModelDetail}
           />
         )}
       </>
     ),
-    [customModel, dynamicPercentiles],
+    [customModel],
   );
 
   const modelBoxPlot = useMemo(
@@ -209,7 +180,6 @@ const ModelPage = () => {
       router.push('/model/create');
     }
   };
-
 
   return (
     <AppLayout>
@@ -279,10 +249,10 @@ const ModelPage = () => {
             />
           )}
         </InfoContainer>
-        
+
         <InfoContainer title="Wells included in this scenario run">
-          <ExploreModelWells 
-            regions={regions} 
+          <ExploreModelWells
+            regions={regions}
             customModelDetail={customModelDetail}
           />
         </InfoContainer>
