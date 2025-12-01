@@ -62,3 +62,26 @@ export const modelRunStatus = [
   'Completed',
   'Error',
 ];
+
+export const wellPropertyDropdownItems = [
+  {
+    label: 'Depth',
+    key: 'depth',
+  },
+  {
+    label: 'Unsaturated Zone Depth',
+    key: 'unsat',
+  },
+  {
+    label: 'Water Table to Top',
+    key: 'wt2t',
+  },
+  {
+    label: 'Screen Length',
+    key: 'slmod',
+  },
+];
+
+export const wellPropertyDropdownLabels = Object.fromEntries(
+  wellPropertyDropdownItems.map((item) => [item.key, item.label]),
+);
