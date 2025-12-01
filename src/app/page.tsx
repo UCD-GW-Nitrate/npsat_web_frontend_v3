@@ -25,7 +25,7 @@ import type { PlotModel } from '@/types/feed/Feed';
 import { COLUMNS } from '../utils/constants';
 
 const Index = () => {
-  const { data, error, refetch } = useFetchFeedQuery();
+  const { data, error, refetch, isFetching } = useFetchFeedQuery();
   const [patchModel] = usePatchModelMutation();
   const [displayData, setDisplayData] = useState<PlotModel[]>(
     data?.recentModels ?? [],
@@ -36,6 +36,7 @@ const Index = () => {
   const [selected, setSelected] = useState<number[]>([]);
   const router = useRouter();
   const dispatch = useDispatch();
+  const [hydrated, setHydrated] = useState(false);
 
   const {
     flowScenarios: flowScenarioOptions,
@@ -46,21 +47,24 @@ const Index = () => {
 
   useEffect(() => {
     setDisplayData(data?.recentModels ?? displayData);
-    setPendingModelIds(data?.pending_model_ids ?? pendingModelIds)
+    setPendingModelIds(data?.pending_model_ids ?? pendingModelIds);
   }, [data]);
 
   useEffect(() => {
     dispatch(clearModel());
     refetch();
+    setHydrated(true);
   }, []);
 
-  if (error) {
-    console.log('error', error);
-    const e = error as FetchBaseQueryError;
-    if (e && e.status === 401) {
-      router.push('/user/login');
+  useEffect(() => {
+    if (error && hydrated && !isFetching) {
+      console.log('error', error);
+      const e = error as FetchBaseQueryError;
+      if (e && e.status === 401) {
+        router.push('/user/login');
+      }
     }
-  }
+  }, [hydrated, isFetching]);
 
   const filterScenarios = (filter: string | null) => {
     if (filter) {
