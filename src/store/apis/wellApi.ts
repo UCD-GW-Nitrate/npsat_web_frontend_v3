@@ -25,6 +25,5 @@ const wellApi = createApi({
   },
 });
 
-
 export const { useGetWellsQuery } = wellApi;
 export { wellApi };

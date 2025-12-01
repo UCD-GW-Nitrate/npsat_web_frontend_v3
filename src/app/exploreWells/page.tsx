@@ -61,7 +61,7 @@ const ExploreWellsPage = () => {
   const [ageThres, setAgeThres] = useState(0);
   const [porosity, setPorosity] = useState(0.2);
 
-  // state variables related to the action of selecting a map on the map and displaying the charts
+  // state variables related to the action of selecting a well on the map
   const [eid, setEid] = useState<number | null>(null);
   const { urfData, loading: urfDataLoading } = useWellsUrfData({
     eid,

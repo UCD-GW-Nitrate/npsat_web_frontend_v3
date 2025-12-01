@@ -178,5 +178,9 @@ export function useWellDepthRange(customModelDetail: ModelRun | null) {
     return 800;
   }, [rangeMaxData]);
 
-  return { minDepth, maxDepth };
+  return {
+    minDepth,
+    maxDepth,
+    loading: depthMaxDataLoading || depthMinDataLoading,
+  };
 }
