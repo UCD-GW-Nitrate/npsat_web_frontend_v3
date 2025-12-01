@@ -1,35 +1,45 @@
 'use client';
 
 import { Select, Tabs } from 'antd';
-
-import type { Geometry, Region } from '@/types/region/Region';
-import WellsMap from './WellsMap';
-import { UrfData, Well } from '@/types/well/WellExplorer';
-import { REGION_MACROS } from '@/utils/constants';
-import { useFetchB118BasinQuery, useFetchBasinQuery, useFetchCentralValleyQuery, useFetchCountyQuery, useFetchSubregionsQuery, useFetchTownshipQuery } from '@/store';
 import { useState } from 'react';
 import { CircleMarker, LayerGroup } from 'react-leaflet';
+
+import {
+  useFetchB118BasinQuery,
+  useFetchBasinQuery,
+  useFetchCentralValleyQuery,
+  useFetchCountyQuery,
+  useFetchSubregionsQuery,
+  useFetchTownshipQuery,
+} from '@/store';
+import type { Geometry, Region } from '@/types/region/Region';
+import type { UrfData, Well } from '@/types/well/WellExplorer';
+import { mapTabs, REGION_MACROS } from '@/utils/constants';
+
+import WellsMap from './WellsMap';
 
 const { Option } = Select;
 
 export interface WellsAndUrfDataProps {
-  onSelectRegion: (regions: Region[]) => void;
+  onSelectRegions: (regions: Region[]) => void;
   wells: Well[];
   wellProperty: 'depth' | 'wt2t' | 'unsat' | 'slmod';
   onSelectWell: (eid: number) => void;
   urfData: UrfData[];
+  // in Explore Wells parent, is mapEditing on or off
   disableRegionSelection?: boolean;
+  // if mapEditing is canceled, return to prev selectedRegions
   lastSelectedRegions?: number[];
 }
 
-export const WellsAndUrfData = ({ 
-  onSelectRegion, 
-  wells, 
-  wellProperty, 
-  onSelectWell, 
-  urfData, 
-  disableRegionSelection, 
-  lastSelectedRegions 
+export const WellsAndUrfData = ({
+  onSelectRegions,
+  wells,
+  wellProperty,
+  onSelectWell,
+  urfData,
+  disableRegionSelection,
+  lastSelectedRegions,
 }: WellsAndUrfDataProps) => {
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
   const [selected, setSelected] = useState<number[]>([]);
@@ -42,6 +52,7 @@ export const WellsAndUrfData = ({
   const { data: subregionsData } = useFetchSubregionsQuery();
   const { data: townshipData } = useFetchTownshipQuery();
 
+  // return map to render based on tab selection
   const getMap = (): Region[] | undefined => {
     switch (mapType) {
       case REGION_MACROS.CENTRAL_VALLEY: // central valley
@@ -61,12 +72,8 @@ export const WellsAndUrfData = ({
     }
   };
 
-  const handleTabChange = (tab: string) => {
-    setSelected([]);
-    onSelectRegion([]);
-    setMapType(parseInt(tab, 10));
-  };
-
+  // isolate just the Geometry of a region,
+  // add additional properties to be able to use in onEachFeature func
   const configureData = (region: Region): Geometry => {
     const { geometry } = region;
     return {
@@ -75,17 +82,31 @@ export const WellsAndUrfData = ({
     };
   };
 
+  const handleTabChange = (tab: string) => {
+    // reset region selections, since different mapTypes have regions with the same id
+    setSelected([]);
+    onSelectRegions([]);
+
+    setMapType(parseInt(tab, 10));
+  };
+
+  // handle change to the dropdown list
+  const onListChange = (selectedIds: number[]) => {
+    setSelected(selectedIds);
+
+    const regions = selectedIds
+      .map((id: number) => {
+        return getMap()?.find((region) => region.id === id) ?? false;
+      })
+      .filter((item): item is Region => !!item);
+
+    onSelectRegions(regions);
+  };
+
+  // handle change to the dropdown list, particurlarly insertions
   const onListSelect = (v: number) => {
     const selectedIds = [...selected, v];
     onListChange(selectedIds);
-  };
-
-  const onListChange = (selectedIds: number[]) => {
-    setSelected(selectedIds);
-    let regions = selectedIds.map((id: number) => {
-        return getMap()?.find(region => region.id == id) ?? false;
-      }).filter((item): item is Region => !!item)
-    onSelectRegion(regions);
   };
 
   return (
@@ -95,32 +116,7 @@ export const WellsAndUrfData = ({
         centered
         activeKey={`${mapType}`}
         onChange={handleTabChange}
-        items={[
-          {
-            label: 'Central Valley',
-            key: `${REGION_MACROS.CENTRAL_VALLEY}`,
-          },
-          {
-            label: 'Basin',
-            key: `${REGION_MACROS.SUB_BASIN}`,
-          },
-          {
-            label: 'County',
-            key: `${REGION_MACROS.COUNTY}`,
-          },
-          {
-            label: 'B118 Basin',
-            key: `${REGION_MACROS.B118_BASIN}`,
-          },
-          {
-            label: 'Subregions',
-            key: `${REGION_MACROS.CVHM_FARM}`,
-          },
-          {
-            label: 'Township',
-            key: `${REGION_MACROS.TOWNSHIPS}`,
-          },
-        ]}
+        items={mapTabs}
       />
 
       <Select
@@ -157,52 +153,68 @@ export const WellsAndUrfData = ({
           selectedRegions={selected}
           path={getMap()?.map((region: Region) => configureData(region)) ?? []}
           regionsEditable={!disableRegionSelection}
-          onEachFeature={disableRegionSelection ? 
-            (feature: Geometry, layer: any) => {layer.off()} 
-            : 
-            (feature: Geometry, layer: any) => {
-              layer.on({
-                click: () => { // toggle selection
-                  let selectedRegions = selected;
-                  if (selectedRegions.indexOf(feature.properties.id) === -1) {
-                    selectedRegions = [...selectedRegions, feature.properties.id];
-                  } else { // deselect
-                    selectedRegions = [
-                      ...selectedRegions.slice(
-                        0,
-                        selectedRegions.indexOf(feature.properties.id),
-                      ),
-                      ...selectedRegions.slice(
-                        selectedRegions.indexOf(feature.properties.id) + 1,
-                      ),
-                    ];
-                  }
+          onEachFeature={
+            disableRegionSelection
+              ? (_, layer: any) => {
+                  layer.off();
+                }
+              : (feature: Geometry, layer: any) => {
+                  layer.on({
+                    click: () => {
+                      // toggle selection (if a region is not in selectedRegions, add it, else remove it)
+                      let selectedRegions = selected;
+                      if (
+                        selectedRegions.indexOf(feature.properties.id) === -1
+                      ) {
+                        selectedRegions = [
+                          ...selectedRegions,
+                          feature.properties.id,
+                        ];
+                      } else {
+                        // deselect
+                        selectedRegions = [
+                          ...selectedRegions.slice(
+                            0,
+                            selectedRegions.indexOf(feature.properties.id),
+                          ),
+                          ...selectedRegions.slice(
+                            selectedRegions.indexOf(feature.properties.id) + 1,
+                          ),
+                        ];
+                      }
 
-                  setSelected(selectedRegions);
-                  let regions = selectedRegions.map((id: number) => {
-                    return getMap()?.find(region => region.id == id) ?? false;
-                  }).filter((item): item is Region => !!item)
-                  onSelectRegion(regions);
-                },
-              });
-              layer.bindTooltip(feature.properties.name);
-            }
+                      // update Regions dropdown
+                      setSelected(selectedRegions);
+
+                      // update parent, through onSelectRegions function
+                      const regions = selectedRegions
+                        .map((id: number) => {
+                          return (
+                            getMap()?.find((region) => region.id === id) ??
+                            false
+                          );
+                        })
+                        .filter((item): item is Region => !!item);
+                      onSelectRegions(regions);
+                    },
+                  });
+                  layer.bindTooltip(feature.properties.name);
+                }
           }
         >
           <LayerGroup>
-            {urfData.map((reactionPoint, index) => (
-                <CircleMarker
-                  key={`reactionPoint${index}`}
-                  center={[reactionPoint.lat, reactionPoint.lon]}
-                  pathOptions={{
-                    color: 'yellow',
-                    fillColor: 'yellow',
-                    fillOpacity: 1,
-                  }}
-                  radius={5}
-                />
-              ))
-            }
+            {urfData.map((reactionPoint) => (
+              <CircleMarker
+                key={reactionPoint.sid}
+                center={[reactionPoint.lat, reactionPoint.lon]}
+                pathOptions={{
+                  color: 'yellow',
+                  fillColor: 'yellow',
+                  fillOpacity: 1,
+                }}
+                radius={5}
+              />
+            ))}
           </LayerGroup>
         </WellsMap>
       </div>

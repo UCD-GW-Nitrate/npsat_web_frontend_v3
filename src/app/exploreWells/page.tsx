@@ -115,14 +115,14 @@ const ExploreWellsPage = () => {
 
     const ages: number[] = [];
 
-    for (const well of urfData) {
-      const age = well.ageA * porosity + well.ageB;
+    for (const reactionPoint of urfData) {
+      const age = reactionPoint.ageA * porosity + reactionPoint.ageB;
       ages.push(age);
-      depthAgeValues.push([well.wt2d, age]);
+      depthAgeValues.push([reactionPoint.wt2d, age]);
       urfSeries.push({
-        name: well.sid.toString(),
+        name: reactionPoint.sid.toString(),
         type: 'line',
-        data: ADEurf(well.len, age, 500),
+        data: ADEurf(reactionPoint.len, age, 500),
       });
     }
 
@@ -241,7 +241,7 @@ const ExploreWellsPage = () => {
               </StandardText>
               <div style={{ width: '100%' }}>
                 <WellsAndUrfData
-                  onSelectRegion={(selectedRegions: Region[]) => {
+                  onSelectRegions={(selectedRegions: Region[]) => {
                     if (selectedRegions.length > 0)
                       form.setFields([
                         { name: 'select_regions', errors: undefined },

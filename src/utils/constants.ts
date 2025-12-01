@@ -85,3 +85,30 @@ export const wellPropertyDropdownItems = [
 export const wellPropertyDropdownLabels = Object.fromEntries(
   wellPropertyDropdownItems.map((item) => [item.key, item.label]),
 );
+
+export const mapTabs = [
+  {
+    label: 'Central Valley',
+    key: `${REGION_MACROS.CENTRAL_VALLEY}`,
+  },
+  {
+    label: 'Basin',
+    key: `${REGION_MACROS.SUB_BASIN}`,
+  },
+  {
+    label: 'County',
+    key: `${REGION_MACROS.COUNTY}`,
+  },
+  {
+    label: 'B118 Basin',
+    key: `${REGION_MACROS.B118_BASIN}`,
+  },
+  {
+    label: 'Subregions',
+    key: `${REGION_MACROS.CVHM_FARM}`,
+  },
+  {
+    label: 'Township',
+    key: `${REGION_MACROS.TOWNSHIPS}`,
+  },
+];
