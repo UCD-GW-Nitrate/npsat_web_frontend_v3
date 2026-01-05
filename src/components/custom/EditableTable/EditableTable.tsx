@@ -1,15 +1,20 @@
 'use client';
 
-import { useGetModelStatusQuery } from '@/store';
-import { MODEL_STATUS_MACROS } from '@/utils/constants';
-import { CheckCircleFilled, CloseCircleFilled, CloseCircleTwoTone } from '@ant-design/icons';
+import './styles.css';
+
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  CloseCircleTwoTone,
+} from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import { Form, Input, Table, Tooltip, Typography } from 'antd';
 import type { GetRowKey, TableRowSelection } from 'antd/es/table/interface';
 import type { AnyObject } from 'immer/dist/internal';
 import { useEffect, useState } from 'react';
 
-import './styles.css';
+import { useGetModelStatusQuery } from '@/store';
+import { MODEL_STATUS_MACROS } from '@/utils/constants';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -74,8 +79,8 @@ function EditableTable<T extends AnyObject>({
   deleteCallback?: (id: number) => Promise<void>;
   pendingModelIds: number[];
 }) {
-  const [ids, setIds] = useState<number[]>(pendingModelIds)
-  const [latestData, setLatestData] = useState<T[]>(dataSource)
+  const [ids, setIds] = useState<number[]>(pendingModelIds);
+  const [latestData, setLatestData] = useState<T[]>(dataSource);
   const { data } = useGetModelStatusQuery(
     { ids },
     {
@@ -95,50 +100,45 @@ function EditableTable<T extends AnyObject>({
     setLatestData(dataSource);
   }, [dataSource]);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     if (data) {
-      data.results.forEach(statusObj => {
+      data.results.forEach((statusObj) => {
         const modelId = statusObj.id;
-        const status = statusObj.status;
+        const { status } = statusObj;
 
-        setLatestData(prev => 
-          prev.map(row =>
-            row.id === modelId ? { ...row, status: status } : row
-          )
+        setLatestData((prev) =>
+          prev.map((row) => (row.id === modelId ? { ...row, status } : row)),
         );
 
-        console.log("Checking ", ids)
+        console.log('Checking ', ids);
 
-        if (ids.includes(modelId) && status>2) {
-          setIds(prev => {
-            const newArray = [...prev]
-            newArray.splice(newArray.indexOf(modelId), 1)
-            return newArray
-          })
-          if (status==MODEL_STATUS_MACROS.COMPLETED) showNewStatus(modelId)
+        if (ids.includes(modelId) && status > 2) {
+          setIds((prev) => {
+            const newArray = [...prev];
+            newArray.splice(newArray.indexOf(modelId), 1);
+            return newArray;
+          });
+          if (status == MODEL_STATUS_MACROS.COMPLETED) showNewStatus(modelId);
         }
-      })
+      });
     }
-  }, [data])
-
+  }, [data]);
 
   const showNewStatus = (modelId: number) => {
-    setLatestData(prev =>
-      prev.map(row =>
-        row.id === modelId ? { ...row, status: 5 } : row
-      )
+    setLatestData((prev) =>
+      prev.map((row) => (row.id === modelId ? { ...row, status: 5 } : row)),
     );
 
     setTimeout(() => {
-      setLatestData(prev =>
-        prev.map(row =>
-          row.id === modelId ? { ...row, status: MODEL_STATUS_MACROS.COMPLETED } : row
-        )
+      setLatestData((prev) =>
+        prev.map((row) =>
+          row.id === modelId
+            ? { ...row, status: MODEL_STATUS_MACROS.COMPLETED }
+            : row,
+        ),
       );
     }, 5000);
   };
-
 
   const isEditing = (record: T) => record.id === editingKey;
 
@@ -232,34 +232,42 @@ function EditableTable<T extends AnyObject>({
       if (record.status === MODEL_STATUS_MACROS.READY) {
         return (
           <Tooltip title="Model Queued">
-            <CloseCircleTwoTone twoToneColor={['#E5E5BF', '#E5E5BF']} style={{ fontSize: 15 }} />
+            <CloseCircleTwoTone
+              twoToneColor={['#E5E5BF', '#E5E5BF']}
+              style={{ fontSize: 15 }}
+            />
           </Tooltip>
-        )
-      } else if (record.status === MODEL_STATUS_MACROS.RUNNING) {
+        );
+      }
+      if (record.status === MODEL_STATUS_MACROS.RUNNING) {
         return (
           <Tooltip title="Running">
-            <CloseCircleTwoTone twoToneColor={['#FDDA0D', '#FDDA0D']} style={{ fontSize: 15 }} />
+            <CloseCircleTwoTone
+              twoToneColor={['#FDDA0D', '#FDDA0D']}
+              style={{ fontSize: 15 }}
+            />
           </Tooltip>
-        )
-      } else if (record.status === MODEL_STATUS_MACROS.ERROR) {
+        );
+      }
+      if (record.status === MODEL_STATUS_MACROS.ERROR) {
         return (
           <Tooltip title="Run Failed">
-            <CloseCircleFilled style={{ fontSize: 15, color: "#ff4d4f" }} />
+            <CloseCircleFilled style={{ fontSize: 15, color: '#ff4d4f' }} />
           </Tooltip>
-        )
-      } else if (record.status === 5) {
+        );
+      }
+      if (record.status === 5) {
         return (
           <Tooltip title="Run Completed">
             <div className="icon-grow">
-              <CheckCircleFilled style={{ fontSize: 15, color: "#52c41a" }} />
+              <CheckCircleFilled style={{ fontSize: 15, color: '#52c41a' }} />
             </div>
           </Tooltip>
-        )
+        );
       }
       return originNode;
     },
   };
-
 
   const mergedColumns: TableProps<T>['columns'] = editableColumns.map(
     (col: any) => {
@@ -303,7 +311,8 @@ function EditableTable<T extends AnyObject>({
         rowKey={rowKey}
         onRow={rowClicked}
         rowClassName={(record) => {
-          if (record.status !== MODEL_STATUS_MACROS.COMPLETED) return 'row-disabled';
+          if (record.status !== MODEL_STATUS_MACROS.COMPLETED)
+            return 'row-disabled';
           return '';
         }}
       />
