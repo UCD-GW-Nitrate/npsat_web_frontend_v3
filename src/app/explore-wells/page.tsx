@@ -1,7 +1,17 @@
 'use client';
 
-import { DownOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Dropdown, Form, Row, Select, Space } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Empty,
+  Form,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -10,6 +20,7 @@ import LineChart from '@/components/charts/LineChart/LineChart';
 import Scatterplot from '@/components/charts/Scatterplot/Scatterplot';
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
 import CustomSlider from '@/components/custom/CustomSlider/CustomSlider';
+import ExploreWellsSteps from '@/components/custom/ExploreWellsSteps/ExploreWellsSteps';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
@@ -32,8 +43,6 @@ const WellsAndUrfData = dynamic(
     ssr: false,
   },
 );
-
-const { Option } = Select;
 
 const ExploreWellsPage = () => {
   // state variables related to the page header, to select params to fetch wells
@@ -158,76 +167,12 @@ const ExploreWellsPage = () => {
         Explore Wells
       </StandardText>
 
-      <Form
+      <ExploreWellsSteps
         form={form}
-        name="control-hooks"
-        onFinish={onFormSubmit}
-        layout="inline"
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingTop: 10,
-          paddingBottom: 40,
-        }}
-      >
-        <Form.Item
-          name="select_regions"
-          label="Select Region(s) From Map"
-          required
-          rules={[]}
-        >
-          {mapEditing ? (
-            <Button
-              type="link"
-              onClick={() => {
-                setMapEditing((prev) => !prev);
-                form.setFields([{ name: 'select_regions', errors: undefined }]);
-              }}
-              style={{ width: 120 }}
-            >
-              Cancel Edit Mode
-            </Button>
-          ) : (
-            <Button
-              type="link"
-              onClick={() => setMapEditing((prev) => !prev)}
-              style={{ width: 120 }}
-            >
-              Edit Selection
-              <EditOutlined />
-            </Button>
-          )}
-        </Form.Item>
-
-        <Form.Item name="flow" label="Base Model" rules={[{ required: true }]}>
-          <Select style={{ width: 170 }}>
-            <Option value="C2VSim">C2VSim</Option>
-            <Option value="CVHM2">CVHM2</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item name="scen" label="Scenario" rules={[{ required: true }]}>
-          <Select style={{ width: 170 }}>
-            <Option value="Pump adjusted">Pump adjusted</Option>
-            <Option value="Recharge adjusted">Recharge adjusted</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item name="wType" label="Well Type" rules={[{ required: true }]}>
-          <Select style={{ width: 170 }}>
-            <Option value="Irrigation">Irrigation</Option>
-            <Option value="Domestic">Domestic</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item style={{ margin: 0, paddingLeft: 100 }}>
-          <Button type="primary" htmlType="submit">
-            Fetch Wells
-          </Button>
-        </Form.Item>
-      </Form>
+        onFormSubmit={onFormSubmit}
+        mapEditing={mapEditing}
+        setMapEditing={setMapEditing}
+      />
 
       <VBox spacing="large">
         <Card>
@@ -362,34 +307,38 @@ const ExploreWellsPage = () => {
           </Row>
         </Card>
 
-        <InfoContainer
-          title={
-            eid == null
-              ? 'Select a well to get started'
-              : 'Well Streampoints Data'
-          }
-        >
-          <Row gutter={[24, 16]} style={{ width: '100%' }}>
-            <Col span={12}>
-              <Scatterplot
-                data={depthAgeChart}
-                title="Depth vs Age"
-                xTitle="Depth (m)"
-                yTitle="Age (years)"
-              />
-            </Col>
-            <Col span={12}>
-              <LineChart
-                data={ecdfChart}
-                title="ECDF"
-                xTitle="Age (years)"
-                yTitle="Percentage"
-              />
-            </Col>
-            <Col span={12}>
-              <LineChart data={urfChart} title="URFs" xTitle="Time (years)" />
-            </Col>
-          </Row>
+        <InfoContainer title="Well Streampoints Data">
+          {eid == null ? (
+            <Empty
+              description={
+                <Typography.Text>
+                  Please select a well from the map to get started
+                </Typography.Text>
+              }
+            />
+          ) : (
+            <Row gutter={[24, 16]} style={{ width: '100%' }}>
+              <Col span={12}>
+                <Scatterplot
+                  data={depthAgeChart}
+                  title="Depth vs Age"
+                  xTitle="Depth (m)"
+                  yTitle="Age (years)"
+                />
+              </Col>
+              <Col span={12}>
+                <LineChart
+                  data={ecdfChart}
+                  title="ECDF"
+                  xTitle="Age (years)"
+                  yTitle="Percentage"
+                />
+              </Col>
+              <Col span={12}>
+                <LineChart data={urfChart} title="URFs" xTitle="Time (years)" />
+              </Col>
+            </Row>
+          )}
         </InfoContainer>
       </VBox>
     </AppLayout>
