@@ -34,7 +34,7 @@ const Legend = ({ min, max }: { min: number; max: number }) => {
         borderRadius: '8px',
         boxShadow: '0 0 10px rgba(0,0,0,0.2)',
         fontSize: '12px',
-        zIndex: 2000,
+        zIndex: 1000,
       }}
     >
       <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Legend</div>

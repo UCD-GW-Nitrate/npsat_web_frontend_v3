@@ -6,8 +6,6 @@ import type { FeedResponse } from '@/types/feed/FeedResponse';
 
 import getAuth from '../getAuth';
 
-console.log('api route', apiRoot);
-
 const feedApi = createApi({
   reducerPath: 'feed',
   baseQuery: fetchBaseQuery({
@@ -62,7 +60,7 @@ const feedApi = createApi({
           );
           return {
             recentModels: plotModels,
-            pending_model_ids: response.pending_model_ids
+            pending_model_ids: response.pending_model_ids,
           };
         },
       }),

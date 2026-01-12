@@ -2,7 +2,7 @@
 
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { Button, Select } from 'antd';
+import { Button, Image, Modal, Select } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ import EditableTable from '@/components/custom/EditableTable/EditableTable';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
+import { PRIMARY_COLOR } from '@/components/theme';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   useDeleteModelMutation,
@@ -92,8 +93,63 @@ const Index = () => {
 
   const [deleteModel] = useDeleteModelMutation();
 
+  const [open, setOpen] = useState(true);
+
   return (
     <AppLayout>
+      <Modal
+        centered
+        open={open}
+        onOk={() => setOpen(false)}
+        onCancel={() => setOpen(false)}
+        width={1000}
+        okText="I Agree"
+        closable={false}
+        cancelText=" "
+        cancelButtonProps={{ disabled: true, type: 'link' }}
+        style={{ padding: 0, margin: 0 }}
+        bodyStyle={{ padding: 0, margin: 0 }}
+      >
+        <div
+          style={{
+            width: '100%',
+            height: 50,
+            backgroundColor: PRIMARY_COLOR,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Image
+            src="/images/logo-white.svg"
+            height={35}
+            width={(88 / 35) * 35}
+            alt="NPSAT logo"
+          />
+        </div>
+        <p>
+          The Nonpoint Source Assessment Toolbox (NPSAT) is a groundwater
+          modeling framework designed to evaluate the fate and transport of
+          nonpoint source (NPS) contaminants such as nitrate and salts leaching
+          to groundwater from agricultural, urban, and natural land uses. Its
+          primary application is to assess groundwater quality in irrigation,
+          public, and domestic supply wells.
+        </p>
+        <p>
+          The NPSAT framework – in contrast to other groundwater flow and
+          transport models - is designed specifically (a) for high-resolution
+          nonpoint source contaminant transport across entire groundwater
+          (sub)basins and (b) to facilitate “on-the-fly” evaluation of dozens,
+          hundreds, or thousands of different user-designed nonpoint source
+          contaminant leaching future scenarios. These scenarios represent
+          user-selected application of alternative source management practices
+          associated with user-selected specific land uses and/or crops.
+        </p>
+        <p>
+          By clicking the button below, I agree that I have read and understand
+          the above.
+        </p>
+      </Modal>
+
       <HBox>
         <StandardText variant="h1" style={{ marginTop: 10 }}>
           Home

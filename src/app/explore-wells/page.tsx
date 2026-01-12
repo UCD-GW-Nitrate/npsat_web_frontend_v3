@@ -1,6 +1,7 @@
 'use client';
 
 import { DownOutlined } from '@ant-design/icons';
+import type { TourProps } from 'antd';
 import {
   Button,
   Card,
@@ -10,10 +11,11 @@ import {
   Form,
   Row,
   Space,
+  Tour,
   Typography,
 } from 'antd';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import LineChart from '@/components/charts/LineChart/LineChart';
@@ -161,18 +163,67 @@ const ExploreWellsPage = () => {
     }
   }, [allWells, ageThres, porosity]);
 
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+  const ref4 = useRef(null);
+
+  const [open, setOpen] = useState<boolean>(true);
+
+  const [current, setCurrent] = useState<number>(0);
+
+  const steps: TourProps['steps'] = [
+    {
+      title: 'API Params',
+      description:
+        'Configure from which dataset you would like to fetch wells.',
+      target: () => ref1.current,
+    },
+    {
+      title: 'Map',
+      description:
+        'Select region(s) on this map as an API param. Once fetched, well data points will appear here.',
+      target: () => ref2.current,
+      scrollIntoViewOptions: {
+        behavior: 'instant',
+        block: 'center',
+      },
+    },
+    {
+      title: 'Results',
+      description: 'Change how or which data points are displayed.',
+      target: () => ref3.current,
+      scrollIntoViewOptions: {
+        behavior: 'instant',
+        block: 'center',
+      },
+    },
+    {
+      title: 'Well Streampoints Data',
+      description:
+        'Click on a particular well from the map to populate Depth-Age, ECDF, and URF charts.',
+      target: () => ref4.current,
+      scrollIntoViewOptions: {
+        behavior: 'instant',
+        block: 'center',
+      },
+    },
+  ];
+
   return (
     <AppLayout>
       <StandardText variant="h1" style={{ marginTop: 10 }}>
         Explore Wells
       </StandardText>
 
-      <ExploreWellsSteps
-        form={form}
-        onFormSubmit={onFormSubmit}
-        mapEditing={mapEditing}
-        setMapEditing={setMapEditing}
-      />
+      <div ref={ref1}>
+        <ExploreWellsSteps
+          form={form}
+          onFormSubmit={onFormSubmit}
+          mapEditing={mapEditing}
+          setMapEditing={setMapEditing}
+        />
+      </div>
 
       <VBox spacing="large">
         <Card>
@@ -180,7 +231,7 @@ const ExploreWellsPage = () => {
             gutter={[24, 8]}
             style={{ width: '100%', justifySelf: 'center' }}
           >
-            <Col span={12} style={{ padding: 0 }}>
+            <Col span={12} style={{ padding: 0 }} ref={ref2}>
               <StandardText variant="h4" style={{ marginTop: 0 }}>
                 Select Region(s) From Map
               </StandardText>
@@ -211,7 +262,7 @@ const ExploreWellsPage = () => {
                 alignItems: 'center',
               }}
             >
-              <Card style={{ width: '100%' }} title="Results">
+              <Card style={{ width: '100%' }} title="Results" ref={ref3}>
                 <Card.Grid
                   style={{
                     width: '100%',
@@ -232,7 +283,7 @@ const ExploreWellsPage = () => {
                     }}
                   >
                     <p style={{ width: 250, paddingRight: 20 }}>
-                      Colorcode by Well Property:
+                      Color wells by:
                     </p>
                     <Dropdown menu={menuProps}>
                       <Button>
@@ -272,7 +323,7 @@ const ExploreWellsPage = () => {
                     }}
                   >
                     <p style={{ width: 250, paddingRight: 20 }}>
-                      {'Set Minimum Age Threshold (>):'}
+                      Minimum Age Threshold:
                     </p>
                     <CustomSlider
                       value={ageThres}
@@ -290,9 +341,7 @@ const ExploreWellsPage = () => {
                       alignItems: 'center',
                     }}
                   >
-                    <p style={{ width: 250, paddingRight: 20 }}>
-                      Set Porosity:
-                    </p>
+                    <p style={{ width: 250, paddingRight: 20 }}>Porosity:</p>
                     <CustomSlider
                       value={porosity}
                       onAfterChange={async (val) => {
@@ -307,40 +356,55 @@ const ExploreWellsPage = () => {
           </Row>
         </Card>
 
-        <InfoContainer title="Well Streampoints Data">
-          {eid == null ? (
-            <Empty
-              description={
-                <Typography.Text>
-                  Please select a well from the map to get started
-                </Typography.Text>
-              }
-            />
-          ) : (
-            <Row gutter={[24, 16]} style={{ width: '100%' }}>
-              <Col span={12}>
-                <Scatterplot
-                  data={depthAgeChart}
-                  title="Depth vs Age"
-                  xTitle="Depth (m)"
-                  yTitle="Age (years)"
-                />
-              </Col>
-              <Col span={12}>
-                <LineChart
-                  data={ecdfChart}
-                  title="ECDF"
-                  xTitle="Age (years)"
-                  yTitle="Percentage"
-                />
-              </Col>
-              <Col span={12}>
-                <LineChart data={urfChart} title="URFs" xTitle="Time (years)" />
-              </Col>
-            </Row>
-          )}
-        </InfoContainer>
+        <div ref={ref4}>
+          <InfoContainer title="Well Streampoints Data">
+            {eid == null ? (
+              <Empty
+                description={
+                  <Typography.Text>
+                    Please select a well from the map to get started
+                  </Typography.Text>
+                }
+              />
+            ) : (
+              <Row gutter={[24, 16]} style={{ width: '100%' }}>
+                <Col span={12}>
+                  <Scatterplot
+                    data={depthAgeChart}
+                    title="Depth vs Age"
+                    xTitle="Depth (m)"
+                    yTitle="Age (years)"
+                  />
+                </Col>
+                <Col span={12}>
+                  <LineChart
+                    data={ecdfChart}
+                    title="ECDF"
+                    xTitle="Age (years)"
+                    yTitle="Percentage"
+                  />
+                </Col>
+                <Col span={12}>
+                  <LineChart
+                    data={urfChart}
+                    title="URFs"
+                    xTitle="Time (years)"
+                  />
+                </Col>
+              </Row>
+            )}
+          </InfoContainer>
+        </div>
       </VBox>
+
+      <Tour
+        open={open}
+        steps={steps}
+        current={current}
+        onChange={setCurrent}
+        onClose={() => setOpen(false)}
+        onFinish={() => setOpen(false)}
+      />
     </AppLayout>
   );
 };

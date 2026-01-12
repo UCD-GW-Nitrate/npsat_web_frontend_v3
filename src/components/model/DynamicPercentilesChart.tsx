@@ -82,14 +82,14 @@ const DynamicPercentilesChart = ({
       {expiration && (
         <Alert
           message="Notice"
-          description={`Raw breakthrough curve data will be permanently deleted on ${expiration.toLocaleDateString(
+          description={`Filtering by wells capabilities for this scenario run will expire on ${expiration.toLocaleDateString(
             'en-US',
             {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             },
-          )}. Aggregated results will remain, but filtering by well depth will no longer be available.`}
+          )}`}
           type="warning"
           showIcon
           closable
