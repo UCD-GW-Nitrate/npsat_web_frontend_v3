@@ -72,6 +72,12 @@ const modelSlice = createSlice({
     setModelModifications(state, action: PayloadAction<CropModification[]>) {
       return { ...state, modifications: action.payload };
     },
+    setDefaultPorosity(state, action: PayloadAction<boolean>) {
+      return { ...state, default_porosity: action.payload };
+    },
+    setDefaultWaterContent(state, action: PayloadAction<boolean>) {
+      return { ...state, default_water_content: action.payload };
+    },
     clearModel() {
       return {};
     },
@@ -102,6 +108,8 @@ export const {
   setModelDepthRangeMin,
   setModelDepthRangeMax,
   setModelModifications,
+  setDefaultPorosity,
+  setDefaultWaterContent,
   clearModel,
   createNewModel,
 } = modelSlice.actions;
