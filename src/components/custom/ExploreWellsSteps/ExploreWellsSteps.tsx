@@ -4,6 +4,8 @@ import { Button, Flex, Form, Select, theme } from 'antd';
 import type { ReactNode } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
+import defaultRules from '@/components/steps/util/defaultRules';
+
 const { Option } = Select;
 const { useToken } = theme;
 
@@ -151,22 +153,31 @@ export default function ExploreWellsSteps({
           status="process"
           content={
             <Flex gap="middle">
-              <Form.Item name="flow" rules={[{ required: true }]}>
-                <Select style={{ width: 150 }} placeholder="Base Model">
+              <Form.Item
+                name="flow"
+                rules={defaultRules('Please select a base model')}
+              >
+                <Select style={{ width: 170 }} placeholder="Base Model">
                   <Option value="C2VSim">C2VSim</Option>
                   <Option value="CVHM2">CVHM2</Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="scen" rules={[{ required: true }]}>
-                <Select style={{ width: 150 }} placeholder="Scenario">
+              <Form.Item
+                name="scen"
+                rules={defaultRules('Please select a scenario')}
+              >
+                <Select style={{ width: 170 }} placeholder="Scenario">
                   <Option value="Pump adjusted">Pump adjusted</Option>
                   <Option value="Recharge adjusted">Recharge adjusted</Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="wType" rules={[{ required: true }]}>
-                <Select style={{ width: 150 }} placeholder="Well Type">
+              <Form.Item
+                name="wType"
+                rules={defaultRules('Please select a well type')}
+              >
+                <Select style={{ width: 170 }} placeholder="Well Type">
                   <Option value="Irrigation">Irrigation</Option>
                   <Option value="Domestic">Domestic</Option>
                 </Select>

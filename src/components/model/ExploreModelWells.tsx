@@ -213,9 +213,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               alignItems: 'center',
             }}
           >
-            <p style={{ width: 250, paddingRight: 20 }}>
-              Colorcode by Well Property:
-            </p>
+            <p style={{ width: 250, paddingRight: 20 }}>Color wells by:</p>
             <Dropdown menu={menuProps}>
               <Button>
                 {dropdownLabels[wellProperty]}
@@ -251,7 +249,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
             }}
           >
             <p style={{ width: 250, paddingRight: 20 }}>
-              {'Set Minimum Age Threshold (>):'}
+              Minimum Age Threshold:
             </p>
             <CustomSlider
               value={0}
