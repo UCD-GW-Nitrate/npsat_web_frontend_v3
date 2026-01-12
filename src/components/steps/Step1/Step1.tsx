@@ -1,5 +1,14 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { DatePicker, Divider, Form, InputNumber, Select, Tooltip } from 'antd';
+import {
+  Checkbox,
+  DatePicker,
+  Divider,
+  Flex,
+  Form,
+  InputNumber,
+  Select,
+  Tooltip,
+} from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -9,6 +18,8 @@ import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButto
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   selectCurrentModel,
+  setDefaultPorosity,
+  setDefaultWaterContent,
   setModelFlowScenario,
   setModelLoadScenario,
   setModelPorosity,
@@ -43,6 +54,9 @@ const Step1 = ({ onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [scenarios, setScenarios] = useState<ScenarioDict>({});
 
+  const [porosityChecked, setPorosityChecked] = useState(false);
+  const [waterContentChecked, setWaterContentChecked] = useState(false);
+
   useEffect(() => {
     const scenarioDictTemp: ScenarioDict = {};
     flowScenarioOptions.forEach((scenario) => {
@@ -70,8 +84,10 @@ const Step1 = ({ onNext }: StepBase) => {
     dispatch(setModelLoadScenario(scenarios[data.load_scenario]!));
     dispatch(setModelWelltypeScenario(scenarios[data.welltype_scenario]!));
     dispatch(setModelUnsatScenario(scenarios[data.unsat_scenario]!));
-    dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
-    dispatch(setModelPorosity(Math.floor(data.porosity / 10) * 10));
+    if (!waterContentChecked)
+      dispatch(setModelWaterContent(Math.floor(data.water_content) / 100));
+    if (!porosityChecked)
+      dispatch(setModelPorosity(Math.floor(data.porosity / 10) * 10));
     dispatch(setModelSimEndYear((data.sim_end_year as dayjs.Dayjs).year()));
     dispatch(
       setModelReductionStartYear(
@@ -83,6 +99,8 @@ const Step1 = ({ onNext }: StepBase) => {
         (data.reduction_year as dayjs.Dayjs[])[1]!.year(),
       ),
     );
+    dispatch(setDefaultPorosity(porosityChecked));
+    dispatch(setDefaultWaterContent(waterContentChecked));
     onNext();
   };
 
@@ -124,19 +142,28 @@ const Step1 = ({ onNext }: StepBase) => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
-          name="porosity"
-          label="Porosity"
-          rules={defaultRules('Please enter porosity')}
-          initialValue={model.porosity ? model.porosity : 10}
-        >
-          <InputNumber
-            min={10}
-            max={100}
-            step={10}
-            keyboard={false}
-            formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`}
-          />
+        <Form.Item label="Porosity" required>
+          <Flex gap="large">
+            <Form.Item
+              name="porosity"
+              rules={defaultRules('Please enter porosity')}
+              initialValue={model.porosity ? model.porosity : 10}
+              noStyle
+            >
+              <InputNumber
+                min={10}
+                max={100}
+                step={10}
+                keyboard={false}
+                formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`}
+              />
+            </Form.Item>
+            <Form.Item style={{ margin: 0 }}>
+              <Checkbox onChange={() => setPorosityChecked((prev) => !prev)}>
+                Use default value
+              </Checkbox>
+            </Form.Item>
+          </Flex>
         </Form.Item>
         <Form.Item
           name="load_scenario"
@@ -205,13 +232,31 @@ const Step1 = ({ onNext }: StepBase) => {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
-          name="water_content"
-          label="Unsaturated zone effective water content"
-          rules={defaultRules('Please enter the water content')}
-          initialValue={model.water_content ? model.water_content * 100 : null}
-        >
-          <InputNumber min={0} max={200} formatter={(v) => `${v}%`} />
+        <Form.Item label="Unsaturated zone effective water content" required>
+          <Flex gap="large">
+            <Form.Item
+              key={`water_content_${waterContentChecked ? 1 : 0}`}
+              name="water_content"
+              rules={
+                waterContentChecked
+                  ? []
+                  : defaultRules('Please enter the water content')
+              }
+              initialValue={
+                model.water_content ? model.water_content * 100 : null
+              }
+              noStyle
+            >
+              <InputNumber min={0} max={200} formatter={(v) => `${v}%`} />
+            </Form.Item>
+            <Form.Item style={{ margin: 0 }}>
+              <Checkbox
+                onChange={() => setWaterContentChecked((prev) => !prev)}
+              >
+                Use default value
+              </Checkbox>
+            </Form.Item>
+          </Flex>
         </Form.Item>
         <Form.Item
           name="sim_end_year"

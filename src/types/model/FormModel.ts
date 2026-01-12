@@ -24,4 +24,8 @@ export interface FormModel {
   depth_range_max?: number;
   modifications?: CropModification[];
   mantis_version?: string;
+
+  // these two params are not used in backend, made for form progression
+  default_porosity?: boolean;
+  default_water_content?: boolean;
 }
