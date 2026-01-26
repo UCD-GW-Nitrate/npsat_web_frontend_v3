@@ -2,7 +2,7 @@
 
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { Button, Image, Modal, Select } from 'antd';
+import { Button, Select } from 'antd';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +13,6 @@ import EditableTable from '@/components/custom/EditableTable/EditableTable';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
-import { PRIMARY_COLOR } from '@/components/theme';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   useDeleteModelMutation,
@@ -97,7 +96,7 @@ const Index = () => {
 
   return (
     <AppLayout>
-      <Modal
+      {/* <Modal
         centered
         open={open}
         onOk={() => setOpen(false)}
@@ -107,25 +106,37 @@ const Index = () => {
         closable={false}
         cancelText=" "
         cancelButtonProps={{ disabled: true, type: 'link' }}
-        style={{ padding: 0, margin: 0 }}
-        bodyStyle={{ padding: 0, margin: 0 }}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: 50,
+        styles={{
+          content: {
+            padding: 0,
+            // backgroundColor: BACKGROUND_COLOR,
+          },
+          header: {
+            height: 70,
             backgroundColor: PRIMARY_COLOR,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+            padding: 20,
+            margin: 0,
+          },
+          body: {
+            padding: 24,
+            paddingRight: 30,
+            paddingLeft: 30,
+            paddingBottom: 0,
+            margin: 0,
+          },
+          footer: {
+            padding: 24,
+          },
+        }}
+        title={
           <Image
             src="/images/logo-white.svg"
             height={35}
             width={(88 / 35) * 35}
             alt="NPSAT logo"
           />
-        </div>
+        }
+      >
         <p>
           The Nonpoint Source Assessment Toolbox (NPSAT) is a groundwater
           modeling framework designed to evaluate the fate and transport of
@@ -145,10 +156,12 @@ const Index = () => {
           associated with user-selected specific land uses and/or crops.
         </p>
         <p>
-          By clicking the button below, I agree that I have read and understand
-          the above.
+          By clicking the button below,{' '}
+          <StandardText variant="h5">
+            I agree that I have read and understand the above.
+          </StandardText>
         </p>
-      </Modal>
+      </Modal> */}
 
       <HBox>
         <StandardText variant="h1" style={{ marginTop: 10 }}>
