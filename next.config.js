@@ -20,6 +20,15 @@ const nextConfig = {
   // experimental: {
   //   appDir: true,
   // },
+  async redirects() {
+    return [
+      {
+        source: '/exploreWells',
+        destination: '/explore-wells',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

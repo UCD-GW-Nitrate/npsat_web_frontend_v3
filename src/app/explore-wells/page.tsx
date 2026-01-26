@@ -168,7 +168,7 @@ const ExploreWellsPage = () => {
   const ref3 = useRef(null);
   const ref4 = useRef(null);
 
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
 
   const [current, setCurrent] = useState<number>(0);
 

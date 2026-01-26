@@ -1,3 +1,4 @@
+import { Card } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -61,7 +62,8 @@ const ModelWellsModal = ({
           alignItems: 'center',
         }}
       >
-        <p style={{ paddingRight: 20 }}>Filter by Well Depth (m):</p>
+        <p style={{ paddingRight: 20 }}>Well Depth Range (m):</p>
+
         <div style={{ width: 600 }}>
           <RangeFormItem
             valueLow={range[0]}
@@ -78,20 +80,33 @@ const ModelWellsModal = ({
         </div>
       </div>
 
-      <p style={{ paddingRight: 20 }}>
-        Filter by Bounding Polygon — draw a polygon on the map to select wells.
-      </p>
+      {/* <Divider style={{ marginTop: 0 }} /> */}
 
-      <div style={{ width: '100%', height: 500 }}>
-        <WellsMap
-          path={regions.map((region: Region) => configureData(region))}
-          selectedRegions={regions.map((region: Region) => region.id)}
-          wellProperty="depth"
-          wells={displayData}
-          allowDraw
-          setPolygonCoords={setPolygonCoords}
-        />
-      </div>
+      <Card
+        size="small"
+        title="Spatial Filter"
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: 10,
+        }}
+      >
+        <p style={{ paddingRight: 20, marginTop: 0 }}>
+          Draw a polygon on the map to include wells inside the area.
+        </p>
+
+        <div style={{ width: '100%', height: 450 }}>
+          <WellsMap
+            path={regions.map((region: Region) => configureData(region))}
+            selectedRegions={regions.map((region: Region) => region.id)}
+            wellProperty="depth"
+            wells={displayData}
+            allowDraw
+            setPolygonCoords={setPolygonCoords}
+          />
+        </div>
+      </Card>
     </div>
   );
 };

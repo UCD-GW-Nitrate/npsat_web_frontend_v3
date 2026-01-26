@@ -94,7 +94,7 @@ const DynamicPercentilesChart = ({
           showIcon
           closable
           style={{
-            width: '80%',
+            width: '50%',
             marginLeft: 'auto',
             marginRight: 'auto',
             marginBottom: 20,
@@ -155,10 +155,10 @@ const DynamicPercentilesChart = ({
                 flexDirection: 'row',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
+                // paddingLeft: 5,
+                paddingTop: 5,
               }}
             >
-              <p style={{ paddingRight: 20 }}>Advanced filter:</p>
-
               <Switch
                 checkedChildren="on"
                 unCheckedChildren="off"
@@ -170,31 +170,28 @@ const DynamicPercentilesChart = ({
                   setShowAdvancedFilter(checked);
                 }}
               />
-            </div>
-            {showAdvancedFilter && (
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                }}
-              >
-                <p style={{ width: 210, paddingLeft: 20 }}>
-                  Filter by Bounding Polygon:
-                </p>
 
-                <Button
-                  type="default"
-                  onClick={() => {
-                    setIsModalOpen(true);
+              <p style={{ paddingLeft: 20 }}>
+                Advanced Filters {showAdvancedFilter ? 'Applied:' : 'OFF'}
+              </p>
+
+              {showAdvancedFilter && (
+                <div
+                  style={{
+                    marginLeft: 50,
                   }}
                 >
-                  Open Modal
-                </Button>
-              </div>
-            )}
+                  <Button
+                    type="default"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Adv. Filters
+                  </Button>
+                </div>
+              )}
+            </div>
 
             <div
               style={{
@@ -214,7 +211,7 @@ const DynamicPercentilesChart = ({
 
       {renderDynamicPercentiles && regions.length > 0 && (
         <Modal
-          title="Advanced filtering"
+          title="Advanced Filtering"
           closable={{ 'aria-label': 'Custom Close Button' }}
           open={isModalOpen}
           onOk={() => {
@@ -224,7 +221,7 @@ const DynamicPercentilesChart = ({
             setIsModalOpen(false);
           }}
           width={1000}
-          style={{ top: 30 }}
+          style={{ top: 20 }}
         >
           <ModelWellsModal
             regions={regions}
