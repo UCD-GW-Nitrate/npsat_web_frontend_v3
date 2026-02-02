@@ -54,8 +54,12 @@ const Step1 = ({ onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
   const [scenarios, setScenarios] = useState<ScenarioDict>({});
 
-  const [porosityChecked, setPorosityChecked] = useState(false);
-  const [waterContentChecked, setWaterContentChecked] = useState(false);
+  const [porosityChecked, setPorosityChecked] = useState(
+    model.default_porosity ?? false,
+  );
+  const [waterContentChecked, setWaterContentChecked] = useState(
+    model.default_water_content ?? false,
+  );
 
   useEffect(() => {
     const scenarioDictTemp: ScenarioDict = {};
@@ -155,13 +159,22 @@ const Step1 = ({ onNext }: StepBase) => {
                 max={100}
                 step={10}
                 keyboard={false}
-                formatter={(v) => `${Math.floor((v ?? 10) / 10) * 10}%`}
+                formatter={(v) =>
+                  porosityChecked ? '%' : `${Math.floor((v ?? 10) / 10) * 10}%`
+                }
+                disabled={porosityChecked}
               />
             </Form.Item>
             <Form.Item style={{ margin: 0 }}>
-              <Checkbox onChange={() => setPorosityChecked((prev) => !prev)}>
+              <Checkbox
+                onChange={() => setPorosityChecked((prev) => !prev)}
+                checked={porosityChecked}
+              >
                 Use default value
               </Checkbox>
+              <Tooltip title="Default value will depend on flow scenario and selected region(s)">
+                <InfoCircleOutlined />
+              </Tooltip>
             </Form.Item>
           </Flex>
         </Form.Item>
@@ -247,14 +260,23 @@ const Step1 = ({ onNext }: StepBase) => {
               }
               noStyle
             >
-              <InputNumber min={0} max={200} formatter={(v) => `${v}%`} />
+              <InputNumber
+                min={0}
+                max={200}
+                formatter={(v) => `${waterContentChecked ? '' : v}%`}
+                disabled={waterContentChecked}
+              />
             </Form.Item>
             <Form.Item style={{ margin: 0 }}>
               <Checkbox
                 onChange={() => setWaterContentChecked((prev) => !prev)}
+                checked={waterContentChecked}
               >
                 Use default value
               </Checkbox>
+              <Tooltip title="Default value will depend on flow scenario and selected region(s)">
+                <InfoCircleOutlined />
+              </Tooltip>
             </Form.Item>
           </Flex>
         </Form.Item>

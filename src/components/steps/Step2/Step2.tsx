@@ -1,6 +1,6 @@
 'use client';
 
-import { Divider, Form, Switch, Tabs } from 'antd';
+import { Alert, Divider, Form, Switch, Tabs } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,10 +19,12 @@ import {
   selectCurrentModel,
   setModelDepthRangeMax,
   setModelDepthRangeMin,
+  setModelPorosity,
   setModelRegions,
   setModelSimulationFilter,
   setModelUnsatRangeMax,
   setModelUnsatRangeMin,
+  setModelWaterContent,
 } from '@/store/slices/modelSlice';
 import type { ModelRegion } from '@/types/model/ModelRegion';
 import type { Region } from '@/types/region/Region';
@@ -81,6 +83,12 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     },
   };
 
+  const [defaultPorosity, setDefaultPorosity] = useState<number | null>(null);
+  const [defaultWaterContent, setDefaultWaterContent] = useState<number | null>(
+    null,
+  );
+  const [err, setErr] = useState<boolean>(false);
+
   const handleTabChange = (tab: string) => {
     setSelected([]);
     form.setFieldValue('region', []);
@@ -131,6 +139,14 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       dispatch(setModelDepthRangeMin(selectedDepthMin));
       dispatch(setModelUnsatRangeMin(selectedUnsatMin));
       dispatch(setModelUnsatRangeMax(selectedUnsatMax));
+      if (model.default_porosity) {
+        // user should have chosen at least one region on submit, so default por and water content should be defined
+        dispatch(setModelPorosity(defaultPorosity!));
+      }
+      if (model.default_water_content) {
+        // user should have chosen at least one region on submit, so default por and water content should be defined
+        dispatch(setModelWaterContent(defaultWaterContent!));
+      }
     } else {
       dispatch(
         setModelRegions(
@@ -139,6 +155,15 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           }),
         ),
       );
+
+      if (model.default_porosity) {
+        // user should have chosen at least one region on submit, so default por and water content should be defined
+        dispatch(setModelPorosity(defaultPorosity!));
+      }
+      if (model.default_water_content) {
+        // user should have chosen at least one region on submit, so default por and water content should be defined
+        dispatch(setModelWaterContent(defaultWaterContent!));
+      }
     }
     onNext();
   };
@@ -149,9 +174,28 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     }
   };
 
+  const porosity = {
+    47: 10,
+    48: 10,
+    49: 20,
+  };
+
   const onRegionSelect = (input: number[]) => {
     setSelected(input);
     form.setFieldValue('region', input);
+    // compute default porosity and water_content
+    let por = null;
+    setErr(false);
+    input.forEach((val) => {
+      if (!por) {
+        por = porosity[val] ?? 10;
+      } else if ((porosity[val] ?? 10) !== por) {
+        por = porosity[val];
+        setErr(true);
+      }
+    });
+    setDefaultPorosity(por);
+    setDefaultWaterContent(por / 100);
   };
 
   const getRegionData = (input: number): Region[] | undefined => {
@@ -297,6 +341,37 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
 
   return (
     <>
+      {(model.default_porosity || model.default_water_content) && (
+        <Alert
+          type={err ? 'warning' : 'info'}
+          showIcon
+          message="Using Default Values from Mantis"
+          description={
+            <div style={{ margin: 0 }}>
+              {err && (
+                <p>
+                  The regions you selected have different default values
+                  assigned to them. The porosity and water content values used
+                  will be from the latest region selected. You can also go back
+                  and set custom values.
+                </p>
+              )}
+              {model.default_porosity && (
+                <p style={{ margin: 0 }}>
+                  Porosity value selected: {defaultPorosity ?? '-'}
+                </p>
+              )}
+              {model.default_water_content && (
+                <p style={{ margin: 0 }}>
+                  Unsaturated zone effective water content value selected:{' '}
+                  {defaultWaterContent ?? '-'}
+                </p>
+              )}
+            </div>
+          }
+          style={{ width: '50%', marginRight: 'auto', marginLeft: 'auto' }}
+        />
+      )}
       <Tabs
         tabPosition="top"
         centered
