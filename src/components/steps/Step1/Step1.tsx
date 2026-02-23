@@ -6,6 +6,7 @@ import {
   Flex,
   Form,
   InputNumber,
+  Popover,
   Select,
   Tooltip,
 } from 'antd';
@@ -35,6 +36,8 @@ import type { Scenario } from '@/types/model/Scenario';
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
+import DefaultsTable from '@/components/custom/DefaultsTable/DefaultsTable';
+import { porosityDefaults, waterContentDefaults } from '@/utils/constants';
 
 const { RangePicker } = DatePicker;
 
@@ -172,9 +175,13 @@ const Step1 = ({ onNext }: StepBase) => {
               >
                 Use default value
               </Checkbox>
-              <Tooltip title="Default value will depend on flow scenario and selected region(s)">
+              <Popover
+                placement="bottom"
+                content={<DefaultsTable data={porosityDefaults} />}
+                title="Default value will depend on flow scenario and selected region(s)"
+              >
                 <InfoCircleOutlined />
-              </Tooltip>
+              </Popover>
             </Form.Item>
           </Flex>
         </Form.Item>
@@ -274,9 +281,13 @@ const Step1 = ({ onNext }: StepBase) => {
               >
                 Use default value
               </Checkbox>
-              <Tooltip title="Default value will depend on flow scenario and selected region(s)">
+              <Popover
+                placement="bottom"
+                content={<DefaultsTable data={waterContentDefaults} />}
+                title="Default value will depend on flow scenario and selected region(s)"
+              >
                 <InfoCircleOutlined />
-              </Tooltip>
+              </Popover>
             </Form.Item>
           </Flex>
         </Form.Item>
