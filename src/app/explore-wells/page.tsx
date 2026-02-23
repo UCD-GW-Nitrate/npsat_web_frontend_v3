@@ -382,6 +382,7 @@ const ExploreWellsPage = () => {
                     title="ECDF"
                     xTitle="Age (years)"
                     yTitle="Percentage"
+                    variant="numeric"
                   />
                 </Col>
                 <Col span={12}>
@@ -389,6 +390,7 @@ const ExploreWellsPage = () => {
                     data={urfChart}
                     title="URFs"
                     xTitle="Time (years)"
+                    variant="numeric"
                   />
                 </Col>
               </Row>
