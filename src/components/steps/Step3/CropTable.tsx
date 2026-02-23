@@ -1,0 +1,113 @@
+import type { TableProps } from 'antd';
+import { Col, Form, InputNumber, Row, Slider, Table } from 'antd';
+import React, { useState } from 'react';
+
+
+const LoadingSlider = ({
+  name,
+  initialValue,
+  onChange,
+}: {
+  name: string,
+  initialValue: number,
+  onChange: (cropName: string, v: number) => void;
+}) => {
+  const [value, setValue] = useState<number>(initialValue ?? 0);
+
+  return ( 
+    <Row gutter={16} align="top" justify="center">
+      <Col span={12}>
+        <Slider
+          max={200}
+          min={0}
+          marks={{
+            0: '0%',
+            200: '200%',
+          }}
+          value={value}
+          onChange={(v) => {
+            setValue(v);
+            if (onChange) {
+              onChange(name, v);
+            }
+          }}
+        />
+      </Col>
+      <Col span={4}>
+        <InputNumber
+          min={0}
+          max={200}
+          value={value}
+          onChange={(v: number | null) => {
+            setValue(v ?? initialValue ?? 0);
+            if (onChange) {
+              onChange(name, v ?? initialValue ?? 0);
+            }
+              }}
+          style={{ margin: '0 16px' }}
+          formatter={(v) => `${v}%`}
+        />
+      </Col>
+    </Row>
+  );
+}
+
+interface DataType {
+  id: number;
+  name: string;
+  area: number;
+  initialLoading: number;
+}
+
+interface CropTableProps {
+  data: DataType[];
+  onChange: (cropName: string, v: number) => void;
+}
+
+export default function CropTable({ data, onChange } : CropTableProps) {
+  function numberWithCommas(x: number) {
+    return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  const columns: TableProps<DataType>['columns'] = [
+    {
+      title: 'Crop',
+      dataIndex: 'name',
+      width: 300,
+    },
+    {
+      title: 'Crop Area',
+      dataIndex: 'area',
+      width: 300,
+      render: (cropArea) => `${numberWithCommas(cropArea * 0.25)} ha / ${numberWithCommas(cropArea * 0.25 * 2.47)} ac`,
+    },
+    {
+      title: 'Loading',
+      key: 'loading',
+      render: (_, record) => (
+        <Form.Item
+          key={record.id}
+          name={record.name}
+          label=" "
+          colon={false}
+          rules={[
+            {
+              validator: () => Promise.resolve(),
+            },
+          ]}
+          initialValue={record.initialLoading}
+        >
+        <LoadingSlider
+          name={record.name}
+          initialValue={record.initialLoading}
+          onChange={onChange}
+        />
+        </Form.Item>
+      ),
+    },
+  ];
+
+  return (
+    <Table<DataType> columns={columns} dataSource={data} pagination={false} />
+  );
+}

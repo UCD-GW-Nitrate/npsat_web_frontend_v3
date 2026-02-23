@@ -19,6 +19,7 @@ import type { CropModification } from '@/types/model/CropModification';
 import type StepBase from '../StepBase';
 import CropCard from './CropCard';
 import Step3Instructions from './Step3Instructions';
+import CropTable from './CropTable';
 
 interface CropDict {
   [key: string]: Crop;
@@ -116,46 +117,27 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     );
   }, [Object.keys(cropDict).length, selectedCrops]);
 
-  const selectedCropCards = useMemo(
+  const formattedData = useMemo(
     () =>
-      selectedCrops.map((crop) => {
+      selectedCrops.filter((crop) => cropDict[crop]).map((crop) => {
         return (
-          <>
-            {cropDict[crop] && (
-              <Form.Item
-                key={cropDict[crop]!.id}
-                name={cropDict[crop]!.name}
-                label=" "
-                colon={false}
-                rules={[
-                  {
-                    validator: () => Promise.resolve(),
-                  },
-                ]}
-                initialValue={((loadingDict[crop] ?? 1) * 100).toFixed()}
-              >
-                <CropCard
-                  crop={cropDict[crop]!}
-                  initialValue={parseInt(
-                    ((loadingDict[crop] ?? 1) * 100).toFixed(),
-                    10,
-                  )}
-                  cropArea={
-                    cropDict[crop]!.id === 1
-                      ? cropAreaMap[1]!
-                      : cropAreaMap[
-                          cropDict[crop]?.caml_code ??
-                            cropDict[crop]?.swat_code ??
-                            0
-                        ]!
-                  }
-                  onChange={(v) => {
-                    form.setFieldValue(cropDict[crop]!.name, v);
-                  }}
-                />
-              </Form.Item>
-            )}
-          </>
+       {
+            id: cropDict[crop]!.id,
+            name: cropDict[crop]!.name,
+            initialLoading: 
+              parseInt(
+                ((loadingDict[crop] ?? 1) * 100).toFixed(),
+                10,
+              ),
+            area: 
+              cropDict[crop]!.id === 1
+                ? cropAreaMap[1]!
+                : cropAreaMap[
+                    cropDict[crop]?.caml_code ??
+                    cropDict[crop]?.swat_code ??
+                    0
+                  ]!
+          }
         );
       }),
     [Object.keys(cropDict), Object.keys(cropAreaMap).length, selectedCrops],
@@ -192,7 +174,17 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
             ))}
           </Select>
         </Form.Item>
-        {selectedCropCards}
+        <Form.Item
+          label=" "
+          colon={false}
+        >
+          <CropTable
+            data={formattedData}
+            onChange={(cropName, v) => {
+              form.setFieldValue(cropName, v);
+            }}
+          />
+        </Form.Item>
         <Form.Item
           style={{
             marginBottom: 8,
