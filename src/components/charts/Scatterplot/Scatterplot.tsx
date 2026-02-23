@@ -12,13 +12,7 @@ interface LineChartProps {
   yTitle?: string;
 }
 
-const Scatterplot = ({
-  data,
-  title,
-  xTitle,
-  yTitle,
-}: LineChartProps) => {
-
+const Scatterplot = ({ data, title, xTitle, yTitle }: LineChartProps) => {
   const options: ApexOptions = {
     dataLabels: {
       enabled: false,
@@ -28,10 +22,34 @@ const Scatterplot = ({
       align: 'left',
     },
     xaxis: {
+      type: 'numeric',
       title: {
         text: `${xTitle ?? ''}`,
       },
-      tickAmount: 21,
+      labels: {
+        formatter(value: string, _: any, opts?: any) {
+          // get useful data from ApexChart internal state
+          const ticks = opts?.w?.globals?.labels.length;
+          const min = opts?.w?.globals?.minX;
+          const max = opts?.w?.globals?.maxX;
+          const step = (max - min) / ticks;
+
+          if (!step) {
+            return value;
+          }
+
+          // find the first non-zero digit to determine how much precision to differentiate ticks
+          const val = Number(value);
+          const chars = step.toString().split('');
+          const index = chars.findIndex((char) => char >= '1' && char <= '9');
+
+          // don't count the decimal point
+          if (index > 1) {
+            return val.toFixed(index - 1);
+          }
+          return val.toFixed(0);
+        },
+      },
     },
     tooltip: {
       inverseOrder: true,
