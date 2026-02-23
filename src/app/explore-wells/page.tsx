@@ -114,7 +114,7 @@ const ExploreWellsPage = () => {
     },
   };
 
-  // create charts when new urf data has been fetched, after a diff well was clicked
+  // create charts when new urf data has been fetched (after a diff well was clicked) or porosity changed
   const [depthAgeChart, ecdfChart, urfChart] = useMemo(() => {
     const depthAgeValues = [];
     const depthAgeSeries: ApexAxisChartSeries = [];
@@ -146,7 +146,7 @@ const ExploreWellsPage = () => {
     ecdfSeries.push({ name: 'ECDF', data: ecdfValues ?? [] });
 
     return [depthAgeSeries, ecdfSeries, urfSeries];
-  }, [urfData]);
+  }, [urfData, porosity]);
 
   // set display data (wells shown on the map)
   useEffect(() => {
