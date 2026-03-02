@@ -1,7 +1,8 @@
 'use client';
 
-import { Select, Tabs } from 'antd';
-import { useState } from 'react';
+import { Button, Radio, Select, Tabs } from 'antd';
+import type { RadioChangeEvent } from 'antd/lib';
+import { useEffect, useState } from 'react';
 import { CircleMarker, LayerGroup } from 'react-leaflet';
 
 import {
@@ -19,6 +20,86 @@ import { mapTabs, REGION_MACROS } from '@/utils/constants';
 import WellsMap from './WellsMap';
 
 const { Option } = Select;
+
+const PersistOptions = ({
+  setPersist,
+  onClearPress,
+}: {
+  setPersist: (val: boolean) => void;
+  onClearPress: () => void;
+}) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const [value, setValue] = useState(1);
+
+  function onChange(e: RadioChangeEvent) {
+    setValue(e.target.value);
+    if (e.target.value === 1) {
+      setPersist(false);
+    } else {
+      setPersist(true);
+    }
+  }
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'white',
+          padding: '10px',
+          borderRadius: '8px',
+          boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+          fontSize: '12px',
+        }}
+        onMouseEnter={() => setShowOptions(true)}
+      >
+        <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+          Streampoints Display Mode
+        </div>
+      </div>
+      {showOptions && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            backgroundColor: 'white',
+            padding: '10px',
+            borderRadius: '8px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+            fontSize: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+          onMouseLeave={() => setShowOptions(false)}
+        >
+          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+            Streampoints Display Mode
+          </div>
+          <Radio.Group value={value} onChange={(e) => onChange(e)}>
+            <Radio value={1} style={{ fontSize: '12px' }}>
+              Only for selected well
+            </Radio>
+            <Radio value={2} style={{ fontSize: '12px' }}>
+              Sticky
+            </Radio>
+          </Radio.Group>
+
+          <Button
+            size="small"
+            style={{ alignSelf: 'flex-end', marginTop: 5 }}
+            onClick={() => onClearPress()}
+          >
+            Clear Data
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export interface WellsAndUrfDataProps {
   onSelectRegions: (regions: Region[]) => void;
@@ -43,6 +124,8 @@ export const WellsAndUrfData = ({
 }: WellsAndUrfDataProps) => {
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
   const [selected, setSelected] = useState<number[]>([]);
+  const [persistData, setPersistData] = useState(false);
+  const [data, setData] = useState<UrfData[]>([]);
 
   // fetch all map beforehand
   const { data: b118BasinData } = useFetchB118BasinQuery();
@@ -108,6 +191,14 @@ export const WellsAndUrfData = ({
     const selectedIds = [...selected, v];
     onListChange(selectedIds);
   };
+
+  useEffect(() => {
+    if (persistData) {
+      setData([...data, ...urfData]);
+    } else {
+      setData(urfData);
+    }
+  }, [urfData, persistData]);
 
   return (
     <>
@@ -201,9 +292,17 @@ export const WellsAndUrfData = ({
                   layer.bindTooltip(feature.properties.name);
                 }
           }
+          mapUI={
+            <PersistOptions
+              setPersist={setPersistData}
+              onClearPress={() => {
+                setData([]);
+              }}
+            />
+          }
         >
           <LayerGroup>
-            {urfData.map((reactionPoint) => (
+            {data.map((reactionPoint) => (
               <CircleMarker
                 key={reactionPoint.sid}
                 center={[reactionPoint.lat, reactionPoint.lon]}
