@@ -67,7 +67,7 @@ const ExploreWellsPage = () => {
   // state variables related to the Results box to the right of the map
   const [displayData, setDisplayData] = useState<Well[]>([]);
   const [wellProperty, setWellProperty] = useState<
-    'depth' | 'unsat' | 'slmod' | 'wt2t'
+    'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping'
   >('depth');
   const [ageThres, setAgeThres] = useState(0);
   const [porosity, setPorosity] = useState(0.2);

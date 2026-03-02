@@ -82,6 +82,10 @@ export const wellPropertyDropdownItems = [
     label: 'Screen Length',
     key: 'slmod',
   },
+  {
+    label: 'Pumping',
+    key: 'pumping',
+  }
 ];
 
 export const wellPropertyDropdownLabels = Object.fromEntries(
