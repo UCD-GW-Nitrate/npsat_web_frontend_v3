@@ -51,6 +51,8 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   );
 };
 
+const pageSizeOptions = [10, 20, 50];
+
 function EditableTable<T extends AnyObject>({
   columns,
   dataSource,
@@ -79,6 +81,7 @@ function EditableTable<T extends AnyObject>({
   deleteCallback?: (id: number) => Promise<void>;
   pendingModelIds: number[];
 }) {
+  const [pageSize, setPageSize] = useState(10);
   const [ids, setIds] = useState<number[]>(pendingModelIds);
   const [latestData, setLatestData] = useState<T[]>(dataSource);
   const { data } = useGetModelStatusQuery(
@@ -109,8 +112,6 @@ function EditableTable<T extends AnyObject>({
         setLatestData((prev) =>
           prev.map((row) => (row.id === modelId ? { ...row, status } : row)),
         );
-
-        console.log('Checking ', ids);
 
         if (ids.includes(modelId) && status > 2) {
           setIds((prev) => {
@@ -314,6 +315,12 @@ function EditableTable<T extends AnyObject>({
           if (record.status !== MODEL_STATUS_MACROS.COMPLETED)
             return 'row-disabled';
           return '';
+        }}
+        pagination={{
+          pageSize,
+          showSizeChanger: true,
+          pageSizeOptions: pageSizeOptions.map(String),
+          onShowSizeChange: (current, size) => setPageSize(size),
         }}
       />
     </Form>
