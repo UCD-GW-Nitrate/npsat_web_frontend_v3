@@ -152,10 +152,6 @@ const WellsMap = ({
       </Pane>
       <div
         style={{
-          position: 'absolute',
-          bottom: 30,
-          right: 30,
-          zIndex: 1000,
           display: 'flex',
           flexDirection: 'column',
           gap: 10,

@@ -1,3 +1,6 @@
+import { SwitcherOutlined } from '@ant-design/icons';
+import type { RadioChangeEvent } from 'antd';
+import { Radio } from 'antd';
 import type { GeoJsonObject } from 'geojson';
 import type { Layer } from 'leaflet';
 import type { ReactNode } from 'react';
@@ -7,6 +10,72 @@ import { GeoJSON, MapContainer, Pane, TileLayer } from 'react-leaflet';
 import type { Geometry } from '@/types/region/Region';
 
 import { DrawControl } from './DrawControl';
+
+const TileMapOptions = ({
+  setTileMap,
+}: {
+  setTileMap: (val: number) => void;
+}) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const [value, setValue] = useState(1);
+
+  function onChange(e: RadioChangeEvent) {
+    setValue(e.target.value);
+    setTileMap(e.target.value);
+  }
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        display: 'flex',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'white',
+          padding: '10px',
+          borderRadius: '8px',
+          boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+          fontSize: '12px',
+          width: 40,
+          height: 40,
+          marginLeft: 'auto',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onMouseEnter={() => setShowOptions(true)}
+      >
+        <SwitcherOutlined style={{ fontSize: '20px', color: 'grey' }} />
+      </div>
+      {showOptions && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            backgroundColor: 'white',
+            padding: '10px',
+            borderRadius: '8px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+            fontSize: '12px',
+          }}
+          onMouseLeave={() => setShowOptions(false)}
+        >
+          <Radio.Group value={value} onChange={(e) => onChange(e)}>
+            <Radio value={1} style={{ fontSize: '12px' }}>
+              Satellite
+            </Radio>
+            <Radio value={2} style={{ fontSize: '12px' }}>
+              Open Street Map
+            </Radio>
+          </Radio.Group>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export interface MapProps {
   data: Geometry[];
@@ -34,6 +103,7 @@ const RegionsMap = ({
 }: MapProps) => {
   const map = useRef<L.Map | null>(null);
   const [polygonsDict, setPolygons] = useState<PolygonsDict>({});
+  const [tileMap, setTileMap] = useState(1);
 
   useEffect(() => {
     if (!map.current) return;
@@ -133,7 +203,20 @@ const RegionsMap = ({
           }
         />
       </Pane>
-      {children}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 30,
+          right: 30,
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+        }}
+      >
+        <TileMapOptions setTileMap={setTileMap} />
+        {children}
+      </div>
       {allowDraw && (
         <DrawControl
           onCreated={handlePolygonCreated}
@@ -141,7 +224,11 @@ const RegionsMap = ({
           onDeleted={handlePolygonDeleted}
         />
       )}
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {tileMap === 1 ? (
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      ) : (
+        <TileLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+      )}
     </MapContainer>
   );
 };
