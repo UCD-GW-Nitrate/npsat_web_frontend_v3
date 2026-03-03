@@ -52,6 +52,7 @@ const TileMapOptions = ({
       {showOptions && (
         <div
           style={{
+            minWidth: '170px',
             position: 'absolute',
             bottom: 0,
             right: 0,
@@ -65,10 +66,10 @@ const TileMapOptions = ({
         >
           <Radio.Group value={value} onChange={(e) => onChange(e)}>
             <Radio value={1} style={{ fontSize: '12px' }}>
-              Satellite
+              Open Street Map
             </Radio>
             <Radio value={2} style={{ fontSize: '12px' }}>
-              Open Street Map
+              Satellite
             </Radio>
           </Radio.Group>
         </div>
