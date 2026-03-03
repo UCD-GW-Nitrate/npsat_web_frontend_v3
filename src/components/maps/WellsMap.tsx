@@ -17,6 +17,7 @@ export interface MapProps {
   onSelectWell?: (eid: number) => void;
   onEachFeature?: (feature: any, layer: Layer) => void;
   children?: ReactNode;
+  mapUI?: ReactNode;
   // params passed by ModelWellsModal parent component:
   allowDraw?: boolean;
   setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
@@ -26,15 +27,11 @@ const Legend = ({ min, max }: { min: number; max: number }) => {
   return (
     <div
       style={{
-        position: 'absolute',
-        bottom: 30,
-        right: 30,
         backgroundColor: 'white',
         padding: '10px',
         borderRadius: '8px',
         boxShadow: '0 0 10px rgba(0,0,0,0.2)',
         fontSize: '12px',
-        zIndex: 1000,
       }}
     >
       <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Legend</div>
@@ -63,6 +60,7 @@ const WellsMap = ({
   onEachFeature,
   onSelectWell,
   children,
+  mapUI,
   allowDraw,
   setPolygonCoords,
 }: MapProps) => {
@@ -152,7 +150,16 @@ const WellsMap = ({
         </LayerGroup>
         {children}
       </Pane>
-      <Legend min={minValue} max={maxValue} />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+        }}
+      >
+        {mapUI}
+        <Legend min={minValue} max={maxValue} />
+      </div>
     </RegionsMapNoSSR>
   );
 };

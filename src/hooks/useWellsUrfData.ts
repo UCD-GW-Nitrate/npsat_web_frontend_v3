@@ -83,7 +83,8 @@ export default function useWells({ regions, requestDetail }: UseWellsProps) {
                   unsat: well.UNSATcond,
                   wt2t: well.WT2T,
                   slmod: well.SLmod,
-                  depth: well.UNSATcond + well.WT2T + well.SLmod
+                  depth: well.UNSATcond + well.WT2T + well.SLmod,
+                  pumping: well.Q_m3d,
                 }
               }
             )
@@ -130,7 +131,8 @@ export default function useWells({ regions, requestDetail }: UseWellsProps) {
                 unsat: well.UNSATcond,
                 wt2t: well.WT2T,
                 slmod: well.SLmod,
-                depth: well.UNSATcond + well.WT2T + well.SLmod
+                depth: well.UNSATcond + well.WT2T + well.SLmod,
+                pumping: well.Q_m3d,
               }
             }
           )

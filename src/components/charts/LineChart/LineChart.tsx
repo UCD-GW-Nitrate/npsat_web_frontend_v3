@@ -14,6 +14,7 @@ interface LineChartProps {
   title?: string;
   xTitle?: string;
   yTitle?: string;
+  variant?: 'percentiles' | 'numeric';
 }
 
 const LineChart = ({
@@ -23,6 +24,7 @@ const LineChart = ({
   title,
   xTitle,
   yTitle,
+  variant = 'percentiles',
 }: LineChartProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
     const annotations: XAxisAnnotations[] = [];
@@ -74,14 +76,54 @@ const LineChart = ({
       text: `${title ?? ''}`,
       align: 'left',
     },
-    xaxis: {
-      title: {
-        text: `${xTitle ?? ''}`,
-      },
-      tickAmount: 21,
-    },
+    xaxis:
+      variant === 'percentiles'
+        ? {
+            title: {
+              text: `${xTitle ?? ''}`,
+            },
+            tickAmount: 21,
+          }
+        : {
+            type: 'numeric',
+            title: {
+              text: `${xTitle ?? ''}`,
+            },
+            labels: {
+              formatter(value: string, _: any, opts?: any) {
+                // get useful data from ApexChart internal state
+                const ticks = opts?.w?.globals?.labels.length;
+                const min = opts?.w?.globals?.minX;
+                const max = opts?.w?.globals?.maxX;
+                const step = (max - min) / ticks;
+
+                if (!step) {
+                  return value;
+                }
+
+                // find the first non-zero digit to determine how much precision to differentiate ticks
+                const val = Number(value);
+                const chars = step.toString().split('');
+                const index = chars.findIndex(
+                  (char) => char >= '1' && char <= '9',
+                );
+
+                // don't count the decimal point
+                if (index > 1) {
+                  return val.toFixed(index - 1);
+                }
+                return val.toFixed(0);
+              },
+            },
+          },
     tooltip: {
       inverseOrder: true,
+      x: {
+        formatter(val) {
+          // set the tooltip's x-value with max 3 decimal places and no trailing zeroes
+          return parseFloat(val.toFixed(3)).toString();
+        },
+      },
     },
     yaxis: {
       title: {
@@ -89,14 +131,11 @@ const LineChart = ({
       },
       labels: {
         formatter(val) {
-          if (title === "URFs") {
-            if (!val.toFixed(3).endsWith('0')) {
-              if (!val.toFixed(4).endsWith('0')) {
-                return val.toFixed(3);
-              }
-              return val.toFixed(3);
-            }
+          // set y-axis ticks with max 3 decimal places and no trailing zeroes
+          if (variant === 'numeric') {
+            return parseFloat(val.toFixed(3)).toString();
           }
+          // for the percentile charts, 2 decimal places is best
           return (val ?? 0).toFixed(2);
         },
       },

@@ -1,3 +1,5 @@
+import { DefaultsDataType } from "@/components/custom/DefaultsTable/DefaultsTable";
+
 export const MODEL_STATUS_MACROS = {
   NOT_READY: 0,
   READY: 1,
@@ -80,6 +82,10 @@ export const wellPropertyDropdownItems = [
     label: 'Screen Length',
     key: 'slmod',
   },
+  {
+    label: 'Pumping',
+    key: 'pumping',
+  }
 ];
 
 export const wellPropertyDropdownLabels = Object.fromEntries(
@@ -110,5 +116,75 @@ export const mapTabs = [
   {
     label: 'Township',
     key: `${REGION_MACROS.TOWNSHIPS}`,
+  },
+];
+
+export const porosityDefaults: DefaultsDataType[] = [
+  {
+    key: '1',
+    model: 'C2VSIM',
+    scenario: 'Pumping Adjusted',
+    sac: 10,
+    sjv: 10,
+    tlb: 20,
+  },
+  {
+    key: '2',
+    model: 'C2VSIM',
+    scenario: 'Recharge Adjusted',
+    sac: 10,
+    sjv: 10,
+    tlb: 20,
+  },
+  {
+    key: '3',
+    model: 'CVHM2',
+    scenario: 'Pumping Adjusted',
+    sac: 10,
+    sjv: 10,
+    tlb: 20,
+  },
+  {
+    key: '4',
+    model: 'CVHM2',
+    scenario: 'Recharge Adjusted',
+    sac: 10,
+    sjv: 10,
+    tlb: 20,
+  },
+];
+
+export const waterContentDefaults: DefaultsDataType[] = [
+  {
+    key: '1',
+    model: 'C2VSIM',
+    scenario: 'Pumping Adjusted',
+    sac: 0.1,
+    sjv: 0.1,
+    tlb: 0.2,
+  },
+  {
+    key: '2',
+    model: 'C2VSIM',
+    scenario: 'Recharge Adjusted',
+    sac: 0.1,
+    sjv: 0.1,
+    tlb: 0.2,
+  },
+  {
+    key: '3',
+    model: 'CVHM2',
+    scenario: 'Pumping Adjusted',
+    sac: 0.1,
+    sjv: 0.1,
+    tlb: 0.2,
+  },
+  {
+    key: '4',
+    model: 'CVHM2',
+    scenario: 'Recharge Adjusted',
+    sac: 0.1,
+    sjv: 0.1,
+    tlb: 0.2,
   },
 ];

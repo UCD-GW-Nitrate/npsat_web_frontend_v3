@@ -67,7 +67,7 @@ const ExploreWellsPage = () => {
   // state variables related to the Results box to the right of the map
   const [displayData, setDisplayData] = useState<Well[]>([]);
   const [wellProperty, setWellProperty] = useState<
-    'depth' | 'unsat' | 'slmod' | 'wt2t'
+    'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping'
   >('depth');
   const [ageThres, setAgeThres] = useState(0);
   const [porosity, setPorosity] = useState(0.2);
@@ -114,7 +114,7 @@ const ExploreWellsPage = () => {
     },
   };
 
-  // create charts when new urf data has been fetched, after a diff well was clicked
+  // create charts when new urf data has been fetched (after a diff well was clicked) or porosity changed
   const [depthAgeChart, ecdfChart, urfChart] = useMemo(() => {
     const depthAgeValues = [];
     const depthAgeSeries: ApexAxisChartSeries = [];
@@ -146,7 +146,7 @@ const ExploreWellsPage = () => {
     ecdfSeries.push({ name: 'ECDF', data: ecdfValues ?? [] });
 
     return [depthAgeSeries, ecdfSeries, urfSeries];
-  }, [urfData]);
+  }, [urfData, porosity]);
 
   // set display data (wells shown on the map)
   useEffect(() => {
@@ -382,6 +382,7 @@ const ExploreWellsPage = () => {
                     title="ECDF"
                     xTitle="Age (years)"
                     yTitle="Percentage"
+                    variant="numeric"
                   />
                 </Col>
                 <Col span={12}>
@@ -389,6 +390,7 @@ const ExploreWellsPage = () => {
                     data={urfChart}
                     title="URFs"
                     xTitle="Time (years)"
+                    variant="numeric"
                   />
                 </Col>
               </Row>
