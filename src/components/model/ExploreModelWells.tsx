@@ -352,7 +352,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         }}
       >
         <Link href="/exploreWells" target="_blank">
-          {'Looking for other wells? Explore the full dataset. '}
+          {'Looking for other wells? Water age?  Well source area? Explore the full dataset. '}
           <ExportOutlined />
         </Link>
       </div>

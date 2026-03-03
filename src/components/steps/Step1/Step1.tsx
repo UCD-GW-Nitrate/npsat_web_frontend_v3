@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import DefaultsTable from '@/components/custom/DefaultsTable/DefaultsTable';
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
@@ -32,12 +33,11 @@ import {
   setModelWelltypeScenario,
 } from '@/store/slices/modelSlice';
 import type { Scenario } from '@/types/model/Scenario';
+import { porosityDefaults, waterContentDefaults } from '@/utils/constants';
 
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import Step1Instructions from './Step1Instructions';
-import DefaultsTable from '@/components/custom/DefaultsTable/DefaultsTable';
-import { porosityDefaults, waterContentDefaults } from '@/utils/constants';
 
 const { RangePicker } = DatePicker;
 
@@ -243,7 +243,23 @@ const Step1 = ({ onNext }: StepBase) => {
                 <>
                   {scen.name}{' '}
                   {scen.description ? (
-                    <Tooltip title={scen.description}>
+                    <Tooltip
+                      title={
+                        <div>
+                          Honors measured average water level data 2011-2023 and
+                          uses 2011-2023 CVHM simulation results for
+                          statistically proper interpolation between measured
+                          locations (see{' '}
+                          <a
+                            target="_blank"
+                            href="https://gwt.ucdavis.edu/research-application/unsaturated-travel-time-central-valley"
+                          >
+                            here
+                          </a>{' '}
+                          for method details).
+                        </div>
+                      }
+                    >
                       <InfoCircleOutlined />
                     </Tooltip>
                   ) : null}
