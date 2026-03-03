@@ -1,4 +1,4 @@
-import { DefaultsDataType } from "@/components/custom/DefaultsTable/DefaultsTable";
+import type { DefaultsDataType } from '@/components/custom/DefaultsTable/DefaultsTable';
 
 export const MODEL_STATUS_MACROS = {
   NOT_READY: 0,
@@ -55,7 +55,7 @@ export const COLUMNS: any[] = [
   },
 ];
 
-export const mantisVersion = '2.2.04';
+export const mantisVersion = '2.2.11';
 
 export const modelRunStatus = [
   'Not Ready',
@@ -85,7 +85,7 @@ export const wellPropertyDropdownItems = [
   {
     label: 'Pumping',
     key: 'pumping',
-  }
+  },
 ];
 
 export const wellPropertyDropdownLabels = Object.fromEntries(
