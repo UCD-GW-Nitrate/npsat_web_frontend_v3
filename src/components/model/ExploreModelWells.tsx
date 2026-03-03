@@ -352,7 +352,25 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         }}
       >
         <Link href="/exploreWells" target="_blank">
-          {'Looking for other wells? Explore the full dataset. '}
+          {
+            'Looking for other wells? Water age?  Well source area? Explore the full dataset. '
+          }
+          <ExportOutlined />
+        </Link>
+      </div>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          paddingRight: 20,
+        }}
+      >
+        <Link
+          href="https://giorgk.users.earthengine.app/view/cv-unsat"
+          target="_blank"
+        >
+          {'Explore Central Valley Unsaturated Travel Time (Google Earth) '}
           <ExportOutlined />
         </Link>
       </div>

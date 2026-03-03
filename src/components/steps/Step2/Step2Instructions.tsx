@@ -26,6 +26,9 @@ const Step2Instructions = () => {
         evaluate nitrate concentrations at these wells and aggregate those into
         statistical results.
       </StandardText>
+      <StandardText variant="h5" color="description">
+        Advanced filtering:
+      </StandardText>
       <StandardText color="description">
         The “Advanced filter” allows for selection of wells within a specific
         minimum and maximum well depth interval, and/or consider streamlines to
@@ -33,8 +36,11 @@ const Step2Instructions = () => {
         interval. This may affect the number of wells selected for the
         simulation, as shown above the map.
       </StandardText>
+      <StandardText variant="h5" color="description">
+        Region Types:
+      </StandardText>
       <StandardText color="description">
-        “Basin”: select the Sacramento Valley, San Joaquin Valley, and Tulare
+        “Basin” – select the Sacramento Valley, San Joaquin Valley, and Tulare
         Lake Basin (also known as the Southern San Joaquin Valley) watersheds
         overlying the Central Valley aquifer system.
       </StandardText>

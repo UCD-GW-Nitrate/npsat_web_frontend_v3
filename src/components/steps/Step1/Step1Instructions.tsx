@@ -47,7 +47,9 @@ const Step1Instructions = () => {
       <StandardText color="description">
         &quot;Business-As-Usual&quot; refers to the continuation of past and
         current practices well into the future, without notable changes in
-        nitrate leaching.
+        nitrate leaching. A BAU comparison will be automatically generated with
+        the created model, and selected crops in step 4 will drive any
+        differences between the created model and the BAU.
       </StandardText>
       <StandardText variant="h5" color="description">
         Other selections:
