@@ -1,6 +1,6 @@
 'use client';
 
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, ExportOutlined } from '@ant-design/icons';
 import type { TourProps } from 'antd';
 import {
   Button,
@@ -15,6 +15,7 @@ import {
   Typography,
 } from 'antd';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
@@ -396,6 +397,23 @@ const ExploreWellsPage = () => {
               </Row>
             )}
           </InfoContainer>
+        </div>
+
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            paddingRight: 20,
+          }}
+        >
+          <Link
+            href="https://giorgk.users.earthengine.app/view/cv-unsat"
+            target="_blank"
+          >
+            {'Explore Central Valley Unsaturated Travel Time (Google Earth) '}
+            <ExportOutlined />
+          </Link>
         </div>
       </VBox>
 
