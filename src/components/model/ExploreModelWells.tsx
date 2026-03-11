@@ -338,6 +338,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
                 },
               ]}
               title="Boxplot"
+              variant='standard'
             />
           )}
         </Card>
