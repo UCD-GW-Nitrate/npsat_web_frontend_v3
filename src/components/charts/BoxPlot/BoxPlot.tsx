@@ -12,6 +12,7 @@ interface BoxPlotProps {
   reductionStartYear?: number;
   reductionEndYear?: number;
   title?: string;
+  variant?: 'default' | 'standard';
 }
 
 const BoxPlot = ({
@@ -19,6 +20,7 @@ const BoxPlot = ({
   reductionEndYear,
   reductionStartYear,
   title,
+  variant='default',
 }: BoxPlotProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
     const annotations: XAxisAnnotations[] = [];
@@ -65,7 +67,24 @@ const BoxPlot = ({
       align: 'left',
     },
     tooltip: {
-      inverseOrder: true,
+      custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+        const yValues = w.config.series[seriesIndex].data[dataPointIndex].y;
+        const labels = variant==='default' ? 
+          ["5th Percentile", "Q1", "Median", "Q3", "95th Percentile"] 
+          : ["Minimum", "Q1", "Median", "Q3", "Maximum"];
+
+        return `
+          <div class="apexcharts-tooltip-boxplot" style="padding: 8px; padding-bottom: 0px">
+            ${
+              labels.reverse().map(
+                (label, i) =>
+                  `<div style="margin-bottom: 8px;">${label}: <span style="font-weight:bold">${yValues[i]}</span></div>`
+              )
+              .join("")
+            }
+          </div>
+        `;
+      }
     },
     yaxis: {
       labels: {
