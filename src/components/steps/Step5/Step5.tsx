@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Result, Spin } from 'antd';
+import { Button, Flex, Result, Spin } from 'antd';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -40,26 +40,37 @@ const Step5 = ({ ids, onCreateNewScenario }: Step5Props) => {
   );
 
   return (
-    <div>
+    <div>  
       {!(
         data &&
         data.results[0] &&
         (data.results[0].status === 3 || data.results[0].status === 4)
       ) && (
-        <div style={{ height: 80 }}>
-          <Spin
-            size="large"
-            style={{
-              display: 'block',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 30,
-            }}
-            tip={`Simulator status: ${modelRunStatus[data?.results[0]?.status ?? 0]}`}
-          >
-            <div />
-          </Spin>
-        </div>
+        <Result
+          icon={
+            <div style={{ height: 80 }}>
+              <Spin
+                size="large"
+                style={{
+                  display: 'block',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  marginTop: 30,
+                }}
+              >
+                <div />
+              </Spin>
+            </div>
+          }
+          title={`Simulator status: ${modelRunStatus[data?.results[0]?.status ?? 0]}`}
+          subTitle={
+            <Flex justify='center'>
+            <p style={{ width: 300, textWrap: 'wrap' }}>
+              Processing may take a moment. You can safely return <a href='/'>home</a> while you wait.
+            </p>
+            </Flex>
+          }
+        />
       )}
       {data && data.results[0] && data.results[0].status === 3 && (
         <Result status="success" title="Simulation Complete" extra={extra} />
