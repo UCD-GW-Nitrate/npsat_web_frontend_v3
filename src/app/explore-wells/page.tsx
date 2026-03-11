@@ -39,6 +39,7 @@ import {
   wellPropertyDropdownItems,
   wellPropertyDropdownLabels,
 } from '@/utils/constants';
+import { useGetUserPreferencesQuery, useUpdateUserPreferencesMutation } from '@/store/apis/userApi';
 
 const WellsAndUrfData = dynamic(
   () => import('@/components/maps/WellsAndUrfData'),
@@ -164,15 +165,14 @@ const ExploreWellsPage = () => {
     }
   }, [allWells, ageThres, porosity]);
 
+  const { data: userPreferences } = useGetUserPreferencesQuery();
+  const [updateUserPreferences] = useUpdateUserPreferencesMutation();
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
   const ref4 = useRef(null);
-
   const [open, setOpen] = useState<boolean>(false);
-
   const [current, setCurrent] = useState<number>(0);
-
   const steps: TourProps['steps'] = [
     {
       title: 'API Params',
@@ -210,6 +210,17 @@ const ExploreWellsPage = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    if (userPreferences && !userPreferences.expl_wells_tour_complete) {
+      setOpen(true)
+    }
+  }, [userPreferences])
+
+  function handleFinishTour() {
+    updateUserPreferences({expl_wells_tour_complete: true});
+    setOpen(false);
+  }
 
   return (
     <AppLayout>
@@ -422,8 +433,8 @@ const ExploreWellsPage = () => {
         steps={steps}
         current={current}
         onChange={setCurrent}
-        onClose={() => setOpen(false)}
-        onFinish={() => setOpen(false)}
+        onClose={() => handleFinishTour()}
+        onFinish={() => handleFinishTour()}
       />
     </AppLayout>
   );
