@@ -11,7 +11,7 @@ import AppLayout from '../AppLayout/AppLayout';
 
 const CachedAuthState = ({ children }: PropsWithChildren) => {
   const dispatch = useDispatch();
-  const [fetchedOnce, setFetechedOnce] = useState(false);
+  const [fetchedOnce, setFetchedOnce] = useState(false);
 
   useEffect(() => {
     const cachedAuthState: AuthState = JSON.parse(
@@ -21,7 +21,7 @@ const CachedAuthState = ({ children }: PropsWithChildren) => {
     console.log('cachedAuthState', cachedAuthState);
 
     dispatch(setCredentials(cachedAuthState));
-    setFetechedOnce(true);
+    setFetchedOnce(true);
   }, []);
 
   if (!fetchedOnce) {

@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
 import type { VerifyCode } from '@/types/auth/VerifiyCode';
+import type { UserPreferences } from '@/types/user/UserPreferences';
 import type { UserResponse } from '@/types/user/UserResponse';
 
 import getAuth from '../getAuth';
@@ -42,6 +43,19 @@ export const userApi = createApi({
         method: 'GET',
       }),
     }),
+    getUserPreferences: builder.query<UserPreferences, void>({
+      query: () => ({
+        url: 'api/user/preferences/',
+        method: 'GET',
+      }),
+    }),
+    updateUserPreferences: builder.mutation<UserPreferences, void>({
+      query: (preferences) => ({
+        url: 'api/user/preferences/',
+        method: 'PUT',
+        body: preferences,
+      }),
+    }),
   }),
 });
 
@@ -49,4 +63,6 @@ export const {
   useSendVerificationEmailMutation,
   useVerifyUserMutation,
   useSetPasswordMutation,
+  useGetUserPreferencesQuery,
+  useUpdateUserPreferencesMutation,
 } = userApi;
