@@ -1,8 +1,10 @@
 import type { Layer } from 'leaflet';
 import dynamic from 'next/dynamic';
 import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CircleMarker, LayerGroup, Pane, Tooltip } from 'react-leaflet';
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
+import { point, polygon } from "@turf/helpers";
 
 import type { Geometry } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
@@ -21,6 +23,7 @@ export interface MapProps {
   // params passed by ModelWellsModal parent component:
   allowDraw?: boolean;
   setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
+  setNumWellsContained?: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const Legend = ({ min, max }: { min: number; max: number }) => {
@@ -63,8 +66,10 @@ const WellsMap = ({
   mapUI,
   allowDraw,
   setPolygonCoords,
+  setNumWellsContained,
 }: MapProps) => {
   const [selected, setSelected] = useState<null | number>(null);
+  const [polygonCoords, setPolygons] = useState<[number, number][]>([])
 
   const minValue = useMemo(() => {
     if (wells.length === 0) {
@@ -104,6 +109,22 @@ const WellsMap = ({
     [],
   );
 
+  useEffect(() => {
+    if (setPolygonCoords && setNumWellsContained) {
+      if (polygonCoords.length > 0) {
+        const closedPolygon: [number, number][] = [...polygonCoords, polygonCoords[0]!]
+        const inside = wells.filter((well) =>
+          booleanPointInPolygon(point([well.lat, well.lon]), polygon([closedPolygon]))
+        );
+        setNumWellsContained(inside.length);
+      } else {
+        setNumWellsContained(null)
+      }
+
+      setPolygonCoords(polygonCoords);
+    }
+  }, [polygonCoords])
+
   return (
     <RegionsMapNoSSR
       data={path}
@@ -111,7 +132,7 @@ const WellsMap = ({
       onEachFeature={onEachFeature}
       interactive={regionsEditable}
       allowDraw={allowDraw}
-      setPolygonCoords={setPolygonCoords}
+      setPolygonCoords={setPolygons}
     >
       <Pane name="markers-layer" style={{ zIndex: 650 }}>
         <LayerGroup>

@@ -210,29 +210,17 @@ const DynamicPercentilesChart = ({
       )}
 
       {renderDynamicPercentiles && regions.length > 0 && (
-        <Modal
-          title="Advanced Filtering"
-          closable={{ 'aria-label': 'Custom Close Button' }}
+        <ModelWellsModal
           open={isModalOpen}
-          onOk={() => {
-            setIsModalOpen(false);
-          }}
-          onCancel={() => {
-            setIsModalOpen(false);
-          }}
-          width={1000}
-          style={{ top: 20 }}
-        >
-          <ModelWellsModal
-            regions={regions}
-            customModelDetail={customModelDetail}
-            setPolygonCoords={setPolygons}
-            range={range}
-            setRange={setRange}
-            minDepth={minDepth}
-            maxDepth={maxDepth}
-          />
-        </Modal>
+          setOpen={setIsModalOpen}
+          regions={regions}
+          customModelDetail={customModelDetail}
+          setPolygonCoords={setPolygons}
+          range={range}
+          setRange={setRange}
+          minDepth={minDepth}
+          maxDepth={maxDepth}
+        />
       )}
     </div>
   );

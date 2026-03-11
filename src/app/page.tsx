@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
+import Disclaimer from '@/components/custom/Disclaimer/Disclaimer';
 import EditableTable from '@/components/custom/EditableTable/EditableTable';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
@@ -92,77 +93,9 @@ const Index = () => {
 
   const [deleteModel] = useDeleteModelMutation();
 
-  const [open, setOpen] = useState(true);
-
   return (
     <AppLayout>
-      {/* <Modal
-        centered
-        open={open}
-        onOk={() => setOpen(false)}
-        onCancel={() => setOpen(false)}
-        width={1000}
-        okText="I Agree"
-        closable={false}
-        cancelText=" "
-        cancelButtonProps={{ disabled: true, type: 'link' }}
-        styles={{
-          content: {
-            padding: 0,
-            // backgroundColor: BACKGROUND_COLOR,
-          },
-          header: {
-            height: 70,
-            backgroundColor: PRIMARY_COLOR,
-            padding: 20,
-            margin: 0,
-          },
-          body: {
-            padding: 24,
-            paddingRight: 30,
-            paddingLeft: 30,
-            paddingBottom: 0,
-            margin: 0,
-          },
-          footer: {
-            padding: 24,
-          },
-        }}
-        title={
-          <Image
-            src="/images/logo-white.svg"
-            height={35}
-            width={(88 / 35) * 35}
-            alt="NPSAT logo"
-          />
-        }
-      >
-        <p>
-          The Nonpoint Source Assessment Toolbox (NPSAT) is a groundwater
-          modeling framework designed to evaluate the fate and transport of
-          nonpoint source (NPS) contaminants such as nitrate and salts leaching
-          to groundwater from agricultural, urban, and natural land uses. Its
-          primary application is to assess groundwater quality in irrigation,
-          public, and domestic supply wells.
-        </p>
-        <p>
-          The NPSAT framework – in contrast to other groundwater flow and
-          transport models - is designed specifically (a) for high-resolution
-          nonpoint source contaminant transport across entire groundwater
-          (sub)basins and (b) to facilitate “on-the-fly” evaluation of dozens,
-          hundreds, or thousands of different user-designed nonpoint source
-          contaminant leaching future scenarios. These scenarios represent
-          user-selected application of alternative source management practices
-          associated with user-selected specific land uses and/or crops.
-        </p>
-        <p>
-          By clicking the button below,{' '}
-          <StandardText variant="h5">
-            I agree that I have read and understand the above.
-          </StandardText>
-        </p>
-      </Modal> */}
-
+      <Disclaimer />
       <HBox>
         <StandardText variant="h1" style={{ marginTop: 10 }}>
           Home

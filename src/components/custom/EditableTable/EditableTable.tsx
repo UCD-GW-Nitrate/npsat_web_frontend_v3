@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 
 import { useGetModelStatusQuery } from '@/store';
 import { MODEL_STATUS_MACROS } from '@/utils/constants';
+import { useGetUserPreferencesQuery, useUpdateUserPreferencesMutation } from '@/store/apis/userApi';
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
@@ -81,7 +82,6 @@ function EditableTable<T extends AnyObject>({
   deleteCallback?: (id: number) => Promise<void>;
   pendingModelIds: number[];
 }) {
-  const [pageSize, setPageSize] = useState(10);
   const [ids, setIds] = useState<number[]>(pendingModelIds);
   const [latestData, setLatestData] = useState<T[]>(dataSource);
   const { data } = useGetModelStatusQuery(
@@ -94,6 +94,17 @@ function EditableTable<T extends AnyObject>({
   );
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState<number>(0);
+
+  const [pageSize, setPageSize] = useState(10);
+
+  const { data: userPreferences } = useGetUserPreferencesQuery();
+  const [updateUserPreferences] = useUpdateUserPreferencesMutation();
+
+  useEffect(() => {
+    if (userPreferences?.feed_size) {
+      setPageSize(userPreferences.feed_size)
+    }
+  }, [userPreferences])
 
   useEffect(() => {
     setIds(pendingModelIds);
@@ -320,7 +331,10 @@ function EditableTable<T extends AnyObject>({
           pageSize,
           showSizeChanger: true,
           pageSizeOptions: pageSizeOptions.map(String),
-          onShowSizeChange: (current, size) => setPageSize(size),
+          onShowSizeChange: (current, size) => {
+            updateUserPreferences({ feed_size: size });
+            setPageSize(size);
+          }
         }}
       />
     </Form>

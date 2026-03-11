@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Card, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -13,7 +13,9 @@ const WellsMap = dynamic(() => import('../maps/WellsMap'), {
   ssr: false,
 });
 
-export interface MapProps {
+export interface ModalProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   regions: Region[];
   customModelDetail: ModelRun;
   setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
@@ -24,6 +26,8 @@ export interface MapProps {
 }
 
 const ModelWellsModal = ({
+  open,
+  setOpen,
   regions,
   customModelDetail,
   setPolygonCoords,
@@ -31,9 +35,11 @@ const ModelWellsModal = ({
   setRange,
   minDepth,
   maxDepth,
-}: MapProps) => {
+}: ModalProps) => {
   const { allWells } = useModelWells({ regions, customModelDetail });
   const [displayData, setDisplayData] = useState<Well[]>([]);
+  const [numWellsContained, setNumWellsContained] = useState<number | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const configureData = (region: Region): Geometry => {
     const { geometry } = region;
@@ -51,8 +57,32 @@ const ModelWellsModal = ({
     );
   }, [allWells, range]);
 
+  const warning = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Selected region contains less than 10 wells.',
+    });
+  };
+
   return (
-    <div>
+    <Modal
+      title="Advanced Filtering"
+      closable={{ 'aria-label': 'Custom Close Button' }}
+      open={open}
+      onOk={() => {
+        if (numWellsContained && numWellsContained<10) {
+          warning();
+        } else {
+          setOpen(false);
+        }
+      }}
+      onCancel={() => {
+        setOpen(false);
+      }}
+      width={1000}
+      style={{ top: 20 }}
+    >
+      {contextHolder}
       <div
         style={{
           width: '100%',
@@ -93,7 +123,7 @@ const ModelWellsModal = ({
         }}
       >
         <p style={{ paddingRight: 20, marginTop: 0 }}>
-          Draw a polygon on the map to include wells inside the area.
+          Draw a polygon on the map to include wells inside the area. In order to improve statistical analysis, polygons should contain at least 10 wells.
         </p>
 
         <div style={{ width: '100%', height: 450 }}>
@@ -104,10 +134,11 @@ const ModelWellsModal = ({
             wells={displayData}
             allowDraw
             setPolygonCoords={setPolygonCoords}
+            setNumWellsContained={setNumWellsContained}
           />
         </div>
       </Card>
-    </div>
+    </Modal>
   );
 };
 
