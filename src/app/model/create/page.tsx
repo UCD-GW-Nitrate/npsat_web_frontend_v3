@@ -146,7 +146,7 @@ const CreateModelPage = () => {
             />
           )}
           {activeStep === 4 && !modelDataLoading && modelData?.id && (
-            <Step5 ids={modelData?.id} />
+            <Step5 ids={modelData?.id} onCreateNewScenario={() => {setActiveStep(0)}} />
           )}
         </InfoContainer>
       </HelmetProvider>

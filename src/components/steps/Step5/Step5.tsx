@@ -9,9 +9,10 @@ import { modelRunStatus } from '@/utils/constants';
 
 interface Step5Props {
   ids: any;
+  onCreateNewScenario: () => void;
 }
 
-const Step5 = ({ ids }: Step5Props) => {
+const Step5 = ({ ids, onCreateNewScenario }: Step5Props) => {
   const { data } = useGetModelStatusQuery(
     { ids },
     {
@@ -31,9 +32,7 @@ const Step5 = ({ ids }: Step5Props) => {
         View scenario run
       </Button>
       <Button
-        onClick={() => {
-          router.push(`/model/create`);
-        }}
+        onClick={() => onCreateNewScenario()}
       >
         Create another scenario
       </Button>
