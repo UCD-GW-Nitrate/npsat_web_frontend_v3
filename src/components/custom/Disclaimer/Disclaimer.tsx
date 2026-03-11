@@ -2,12 +2,16 @@ import { Flex, Image, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
-import { useGetUserPreferencesQuery } from '@/store/apis/userApi';
+import {
+  useGetUserPreferencesQuery,
+  useUpdateUserPreferencesMutation,
+} from '@/store/apis/userApi';
 
 import { StandardText } from '../StandardText/StandardText';
 
 export default function Disclaimer() {
   const { data } = useGetUserPreferencesQuery();
+  const [updateUserPreferences] = useUpdateUserPreferencesMutation();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -16,11 +20,16 @@ export default function Disclaimer() {
     }
   }, [data]);
 
+  function handleAgree() {
+    updateUserPreferences({ disclaimer_seen: true });
+    setOpen(false);
+  }
+
   return (
     <Modal
       centered
       open={open}
-      onOk={() => setOpen(false)}
+      onOk={() => handleAgree()}
       width={1000}
       okText="I Agree"
       closable={false}
