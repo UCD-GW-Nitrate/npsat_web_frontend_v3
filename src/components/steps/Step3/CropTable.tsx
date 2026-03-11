@@ -15,8 +15,8 @@ const LoadingSlider = ({
   const [value, setValue] = useState<number>(initialValue ?? 0);
 
   return ( 
-    <Row gutter={16} align="top" justify="center">
-      <Col span={12}>
+    <Row align="top" justify="center" style={{ width: 380, gap: 20 }}>
+      <Col flex={1}>
         <Slider
           max={200}
           min={0}
@@ -33,7 +33,7 @@ const LoadingSlider = ({
           }}
         />
       </Col>
-      <Col span={4}>
+      <Col flex="50px">
         <InputNumber
           min={0}
           max={200}
@@ -44,7 +44,6 @@ const LoadingSlider = ({
               onChange(name, v ?? initialValue ?? 0);
             }
               }}
-          style={{ margin: '0 16px' }}
           formatter={(v) => `${v}%`}
         />
       </Col>
@@ -88,7 +87,7 @@ export default function CropTable({ data, onChange } : CropTableProps) {
         <Form.Item
           key={record.id}
           name={record.name}
-          label=" "
+          label=""
           colon={false}
           rules={[
             {
@@ -96,18 +95,19 @@ export default function CropTable({ data, onChange } : CropTableProps) {
             },
           ]}
           initialValue={record.initialLoading}
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 0 }}
         >
-        <LoadingSlider
-          name={record.name}
-          initialValue={record.initialLoading}
-          onChange={onChange}
-        />
+          <LoadingSlider
+            name={record.name}
+            initialValue={record.initialLoading}
+            onChange={onChange}
+          />
         </Form.Item>
       ),
     },
   ];
 
   return (
-    <Table<DataType> columns={columns} dataSource={data} pagination={false} />
+    <Table<DataType> columns={columns} dataSource={data} pagination={false} size='small' />
   );
 }
