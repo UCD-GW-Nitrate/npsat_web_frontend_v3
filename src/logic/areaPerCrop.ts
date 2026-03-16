@@ -1,5 +1,4 @@
 import GNLMcropAreas from './CropAreasData/GNLM_AreaPerCrop_OCT24';
-import SWATcropAreas from './CropAreasData/SWAT_AreaPerCrop_OCT24';
 
 interface CropAreaInfo {
   CropId: number;
@@ -20,11 +19,7 @@ const areaPerCrop = (
   crops: number[] = [],
   regions: string[] = [],
 ): CropAreaMap => {
-  let areaData = GNLMcropAreas;
-  if (load_scenario !== 1) {
-    // load scenario is not GNLM
-    areaData = SWATcropAreas;
-  }
+  const areaData = GNLMcropAreas;
 
   crops.shift();
 
