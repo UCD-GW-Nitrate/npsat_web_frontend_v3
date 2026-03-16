@@ -21,6 +21,8 @@ const areaPerCrop = (
 ): CropAreaMap => {
   const areaData = GNLMcropAreas;
 
+  // Delete the first crop which should be 'All Other Crops'
+  // 'All Other Crops' will be dealt with specially and its return key will be '1'
   crops.shift();
 
   let cropsData: CropAreaInfo[] = [];

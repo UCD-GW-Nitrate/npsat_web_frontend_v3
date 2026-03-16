@@ -17,9 +17,8 @@ import type { Crop } from '@/types/crop/Crop';
 import type { CropModification } from '@/types/model/CropModification';
 
 import type StepBase from '../StepBase';
-import CropCard from './CropCard';
-import Step3Instructions from './Step3Instructions';
 import CropTable from './CropTable';
+import Step3Instructions from './Step3Instructions';
 
 interface CropDict {
   [key: string]: Crop;
@@ -119,27 +118,24 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
 
   const formattedData = useMemo(
     () =>
-      selectedCrops.filter((crop) => cropDict[crop]).map((crop) => {
-        return (
-       {
+      selectedCrops
+        .filter((crop) => cropDict[crop])
+        .map((crop) => {
+          return {
             id: cropDict[crop]!.id,
             name: cropDict[crop]!.name,
-            initialLoading: 
-              parseInt(
-                ((loadingDict[crop] ?? 1) * 100).toFixed(),
-                10,
-              ),
-            area: 
+            initialLoading: parseInt(
+              ((loadingDict[crop] ?? 1) * 100).toFixed(),
+              10,
+            ),
+            area:
               cropDict[crop]!.id === 1
                 ? cropAreaMap[1]!
                 : cropAreaMap[
-                    cropDict[crop]?.caml_code ??
-                    cropDict[crop]?.swat_code ??
-                    0
-                  ]!
-          }
-        );
-      }),
+                    cropDict[crop]?.caml_code ?? cropDict[crop]?.swat_code ?? 0
+                  ]!,
+          };
+        }),
     [Object.keys(cropDict), Object.keys(cropAreaMap).length, selectedCrops],
   );
 
@@ -168,16 +164,17 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
             placeholder="Please select a crop to start"
           >
             {cropData?.results.map((crop) => (
-              <Select.Option value={crop.id} key={crop.id}>
+              <Select.Option
+                value={crop.id}
+                key={crop.id}
+                disabled={crop.name === 'All Other Crops'}
+              >
                 {crop.name}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
-          label=" "
-          colon={false}
-        >
+        <Form.Item label=" " colon={false}>
           <CropTable
             data={formattedData}
             onChange={(cropName, v) => {
