@@ -10,13 +10,15 @@ import type { WellRequest } from '@/types/well/Well';
 import { REGION_MACROS } from '@/utils/constants';
 import { ordinalSuffix } from '@/utils/utils';
 
-import type { PercentileResultMap } from './useModelResults';
+import type { ModelDisplay, PercentileResultMap } from './useModelResults';
 
 export interface Props {
   customModelDetail: ModelRun | null;
   depthRangeMin: number | null;
   depthRangeMax: number | null;
   polygonCoords: [number, number][] | null;
+  dynamicPercentilesLoading?: boolean;
+  percentile?: number | null;
 }
 
 export default function useDynamicPercentiles({
@@ -39,7 +41,6 @@ export default function useDynamicPercentiles({
 
   useEffect(() => {
     async function getPercentiles() {
-      // console.time('fetch');
       const res = await fetch(
         `${apiRoot}/api/dynamic_percentiles/get_dynamic_percentiles/`,
         {
@@ -56,14 +57,13 @@ export default function useDynamicPercentiles({
           },
         },
       );
-      // console.timeEnd('fetch');
       if (!res.ok) {
-        // console.error('API error:', res.status);
         return;
       }
       const data = await res.json();
 
       const percentiles = data.data;
+
       const results = Object.fromEntries(
         Object.entries(percentiles).map(([key, arr]): [string, any[]] => [
           key,
@@ -76,14 +76,17 @@ export default function useDynamicPercentiles({
       );
       setData(results);
 
-      setExpiration(new Date(data.expiration));
+      setExpiration(data.expiration ? new Date(data.expiration) : null);
       setNumBreakthroughCurves(data.num_curves);
       setTotalBreakthroughCurves(data.total_curves);
 
       setLoading(false);
     }
 
-    if (modelId && depthRangeMin && depthRangeMax) getPercentiles();
+    if (modelId && depthRangeMin && depthRangeMax) {
+      setLoading(true);
+      getPercentiles();
+    }
   }, [modelId, depthRangeMin, depthRangeMax, polygonCoords]);
 
   return {
@@ -92,6 +95,95 @@ export default function useDynamicPercentiles({
     numBreakthroughCurves,
     totalBreakthroughCurves,
     loading,
+  };
+}
+
+export function usePercentileConfidence({
+  customModelDetail,
+  depthRangeMin,
+  depthRangeMax,
+  polygonCoords,
+  dynamicPercentilesLoading, // schedule refetch due to any of the model changes above, to occur strictly after dyanamicPercentiles
+  percentile,
+}: Props) {
+  const modelId = customModelDetail?.id ?? null;
+  const auth = useSelector<RootState, AuthState>((state) => {
+    return state.auth;
+  });
+
+  const [lowerCurve, setLowerCurve] = useState<ModelDisplay[]>([]);
+  const [upperCurve, setUpperCurve] = useState<ModelDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function getPercentileConfidence() {
+      const res = await fetch(
+        `${apiRoot}/api/dynamic_percentiles/get_confidence_interval/`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            model_id: modelId,
+            depth_range_min: depthRangeMin,
+            depth_range_max: depthRangeMax,
+            polygonCoords: polygonCoords ?? [],
+            percentile,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${auth.token}`,
+          },
+        },
+      );
+      if (!res.ok) {
+        return;
+      }
+      const data = await res.json();
+
+      const lowerCurveData = data.lower_curve;
+      const upperCurveData = data.upper_curve;
+
+      setLowerCurve(
+        (lowerCurveData as number[]).map((value: number, index: number) => ({
+          year: 1945 + index,
+          value,
+          percentile: `${percentile} lower confidence`,
+        })),
+      );
+
+      setUpperCurve(
+        (upperCurveData as number[]).map((value: number, index: number) => ({
+          year: 1945 + index,
+          value,
+          percentile: `${percentile} upper percentile`,
+        })),
+      );
+
+      setLoading(false);
+    }
+
+    if (!percentile) {
+      setLowerCurve([]);
+      setUpperCurve([]);
+      return;
+    }
+
+    if (
+      modelId &&
+      depthRangeMin &&
+      depthRangeMax &&
+      percentile &&
+      !dynamicPercentilesLoading
+    ) {
+      setLoading(true);
+      setLowerCurve([]);
+      setUpperCurve([]);
+      getPercentileConfidence();
+    }
+  }, [percentile, dynamicPercentilesLoading]);
+
+  return {
+    lowerCurve,
+    upperCurve,
   };
 }
 

@@ -1,7 +1,8 @@
-import { Alert, Button, Card, Modal, Switch } from 'antd';
+import { Alert, Button, Card, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 
 import useDynamicPercentiles, {
+  usePercentileConfidence,
   useWellDepthRange,
 } from '@/hooks/useDynamicPercentiles';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
@@ -48,8 +49,25 @@ const DynamicPercentilesChart = ({
     polygonCoords,
   });
 
+  const [selectedPercentile, setSelectedPercentile] = useState<number | null>(
+    null,
+  );
+
+  const {
+    lowerCurve,
+    upperCurve,
+    loading: loadingPercentileConfidence,
+  } = usePercentileConfidence({
+    customModelDetail,
+    depthRangeMin,
+    depthRangeMax,
+    polygonCoords,
+    dynamicPercentilesLoading: loading,
+    percentile: selectedPercentile,
+  });
+
   // flag that confirms if backend has the raw simulation results saved still, if so, allow dynamic percentile features
-  const renderDynamicPercentiles = !loading && expiration;
+  const renderDynamicPercentiles = expiration;
 
   // state variables to stage changes to useDynamicPercentiles params
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,6 +127,9 @@ const DynamicPercentilesChart = ({
         dynamicPercentiles={
           renderDynamicPercentiles ? dynamicPercentiles : null
         }
+        setFirstPercentile={setSelectedPercentile}
+        lowerCurve={lowerCurve}
+        upperCurve={upperCurve}
       />
 
       {renderDynamicPercentiles && (
