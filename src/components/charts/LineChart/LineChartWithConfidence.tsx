@@ -1,5 +1,6 @@
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
 
@@ -66,8 +67,10 @@ const LineChartWithConfidence = ({
 
   const options: ApexOptions = {
     chart: {
-      type: 'line',
-      stacked: false,
+      animations: {
+        enabled: true,
+        dynamicAnimation: { enabled: false },
+      },
     },
     annotations: {
       xaxis: getAnnotations(),
@@ -172,22 +175,24 @@ const LineChartWithConfidence = ({
     ],
   };
 
+  const series = useMemo(() => {
+    if (!confidenceAreaData?.length) return data;
+
+    return [
+      {
+        name: `${data[0]?.name} confidence interval`,
+        type: 'rangeArea',
+        data: confidenceAreaData,
+      },
+      ...data,
+    ];
+  }, [confidenceAreaData, data]);
+
   return (
     <ChartNoSSR
       type="rangeArea"
       options={options}
-      series={
-        confidenceAreaData && confidenceAreaData.length > 0
-          ? [
-              {
-                name: `${data[0]?.name} confidence interval`,
-                type: 'rangeArea',
-                data: confidenceAreaData,
-              },
-              ...data,
-            ]
-          : data.filter((chart) => chart.data.length > 0)
-      }
+      series={series}
       width="100%"
       height={500}
     />
