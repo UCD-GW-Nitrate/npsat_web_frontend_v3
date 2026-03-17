@@ -2,11 +2,20 @@
 import AppLayout from "@/components/custom/AppLayout/AppLayout";
 import { StandardText } from "@/components/custom/StandardText/StandardText";
 import { useSendUserFeedbackMutation } from "@/store/apis/userApi";
-import { Button, Card, Divider, Form, Input, Select } from "antd";
+import { Button, Card, Divider, Form, Input, message, Select } from "antd";
+import { useEffect } from "react";
 import { FieldValues } from "react-hook-form";
 
 const ShareFeedbackPage = () => {
-  const [sendFeedback, isLoading] = useSendUserFeedbackMutation();
+  const [sendFeedback, { isLoading, isSuccess }] = useSendUserFeedbackMutation();
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'Feedback successfully submitted',
+    });
+  };
 
   const onFormSubmit = (data: FieldValues) => {
     sendFeedback({
@@ -16,9 +25,16 @@ const ShareFeedbackPage = () => {
       email: data.email
     });
   }
+
+  useEffect(() => {
+    if (!isLoading && isSuccess) {
+      success();
+    }
+  }, [isLoading])
   
   return (
     <AppLayout>
+      {contextHolder}
       <StandardText variant="h1">
         Share your feedback
       </StandardText>
@@ -71,7 +87,7 @@ const ShareFeedbackPage = () => {
             </Form.Item>
             
             <div style={{alignSelf: 'center', display: 'flex', justifyContent: 'center'}}>
-              <Button type="primary" size="large" htmlType="submit">Submit Feedback</Button>
+              <Button type="primary" size="large" htmlType="submit" loading={isLoading}>{isLoading ? 'Submitting' : 'Submit Feedback'}</Button>
             </div>
           </Form>
       </Card>

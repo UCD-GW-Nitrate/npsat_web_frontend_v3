@@ -1,4 +1,4 @@
-import { Card, message, Modal } from 'antd';
+import { Card, Collapse, Divider, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -8,10 +8,30 @@ import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
 
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
+import { StandardText } from '../custom/StandardText/StandardText';
 
 const WellsMap = dynamic(() => import('../maps/WellsMap'), {
   ssr: false,
 });
+
+const Instructions = () => {
+  return (
+    <div style={{ marginInline: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <StandardText variant="h5" color="description">
+        Filter by Bounding Polygon:
+      </StandardText>
+      <StandardText color="description">
+        Draw a polygon on the map to include wells inside the area. Use the tools to the top right of map to create, delete, and update polygons, be sure to click Save after using each action.
+      </StandardText>
+      <StandardText color="description">
+        In order to improve statistical analysis, polygons should contain at least 10 wells.
+      </StandardText>
+      <StandardText color="description">
+        Note: Displayed wells align with selected depth range.
+      </StandardText>
+    </div>
+  );
+};
 
 export interface ModalProps {
   open: boolean;
@@ -80,9 +100,10 @@ const ModelWellsModal = ({
         setOpen(false);
       }}
       width={1000}
-      style={{ top: 20 }}
+      style={{ top: 0, marginTop: 0, padding: 20 }}
     >
       {contextHolder}
+      <Divider style={{ marginTop: 0 }} />
       <div
         style={{
           width: '100%',
@@ -92,7 +113,10 @@ const ModelWellsModal = ({
           alignItems: 'center',
         }}
       >
-        <p style={{ paddingRight: 20 }}>Well Depth Range (m):</p>
+        <div style={{ paddingRight: 20, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
+          <StandardText variant='h5' style={{ marginTop: 0, }}>Filter by </StandardText>
+          <p>Well Depth Range (m):</p>
+        </div>
 
         <div style={{ width: 600 }}>
           <RangeFormItem
@@ -110,34 +134,24 @@ const ModelWellsModal = ({
         </div>
       </div>
 
-      {/* <Divider style={{ marginTop: 0 }} /> */}
+      <StandardText variant='h5' style={{ marginTop: 0, }}>Filter by Bounding Polygon:</StandardText>
 
-      <Card
+      <div style={{ width: '100%', height: 450, marginTop: 15, marginBottom: 25 }}>
+        <WellsMap
+          path={regions.map((region: Region) => configureData(region))}
+          selectedRegions={regions.map((region: Region) => region.id)}
+          wellProperty="depth"
+          wells={displayData}
+          allowDraw
+          setPolygonCoords={setPolygonCoords}
+          setNumWellsContained={setNumWellsContained}
+        />
+      </div>
+
+      <Collapse
         size="small"
-        title="Spatial Filter"
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          marginBottom: 10,
-        }}
-      >
-        <p style={{ paddingRight: 20, marginTop: 0 }}>
-          Draw a polygon on the map to include wells inside the area. In order to improve statistical analysis, polygons should contain at least 10 wells.
-        </p>
-
-        <div style={{ width: '100%', height: 450 }}>
-          <WellsMap
-            path={regions.map((region: Region) => configureData(region))}
-            selectedRegions={regions.map((region: Region) => region.id)}
-            wellProperty="depth"
-            wells={displayData}
-            allowDraw
-            setPolygonCoords={setPolygonCoords}
-            setNumWellsContained={setNumWellsContained}
-          />
-        </div>
-      </Card>
+        items={[{ key: '1', label: 'Instructions', children: <Instructions /> }]}
+      />
     </Modal>
   );
 };

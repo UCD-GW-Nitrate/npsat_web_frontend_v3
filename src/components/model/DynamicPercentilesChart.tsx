@@ -133,7 +133,7 @@ const DynamicPercentilesChart = ({
       />
 
       {renderDynamicPercentiles && (
-        <div style={{ width: '60%' }}>
+        <div style={{ width: 700 }}>
           <Card
             title="Filter Results"
             extra={
@@ -142,19 +142,20 @@ const DynamicPercentilesChart = ({
                 breakthrough curves
               </div>
             }
+            size='small'
           >
             <div
               style={{
                 width: '100%',
                 display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
               }}
             >
               <p style={{ width: 210 }}>Filter by Well Depth Range (m):</p>
 
-              <div style={{ width: 500 }}>
+              <div style={{ width: 500, marginLeft: 50 }}>
                 <RangeFormItem
                   valueLow={range[0]}
                   valueHigh={range[1]}
@@ -176,8 +177,6 @@ const DynamicPercentilesChart = ({
                 flexDirection: 'row',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                // paddingLeft: 5,
-                paddingTop: 5,
               }}
             >
               <Switch
@@ -197,22 +196,17 @@ const DynamicPercentilesChart = ({
               </p>
 
               {showAdvancedFilter && (
-                <div
-                  style={{
-                    marginLeft: 50,
+                <Button
+                  type="link"
+                  onClick={() => {
+                    setIsModalOpen(true);
                   }}
                 >
-                  <Button
-                    type="default"
-                    onClick={() => {
-                      setIsModalOpen(true);
-                    }}
-                  >
-                    Adv. Filters
-                  </Button>
-                </div>
+                  Edit
+                </Button>
               )}
             </div>
+
 
             <div
               style={{
