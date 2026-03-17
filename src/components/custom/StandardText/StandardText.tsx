@@ -45,7 +45,7 @@ export const StandardText = ({
   }
   if (variant === 'h5') {
     return (
-      <div style={{ marginTop: 16 }}>
+      <div style={{ marginTop: 16, ...style }}>
         <Typography.Text color={textColor} strong style={style}>
           {children}
         </Typography.Text>

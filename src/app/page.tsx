@@ -166,7 +166,7 @@ const Index = () => {
               router.push(`/model/compare/?models=${selected.join('&models=')}`)
             }
           >
-            Compare Scenario
+            Compare Scenarios
           </Button>
         </HBox>
         <EditableTable<PlotModel>

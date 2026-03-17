@@ -34,7 +34,6 @@ const TileMapOptions = ({
       <div
         style={{
           backgroundColor: 'white',
-          padding: '10px',
           borderRadius: '8px',
           boxShadow: '0 0 10px rgba(0,0,0,0.2)',
           fontSize: '12px',
