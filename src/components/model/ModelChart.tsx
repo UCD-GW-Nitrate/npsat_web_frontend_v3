@@ -1,7 +1,7 @@
 import { Button, Select } from 'antd';
+import type { Dispatch, SetStateAction } from 'react';
 import React, { useEffect, useState } from 'react';
 
-import LineChart from '@/components/charts/LineChart/LineChart';
 import { HBox } from '@/components/custom/HBox/Hbox';
 import type {
   ModelDisplay,
@@ -10,11 +10,17 @@ import type {
 import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
 
+import LineChartWithConfidence from '../charts/LineChart/LineChartWithConfidence';
+
 interface ModelChartProps {
   percentiles: MantisResultPercentile[];
   reductionStartYear: number;
   reductionCompleteYear: number;
   dynamicPercentiles?: PercentileResultMap | null;
+  // params to display the confidence interval for first selected percentile
+  setFirstPercentile?: Dispatch<SetStateAction<number | null>>;
+  lowerCurve?: ModelDisplay[];
+  upperCurve?: ModelDisplay[];
 }
 
 const ModelChart = ({
@@ -22,6 +28,9 @@ const ModelChart = ({
   reductionStartYear,
   reductionCompleteYear,
   dynamicPercentiles,
+  setFirstPercentile,
+  lowerCurve,
+  upperCurve,
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -63,6 +72,12 @@ const ModelChart = ({
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
   }, [plotData, percentilesDisplayed, dynamicPercentiles]);
+
+  useEffect(() => {
+    if (setFirstPercentile) {
+      setFirstPercentile(percentilesDisplayed[0] ?? null);
+    }
+  }, [percentilesDisplayed]);
 
   if (!plotData) {
     return <div />;
@@ -140,10 +155,21 @@ const ModelChart = ({
           Select All
         </Button>
       </HBox>
-      <LineChart
+      <LineChartWithConfidence
         data={displayData}
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
+        confidenceAreaData={
+          lowerCurve && upperCurve
+            ? lowerCurve.map((lowerCurvePoint, idx) => ({
+                x: lowerCurvePoint.year,
+                y: [
+                  lowerCurvePoint.value ?? NaN,
+                  upperCurve[idx]?.value ?? NaN,
+                ],
+              }))
+            : undefined
+        }
       />
     </div>
   );

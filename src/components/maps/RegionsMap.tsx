@@ -1,6 +1,6 @@
 import { SwitcherOutlined } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
-import { Radio } from 'antd';
+import { Image, Radio } from 'antd';
 import type { GeoJsonObject } from 'geojson';
 import type { Layer } from 'leaflet';
 import type { ReactNode } from 'react';
@@ -39,7 +39,7 @@ const TileMapOptions = ({
           boxShadow: '0 0 10px rgba(0,0,0,0.2)',
           fontSize: '12px',
           width: 40,
-          height: 40,
+          height: 30,
           marginLeft: 'auto',
           display: 'flex',
           justifyContent: 'center',
@@ -47,7 +47,11 @@ const TileMapOptions = ({
         }}
         onMouseEnter={() => setShowOptions(true)}
       >
-        <SwitcherOutlined style={{ fontSize: '20px', color: 'grey' }} />
+        <Image
+          src="/images/layers.svg"
+          width={20}
+          alt="Tile maps"
+        />
       </div>
       {showOptions && (
         <div

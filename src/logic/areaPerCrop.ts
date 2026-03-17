@@ -1,5 +1,4 @@
 import GNLMcropAreas from './CropAreasData/GNLM_AreaPerCrop_OCT24';
-import SWATcropAreas from './CropAreasData/SWAT_AreaPerCrop_OCT24';
 
 interface CropAreaInfo {
   CropId: number;
@@ -20,12 +19,10 @@ const areaPerCrop = (
   crops: number[] = [],
   regions: string[] = [],
 ): CropAreaMap => {
-  let areaData = GNLMcropAreas;
-  if (load_scenario !== 1) {
-    // load scenario is not GNLM
-    areaData = SWATcropAreas;
-  }
+  const areaData = GNLMcropAreas;
 
+  // Delete the first crop which should be 'All Other Crops'
+  // 'All Other Crops' will be dealt with specially and its return key will be '1'
   crops.shift();
 
   let cropsData: CropAreaInfo[] = [];

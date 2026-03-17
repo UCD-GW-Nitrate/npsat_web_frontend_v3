@@ -1,12 +1,18 @@
 'use client';
 
+import area from '@turf/area';
+import { featureCollection } from '@turf/helpers';
+import intersect from '@turf/intersect';
 import { Alert, Divider, Form, Switch, Tabs } from 'antd';
+import type { Feature, MultiPolygon, Polygon } from 'geojson';
 import React, { useEffect, useMemo, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { FormMap } from '@/components/maps/FormMap';
+import C2VSimDefaults from '@/logic/DefaultTableData/C2VSim_Defaults_MAR16';
+import CVHMDefaults from '@/logic/DefaultTableData/CVHM_Defaults_MAR16';
 import {
   useFetchB118BasinQuery,
   useFetchBasinQuery,
@@ -83,7 +89,9 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     },
   };
 
-  const [defaultPorosity, setDefaultPorosity] = useState<number | null>(null);
+  const [defaultPorosity, setDefaultPorosity] = useState<number | null>(
+    model.porosity ?? null,
+  );
   const [defaultWaterContent, setDefaultWaterContent] = useState<number | null>(
     null,
   );
@@ -93,6 +101,9 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     setSelected([]);
     form.setFieldValue('region', []);
     setMapType(parseInt(tab, 10));
+    setDefaultPorosity(null);
+    setDefaultWaterContent(null);
+    setErr(false);
   };
 
   useEffect(() => {
@@ -145,7 +156,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       }
       if (model.default_water_content) {
         // user should have chosen at least one region on submit, so default por and water content should be defined
-        dispatch(setModelWaterContent(defaultWaterContent!));
+        dispatch(setModelWaterContent(defaultWaterContent! / 100));
       }
     } else {
       dispatch(
@@ -162,40 +173,19 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       }
       if (model.default_water_content) {
         // user should have chosen at least one region on submit, so default por and water content should be defined
-        dispatch(setModelWaterContent(defaultWaterContent!));
+        dispatch(setModelWaterContent(defaultWaterContent! / 100));
       }
     }
-    onNext();
+
+    window.scrollTo({
+      top: 0,
+    });
   };
 
   const onChangeAdvancedFilter = (formData: FieldValues) => {
     if (formData.advanced_filter) {
       dispatch(setModelSimulationFilter(formData.advanced_filter));
     }
-  };
-
-  const porosity = {
-    47: 10,
-    48: 10,
-    49: 20,
-  };
-
-  const onRegionSelect = (input: number[]) => {
-    setSelected(input);
-    form.setFieldValue('region', input);
-    // compute default porosity and water_content
-    let por = null;
-    setErr(false);
-    input.forEach((val) => {
-      if (!por) {
-        por = porosity[val] ?? 10;
-      } else if ((porosity[val] ?? 10) !== por) {
-        por = porosity[val];
-        setErr(true);
-      }
-    });
-    setDefaultPorosity(por);
-    setDefaultWaterContent(por / 100);
   };
 
   const getRegionData = (input: number): Region[] | undefined => {
@@ -219,6 +209,92 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     }
     return [];
   };
+
+  const configureData = (county: Region): Feature<Polygon | MultiPolygon> => {
+    return {
+      type: 'Feature',
+      properties: county.geometry.properties || {},
+      geometry: county.geometry.geometry as Polygon | MultiPolygon,
+    };
+  };
+
+  const onRegionSelect = (input: number[]) => {
+    setSelected(input);
+    form.setFieldValue('region', input);
+  };
+
+  useEffect(() => {
+    function getDefaults() {
+      // compute default porosity and water_content
+      let porosity: number | null = null;
+      let waterContent: number | null = null;
+      setErr(false);
+      
+      selected.forEach((regionId: number) => {
+        const regions = getRegionData(mapType)?.filter(
+          (region) => region.id === regionId,
+        );
+        if (regions && regions[0]) {
+          const lastSelectedRegion: Region = regions[0];
+
+          const overlaps = basinData?.map((basin) => {
+            const intersection = intersect(
+              featureCollection([
+                configureData(lastSelectedRegion),
+                configureData(basin),
+              ]),
+            );
+
+            if (!intersection) {
+              return {
+                mantisId: basin.mantis_id,
+                intersection: 0,
+              };
+            }
+
+            return {
+              mantisId: basin.mantis_id,
+              intersection: area(intersection),
+            };
+          });
+
+          let maxIntersection = 0;
+          let tempPorosity = 0;
+          let tempWaterContent = 0;
+          overlaps?.forEach((overlap) => {
+            if (overlap.intersection >= maxIntersection) {
+              maxIntersection = overlap.intersection;
+              let table = C2VSimDefaults;
+              if (
+                model.flow_scenario &&
+                model.flow_scenario.id !== 10 &&
+                model.flow_scenario.id !== 11
+              ) {
+                table = CVHMDefaults;
+              }
+              const row = table[0]?.Regions.filter(
+                (basin) => basin.Name === overlap.mantisId,
+              );
+              tempPorosity = row?.[0]?.Porosity!;
+              tempWaterContent = row?.[0]?.WaterContent!;
+            }
+          });
+          if (porosity && porosity != tempPorosity) {
+            setErr(true);
+          }
+          porosity = tempPorosity;
+          if (waterContent && waterContent != tempWaterContent) {
+            setErr(true);
+          }
+          waterContent = tempWaterContent;
+        }
+      });
+      setDefaultPorosity(porosity);
+      setDefaultWaterContent(waterContent);
+    }
+
+    getDefaults();
+  }, [model.flow_scenario, selected, mapType]);
 
   useEffect(() => {
     if (selected.length > 0) {
@@ -358,18 +434,19 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
               )}
               {model.default_porosity && (
                 <p style={{ margin: 0 }}>
-                  Porosity value selected: {defaultPorosity ?? '-'}
+                  Porosity value selected:{' '}
+                  {defaultPorosity ? `${defaultPorosity}%` : '-'}
                 </p>
               )}
               {model.default_water_content && (
                 <p style={{ margin: 0 }}>
                   Unsaturated zone effective water content value selected:{' '}
-                  {defaultWaterContent ?? '-'}
+                  {defaultWaterContent ? `${defaultWaterContent}%` : '-'}
                 </p>
               )}
             </div>
           }
-          style={{ width: '50%', marginRight: 'auto', marginLeft: 'auto' }}
+          style={{ width: err ? 700 : 600, padding: 10, marginRight: 'auto', marginLeft: 'auto' }}
         />
       )}
       <Tabs
@@ -407,7 +484,10 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       <Form
         {...formItemLayout}
         form={form}
-        onFinish={onFormSubmit}
+        onFinish={(formData) => {
+          onFormSubmit(formData);
+          onNext();
+        }}
         onValuesChange={onChangeAdvancedFilter}
         layout="horizontal"
         style={{ width: 700, margin: 'auto' }}
@@ -450,7 +530,13 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             },
           }}
         >
-          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
+          <PageAdvancementButtons
+            canGoBack
+            onClickPrev={() => {
+              onFormSubmit(form.getFieldsValue());
+              onPrev();
+            }}
+          />
         </Form.Item>
       </Form>
       <Divider />

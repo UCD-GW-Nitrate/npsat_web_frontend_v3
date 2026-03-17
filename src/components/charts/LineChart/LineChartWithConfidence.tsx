@@ -1,5 +1,6 @@
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
 
@@ -15,9 +16,10 @@ interface LineChartProps {
   xTitle?: string;
   yTitle?: string;
   variant?: 'percentiles' | 'numeric';
+  confidenceAreaData?: { x: number; y: [number, number] }[];
 }
 
-const LineChart = ({
+const LineChartWithConfidence = ({
   data,
   reductionEndYear,
   reductionStartYear,
@@ -25,6 +27,7 @@ const LineChart = ({
   xTitle,
   yTitle='Nitrate-N [mg/L]',
   variant = 'percentiles',
+  confidenceAreaData,
 }: LineChartProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
     const annotations: XAxisAnnotations[] = [];
@@ -62,7 +65,31 @@ const LineChart = ({
     return annotations;
   };
 
+  const getStrokeWidth = () => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+    return confidenceAreaData && confidenceAreaData.length > 0
+      ? [0, ...data.map(() => 5)]
+      : data.map(() => 5);
+  };
+
+  const getFillOpacity = () => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+    return confidenceAreaData && confidenceAreaData.length > 0
+      ? [0.2, ...data.map(() => 1)]
+      : data.map(() => 1);
+  };
+
   const options: ApexOptions = {
+    chart: {
+      animations: {
+        enabled: true,
+        dynamicAnimation: { enabled: false },
+      },
+    },
     annotations: {
       xaxis: getAnnotations(),
     },
@@ -71,6 +98,10 @@ const LineChart = ({
     },
     stroke: {
       curve: 'straight',
+      width: getStrokeWidth(),
+    },
+    fill: {
+      opacity: getFillOpacity(),
     },
     title: {
       text: `${title ?? ''}`,
@@ -156,15 +187,33 @@ const LineChart = ({
     ],
   };
 
+  const series = useMemo(() => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    if (!confidenceAreaData?.length)
+      return data.filter((seriesData) => seriesData?.data?.length);
+
+    return [
+      {
+        name: `${data[0]?.name} confidence interval`,
+        type: 'rangeArea',
+        data: confidenceAreaData,
+      },
+      ...data.filter((seriesData) => seriesData?.data?.length),
+    ];
+  }, [confidenceAreaData, data]);
+
   return (
     <ChartNoSSR
-      type="line"
+      type="rangeArea"
       options={options}
-      series={data}
+      series={series}
       width="100%"
       height={500}
     />
   );
 };
 
-export default LineChart;
+export default LineChartWithConfidence;

@@ -21,9 +21,9 @@ const Step2Instructions = () => {
       <StandardText color="description">
         Note: You can only select one type of region (e.g., “B118 Basin”), but
         within that type, any number regions (1 to all) can be selected. The
-        number of wells in the selected region(s) is displayed on top of the
-        map. The scenario simulations (including the BAU simulation) will
-        evaluate nitrate concentrations at these wells and aggregate those into
+        number of wells in the selected region(s) is displayed on below the map.
+        The scenario simulations (including the BAU simulation) will evaluate
+        nitrate concentrations at these wells and aggregate those into
         statistical results.
       </StandardText>
       <StandardText variant="h5" color="description">
@@ -34,7 +34,7 @@ const Step2Instructions = () => {
         minimum and maximum well depth interval, and/or consider streamlines to
         well screens within a specific minimum and maximum screen depth
         interval. This may affect the number of wells selected for the
-        simulation, as shown above the map.
+        simulation, which is shown below the map and will change accordingly.
       </StandardText>
       <StandardText variant="h5" color="description">
         Region Types:
