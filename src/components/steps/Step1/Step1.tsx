@@ -108,6 +108,10 @@ const Step1 = ({ onNext }: StepBase) => {
     );
     dispatch(setDefaultPorosity(porosityChecked));
     dispatch(setDefaultWaterContent(waterContentChecked));
+
+    window.scrollTo({
+      top: 0,
+    });
     onNext();
   };
 

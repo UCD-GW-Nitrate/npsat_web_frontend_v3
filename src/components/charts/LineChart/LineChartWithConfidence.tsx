@@ -25,7 +25,7 @@ const LineChartWithConfidence = ({
   reductionStartYear,
   title,
   xTitle,
-  yTitle,
+  yTitle='Nitrate-N [mg/L]',
   variant = 'percentiles',
   confidenceAreaData,
 }: LineChartProps) => {

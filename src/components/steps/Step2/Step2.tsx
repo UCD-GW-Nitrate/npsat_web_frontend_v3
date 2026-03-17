@@ -176,6 +176,10 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
         dispatch(setModelWaterContent(defaultWaterContent! / 100));
       }
     }
+
+    window.scrollTo({
+      top: 0,
+    });
   };
 
   const onChangeAdvancedFilter = (formData: FieldValues) => {

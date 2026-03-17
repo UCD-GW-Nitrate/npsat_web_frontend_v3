@@ -68,6 +68,10 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     });
 
     dispatch(setModelModifications(modifications));
+
+    window.scrollTo({
+      top: 0,
+    });
   };
 
   useEffect(() => {

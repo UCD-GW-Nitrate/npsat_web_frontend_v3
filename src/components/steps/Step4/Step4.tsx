@@ -39,6 +39,10 @@ const Step4 = ({ onPrev, onComplete }: Step4Props) => {
       name: data.model_name,
       description: data.model_desc,
     });
+
+    window.scrollTo({
+      top: 0,
+    });
   };
 
   const formItemLayout = {
