@@ -159,7 +159,7 @@ const Step1 = ({ onNext }: StepBase) => {
             >
               <InputNumber
                 min={10}
-                max={100}
+                max={50}
                 step={10}
                 keyboard={false}
                 formatter={(v) =>
@@ -279,7 +279,9 @@ const Step1 = ({ onNext }: StepBase) => {
                   : defaultRules('Please enter the water content')
               }
               initialValue={
-                model.water_content ? model.water_content * 100 : null
+                model.water_content !== undefined
+                  ? model.water_content * 100
+                  : null
               }
               noStyle
             >

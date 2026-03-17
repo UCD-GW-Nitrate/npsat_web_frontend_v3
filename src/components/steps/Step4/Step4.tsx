@@ -27,9 +27,13 @@ const Step4 = ({ onPrev, onComplete }: Step4Props) => {
   const model = useSelector(selectCurrentModel);
   const [form] = Form.useForm();
 
-  const onFormSubmit = (data: FieldValues) => {
+  const saveFormValues = (data: FieldValues) => {
     dispatch(setModelName(data.model_name));
-    dispatch(setModelDescription(data.description));
+    dispatch(setModelDescription(data.model_desc));
+  };
+
+  const onFormSubmit = (data: FieldValues) => {
+    saveFormValues(data);
     onComplete({
       ...model,
       name: data.model_name,
@@ -84,7 +88,13 @@ const Step4 = ({ onPrev, onComplete }: Step4Props) => {
             },
           }}
         >
-          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
+          <PageAdvancementButtons
+            canGoBack
+            onClickPrev={() => {
+              saveFormValues(form.getFieldsValue());
+              onPrev();
+            }}
+          />
         </Form.Item>
       </Form>
       <Divider />

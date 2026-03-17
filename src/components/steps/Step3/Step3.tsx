@@ -68,7 +68,6 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
     });
 
     dispatch(setModelModifications(modifications));
-    onNext();
   };
 
   useEffect(() => {
@@ -145,7 +144,10 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
         {...formItemLayout}
         form={form}
         layout="horizontal"
-        onFinish={onFormSubmit}
+        onFinish={(formData) => {
+          onFormSubmit(formData);
+          onNext();
+        }}
       >
         <Form.Item
           name="crop_choice"
@@ -197,7 +199,13 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
             },
           }}
         >
-          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
+          <PageAdvancementButtons
+            canGoBack
+            onClickPrev={() => {
+              onFormSubmit(form.getFieldsValue());
+              onPrev();
+            }}
+          />
         </Form.Item>
       </Form>
       <Divider />

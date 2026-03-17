@@ -23,10 +23,9 @@ const Step3Instructions = () => {
         “Settings”.
       </StandardText>
       <StandardText color="description">
-        Land use type may depend on the loading scenario selected under
-        “Settings” The type “All other crops” refers to all land use types that
-        have NOT been selected explicitly here. This allows for easily changing
-        the nitrate loading from all land use types that are not specifically
+        The type “All other crops” refers to all land use types that have NOT
+        been selected explicitly here. This allows for easily changing the
+        nitrate loading from all land use types that are not specifically
         defined here by the user.
       </StandardText>
     </div>

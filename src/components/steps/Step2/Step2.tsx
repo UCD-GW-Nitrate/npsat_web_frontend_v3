@@ -89,7 +89,9 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
     },
   };
 
-  const [defaultPorosity, setDefaultPorosity] = useState<number | null>(null);
+  const [defaultPorosity, setDefaultPorosity] = useState<number | null>(
+    model.porosity ?? null,
+  );
   const [defaultWaterContent, setDefaultWaterContent] = useState<number | null>(
     null,
   );
@@ -171,10 +173,9 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       }
       if (model.default_water_content) {
         // user should have chosen at least one region on submit, so default por and water content should be defined
-        dispatch(setModelWaterContent(defaultWaterContent!));
+        dispatch(setModelWaterContent(defaultWaterContent! / 100));
       }
     }
-    onNext();
   };
 
   const onChangeAdvancedFilter = (formData: FieldValues) => {
@@ -216,67 +217,75 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   const onRegionSelect = (input: number[]) => {
     setSelected(input);
     form.setFieldValue('region', input);
-    // compute default porosity and water_content
-    let porosity = null;
-    let waterContent = null;
-    setErr(false);
+  };
 
-    const lastRegionId = input.at(-1);
-    if (lastRegionId) {
-      const regions = getRegionData(mapType)?.filter(
-        (region) => region.id === lastRegionId,
-      );
-      if (regions && regions[0]) {
-        const lastSelectedRegion: Region = regions[0];
+  useEffect(() => {
+    function getDefaults() {
+      // compute default porosity and water_content
+      let porosity = null;
+      let waterContent = null;
+      setErr(false);
 
-        const overlaps = basinData?.map((basin) => {
-          const intersection = intersect(
-            featureCollection([
-              configureData(lastSelectedRegion),
-              configureData(basin),
-            ]),
-          );
+      const lastRegionId = selected.at(-1);
+      if (lastRegionId) {
+        const regions = getRegionData(mapType)?.filter(
+          (region) => region.id === lastRegionId,
+        );
+        if (regions && regions[0]) {
+          const lastSelectedRegion: Region = regions[0];
 
-          if (!intersection) {
+          const overlaps = basinData?.map((basin) => {
+            const intersection = intersect(
+              featureCollection([
+                configureData(lastSelectedRegion),
+                configureData(basin),
+              ]),
+            );
+
+            if (!intersection) {
+              return {
+                mantisId: basin.mantis_id,
+                intersection: 0,
+              };
+            }
+
             return {
               mantisId: basin.mantis_id,
-              intersection: 0,
+              intersection: area(intersection),
             };
-          }
+          });
 
-          return {
-            mantisId: basin.mantis_id,
-            intersection: area(intersection),
-          };
-        });
-
-        let maxIntersection = 0;
-        overlaps?.forEach((overlap) => {
-          if (overlap.intersection >= maxIntersection) {
-            maxIntersection = overlap.intersection;
-            let table = C2VSimDefaults;
-            if (
-              model.flow_scenario &&
-              model.flow_scenario.id !== 10 &&
-              model.flow_scenario.id !== 11
-            ) {
-              table = CVHMDefaults;
+          let maxIntersection = 0;
+          overlaps?.forEach((overlap) => {
+            if (overlap.intersection >= maxIntersection) {
+              maxIntersection = overlap.intersection;
+              let table = C2VSimDefaults;
+              if (
+                model.flow_scenario &&
+                model.flow_scenario.id !== 10 &&
+                model.flow_scenario.id !== 11
+              ) {
+                table = CVHMDefaults;
+              }
+              const row = table[0]?.Regions.filter(
+                (basin) => basin.Name === overlap.mantisId,
+              );
+              porosity = row?.[0]?.Porosity ?? null;
+              waterContent = row?.[0]?.WaterContent ?? null;
             }
-            const row = table[0]?.Regions.filter(
-              (basin) => basin.Name === overlap.mantisId,
-            );
-            porosity = row?.[0]?.Porosity ?? null;
-            waterContent = row?.[0]?.WaterContent ?? null;
-          }
-        });
+          });
+        }
       }
+      if (defaultPorosity && porosity && defaultPorosity !== porosity) {
+        setErr(true);
+      }
+      setDefaultPorosity(porosity);
+      setDefaultWaterContent(waterContent);
     }
-    if (defaultPorosity && porosity && defaultPorosity !== porosity) {
-      setErr(true);
-    }
-    setDefaultPorosity(porosity);
-    setDefaultWaterContent(waterContent);
-  };
+
+    console.log('REfectching defaults ', selected);
+    getDefaults();
+  }, [model.flow_scenario, selected, mapType]);
 
   useEffect(() => {
     if (selected.length > 0) {
@@ -466,7 +475,10 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       <Form
         {...formItemLayout}
         form={form}
-        onFinish={onFormSubmit}
+        onFinish={(formData) => {
+          onFormSubmit(formData);
+          onNext();
+        }}
         onValuesChange={onChangeAdvancedFilter}
         layout="horizontal"
         style={{ width: 700, margin: 'auto' }}
@@ -509,7 +521,13 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             },
           }}
         >
-          <PageAdvancementButtons canGoBack onClickPrev={onPrev} />
+          <PageAdvancementButtons
+            canGoBack
+            onClickPrev={() => {
+              onFormSubmit(form.getFieldsValue());
+              onPrev();
+            }}
+          />
         </Form.Item>
       </Form>
       <Divider />
