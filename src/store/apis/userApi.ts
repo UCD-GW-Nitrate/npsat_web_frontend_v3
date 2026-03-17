@@ -56,6 +56,18 @@ export const userApi = createApi({
         body: preferences,
       }),
     }),
+    sendUserFeedback: builder.mutation<void, {
+      feedback_type: string | null, 
+      message: string, 
+      name: string | null, 
+      email: string | null,
+    }>({
+      query: ({feedback_type, message, name, email}) => ({
+        url: 'send-feedback/',
+        method: 'PUT',
+        body: { feedback_type, message, name, email },
+      }),
+    }),
   }),
 });
 
@@ -65,4 +77,5 @@ export const {
   useSetPasswordMutation,
   useGetUserPreferencesQuery,
   useUpdateUserPreferencesMutation,
+  useSendUserFeedbackMutation,
 } = userApi;
