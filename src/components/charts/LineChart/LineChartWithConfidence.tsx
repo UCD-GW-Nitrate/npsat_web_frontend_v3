@@ -65,6 +65,24 @@ const LineChartWithConfidence = ({
     return annotations;
   };
 
+  const getStrokeWidth = () => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+    return confidenceAreaData && confidenceAreaData.length > 0
+      ? [0, ...data.map(() => 5)]
+      : data.map(() => 5);
+  };
+
+  const getFillOpacity = () => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+    return confidenceAreaData && confidenceAreaData.length > 0
+      ? [0.2, ...data.map(() => 1)]
+      : data.map(() => 1);
+  };
+
   const options: ApexOptions = {
     chart: {
       animations: {
@@ -80,16 +98,10 @@ const LineChartWithConfidence = ({
     },
     stroke: {
       curve: 'straight',
-      width:
-        confidenceAreaData && confidenceAreaData.length > 0
-          ? [0, ...data.map((percentile) => 5)]
-          : data.map((percentile) => 5),
+      width: getStrokeWidth(),
     },
     fill: {
-      opacity:
-        confidenceAreaData && confidenceAreaData.length > 0
-          ? [0.2, ...data.map((percentile) => 1)]
-          : data.map((percentile) => 1),
+      opacity: getFillOpacity(),
     },
     title: {
       text: `${title ?? ''}`,
@@ -176,7 +188,12 @@ const LineChartWithConfidence = ({
   };
 
   const series = useMemo(() => {
-    if (!confidenceAreaData?.length) return data;
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    if (!confidenceAreaData?.length)
+      return data.filter((seriesData) => seriesData?.data?.length);
 
     return [
       {
@@ -184,7 +201,7 @@ const LineChartWithConfidence = ({
         type: 'rangeArea',
         data: confidenceAreaData,
       },
-      ...data,
+      ...data.filter((seriesData) => seriesData?.data?.length),
     ];
   }, [confidenceAreaData, data]);
 
