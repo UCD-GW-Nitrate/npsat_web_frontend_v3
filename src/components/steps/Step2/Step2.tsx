@@ -226,14 +226,13 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   useEffect(() => {
     function getDefaults() {
       // compute default porosity and water_content
-      let porosity = null;
-      let waterContent = null;
+      let porosity: number | null = null;
+      let waterContent: number | null = null;
       setErr(false);
-
-      const lastRegionId = selected.at(-1);
-      if (lastRegionId) {
+      
+      selected.forEach((regionId: number) => {
         const regions = getRegionData(mapType)?.filter(
-          (region) => region.id === lastRegionId,
+          (region) => region.id === regionId,
         );
         if (regions && regions[0]) {
           const lastSelectedRegion: Region = regions[0];
@@ -260,6 +259,8 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           });
 
           let maxIntersection = 0;
+          let tempPorosity = 0;
+          let tempWaterContent = 0;
           overlaps?.forEach((overlap) => {
             if (overlap.intersection >= maxIntersection) {
               maxIntersection = overlap.intersection;
@@ -274,20 +275,24 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
               const row = table[0]?.Regions.filter(
                 (basin) => basin.Name === overlap.mantisId,
               );
-              porosity = row?.[0]?.Porosity ?? null;
-              waterContent = row?.[0]?.WaterContent ?? null;
+              tempPorosity = row?.[0]?.Porosity!;
+              tempWaterContent = row?.[0]?.WaterContent!;
             }
           });
+          if (porosity && porosity != tempPorosity) {
+            setErr(true);
+          }
+          porosity = tempPorosity;
+          if (waterContent && waterContent != tempWaterContent) {
+            setErr(true);
+          }
+          waterContent = tempWaterContent;
         }
-      }
-      if (defaultPorosity && porosity && defaultPorosity !== porosity) {
-        setErr(true);
-      }
+      });
       setDefaultPorosity(porosity);
       setDefaultWaterContent(waterContent);
     }
 
-    console.log('REfectching defaults ', selected);
     getDefaults();
   }, [model.flow_scenario, selected, mapType]);
 
@@ -441,7 +446,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
               )}
             </div>
           }
-          style={{ width: '50%', marginRight: 'auto', marginLeft: 'auto' }}
+          style={{ width: err ? 700 : 600, padding: 10, marginRight: 'auto', marginLeft: 'auto' }}
         />
       )}
       <Tabs
