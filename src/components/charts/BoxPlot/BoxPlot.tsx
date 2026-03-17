@@ -27,7 +27,7 @@ const BoxPlot = ({
 
     if (reductionEndYear) {
       annotations.push({
-        x: reductionEndYear,
+        x: String(reductionEndYear),
         borderColor: PRIMARY_COLOR,
         label: {
           text: 'Implementation end year',
@@ -42,7 +42,7 @@ const BoxPlot = ({
 
     if (reductionStartYear) {
       annotations.push({
-        x: reductionStartYear,
+        x: String(reductionStartYear),
         borderColor: PRIMARY_COLOR,
         label: {
           text: 'Implementation start year',
@@ -76,15 +76,18 @@ const BoxPlot = ({
         return `
           <div class="apexcharts-tooltip-boxplot" style="padding: 8px; padding-bottom: 0px">
             ${
-              labels.reverse().map(
-                (label, i) =>
-                  `<div style="margin-bottom: 8px;">${label}: <span style="font-weight:bold">${yValues[i]}</span></div>`
+              yValues.map(
+                (val, i) =>
+                  `<div style="margin-bottom: 8px;">${labels[i]}: <span style="font-weight:bold">${val}</span></div>`
               )
               .join("")
             }
           </div>
         `;
       }
+    },
+    xaxis: {
+      type: 'category',
     },
     yaxis: {
       labels: {
@@ -117,11 +120,19 @@ const BoxPlot = ({
     },
   };
 
+  const transformedData = data.map(series => ({
+  ...series,
+    data: series.data.map(point => ({
+      y: point!.y,
+      x: String(point!.x),
+    })),
+  }));
+
   return (
     <ChartNoSSR
       type="boxPlot"
       options={options}
-      series={data}
+      series={transformedData}
       width="100%"
       height={500}
     />
