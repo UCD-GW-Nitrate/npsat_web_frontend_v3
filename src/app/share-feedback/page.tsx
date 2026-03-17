@@ -35,10 +35,18 @@ const ShareFeedbackPage = () => {
   return (
     <AppLayout>
       {contextHolder}
-      <StandardText variant="h1">
-        Share your feedback
-      </StandardText>
-      <Card title="We'd love to hear your thoughts, questions, or suggestions." size="small">
+      <div style={{ alignSelf: 'center'}}>
+      
+      <Card
+        title="Share your feedback - We'd love to hear your thoughts, questions, or suggestions."
+        style={{ width: 1000}}
+        headStyle={{
+          backgroundColor: '#1890ff',
+          color: 'white',
+          fontWeight: 'bold',
+        }}
+      >
+          
           <Form
             name="layout-multiple-vertical"
             layout="vertical"
@@ -73,7 +81,7 @@ const ShareFeedbackPage = () => {
               layout="horizontal"
               label="Name"
               name="name"
-              style={{ width: 500}}
+              style={{ width: 280}}
             >
               <Input />
             </Form.Item>
@@ -81,7 +89,7 @@ const ShareFeedbackPage = () => {
               layout="horizontal"
               label="Email"
               name="email"
-              style={{ width: 500}}
+              style={{ width: 300}}
             >
               <Input />
             </Form.Item>
@@ -91,6 +99,7 @@ const ShareFeedbackPage = () => {
             </div>
           </Form>
       </Card>
+      </div>
     </AppLayout>
   )
 }

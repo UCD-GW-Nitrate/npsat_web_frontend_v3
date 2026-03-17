@@ -1,7 +1,7 @@
 import { LogoutOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-layout';
 import type { MenuProps } from 'antd';
-import { Dropdown } from 'antd';
+import { Button, Dropdown, Tabs } from 'antd';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,6 +18,11 @@ import ProfileButton from './ProfileButton';
 const ProLayout = dynamic(() => import('@ant-design/pro-layout'), {
   ssr: false,
 });
+
+const menuItems = [
+  { path: '/explore-wells', name: 'Well Explorer' },
+  { path: '/share-feedback', name: 'Share Feedback' },
+];
 
 const AppLayout = ({ children }: PropsWithChildren) => {
   const dispatch = useDispatch();
@@ -103,6 +108,14 @@ const AppLayout = ({ children }: PropsWithChildren) => {
       headerTitleRender={titleRender}
       layout="top"
       footerRender={defaultFooterDom}
+      menu={{ locale: false, request: async () => menuItems }}
+      headerContentRender={() => (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1, alignSelf: 'flex-end', paddingBottom: 5, }}>
+          {menuItems.map((item) => (
+            <Button  type="text" style={{ color: 'white'}} size='small' onClick={() => {router.push(item.path)}}>{item.name}</Button>
+          ))}
+        </div>
+      )}
     >
       {user ? children : <div />}
     </ProLayout>

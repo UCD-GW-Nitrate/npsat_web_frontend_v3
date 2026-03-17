@@ -249,7 +249,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
             }}
           >
             <p style={{ width: 250, paddingRight: 20 }}>
-              Minimum Age Threshold:
+              Minimum Age Threshold [years]:
             </p>
             <CustomSlider
               value={0}

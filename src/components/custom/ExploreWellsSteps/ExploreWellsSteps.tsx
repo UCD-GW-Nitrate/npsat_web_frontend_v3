@@ -177,8 +177,8 @@ export default function ExploreWellsSteps({
                 name="wType"
                 rules={defaultRules('Please select a well type')}
               >
-                <Select style={{ width: 170 }} placeholder="Well Type">
-                  <Option value="Irrigation">Irrigation</Option>
+                <Select style={{ width: 220 }} placeholder="Well Type">
+                  <Option value="Irrigation">Irrigation and public supply</Option>
                   <Option value="Domestic">Domestic</Option>
                 </Select>
               </Form.Item>
