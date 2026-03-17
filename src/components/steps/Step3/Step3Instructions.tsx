@@ -59,7 +59,7 @@ const Step3Instructions = () => {
         <Image
           src="/images/figure-3.png"
           width={500}
-          alt="NPSAT logo"
+          alt="Line graph showing economic cost to achieve load reductions"
         />
       </div>
     </div>
