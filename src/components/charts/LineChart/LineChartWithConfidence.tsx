@@ -70,7 +70,7 @@ const LineChartWithConfidence = ({
       return [];
     }
     return confidenceAreaData && confidenceAreaData.length > 0
-      ? [0, ...data.map(() => 5)]
+      ? [0, 0, ...data.map(() => 5)]
       : data.map(() => 5);
   };
 
@@ -79,17 +79,11 @@ const LineChartWithConfidence = ({
       return [];
     }
     return confidenceAreaData && confidenceAreaData.length > 0
-      ? [0.2, ...data.map(() => 1)]
+      ? [0.2, 0.2, ...data.map(() => 1)]
       : data.map(() => 1);
   };
 
   const options: ApexOptions = {
-    chart: {
-      animations: {
-        enabled: true,
-        dynamicAnimation: { enabled: false },
-      },
-    },
     annotations: {
       xaxis: getAnnotations(),
     },
@@ -195,11 +189,19 @@ const LineChartWithConfidence = ({
     if (!confidenceAreaData?.length)
       return data.filter((seriesData) => seriesData?.data?.length);
 
+    const lower = confidenceAreaData.map(p => ({ x: p.x, y: p.y[0] }));
+    const upper = confidenceAreaData.map(p => ({ x: p.x, y: p.y[1] }));
+
     return [
       {
-        name: `${data[0]?.name} confidence interval`,
-        type: 'rangeArea',
-        data: confidenceAreaData,
+        name: `${data[0]?.name} confidence interval upper`,
+        type: 'area',
+        data: upper,
+      },
+      {
+        name: `${data[0]?.name} confidence interval lower`,
+        type: 'area',
+        data: lower,
       },
       ...data.filter((seriesData) => seriesData?.data?.length),
     ];
@@ -207,7 +209,7 @@ const LineChartWithConfidence = ({
 
   return (
     <ChartNoSSR
-      type="rangeArea"
+      type="line"
       options={options}
       series={series}
       width="100%"
