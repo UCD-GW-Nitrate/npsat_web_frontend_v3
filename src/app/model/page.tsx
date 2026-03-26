@@ -59,7 +59,7 @@ const ModelPage = () => {
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
   const baseComparisonModel: ComparisonChartModel = {
-    name: 'base',
+    name: 'bau',
     plotData: baseModel,
   };
 

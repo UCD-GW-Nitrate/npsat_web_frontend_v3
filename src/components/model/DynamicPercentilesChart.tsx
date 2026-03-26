@@ -73,12 +73,13 @@ const DynamicPercentilesChart = ({
     polygonCoords,
     dynamicPercentilesLoading: loading,
     percentiles: selectedPercentiles,
+    baseModelId,
   });
 
   const comparisonData = useMemo(() => {
     return [
       {
-        name: 'base',
+        name: 'bau',
         plotData: dynamicPercentiles,
       },
       {

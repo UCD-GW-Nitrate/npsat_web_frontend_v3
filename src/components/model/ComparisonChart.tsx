@@ -36,7 +36,7 @@ const ComparisonChart = ({
         });
       });
       res.push({
-        name: model.name,
+        name: model.name + ` ${percentile}th percentile`,
         data: chartData,
       });
     });

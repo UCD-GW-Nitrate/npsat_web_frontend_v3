@@ -13,7 +13,7 @@ import { ordinalSuffix } from '@/utils/utils';
 import type { ModelDisplay, PercentileResultMap } from './useModelResults';
 
 export interface ConfidenceIntervalResult {
-  percentile: string;
+  name: string;
   lower: ModelDisplay[]; 
   upper: ModelDisplay[];
 }
@@ -131,6 +131,7 @@ export function usePercentileConfidence({
   polygonCoords,
   dynamicPercentilesLoading, // schedule refetch due to any of the model changes above, to occur strictly after dyanamicPercentiles
   percentiles,
+  baseModelId,
 }: Props) {
   const modelId = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
@@ -152,6 +153,7 @@ export function usePercentileConfidence({
             depth_range_max: depthRangeMax,
             polygonCoords: polygonCoords ?? [],
             percentiles,
+            baseModelId,
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -166,17 +168,17 @@ export function usePercentileConfidence({
 
       const percentileMap = data.data;
 
-      const formatted = Object.entries(percentileMap).map(([key, obj]): { percentile: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
-        percentile: key,
+      const formatted = Object.entries(percentileMap).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
+        name: `${baseModelId ? 'custom ' : ''}${key}th percentile`,
         lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
           year: 1945 + index,
           value,
-          percentile: `${ordinalSuffix(Number(key))} percentile lower confidence interval`,
+          percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
         })),
         upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
           year: 1945 + index,
           value,
-          percentile: `${ordinalSuffix(Number(key))} percentile upper confidence interval`,
+          percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
         })),
       })
       );

@@ -91,44 +91,6 @@ const PercentileChart = ({
     return annotations;
   };
 
-  const rangeSeries = useMemo(() => {
-    if (
-      !confidenceAreaData ||
-      !confidenceAreaData.length ||
-      !data ||
-      !data.length
-    ) {
-      return [];
-    }
-
-    const shadow = data
-      .filter((_s, idx) => !inactiveSeries.includes(idx))
-      .map((s) => ({
-        name: `${s.name ?? 'Data'}`,
-        type: 'rangeArea',
-        data: s.data.map((p) => ({
-          x: p.x,
-          y: [p.y, p.y],
-        })),
-      }));
-  
-    const activePercentiles = shadow.map(obj => obj.name);
-    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(`${s.percentile}th percentile`))
-    const ranges = visibleAreas.map((s) => ({
-      name: `${s.percentile}th percentile confidence interval`,
-      type: 'rangeArea',
-      data: s.lower.map((modelDisplay, idx) => ({
-        x: modelDisplay.year,
-        y: [modelDisplay.value, s.upper[idx]?.value]
-      }))
-    }));
-
-    return [
-      ...ranges,
-      ...shadow,
-    ];
-  }, [confidenceAreaData, data, inactiveSeries]);
-
   const lineSeries = useMemo(() => {
     if (!data || !data.length) {
       return [];
@@ -146,7 +108,7 @@ const PercentileChart = ({
       }));
   
     const activePercentiles = shadow.map(obj => obj.name);
-    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(`${s.percentile}th percentile`))
+    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(s.name))
 
 
     const ciData = visibleAreas?.flatMap((obj) => [
@@ -171,6 +133,44 @@ const PercentileChart = ({
     return [
       ...data,
       ...ciData,
+    ];
+  }, [confidenceAreaData, data, inactiveSeries]);
+
+  const rangeSeries = useMemo(() => {
+    if (
+      !confidenceAreaData ||
+      !confidenceAreaData.length ||
+      !data ||
+      !data.length
+    ) {
+      return [];
+    }
+
+    const shadow = lineSeries
+      .filter((_s, idx) => !inactiveSeries.includes(idx))
+      .map((s) => ({
+        name: `${s.name ?? 'Data'}`,
+        type: 'rangeArea',
+        data: s.data.map((p) => ({
+          x: p.x,
+          y: [p.y, p.y],
+        })),
+      }));
+  
+    const activePercentiles = shadow.map(obj => obj.name);
+    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(s.name))
+    const ranges = visibleAreas.map((s) => ({
+      name: s.name,
+      type: 'rangeArea',
+      data: s.lower.map((modelDisplay, idx) => ({
+        x: modelDisplay.year,
+        y: [modelDisplay.value, s.upper[idx]?.value]
+      }))
+    }));
+
+    return [
+      ...ranges,
+      ...shadow,
     ];
   }, [confidenceAreaData, data, inactiveSeries]);
 
