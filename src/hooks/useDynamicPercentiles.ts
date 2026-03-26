@@ -12,13 +12,19 @@ import { ordinalSuffix } from '@/utils/utils';
 
 import type { ModelDisplay, PercentileResultMap } from './useModelResults';
 
+export interface ConfidenceIntervalResult {
+  percentile: string;
+  lower: ModelDisplay[]; 
+  upper: ModelDisplay[];
+}
+
 export interface Props {
   customModelDetail: ModelRun | null;
   depthRangeMin: number | null;
   depthRangeMax: number | null;
   polygonCoords: [number, number][] | null;
   dynamicPercentilesLoading?: boolean;
-  percentile?: number | null;
+  percentiles?: number[] | null;
   baseModelId?: number | null;
 }
 
@@ -124,15 +130,14 @@ export function usePercentileConfidence({
   depthRangeMax,
   polygonCoords,
   dynamicPercentilesLoading, // schedule refetch due to any of the model changes above, to occur strictly after dyanamicPercentiles
-  percentile,
+  percentiles,
 }: Props) {
   const modelId = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
     return state.auth;
   });
 
-  const [lowerCurve, setLowerCurve] = useState<ModelDisplay[]>([]);
-  const [upperCurve, setUpperCurve] = useState<ModelDisplay[]>([]);
+  const [ciData, setCIData] = useState<ConfidenceIntervalResult[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -146,7 +151,7 @@ export function usePercentileConfidence({
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
             polygonCoords: polygonCoords ?? [],
-            percentile,
+            percentiles,
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -159,31 +164,31 @@ export function usePercentileConfidence({
       }
       const data = await res.json();
 
-      const lowerCurveData = data.lower_curve;
-      const upperCurveData = data.upper_curve;
+      const percentileMap = data.data;
 
-      setLowerCurve(
-        (lowerCurveData as number[]).map((value: number, index: number) => ({
+      const formatted = Object.entries(percentileMap).map(([key, obj]): { percentile: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
+        percentile: key,
+        lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
           year: 1945 + index,
           value,
-          percentile: `${percentile} lower confidence`,
+          percentile: `${ordinalSuffix(Number(key))} percentile lower confidence interval`,
         })),
+        upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
+          year: 1945 + index,
+          value,
+          percentile: `${ordinalSuffix(Number(key))} percentile upper confidence interval`,
+        })),
+      })
       );
-
-      setUpperCurve(
-        (upperCurveData as number[]).map((value: number, index: number) => ({
-          year: 1945 + index,
-          value,
-          percentile: `${percentile} upper percentile`,
-        })),
+      setCIData(
+        formatted
       );
 
       setLoading(false);
     }
 
-    if (!percentile) {
-      setLowerCurve([]);
-      setUpperCurve([]);
+    if (!percentiles) {
+      setCIData([]);
       return;
     }
 
@@ -191,19 +196,18 @@ export function usePercentileConfidence({
       modelId &&
       depthRangeMin &&
       depthRangeMax &&
-      percentile &&
+      percentiles && percentiles.length &&
       !dynamicPercentilesLoading
     ) {
       setLoading(true);
-      setLowerCurve([]);
-      setUpperCurve([]);
+      setCIData([]);
       getPercentileConfidence();
     }
-  }, [percentile, dynamicPercentilesLoading]);
+  }, [percentiles, dynamicPercentilesLoading]);
 
   return {
-    lowerCurve,
-    upperCurve,
+    ciData,
+    loading,
   };
 }
 

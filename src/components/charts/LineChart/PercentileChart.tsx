@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
+import { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -30,7 +31,7 @@ interface LineChartProps {
   title?: string;
   xTitle?: string;
   yTitle?: string;
-  confidenceAreaData?: { x: number; y: [number, number] }[];
+  confidenceAreaData?: ConfidenceIntervalResult[];
 }
 
 const PercentileChart = ({
@@ -40,7 +41,7 @@ const PercentileChart = ({
   title,
   xTitle,
   yTitle = 'Nitrate-N [mg/L]',
-  confidenceAreaData,
+  confidenceAreaData = [],
 }: LineChartProps) => {
   const [zoomRange, setZoomRange] = useState<{
     min: number;
@@ -100,9 +101,13 @@ const PercentileChart = ({
       return [];
     }
 
-    const range = confidenceAreaData.map((p) => ({
-      x: p.x,
-      y: [p.y[0], p.y[1]],
+    const ranges = confidenceAreaData.map((s) => ({
+      name: `${s.percentile}th percentile confidence interval`,
+      type: 'rangeArea',
+      data: s.lower.map((modelDisplay, idx) => ({
+        x: modelDisplay.year,
+        y: [modelDisplay.value, s.upper[idx]?.value]
+      }))
     }));
 
     const shadow = data
@@ -117,11 +122,7 @@ const PercentileChart = ({
       }));
 
     return [
-      {
-        name: `${data[0]?.name ?? 'Data'} confidence interval`,
-        type: 'rangeArea',
-        data: range,
-      },
+      ...ranges,
       ...shadow,
     ];
   }, [confidenceAreaData, data, inactiveSeries]);
@@ -131,28 +132,28 @@ const PercentileChart = ({
       return [];
     }
 
-    const lower = confidenceAreaData?.map((p) => ({
-      x: p.x,
-      y: p.y[0],
-    }));
-
-    const upper = confidenceAreaData?.map((p) => ({
-      x: p.x,
-      y: p.y[1],
-    }));
+    const ciData = confidenceAreaData?.flatMap((obj) => [
+      {
+        name: `${obj.lower[0]?.percentile ?? 'Data'}`,
+        type: 'line',
+        data: obj.lower.map(modelDisplay => ({
+          x: modelDisplay.year,
+          y: modelDisplay.value
+        })),
+      },
+      {
+        name: `${obj.upper[0]?.percentile ?? 'Data'}`,
+        type: 'line',
+        data: obj.upper.map(modelDisplay => ({
+          x: modelDisplay.year,
+          y: modelDisplay.value
+        })),
+      },
+    ]) ?? [];
 
     return [
       ...data,
-      {
-        name: `${data[0]?.name ?? 'Data'} lower confidence interval`,
-        type: 'line',
-        data: lower,
-      },
-      {
-        name: `${data[0]?.name ?? 'Data'} upper confidence interval`,
-        type: 'line',
-        data: upper,
-      },
+      ...ciData,
     ];
   }, [confidenceAreaData, data]);
 
@@ -258,7 +259,7 @@ const PercentileChart = ({
       width: 0,
     },
     fill: {
-      opacity: [0.2, ...lineSeries.map(() => 0)],
+      opacity: [...confidenceAreaData.map(() => 0.2), ...lineSeries.map(() => 0)],
     },
     title: {
       text: `${title ?? ''}`,

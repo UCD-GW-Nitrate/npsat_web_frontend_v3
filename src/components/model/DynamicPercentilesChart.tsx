@@ -1,4 +1,5 @@
-import { Alert, Button, Card, Switch } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Switch, Tooltip } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 
 import useDynamicPercentiles, {
@@ -57,17 +58,17 @@ const DynamicPercentilesChart = ({
     polygonCoords,
   });
 
-  const [selectedPercentile, setSelectedPercentile] = useState<number | null>(
+  const [selectedPercentiles, setSelectedPercentiles] = useState<number[] | null>(
     null,
   );
 
-  const { lowerCurve, upperCurve } = usePercentileConfidence({
+  const { ciData } = usePercentileConfidence({
     customModelDetail,
     depthRangeMin,
     depthRangeMax,
     polygonCoords,
     dynamicPercentilesLoading: loading,
-    percentile: selectedPercentile,
+    percentiles: selectedPercentiles,
   });
 
   const comparisonData = useMemo(() => {
@@ -154,100 +155,165 @@ const DynamicPercentilesChart = ({
           dynamicPercentiles={
             renderDynamicPercentiles ? dynamicPercentiles : null
           }
-          setFirstPercentile={setSelectedPercentile}
-          lowerCurve={lowerCurve}
-          upperCurve={upperCurve}
+          setPercentiles={setSelectedPercentiles}
+          ciData={ciData}
         />
       )}
 
       {renderDynamicPercentiles && (
-        <div style={{ width: 700 }}>
-          <Card
-            title="Filter Results"
-            extra={
-              <div>
-                Aggregating {numBreakthroughCurves} of {totalBreakthroughCurves}{' '}
-                breakthrough curves
-              </div>
-            }
-            size="small"
-          >
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-              }}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div style={{ width: 700 }}>
+            <Card
+              title="Filter Results"
+              extra={
+                <div>
+                  Aggregating {numBreakthroughCurves} of{' '}
+                  {totalBreakthroughCurves} breakthrough curves
+                </div>
+              }
+              size="small"
             >
-              <p style={{ width: 210 }}>Filter by Well Depth Range (m):</p>
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <p style={{ width: 210 }}>Filter by Well Depth Range (m):</p>
 
-              <div style={{ width: 500, marginLeft: 50 }}>
-                <RangeFormItem
-                  valueLow={range[0]}
-                  valueHigh={range[1]}
-                  onChangeMin={(input) => setRange((prev) => [input, prev[1]])}
-                  onChangeMax={(input) => setRange((prev) => [prev[0], input])}
-                  rangeConfig={{
-                    min: minDepth,
-                    max: maxDepth,
-                    step: 1,
-                    maxIdentifier: false,
+                <div style={{ width: 500, marginLeft: 50 }}>
+                  <RangeFormItem
+                    valueLow={range[0]}
+                    valueHigh={range[1]}
+                    onChangeMin={(input) =>
+                      setRange((prev) => [input, prev[1]])
+                    }
+                    onChangeMax={(input) =>
+                      setRange((prev) => [prev[0], input])
+                    }
+                    rangeConfig={{
+                      min: minDepth,
+                      max: maxDepth,
+                      step: 1,
+                      maxIdentifier: false,
+                    }}
+                  />
+                </div>
+              </div>
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}
+              >
+                <Switch
+                  checkedChildren="on"
+                  unCheckedChildren="off"
+                  checked={showAdvancedFilter}
+                  onClick={(checked) => {
+                    if (!checked) {
+                      setPolygonCoords(null);
+                    }
+                    setShowAdvancedFilter(checked);
                   }}
                 />
+
+                <p style={{ paddingLeft: 20 }}>
+                  Advanced Filters {showAdvancedFilter ? 'Applied:' : 'OFF'}
+                </p>
+
+                {showAdvancedFilter && (
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                )}
               </div>
-            </div>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}
-            >
-              <Switch
-                checkedChildren="on"
-                unCheckedChildren="off"
-                checked={showAdvancedFilter}
-                onClick={(checked) => {
-                  if (!checked) {
-                    setPolygonCoords(null);
-                  }
-                  setShowAdvancedFilter(checked);
+
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
                 }}
-              />
-
-              <p style={{ paddingLeft: 20 }}>
-                Advanced Filters {showAdvancedFilter ? 'Applied:' : 'OFF'}
-              </p>
-
-              {showAdvancedFilter && (
-                <Button
-                  type="link"
-                  onClick={() => {
-                    setIsModalOpen(true);
+              >
+                <Button type="primary" onClick={handleFilterSubmit}>
+                  Apply
+                </Button>
+              </div>
+            </Card>
+          </div>
+          <div style={{ width: 500 }}>
+            <Card
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span>Fetch Confidence Intervals</span>
+                  <Tooltip
+                    title={
+                      <div>
+                        Confidence intervals estimate the uncertainty of model results. Here, they are calculated using a process called {' '}
+                        <a
+                          target="_blank"
+                          href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)"
+                        >
+                          bootstrapping
+                        </a>
+                      </div>
+                    }
+                  >
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                </div>
+              }
+              size="small"
+            >
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <p>
+                  Select up to 3 percentiles to fetch their confidence intervals
+                </p>
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    gap: 8,
                   }}
                 >
-                  Edit
-                </Button>
-              )}
-            </div>
-
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-              }}
-            >
-              <Button type="primary" onClick={handleFilterSubmit}>
-                Apply
-              </Button>
-            </div>
-          </Card>
+                  <p style={{ color: 'grey' }}>This can take up to a minute.</p>
+                  <Button type="primary" onClick={() => {}}>
+                    Fetch
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       )}
 

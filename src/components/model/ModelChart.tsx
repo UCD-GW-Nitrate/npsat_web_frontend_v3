@@ -11,6 +11,7 @@ import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
 
 import LineChartWithConfidence from '../charts/LineChart/PercentileChart';
+import { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
 
 interface ModelChartProps {
   percentiles: MantisResultPercentile[];
@@ -18,9 +19,8 @@ interface ModelChartProps {
   reductionCompleteYear: number;
   dynamicPercentiles?: PercentileResultMap | null;
   // params to display the confidence interval for first selected percentile
-  setFirstPercentile?: Dispatch<SetStateAction<number | null>>;
-  lowerCurve?: ModelDisplay[];
-  upperCurve?: ModelDisplay[];
+  setPercentiles?: Dispatch<SetStateAction<number[] | null>>;
+  ciData?: ConfidenceIntervalResult[];
 }
 
 const ModelChart = ({
@@ -28,9 +28,8 @@ const ModelChart = ({
   reductionStartYear,
   reductionCompleteYear,
   dynamicPercentiles,
-  setFirstPercentile,
-  lowerCurve,
-  upperCurve,
+  setPercentiles,
+  ciData,
 }: ModelChartProps) => {
   const [plotData, percentilesData] = useModelResults(percentiles);
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number[]>([
@@ -74,8 +73,8 @@ const ModelChart = ({
   }, [plotData, percentilesDisplayed, dynamicPercentiles]);
 
   useEffect(() => {
-    if (setFirstPercentile) {
-      setFirstPercentile(percentilesDisplayed[0] ?? null);
+    if (setPercentiles) {
+      setPercentiles(percentilesDisplayed);
     }
   }, [percentilesDisplayed]);
 
@@ -159,17 +158,7 @@ const ModelChart = ({
         data={displayData}
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
-        confidenceAreaData={
-          lowerCurve && upperCurve
-            ? lowerCurve.map((lowerCurvePoint, idx) => ({
-                x: lowerCurvePoint.year,
-                y: [
-                  lowerCurvePoint.value ?? NaN,
-                  upperCurve[idx]?.value ?? NaN,
-                ],
-              }))
-            : undefined
-        }
+        confidenceAreaData={ciData}
       />
     </div>
   );
