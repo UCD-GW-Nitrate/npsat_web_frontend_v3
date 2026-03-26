@@ -153,7 +153,7 @@ export function usePercentileConfidence({
             depth_range_max: depthRangeMax,
             polygonCoords: polygonCoords ?? [],
             percentiles,
-            baseModelId,
+            base_model_id: baseModelId,
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -166,9 +166,9 @@ export function usePercentileConfidence({
       }
       const data = await res.json();
 
-      const percentileMap = data.data;
+      const customCIData = data.data;
 
-      const formatted = Object.entries(percentileMap).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
+      let formatted = Object.entries(customCIData).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
         name: `${baseModelId ? 'custom ' : ''}${key}th percentile`,
         lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
           year: 1945 + index,
@@ -180,8 +180,28 @@ export function usePercentileConfidence({
           value,
           percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
         })),
-      })
-      );
+      }));
+
+      const baseCIData = data.base_data;
+      if (baseCIData) {
+        let baseCIDataFormatted = Object.entries(baseCIData).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
+          name: `${baseModelId ? 'bau ' : ''}${key}th percentile`,
+          lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
+            year: 1945 + index,
+            value,
+            percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
+          })),
+          upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
+            year: 1945 + index,
+            value,
+            percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
+          })),
+        }));
+        formatted = [
+          ...baseCIDataFormatted,
+          ...formatted
+        ]
+      }
       setCIData(
         formatted
       );
