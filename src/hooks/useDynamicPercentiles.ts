@@ -138,7 +138,7 @@ export function usePercentileConfidence({
   });
 
   const [ciData, setCIData] = useState<ConfidenceIntervalResult[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getPercentileConfidence() {
@@ -189,6 +189,7 @@ export function usePercentileConfidence({
 
     if (!percentiles) {
       setCIData([]);
+      setLoading(false);
       return;
     }
 

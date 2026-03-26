@@ -1,5 +1,5 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Alert, Button, Card, Switch, Tooltip } from 'antd';
+import { Alert, Button, Card, message, Switch, Tooltip } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 
 import useDynamicPercentiles, {
@@ -15,6 +15,7 @@ import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
 import ComparisonChart from './ComparisonChart';
 import ModelChart from './ModelChart';
 import ModelWellsModal from './ModelWellsModal';
+import { StandardText } from '../custom/StandardText/StandardText';
 
 interface DynamicPercentilesChartProps {
   percentiles: MantisResultPercentile[];
@@ -58,11 +59,14 @@ const DynamicPercentilesChart = ({
     polygonCoords,
   });
 
+  const [stagedPercentiles, setStagedPercentiles] = useState<number[] | null>(
+    null,
+  );
   const [selectedPercentiles, setSelectedPercentiles] = useState<number[] | null>(
     null,
   );
 
-  const { ciData } = usePercentileConfidence({
+  const { ciData, loading: ciLoading } = usePercentileConfidence({
     customModelDetail,
     depthRangeMin,
     depthRangeMax,
@@ -113,6 +117,15 @@ const DynamicPercentilesChart = ({
     setRange([minDepth, maxDepth]);
   }, [minDepth, maxDepth]);
 
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const error = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Please select a max of 3 percentiles',
+    });
+  };
+
   return (
     <div>
       {expiration && (
@@ -146,6 +159,8 @@ const DynamicPercentilesChart = ({
           percentiles={percentiles.map((p) => p.percentile)}
           reductionStartYear={customModelDetail!.reduction_start_year}
           reductionCompleteYear={customModelDetail!.reduction_end_year}
+          setPercentiles={setStagedPercentiles}
+          ciData={ciData}
         />
       ) : (
         <ModelChart
@@ -155,7 +170,7 @@ const DynamicPercentilesChart = ({
           dynamicPercentiles={
             renderDynamicPercentiles ? dynamicPercentiles : null
           }
-          setPercentiles={setSelectedPercentiles}
+          setPercentiles={setStagedPercentiles}
           ciData={ciData}
         />
       )}
@@ -262,9 +277,19 @@ const DynamicPercentilesChart = ({
           </div>
           <div style={{ width: 500 }}>
             <Card
-              title={
+              size="small"
+            >
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span>Fetch Confidence Intervals</span>
+                  <StandardText variant='h5' style={{ margin: 0}}>Fetch Confidence Intervals</StandardText>
                   <Tooltip
                     title={
                       <div>
@@ -281,21 +306,9 @@ const DynamicPercentilesChart = ({
                     <InfoCircleOutlined />
                   </Tooltip>
                 </div>
-              }
-              size="small"
-            >
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                }}
-              >
-                <p>
+                {!comparisonChartModels && <p>
                   Select up to 3 percentiles to fetch their confidence intervals
-                </p>
+                </p>}
                 <div
                   style={{
                     width: '100%',
@@ -306,10 +319,23 @@ const DynamicPercentilesChart = ({
                     gap: 8,
                   }}
                 >
-                  <p style={{ color: 'grey' }}>This can take up to a minute.</p>
-                  <Button type="primary" onClick={() => {}}>
+                  {contextHolder}
+                  {ciLoading && <p style={{ color: 'grey' }}>This can take up to a minute.</p>}
+                  <Button 
+                    type="primary" 
+                    onClick={() => {
+                      if (stagedPercentiles && stagedPercentiles?.length > 3) {
+                        error();
+                        return;
+                      }
+                      setSelectedPercentiles(stagedPercentiles)
+                    }}
+                    disabled={ciLoading}
+                    loading={ciLoading}
+                  >
                     Fetch
                   </Button>
+                  <Button type='link' style={{ padding: 0}} onClick={() => { setSelectedPercentiles(null) }}>Clear</Button>
                 </div>
               </div>
             </Card>

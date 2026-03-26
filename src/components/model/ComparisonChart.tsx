@@ -1,15 +1,18 @@
 import { Select } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import LineChart from '@/components/charts/LineChart/LineChart';
 import type { ModelDisplay } from '@/hooks/useModelResults';
 import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
+import { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
+import PercentileChart from '../charts/LineChart/PercentileChart';
 
 interface ComparisonChartProps {
   comparisonChartModels: ComparisonChartModel[];
   reductionStartYear?: number;
   reductionCompleteYear?: number;
   percentiles: number[];
+  setPercentiles?: Dispatch<SetStateAction<number[] | null>>;
+  ciData?: ConfidenceIntervalResult[];
 }
 
 const ComparisonChart = ({
@@ -17,6 +20,8 @@ const ComparisonChart = ({
   percentiles,
   reductionStartYear,
   reductionCompleteYear,
+  setPercentiles,
+  ciData,
 }: ComparisonChartProps) => {
   const [percentilesDisplayed, setPercentilesDisplayed] = useState<number>(50);
 
@@ -44,6 +49,9 @@ const ComparisonChart = ({
 
   useEffect(() => {
     setDisplayData(configureDisplayData(percentilesDisplayed));
+    if (setPercentiles) {
+      setPercentiles([percentilesDisplayed]);
+    }
   }, [comparisonChartModels, percentilesDisplayed]);
 
   if (!displayData) {
@@ -57,17 +65,21 @@ const ComparisonChart = ({
         onSelect={setPercentilesDisplayed}
         style={{ width: '100%', marginBottom: 4 }}
       >
-        {percentiles.sort(function (a, b) {
-          return a - b;}).map((p) => (
-          <Select.Option value={p} key={p}>
-            {p}th percentile
-          </Select.Option>
-        ))}
+        {percentiles
+          .sort(function (a, b) {
+            return a - b;
+          })
+          .map((p) => (
+            <Select.Option value={p} key={p}>
+              {p}th percentile
+            </Select.Option>
+          ))}
       </Select>
-      <LineChart
+      <PercentileChart
         data={displayData}
         reductionEndYear={reductionCompleteYear}
         reductionStartYear={reductionStartYear}
+        confidenceAreaData={ciData}
       />
     </div>
   );

@@ -101,7 +101,20 @@ const PercentileChart = ({
       return [];
     }
 
-    const ranges = confidenceAreaData.map((s) => ({
+    const shadow = data
+      .filter((_s, idx) => !inactiveSeries.includes(idx))
+      .map((s) => ({
+        name: `${s.name ?? 'Data'}`,
+        type: 'rangeArea',
+        data: s.data.map((p) => ({
+          x: p.x,
+          y: [p.y, p.y],
+        })),
+      }));
+  
+    const activePercentiles = shadow.map(obj => obj.name);
+    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(`${s.percentile}th percentile`))
+    const ranges = visibleAreas.map((s) => ({
       name: `${s.percentile}th percentile confidence interval`,
       type: 'rangeArea',
       data: s.lower.map((modelDisplay, idx) => ({
@@ -109,17 +122,6 @@ const PercentileChart = ({
         y: [modelDisplay.value, s.upper[idx]?.value]
       }))
     }));
-
-    const shadow = data
-      .filter((_s, idx) => !inactiveSeries.includes(idx))
-      .map((s) => ({
-        name: `${data[0]?.name ?? 'Data'}`,
-        type: 'rangeArea',
-        data: s.data.map((p) => ({
-          x: p.x,
-          y: [p.y, p.y],
-        })),
-      }));
 
     return [
       ...ranges,
@@ -132,7 +134,22 @@ const PercentileChart = ({
       return [];
     }
 
-    const ciData = confidenceAreaData?.flatMap((obj) => [
+    const shadow = data
+      .filter((_s, idx) => !inactiveSeries.includes(idx))
+      .map((s) => ({
+        name: `${s.name ?? 'Data'}`,
+        type: 'rangeArea',
+        data: s.data.map((p) => ({
+          x: p.x,
+          y: [p.y, p.y],
+        })),
+      }));
+  
+    const activePercentiles = shadow.map(obj => obj.name);
+    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(`${s.percentile}th percentile`))
+
+
+    const ciData = visibleAreas?.flatMap((obj) => [
       {
         name: `${obj.lower[0]?.percentile ?? 'Data'}`,
         type: 'line',
@@ -155,7 +172,7 @@ const PercentileChart = ({
       ...data,
       ...ciData,
     ];
-  }, [confidenceAreaData, data]);
+  }, [confidenceAreaData, data, inactiveSeries]);
 
   const options: ApexOptions = {
     chart: {
