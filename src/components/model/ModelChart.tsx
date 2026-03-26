@@ -10,7 +10,7 @@ import type {
 import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
 
-import LineChartWithConfidence from '../charts/LineChart/LineChartWithConfidence';
+import LineChartWithConfidence from '../charts/LineChart/PercentileChart';
 
 interface ModelChartProps {
   percentiles: MantisResultPercentile[];
