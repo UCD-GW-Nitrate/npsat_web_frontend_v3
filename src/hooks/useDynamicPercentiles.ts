@@ -19,6 +19,7 @@ export interface Props {
   polygonCoords: [number, number][] | null;
   dynamicPercentilesLoading?: boolean;
   percentile?: number | null;
+  baseModelId?: number | null;
 }
 
 export default function useDynamicPercentiles({
@@ -26,6 +27,7 @@ export default function useDynamicPercentiles({
   depthRangeMin,
   depthRangeMax,
   polygonCoords,
+  baseModelId,
 }: Props) {
   const modelId = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
@@ -33,6 +35,8 @@ export default function useDynamicPercentiles({
   });
 
   const [dynamicPercentiles, setData] = useState<PercentileResultMap>({});
+  const [baseModelDynamicPercentiles, setBaseModelDynamicPercentiles] =
+    useState<PercentileResultMap>({});
   const [expiration, setExpiration] = useState<Date | null>(null);
   const [numBreakthroughCurves, setNumBreakthroughCurves] = useState<number>(0);
   const [totalBreakthroughCurves, setTotalBreakthroughCurves] =
@@ -50,6 +54,7 @@ export default function useDynamicPercentiles({
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
             polygonCoords: polygonCoords ?? [],
+            base_model_id: baseModelId,
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -75,10 +80,24 @@ export default function useDynamicPercentiles({
         ]),
       );
       setData(results);
-
       setExpiration(data.expiration ? new Date(data.expiration) : null);
       setNumBreakthroughCurves(data.num_curves);
       setTotalBreakthroughCurves(data.total_curves);
+
+      const basePercentiles = data.base_data;
+      if (basePercentiles) {
+        const baseModelResults = Object.fromEntries(
+          Object.entries(basePercentiles).map(([key, arr]): [string, any[]] => [
+            key,
+            (arr as number[]).map((value: number, index: number) => ({
+              year: 1945 + index,
+              value,
+              percentile: `${ordinalSuffix(Number(key))} percentile`,
+            })),
+          ]),
+        );
+        setBaseModelDynamicPercentiles(baseModelResults);
+      }
 
       setLoading(false);
     }
@@ -95,6 +114,7 @@ export default function useDynamicPercentiles({
     numBreakthroughCurves,
     totalBreakthroughCurves,
     loading,
+    baseModelDynamicPercentiles,
   };
 }
 

@@ -1,26 +1,32 @@
 import { Alert, Button, Card, Switch } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import useDynamicPercentiles, {
   usePercentileConfidence,
   useWellDepthRange,
 } from '@/hooks/useDynamicPercentiles';
 import { useModelRegions } from '@/hooks/useModelRegionsInfo';
+import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
 import type { ModelRun } from '@/types/model/ModelRun';
 
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
+import ComparisonChart from './ComparisonChart';
 import ModelChart from './ModelChart';
 import ModelWellsModal from './ModelWellsModal';
 
 interface DynamicPercentilesChartProps {
   percentiles: MantisResultPercentile[];
   customModelDetail: ModelRun;
+  comparisonChartModels?: ComparisonChartModel[];
+  baseModelId?: number;
 }
 
 const DynamicPercentilesChart = ({
   percentiles,
   customModelDetail,
+  comparisonChartModels,
+  baseModelId,
 }: DynamicPercentilesChartProps) => {
   const regions = useModelRegions(customModelDetail.regions);
   const {
@@ -38,12 +44,14 @@ const DynamicPercentilesChart = ({
 
   const {
     dynamicPercentiles,
+    baseModelDynamicPercentiles,
     expiration,
     numBreakthroughCurves,
     totalBreakthroughCurves,
     loading,
   } = useDynamicPercentiles({
     customModelDetail,
+    baseModelId,
     depthRangeMin,
     depthRangeMax,
     polygonCoords,
@@ -53,11 +61,7 @@ const DynamicPercentilesChart = ({
     null,
   );
 
-  const {
-    lowerCurve,
-    upperCurve,
-    loading: loadingPercentileConfidence,
-  } = usePercentileConfidence({
+  const { lowerCurve, upperCurve } = usePercentileConfidence({
     customModelDetail,
     depthRangeMin,
     depthRangeMax,
@@ -65,6 +69,19 @@ const DynamicPercentilesChart = ({
     dynamicPercentilesLoading: loading,
     percentile: selectedPercentile,
   });
+
+  const comparisonData = useMemo(() => {
+    return [
+      {
+        name: 'base',
+        plotData: dynamicPercentiles,
+      },
+      {
+        name: 'custom',
+        plotData: baseModelDynamicPercentiles,
+      },
+    ];
+  }, [dynamicPercentiles, baseModelDynamicPercentiles]);
 
   // flag that confirms if backend has the raw simulation results saved still, if so, allow dynamic percentile features
   const renderDynamicPercentiles = expiration;
@@ -120,17 +137,28 @@ const DynamicPercentilesChart = ({
         />
       )}
 
-      <ModelChart
-        percentiles={percentiles}
-        reductionStartYear={customModelDetail.reduction_start_year}
-        reductionCompleteYear={customModelDetail.reduction_end_year}
-        dynamicPercentiles={
-          renderDynamicPercentiles ? dynamicPercentiles : null
-        }
-        setFirstPercentile={setSelectedPercentile}
-        lowerCurve={lowerCurve}
-        upperCurve={upperCurve}
-      />
+      {comparisonChartModels ? (
+        <ComparisonChart
+          comparisonChartModels={
+            renderDynamicPercentiles ? comparisonData : comparisonChartModels
+          }
+          percentiles={percentiles.map((p) => p.percentile)}
+          reductionStartYear={customModelDetail!.reduction_start_year}
+          reductionCompleteYear={customModelDetail!.reduction_end_year}
+        />
+      ) : (
+        <ModelChart
+          percentiles={percentiles}
+          reductionStartYear={customModelDetail.reduction_start_year}
+          reductionCompleteYear={customModelDetail.reduction_end_year}
+          dynamicPercentiles={
+            renderDynamicPercentiles ? dynamicPercentiles : null
+          }
+          setFirstPercentile={setSelectedPercentile}
+          lowerCurve={lowerCurve}
+          upperCurve={upperCurve}
+        />
+      )}
 
       {renderDynamicPercentiles && (
         <div style={{ width: 700 }}>
@@ -142,7 +170,7 @@ const DynamicPercentilesChart = ({
                 breakthrough curves
               </div>
             }
-            size='small'
+            size="small"
           >
             <div
               style={{
@@ -206,7 +234,6 @@ const DynamicPercentilesChart = ({
                 </Button>
               )}
             </div>
-
 
             <div
               style={{
