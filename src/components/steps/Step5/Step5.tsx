@@ -6,6 +6,7 @@ import React from 'react';
 
 import { useGetModelStatusQuery } from '@/store';
 import { modelRunStatus } from '@/utils/constants';
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 interface Step5Props {
   ids: any;
@@ -64,10 +65,11 @@ const Step5 = ({ ids, onCreateNewScenario }: Step5Props) => {
           }
           title={`Simulator status: ${modelRunStatus[data?.results[0]?.status ?? 0]}`}
           subTitle={
-            <Flex justify='center'>
-            <p style={{ width: 300, textWrap: 'wrap' }}>
-              Processing may take a moment. You can safely return <a href='/'>home</a> while you wait.
-            </p>
+            <Flex justify='center' vertical>
+              {data?.results[0]?.status === 1 && data?.results[0]?.queue_position && <StandardText variant='h5'>Position in the queue: {data?.results[0]?.queue_position}</StandardText>}
+              <p style={{ width: 300, textWrap: 'wrap', alignSelf: 'center' }}>
+                Processing may take a moment. You can safely return <a href='/'>home</a> while you wait.
+              </p>
             </Flex>
           }
         />

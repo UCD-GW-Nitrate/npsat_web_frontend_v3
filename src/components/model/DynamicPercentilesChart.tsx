@@ -182,6 +182,7 @@ const DynamicPercentilesChart = ({
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            marginTop: 20,
           }}
         >
           <div style={{ width: 700 }}>
