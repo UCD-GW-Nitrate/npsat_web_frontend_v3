@@ -1,6 +1,6 @@
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
 import { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
