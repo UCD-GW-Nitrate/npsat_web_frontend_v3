@@ -9,6 +9,7 @@ import {
   Dropdown,
   Empty,
   Form,
+  message,
   Row,
   Space,
   Tour,
@@ -81,6 +82,14 @@ const ExploreWellsPage = () => {
     requestDetail,
   });
 
+  const [messageApi, contextHolder] = message.useMessage();
+  const error = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Please select at least 1 region on the map',
+    });
+  };
+
   // handle Fetch Wells button press
   const onFormSubmit = (formData: FieldValues) => {
     if (form.getFieldValue('regions')) {
@@ -98,6 +107,7 @@ const ExploreWellsPage = () => {
       !form.getFieldValue('regions') ||
       form.getFieldValue('regions').length === 0
     ) {
+      error();
       form.setFields([
         {
           name: 'select_regions',
@@ -165,7 +175,7 @@ const ExploreWellsPage = () => {
     }
   }, [allWells, ageThres, porosity]);
 
-  const { data: userPreferences } = useGetUserPreferencesQuery();
+  const { data: userPreferences, refetch } = useGetUserPreferencesQuery();
   const [updateUserPreferences] = useUpdateUserPreferencesMutation();
   const ref1 = useRef(null);
   const ref2 = useRef(null);
@@ -219,11 +229,13 @@ const ExploreWellsPage = () => {
 
   function handleFinishTour() {
     updateUserPreferences({expl_wells_tour_complete: true});
+    refetch()
     setOpen(false);
   }
 
   return (
     <AppLayout>
+      {contextHolder}
       <StandardText variant="h1" style={{ marginTop: 10 }}>
         Explore Wells
       </StandardText>

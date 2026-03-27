@@ -24,7 +24,6 @@ import { createNewModel } from '@/store/slices/modelSlice';
 import type { ComparisonChartModel } from '@/types/charts/ComparisonChart';
 import type { ModelRun } from '@/types/model/ModelRun';
 
-import ComparisonChart from '../../components/model/ComparisonChart';
 import { CropLoadingDetailsBaseComparisonTable } from '../../components/model/CropLoadingDetailsTable';
 import ModelDescriptionTable from '../../components/model/ModelDescriptionTable';
 import ModelDifferenceHeatmap from '../../components/model/ModelDifferenceHeatmap';
@@ -60,7 +59,7 @@ const ModelPage = () => {
   const regions = useModelRegions(customModelDetail?.regions ?? []);
 
   const baseComparisonModel: ComparisonChartModel = {
-    name: 'base',
+    name: 'bau',
     plotData: baseModel,
   };
 
@@ -76,11 +75,11 @@ const ModelPage = () => {
     () => (
       <>
         {!modelDetail.isFetching && !modelDetail.error && customModelDetail && (
-          <ComparisonChart
+          <DynamicPercentilesChart
+            percentiles={customModelDetail.results}
+            customModelDetail={customModelDetail}
             comparisonChartModels={[baseComparisonModel, customComparisonModel]}
-            percentiles={customPercentilesData}
-            reductionStartYear={customModelDetail!.reduction_start_year}
-            reductionCompleteYear={customModelDetail!.reduction_end_year}
+            baseModelId={baseModelDetail?.id}
           />
         )}
       </>

@@ -12,13 +12,20 @@ import { ordinalSuffix } from '@/utils/utils';
 
 import type { ModelDisplay, PercentileResultMap } from './useModelResults';
 
+export interface ConfidenceIntervalResult {
+  name: string;
+  lower: ModelDisplay[]; 
+  upper: ModelDisplay[];
+}
+
 export interface Props {
   customModelDetail: ModelRun | null;
   depthRangeMin: number | null;
   depthRangeMax: number | null;
   polygonCoords: [number, number][] | null;
   dynamicPercentilesLoading?: boolean;
-  percentile?: number | null;
+  percentiles?: number[] | null;
+  baseModelId?: number | null;
 }
 
 export default function useDynamicPercentiles({
@@ -26,6 +33,7 @@ export default function useDynamicPercentiles({
   depthRangeMin,
   depthRangeMax,
   polygonCoords,
+  baseModelId,
 }: Props) {
   const modelId = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
@@ -33,6 +41,8 @@ export default function useDynamicPercentiles({
   });
 
   const [dynamicPercentiles, setData] = useState<PercentileResultMap>({});
+  const [baseModelDynamicPercentiles, setBaseModelDynamicPercentiles] =
+    useState<PercentileResultMap>({});
   const [expiration, setExpiration] = useState<Date | null>(null);
   const [numBreakthroughCurves, setNumBreakthroughCurves] = useState<number>(0);
   const [totalBreakthroughCurves, setTotalBreakthroughCurves] =
@@ -50,6 +60,7 @@ export default function useDynamicPercentiles({
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
             polygonCoords: polygonCoords ?? [],
+            base_model_id: baseModelId,
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -75,10 +86,24 @@ export default function useDynamicPercentiles({
         ]),
       );
       setData(results);
-
       setExpiration(data.expiration ? new Date(data.expiration) : null);
       setNumBreakthroughCurves(data.num_curves);
       setTotalBreakthroughCurves(data.total_curves);
+
+      const basePercentiles = data.base_data;
+      if (basePercentiles) {
+        const baseModelResults = Object.fromEntries(
+          Object.entries(basePercentiles).map(([key, arr]): [string, any[]] => [
+            key,
+            (arr as number[]).map((value: number, index: number) => ({
+              year: 1945 + index,
+              value,
+              percentile: `${ordinalSuffix(Number(key))} percentile`,
+            })),
+          ]),
+        );
+        setBaseModelDynamicPercentiles(baseModelResults);
+      }
 
       setLoading(false);
     }
@@ -95,6 +120,7 @@ export default function useDynamicPercentiles({
     numBreakthroughCurves,
     totalBreakthroughCurves,
     loading,
+    baseModelDynamicPercentiles,
   };
 }
 
@@ -104,16 +130,16 @@ export function usePercentileConfidence({
   depthRangeMax,
   polygonCoords,
   dynamicPercentilesLoading, // schedule refetch due to any of the model changes above, to occur strictly after dyanamicPercentiles
-  percentile,
+  percentiles,
+  baseModelId,
 }: Props) {
   const modelId = customModelDetail?.id ?? null;
   const auth = useSelector<RootState, AuthState>((state) => {
     return state.auth;
   });
 
-  const [lowerCurve, setLowerCurve] = useState<ModelDisplay[]>([]);
-  const [upperCurve, setUpperCurve] = useState<ModelDisplay[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [ciData, setCIData] = useState<ConfidenceIntervalResult[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getPercentileConfidence() {
@@ -126,7 +152,8 @@ export function usePercentileConfidence({
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
             polygonCoords: polygonCoords ?? [],
-            percentile,
+            percentiles,
+            base_model_id: baseModelId,
           }),
           headers: {
             'Content-Type': 'application/json',
@@ -139,31 +166,52 @@ export function usePercentileConfidence({
       }
       const data = await res.json();
 
-      const lowerCurveData = data.lower_curve;
-      const upperCurveData = data.upper_curve;
+      const customCIData = data.data;
 
-      setLowerCurve(
-        (lowerCurveData as number[]).map((value: number, index: number) => ({
+      let formatted = Object.entries(customCIData).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
+        name: `${baseModelId ? 'custom ' : ''}${key}th percentile`,
+        lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
           year: 1945 + index,
           value,
-          percentile: `${percentile} lower confidence`,
+          percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
         })),
-      );
-
-      setUpperCurve(
-        (upperCurveData as number[]).map((value: number, index: number) => ({
+        upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
           year: 1945 + index,
           value,
-          percentile: `${percentile} upper percentile`,
+          percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
         })),
+      }));
+
+      const baseCIData = data.base_data;
+      if (baseCIData) {
+        let baseCIDataFormatted = Object.entries(baseCIData).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
+          name: `${baseModelId ? 'bau ' : ''}${key}th percentile`,
+          lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
+            year: 1945 + index,
+            value,
+            percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
+          })),
+          upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
+            year: 1945 + index,
+            value,
+            percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
+          })),
+        }));
+        formatted = [
+          ...baseCIDataFormatted,
+          ...formatted
+        ]
+      }
+      setCIData(
+        formatted
       );
 
       setLoading(false);
     }
 
-    if (!percentile) {
-      setLowerCurve([]);
-      setUpperCurve([]);
+    if (!percentiles) {
+      setCIData([]);
+      setLoading(false);
       return;
     }
 
@@ -171,19 +219,18 @@ export function usePercentileConfidence({
       modelId &&
       depthRangeMin &&
       depthRangeMax &&
-      percentile &&
+      percentiles && percentiles.length &&
       !dynamicPercentilesLoading
     ) {
       setLoading(true);
-      setLowerCurve([]);
-      setUpperCurve([]);
+      setCIData([]);
       getPercentileConfidence();
     }
-  }, [percentile, dynamicPercentilesLoading]);
+  }, [percentiles, dynamicPercentilesLoading]);
 
   return {
-    lowerCurve,
-    upperCurve,
+    ciData,
+    loading,
   };
 }
 

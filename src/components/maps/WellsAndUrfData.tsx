@@ -104,7 +104,7 @@ const PersistOptions = ({
 export interface WellsAndUrfDataProps {
   onSelectRegions: (regions: Region[]) => void;
   wells: Well[];
-  wellProperty: 'depth' | 'wt2t' | 'unsat' | 'slmod';
+  wellProperty: 'depth' | 'wt2t' | 'unsat' | 'slmod' | 'pumping';
   onSelectWell: (eid: number) => void;
   urfData: UrfData[];
   // in Explore Wells parent, is mapEditing on or off
