@@ -54,6 +54,7 @@ const PercentileChart = ({
   const xMax = useMemo(() => {
     return Math.max(...data.flatMap((s) => s.data.map((p) => p.x)));
   }, [data]);
+  const [yMax, setYMax] = useState<number>(5);
 
   const getAnnotations = (): XAxisAnnotations[] => {
     const annotations: XAxisAnnotations[] = [];
@@ -149,18 +150,15 @@ const PercentileChart = ({
     const shadow = lineSeries
       .filter((_s, idx) => !inactiveSeries.includes(idx))
       .map((s) => ({
-        name: `${s.name ?? 'Data'}`,
+        name: s.name,
         type: 'rangeArea',
-        data: s.data.map((p) => ({
-          x: p.x,
-          y: [p.y, p.y],
-        })),
+        data: [],
       }));
   
     const activePercentiles = shadow.map(obj => obj.name);
     const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(s.name))
     const ranges = visibleAreas.map((s) => ({
-      name: s.name,
+      name: s.name + " ci",
       type: 'rangeArea',
       data: s.lower.map((modelDisplay, idx) => ({
         x: modelDisplay.year,
@@ -174,7 +172,7 @@ const PercentileChart = ({
     ];
   }, [confidenceAreaData, data, inactiveSeries]);
 
-  const options: ApexOptions = {
+  const options: ApexOptions = useMemo(() => ({
     chart: {
       id: 'ci-line',
       animations: {
@@ -199,6 +197,12 @@ const PercentileChart = ({
             const collapsedIndices = globals.collapsedSeriesIndices;
             setInactiveSeries([...collapsedIndices]);
           });
+        },
+        updated: (ctx) => {
+          const globals = ctx?.w?.globals;
+          if (!globals) return;
+
+          setYMax(globals.maxY);
         },
       },
     },
@@ -255,7 +259,7 @@ const PercentileChart = ({
       if (i < data.length) return SERIES_COLORS[i % SERIES_COLORS.length];
       return 'grey';
     }),
-  };
+  }), [zoomRange, lineSeries]);
 
   const rangeAreaOptions: ApexOptions = {
     chart: {
@@ -316,6 +320,8 @@ const PercentileChart = ({
       },
     },
     yaxis: {
+      min: 0,
+      max: yMax,
       axisBorder: {
         color: 'transparent',
       },
