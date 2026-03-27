@@ -94,7 +94,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
                   {
                     key: 'logout',
                     icon: <LogoutOutlined />,
-                    label: user?.username,
+                    label: 'Logout',
                   },
                 ],
                 onClick,
@@ -111,7 +111,7 @@ const AppLayout = ({ children }: PropsWithChildren) => {
       footerRender={defaultFooterDom}
       menu={{ locale: false, request: async () => menuItems }}
       headerContentRender={() => (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1, alignSelf: 'flex-end', height: '100%' }}>
+        user && <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1, alignSelf: 'flex-end', height: '100%' }}>
           {menuItems.map((item) => (
             item.name === 'Resources' ?
               <a

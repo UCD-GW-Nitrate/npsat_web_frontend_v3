@@ -10,7 +10,7 @@ import {
 import { StandardText } from '../StandardText/StandardText';
 
 export default function Disclaimer() {
-  const { data } = useGetUserPreferencesQuery();
+  const { data, refetch } = useGetUserPreferencesQuery();
   const [updateUserPreferences] = useUpdateUserPreferencesMutation();
   const [open, setOpen] = useState(false);
 
@@ -22,6 +22,7 @@ export default function Disclaimer() {
 
   function handleAgree() {
     updateUserPreferences({ disclaimer_seen: true });
+    refetch();
     setOpen(false);
   }
 
@@ -42,7 +43,7 @@ export default function Disclaimer() {
         header: {
           backgroundColor: PRIMARY_COLOR,
           padding: 20,
-          paddingTop: 10,
+          paddingTop: 20,
           paddingBottom: 10,
           margin: 0,
         },
@@ -81,16 +82,16 @@ export default function Disclaimer() {
       }
     >
       <Flex vertical justify="center">
-        <StandardText variant="h3" style={{ alignSelf: 'flex-start' }}>
+        <StandardText variant="h4" style={{ alignSelf: 'flex-start' }}>
           Welcome to CV-NPSAT Web
         </StandardText>
         <Flex vertical>
-          <StandardText style={{ fontSize: 16 }}>
+          <StandardText style={{ fontSize: 14 }}>
             Before continuing, please review the following information:
           </StandardText>
           <ul>
             <li>
-              <StandardText>
+              <StandardText style={{ fontSize: 14 }}>
                 The Nonpoint Source Assessment Toolbox (NPSAT) is a groundwater
                 modeling framework designed to evaluate the fate and transport
                 of nonpoint source (NPS) contaminants such as nitrate and salts
@@ -102,7 +103,7 @@ export default function Disclaimer() {
           </ul>
           <ul>
             <li>
-              <StandardText>
+              <StandardText style={{ fontSize: 14 }}>
                 The NPSAT framework – in contrast to other groundwater flow and
                 transport models - is designed specifically (a) for
                 high-resolution nonpoint source contaminant transport across
@@ -115,7 +116,7 @@ export default function Disclaimer() {
               </StandardText>
             </li>
           </ul>
-          <StandardText style={{ fontSize: 16, textDecoration: 'underline' }}>
+          <StandardText variant='h4' style={{ fontSize: 14,  }}>
             By clicking "I Agree", you confirm that you have read and understood
             this information:
           </StandardText>

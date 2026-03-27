@@ -175,7 +175,7 @@ const ExploreWellsPage = () => {
     }
   }, [allWells, ageThres, porosity]);
 
-  const { data: userPreferences } = useGetUserPreferencesQuery();
+  const { data: userPreferences, refetch } = useGetUserPreferencesQuery();
   const [updateUserPreferences] = useUpdateUserPreferencesMutation();
   const ref1 = useRef(null);
   const ref2 = useRef(null);
@@ -229,6 +229,7 @@ const ExploreWellsPage = () => {
 
   function handleFinishTour() {
     updateUserPreferences({expl_wells_tour_complete: true});
+    refetch()
     setOpen(false);
   }
 

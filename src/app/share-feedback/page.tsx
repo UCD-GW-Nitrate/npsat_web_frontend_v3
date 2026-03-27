@@ -1,9 +1,10 @@
 'use client';
 import AppLayout from "@/components/custom/AppLayout/AppLayout";
 import { StandardText } from "@/components/custom/StandardText/StandardText";
+import { PRIMARY_COLOR } from "@/components/theme";
 import { useSendUserFeedbackMutation } from "@/store/apis/userApi";
 import { MailOutlined, MessageOutlined } from "@ant-design/icons";
-import { Button, Card, Divider, Flex, Form, Input, message, Select } from "antd";
+import { Button, Card, Flex, Form, Input, message, Select } from "antd";
 import { useEffect } from "react";
 import { FieldValues } from "react-hook-form";
 
@@ -36,12 +37,13 @@ const ShareFeedbackPage = () => {
   return (
     <AppLayout>
       {contextHolder}
-      <div style={{ alignSelf: 'center', marginTop: 20, marginBottom: -20 }}>
+      
+      <div style={{ alignSelf: 'center', marginTop: 50 }}>
         <Card
           title="Share your feedback - We'd love to hear your thoughts, questions, or suggestions."
           style={{ width: 1000 }}
           headStyle={{
-            backgroundColor: '#1890ff',
+            backgroundColor: PRIMARY_COLOR,
             color: 'white',
             fontWeight: 'bold',
           }}
