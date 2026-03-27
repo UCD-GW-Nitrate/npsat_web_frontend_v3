@@ -38,6 +38,7 @@ function Step({
           backgroundColor: token.colorPrimary,
           borderRadius: '50%',
           display: 'flex',
+          flexShrink: 0,
         }}
       >
         <p
@@ -152,12 +153,12 @@ export default function ExploreWellsSteps({
           title="Configure Model"
           status="process"
           content={
-            <Flex gap="middle">
+            <Flex gap="small">
               <Form.Item
                 name="flow"
                 rules={defaultRules('Please select a base model')}
               >
-                <Select style={{ width: 170 }} placeholder="Base Model">
+                <Select style={{ width: '100%' }} placeholder="Base Model">
                   <Option value="C2VSim">C2VSim</Option>
                   <Option value="CVHM2">CVHM2</Option>
                 </Select>
@@ -167,7 +168,7 @@ export default function ExploreWellsSteps({
                 name="scen"
                 rules={defaultRules('Please select a scenario')}
               >
-                <Select style={{ width: 170 }} placeholder="Scenario">
+                <Select style={{ width: '100%' }} placeholder="Scenario">
                   <Option value="Pump adjusted">Pump adjusted</Option>
                   <Option value="Recharge adjusted">Recharge adjusted</Option>
                 </Select>
@@ -176,8 +177,9 @@ export default function ExploreWellsSteps({
               <Form.Item
                 name="wType"
                 rules={defaultRules('Please select a well type')}
+                style={{ marginRight: 0}}
               >
-                <Select style={{ width: 220 }} placeholder="Well Type">
+                <Select style={{ width: '100%' }} placeholder="Well Type">
                   <Option value="Irrigation">Irrigation and public supply</Option>
                   <Option value="Domestic">Domestic</Option>
                 </Select>
