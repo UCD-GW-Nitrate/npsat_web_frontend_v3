@@ -13,6 +13,8 @@ import type { Well } from '@/types/well/WellExplorer';
 import BoxPlot from '../charts/BoxPlot/BoxPlot';
 import Histogram from '../charts/Histogram/Histogram';
 import CustomSlider from '../custom/CustomSlider/CustomSlider';
+import { StandardText } from '../custom/StandardText/StandardText';
+import { HBox } from '../custom/HBox/Hbox';
 
 const WellsMap = dynamic(() => import('../maps/WellsMap'), {
   ssr: false,
@@ -193,76 +195,80 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
           />
         </div>
       </Col>
-      <Col span={12}>
-        <Card
-          style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            paddingTop: 10,
-            marginBottom: 10,
-          }}
-          title="Display Settings"
-        >
-          <div
+      <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <Card style={{ width: '100%' }} title="Results">
+          <Card.Grid
             style={{
               width: '100%',
               display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
+              flexDirection: 'column',
+              paddingTop: 10,
             }}
           >
-            <p style={{ width: 250, paddingRight: 20 }}>Color wells by:</p>
-            <Dropdown menu={menuProps}>
-              <Button>
-                {dropdownLabels[wellProperty]}
-                <Space>
-                  <DownOutlined />
-                </Space>
-              </Button>
-            </Dropdown>
-          </div>
-        </Card>
-        <Card
-          style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            paddingTop: 10,
-          }}
-          title="Filter By Age Fraction"
-          extra={
-            <div>
-              Displaying {displayData?.length ?? allWells.length} of{' '}
-              {allWells.length} fetched Wells
-            </div>
-          }
-        >
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}
-          >
-            <p style={{ width: 250, paddingRight: 20 }}>
-              Minimum Age Threshold [years]:
-            </p>
-            <CustomSlider
-              value={0}
-              onAfterChange={async (val) => {
-                setDisplayData((await getWellsByAgeThres(val)) ?? null);
+            <StandardText variant="h5">Display Settings</StandardText>
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
               }}
-            />
-          </div>
+            >
+              <p style={{ width: 250, paddingRight: 20 }}>Color wells by:</p>
+              <Dropdown menu={menuProps}>
+                <Button>
+                  {dropdownLabels[wellProperty]}
+                  <Space>
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
+            </div>
+          </Card.Grid>
+          <Card.Grid
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              paddingTop: 10,
+            }}
+          >
+            <HBox>
+              <StandardText variant="h5">
+                Filter By Age Fraction
+              </StandardText>
+              <div>
+                Displaying {displayData?.length ?? allWells.length} of{' '}
+                {allWells.length} fetched Wells
+              </div>
+            </HBox>
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
+              <p style={{ width: 250, paddingRight: 20 }}>
+                Minimum Age Threshold [years]:
+              </p>
+              <CustomSlider
+                value={0}
+                onAfterChange={async (val) => {
+                  setDisplayData((await getWellsByAgeThres(val)) ?? null);
+                }}
+              />
+            </div>
+          </Card.Grid>
         </Card>
       </Col>
 
       <Col span={24}>
         <Card
+        size='small'
           extra={
             <Dropdown menu={selectChartMenuProps}>
               <Button>
