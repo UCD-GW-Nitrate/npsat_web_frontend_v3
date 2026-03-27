@@ -66,7 +66,8 @@ const Step5 = ({ ids, onCreateNewScenario }: Step5Props) => {
           title={`Simulator status: ${modelRunStatus[data?.results[0]?.status ?? 0]}`}
           subTitle={
             <Flex justify='center' vertical>
-              {data?.results[0]?.status === 1 && data?.results[0]?.queue_position && <StandardText variant='h5'>Position in the queue: {data?.results[0]?.queue_position}</StandardText>}
+              {data?.results[0]?.status === 1 && (data?.results[0]?.queue_position ?? -1) > 0 && <StandardText variant='h5'>Position in the queue: {data?.results[0]?.queue_position}</StandardText>}
+              {data?.results[0]?.status === 1 && (data?.results[0]?.queue_position ?? -1) === 0 && <StandardText variant='h5'>Preparing to run next</StandardText>}
               <p style={{ width: 300, textWrap: 'wrap', alignSelf: 'center' }}>
                 Processing may take a moment. You can safely return <a href='/'>home</a> while you wait.
               </p>
