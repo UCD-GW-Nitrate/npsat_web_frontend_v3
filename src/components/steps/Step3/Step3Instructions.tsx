@@ -9,7 +9,7 @@ const Step3Instructions = () => {
         Instructions
       </StandardText>
       <StandardText variant="h5" color="description">
-        Select a crop:
+        Select a crop / land use:
       </StandardText>
       <StandardText color="description">
         Drag the slider to change future nitrate loading rates (as fraction of

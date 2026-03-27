@@ -69,7 +69,7 @@ export default function CropTable({ data, onChange }: CropTableProps) {
 
   const columns: TableProps<DataType>['columns'] = [
     {
-      title: 'Crop',
+      title: 'Crop / Land Use',
       dataIndex: 'name',
       width: 250,
       onCell: () => ({
@@ -80,7 +80,7 @@ export default function CropTable({ data, onChange }: CropTableProps) {
       }),
     },
     {
-      title: 'Crop Area',
+      title: 'Area',
       dataIndex: 'area',
       width: 250,
       onCell: () => ({

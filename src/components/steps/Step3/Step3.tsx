@@ -155,7 +155,7 @@ const Step3 = ({ onPrev, onNext }: StepBase) => {
       >
         <Form.Item
           name="crop_choice"
-          label="Crop(s)"
+          label="Crop(s) / Land Use(s)"
           required
           rules={[
             {
