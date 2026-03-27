@@ -268,7 +268,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
 
       <Col span={24}>
         <Card
-        size='small'
+          size='small'
           extra={
             <Dropdown menu={selectChartMenuProps}>
               <Button>

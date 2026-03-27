@@ -21,6 +21,7 @@ const ProLayout = dynamic(() => import('@ant-design/pro-layout'), {
 
 const menuItems = [
   { path: '/explore-wells', name: 'Well Explorer' },
+  { path: '', name: 'Resources' },
   { path: '/share-feedback', name: 'Share Feedback' },
 ];
 
@@ -110,9 +111,18 @@ const AppLayout = ({ children }: PropsWithChildren) => {
       footerRender={defaultFooterDom}
       menu={{ locale: false, request: async () => menuItems }}
       headerContentRender={() => (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1, alignSelf: 'flex-end', paddingBottom: 5, }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1, alignSelf: 'flex-end', height: '100%' }}>
           {menuItems.map((item) => (
-            <Button  type="text" style={{ color: 'white'}} size='small' onClick={() => {router.push(item.path)}}>{item.name}</Button>
+            item.name === 'Resources' ?
+              <a
+                style={{ display: 'flex', justifyContent: 'flex-end', height: '100%'}}
+                href='https://gwt.ucdavis.edu/research-tools-and-applications/mantisnpsat-web-interface'
+                target='_blank'
+              >
+                <Button type="text" style={{ color: 'white', height: '100%'}} size='small'>{item.name}</Button>
+              </a>
+              :
+              <Button type="text" style={{ color: 'white', height: '100%'}} size='small' onClick={() => {router.push(item.path)}}>{item.name}</Button>
           ))}
         </div>
       )}

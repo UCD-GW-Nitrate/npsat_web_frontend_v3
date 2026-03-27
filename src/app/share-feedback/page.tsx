@@ -36,10 +36,8 @@ const ShareFeedbackPage = () => {
   return (
     <AppLayout>
       {contextHolder}
-      <div style={{ alignSelf: 'center', marginTop: 20}}>
-      
+      <div style={{ alignSelf: 'center', marginTop: 20, marginBottom: -20 }}>
         <Card
-          size="small"
           title="Share your feedback - We'd love to hear your thoughts, questions, or suggestions."
           style={{ width: 1000 }}
           headStyle={{
@@ -79,7 +77,6 @@ const ShareFeedbackPage = () => {
                   autoSize={{ minRows: 4, maxRows: 8 }}
                 />
               </Form.Item>
-              <Divider />
               <div style={{marginTop: 20, marginBottom: 20}}>
                 <StandardText variant="h5">Contact Info</StandardText>
                 <StandardText style={{ color: 'grey'}}>(If you would like to be contacted regarding this feedback, please leave your contact info. Our team will get back to you as soon as possible.)</StandardText>
