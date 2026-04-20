@@ -31,6 +31,10 @@ import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import useWells, { useWellsUrfData } from '@/hooks/useWellsUrfData';
 import { ADEurf } from '@/logic/ExploreModelWells/ADEurf';
+import {
+  useGetUserPreferencesQuery,
+  useUpdateUserPreferencesMutation,
+} from '@/store/apis/userApi';
 import type { Region } from '@/types/region/Region';
 import type {
   Well,
@@ -40,7 +44,6 @@ import {
   wellPropertyDropdownItems,
   wellPropertyDropdownLabels,
 } from '@/utils/constants';
-import { useGetUserPreferencesQuery, useUpdateUserPreferencesMutation } from '@/store/apis/userApi';
 
 const WellsAndUrfData = dynamic(
   () => import('@/components/maps/WellsAndUrfData'),
@@ -50,6 +53,8 @@ const WellsAndUrfData = dynamic(
 );
 
 const ExploreWellsPage = () => {
+  const accesible = true;
+
   // state variables related to the page header, to select params to fetch wells
   const [form] = Form.useForm();
   const [mapEditing, setMapEditing] = useState(true);
@@ -223,13 +228,13 @@ const ExploreWellsPage = () => {
 
   useEffect(() => {
     if (userPreferences && !userPreferences.expl_wells_tour_complete) {
-      setOpen(true)
+      setOpen(true);
     }
-  }, [userPreferences])
+  }, [userPreferences]);
 
   function handleFinishTour() {
-    updateUserPreferences({expl_wells_tour_complete: true});
-    refetch()
+    updateUserPreferences({ expl_wells_tour_complete: true });
+    refetch();
     setOpen(false);
   }
 
@@ -255,7 +260,7 @@ const ExploreWellsPage = () => {
             gutter={[24, 8]}
             style={{ width: '100%', justifySelf: 'center' }}
           >
-            <Col span={12} style={{ padding: 0 }} ref={ref2}>
+            <Col span={accesible ? 24 : 12} style={{ padding: 0 }} ref={ref2}>
               <StandardText variant="h4" style={{ marginTop: 0 }}>
                 Select Region(s) From Map
               </StandardText>
@@ -277,106 +282,108 @@ const ExploreWellsPage = () => {
               </div>
             </Col>
 
-            <Col
-              span={12}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Card style={{ width: '100%' }} title="Results" ref={ref3}>
-                <Card.Grid
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    paddingTop: 10,
-                  }}
-                >
-                  <StandardText variant="h5">Display Settings</StandardText>
-                  <div
+            {!accesible && (
+              <Col
+                span={12}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Card style={{ width: '100%' }} title="Results" ref={ref3}>
+                  <Card.Grid
                     style={{
                       width: '100%',
                       display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                      padding: 0,
+                      flexDirection: 'column',
+                      paddingTop: 10,
                     }}
                   >
-                    <p style={{ width: 250, paddingRight: 20 }}>
-                      Color wells by:
-                    </p>
-                    <Dropdown menu={menuProps}>
-                      <Button>
-                        {wellPropertyDropdownLabels[wellProperty]}
-                        <Space>
-                          <DownOutlined />
-                        </Space>
-                      </Button>
-                    </Dropdown>
-                  </div>
-                </Card.Grid>
-                <Card.Grid
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    paddingTop: 10,
-                  }}
-                >
-                  <HBox>
-                    <StandardText variant="h5">
-                      Filter By Age Fraction
-                    </StandardText>
-                    <div>
-                      Displaying {displayData.length ?? allWells.length} of{' '}
-                      {allWells.length} fetched Wells
+                    <StandardText variant="h5">Display Settings</StandardText>
+                    <div
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                        padding: 0,
+                      }}
+                    >
+                      <p style={{ width: 250, paddingRight: 20 }}>
+                        Color wells by:
+                      </p>
+                      <Dropdown menu={menuProps}>
+                        <Button>
+                          {wellPropertyDropdownLabels[wellProperty]}
+                          <Space>
+                            <DownOutlined />
+                          </Space>
+                        </Button>
+                      </Dropdown>
                     </div>
-                  </HBox>
+                  </Card.Grid>
+                  <Card.Grid
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      paddingTop: 10,
+                    }}
+                  >
+                    <HBox>
+                      <StandardText variant="h5">
+                        Filter By Age Fraction
+                      </StandardText>
+                      <div>
+                        Displaying {displayData.length ?? allWells.length} of{' '}
+                        {allWells.length} fetched Wells
+                      </div>
+                    </HBox>
 
-                  <div
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <p style={{ width: 250, paddingRight: 20 }}>
-                      Minimum Age Threshold [years]:
-                    </p>
-                    <CustomSlider
-                      value={ageThres}
-                      onAfterChange={async (val) => {
-                        setAgeThres(val);
+                    <div
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
                       }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <p style={{ width: 250, paddingRight: 20 }}>Porosity:</p>
-                    <CustomSlider
-                      value={porosity}
-                      onAfterChange={async (val) => {
-                        setPorosity(val);
+                    >
+                      <p style={{ width: 250, paddingRight: 20 }}>
+                        Minimum Age Threshold [years]:
+                      </p>
+                      <CustomSlider
+                        value={ageThres}
+                        onAfterChange={async (val) => {
+                          setAgeThres(val);
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
                       }}
-                      maxValue={0.9}
-                    />
-                  </div>
-                </Card.Grid>
-              </Card>
-            </Col>
+                    >
+                      <p style={{ width: 250, paddingRight: 20 }}>Porosity:</p>
+                      <CustomSlider
+                        value={porosity}
+                        onAfterChange={async (val) => {
+                          setPorosity(val);
+                        }}
+                        maxValue={0.9}
+                      />
+                    </div>
+                  </Card.Grid>
+                </Card>
+              </Col>
+            )}
           </Row>
         </Card>
 
