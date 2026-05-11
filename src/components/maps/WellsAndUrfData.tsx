@@ -17,6 +17,7 @@ import type { Geometry, Region } from '@/types/region/Region';
 import type { UrfData, Well } from '@/types/well/WellExplorer';
 import { mapTabs, REGION_MACROS } from '@/utils/constants';
 
+import { StandardText } from '../custom/StandardText/StandardText';
 import AccessibleWellsAndUrfData from './WellsAndUrfData.a11y';
 import WellsMap from './WellsMap';
 
@@ -231,6 +232,11 @@ export const WellsAndUrfData = ({
           </Option>
         ))}
       </Select>
+      {accessible && (
+        <StandardText variant="h4" style={{}}>
+          Well Results
+        </StandardText>
+      )}
       <div
         style={{
           width: '100%',

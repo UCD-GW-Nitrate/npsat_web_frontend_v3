@@ -1,6 +1,6 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
-import { Button, Form, InputNumber, Table, Tooltip } from 'antd';
+import { Button, Form, InputNumber, Space, Table, Tooltip } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 
 import type { Well } from '@/types/well/WellExplorer';
@@ -76,6 +76,7 @@ export default function AccessibleWellsMap({
   const [polygonCoords, setPolygons] = useState<[number, number][]>([]);
   const [data, setData] = useState<Well[]>([]);
   const [form] = Form.useForm();
+  const [filtersForm] = Form.useForm();
 
   useEffect(() => {
     setData(wells);
@@ -131,16 +132,15 @@ export default function AccessibleWellsMap({
     return R * c;
   }
 
-  function filterAndSortByProximity(options: {
-    refLat: number;
-    refLon: number;
-    radiusKm: number;
-  }) {
-    const { refLat = null, refLon = null, radiusKm = null } = options;
-
+  function filterAndSortByProximity(
+    wellsData: Well[],
+    refLat: number | null,
+    refLon: number | null,
+    radiusKm: number | null,
+  ) {
     const hasRef = refLat != null && refLon != null;
 
-    let result = wells.map((item) => {
+    let result = wellsData.map((item) => {
       const distance = hasRef
         ? getDistanceKm(refLat, refLon, item.lat, item.lon)
         : null;
@@ -167,11 +167,22 @@ export default function AccessibleWellsMap({
   }
 
   const onFinish = (values: any) => {
-    filterAndSortByProximity({
-      refLat: values.lat,
-      refLon: values.lon,
-      radiusKm: values.radius,
+    const minDepth = values.depth;
+    const minUnsat = values.unsat;
+    const minWt2t = values.wt2t;
+    const minSlmod = values.slmod;
+    const minPumping = values.pumping;
+
+    const results = wells.filter((item) => {
+      if (minDepth !== undefined && item.depth < minDepth) return false;
+      if (minUnsat !== undefined && item.unsat < minUnsat) return false;
+      if (minWt2t !== undefined && item.wt2t < minWt2t) return false;
+      if (minSlmod !== undefined && item.slmod < minSlmod) return false;
+      if (minPumping !== undefined && item.pumping < minPumping) return false;
+      return true;
     });
+
+    filterAndSortByProximity(results, values.lat, values.lon, values.radius);
   };
 
   return (
@@ -192,20 +203,49 @@ export default function AccessibleWellsMap({
 
       <Form
         form={form}
-        layout="inline"
         name="control-hooks"
         onFinish={onFinish}
         style={{ marginBottom: 20 }}
       >
-        <Form.Item name="lat" label="Latitude">
-          <InputNumber min={-90} max={90} />
-        </Form.Item>
-        <Form.Item name="lon" label="Longitude">
-          <InputNumber min={-180} max={180} />
-        </Form.Item>
-        <Form.Item name="radius" label="Bounding radius (km)">
-          <InputNumber min={0} max={100} defaultValue={20} />
-        </Form.Item>
+        <Space>
+          <Form.Item name="lat" label="Latitude">
+            <InputNumber min={-90} max={90} />
+          </Form.Item>
+          <Form.Item name="lon" label="Longitude">
+            <InputNumber min={-180} max={180} />
+          </Form.Item>
+          <Form.Item name="radius" label="Bounding radius (km)">
+            <InputNumber min={0} max={100} defaultValue={20} />
+          </Form.Item>
+        </Space>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 20,
+            marginBottom: 20,
+          }}
+        >
+          <StandardText>Filter by well property:</StandardText>
+        </div>
+        <Space>
+          <Form.Item name="depth" label="Minimum Depth">
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item name="wt2t" label="Minimum Water Table to Top">
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item name="unsat" label="Minimum Unsaturated Depth">
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item name="slmod" label="Minimum Screen Length">
+            <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item name="pumping" label="Minimum Pumping">
+            <InputNumber min={0} />
+          </Form.Item>
+        </Space>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Submit
