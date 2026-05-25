@@ -1,5 +1,8 @@
+import { Collapse } from 'antd';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+
+import AccessibleViz from '../a11y/AccessibleViz';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -80,14 +83,39 @@ const Scatterplot = ({ data, title, xTitle, yTitle }: LineChartProps) => {
     ],
   };
 
+  console.log('Data ', data);
+
   return (
-    <ChartNoSSR
-      type="scatter"
-      options={options}
-      series={data}
-      width="100%"
-      height={500}
-    />
+    <>
+      <ChartNoSSR
+        type="scatter"
+        options={options}
+        series={data}
+        width="100%"
+        height={500}
+      />
+      <Collapse
+        items={[
+          {
+            key: '1',
+            label: 'Data Table View',
+            children: (
+              <AccessibleViz
+                data={data.map((s) => ({
+                  name: s.name,
+                  data: s.data.map((point) => ({
+                    x: point[0] ?? 0,
+                    y: point[1] ?? 0,
+                  })),
+                }))}
+                xTitle={xTitle ?? 'x'}
+                yTitle={yTitle ?? 'y'}
+              />
+            ),
+          },
+        ]}
+      />
+    </>
   );
 };
 

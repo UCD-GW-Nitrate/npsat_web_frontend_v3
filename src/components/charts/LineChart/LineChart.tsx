@@ -23,7 +23,7 @@ const LineChart = ({
   reductionStartYear,
   title,
   xTitle,
-  yTitle='Nitrate-N [mg/L]',
+  yTitle = 'Nitrate-N [mg/L]',
   variant = 'percentiles',
 }: LineChartProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
