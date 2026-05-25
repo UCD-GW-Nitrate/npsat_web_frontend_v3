@@ -101,8 +101,8 @@ const Scatterplot = ({ data, title, xTitle, yTitle }: LineChartProps) => {
             label: 'Data Table View',
             children: (
               <AccessibleViz
-                data={data.map((s) => ({
-                  name: s.name,
+                data={data.map((s, i) => ({
+                  name: s.name ?? `Scatterplot ${i}`,
                   data: s.data.map((point) => ({
                     x: point[0] ?? 0,
                     y: point[1] ?? 0,

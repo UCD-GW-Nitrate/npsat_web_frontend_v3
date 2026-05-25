@@ -106,12 +106,14 @@ export default function AccessibleViz({ data, xTitle, yTitle }: Props) {
     <>
       {data.length > 1 && (
         <Select
-          placeholder="Select a person"
+          showSearch
+          placeholder="Select a series"
           options={data.map((s) => ({
             value: s.name,
             label: s.name,
           }))}
           onChange={setSelectedSeries}
+          style={{ marginBottom: 20 }}
         />
       )}
 
