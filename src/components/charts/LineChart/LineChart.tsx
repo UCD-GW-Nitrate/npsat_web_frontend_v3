@@ -1,7 +1,10 @@
+import { Collapse } from 'antd';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
 
 import { PRIMARY_COLOR } from '@/components/theme';
+
+import AccessibleViz from '../a11y/AccessibleViz';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -23,7 +26,7 @@ const LineChart = ({
   reductionStartYear,
   title,
   xTitle,
-  yTitle='Nitrate-N [mg/L]',
+  yTitle = 'Nitrate-N [mg/L]',
   variant = 'percentiles',
 }: LineChartProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
@@ -157,13 +160,37 @@ const LineChart = ({
   };
 
   return (
-    <ChartNoSSR
-      type="line"
-      options={options}
-      series={data}
-      width="100%"
-      height={500}
-    />
+    <>
+      <ChartNoSSR
+        type="line"
+        options={options}
+        series={data}
+        width="100%"
+        height={500}
+      />
+      <Collapse
+        items={[
+          {
+            key: '1',
+            label: 'Data Table View',
+            children: (
+              <AccessibleViz
+                data={data.map((s, i) => ({
+                  name: s.name ?? `Line chart ${i}`,
+                  data: s.data.map((point) => ({
+                    x: point[0] ?? 0,
+                    y: point[1] ?? 0,
+                  })),
+                }))}
+                chartTitle={title ?? `${xTitle} vs ${yTitle}`}
+                xTitle={xTitle ?? 'x'}
+                yTitle={yTitle ?? 'y'}
+              />
+            ),
+          },
+        ]}
+      />
+    </>
   );
 };
 

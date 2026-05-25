@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
-import { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
+import type { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -107,34 +107,33 @@ const PercentileChart = ({
           y: [p.y, p.y],
         })),
       }));
-  
-    const activePercentiles = shadow.map(obj => obj.name);
-    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(s.name))
 
+    const activePercentiles = shadow.map((obj) => obj.name);
+    const visibleAreas = confidenceAreaData.filter((s) =>
+      activePercentiles.includes(s.name),
+    );
 
-    const ciData = visibleAreas?.flatMap((obj) => [
-      {
-        name: `${obj.lower[0]?.percentile ?? 'Data'}`,
-        type: 'line',
-        data: obj.lower.map(modelDisplay => ({
-          x: modelDisplay.year,
-          y: modelDisplay.value
-        })),
-      },
-      {
-        name: `${obj.upper[0]?.percentile ?? 'Data'}`,
-        type: 'line',
-        data: obj.upper.map(modelDisplay => ({
-          x: modelDisplay.year,
-          y: modelDisplay.value
-        })),
-      },
-    ]) ?? [];
+    const ciData =
+      visibleAreas?.flatMap((obj) => [
+        {
+          name: `${obj.lower[0]?.percentile ?? 'Data'}`,
+          type: 'line',
+          data: obj.lower.map((modelDisplay) => ({
+            x: modelDisplay.year,
+            y: modelDisplay.value,
+          })),
+        },
+        {
+          name: `${obj.upper[0]?.percentile ?? 'Data'}`,
+          type: 'line',
+          data: obj.upper.map((modelDisplay) => ({
+            x: modelDisplay.year,
+            y: modelDisplay.value,
+          })),
+        },
+      ]) ?? [];
 
-    return [
-      ...data,
-      ...ciData,
-    ];
+    return [...data, ...ciData];
   }, [confidenceAreaData, data, inactiveSeries]);
 
   const rangeSeries = useMemo(() => {
@@ -154,112 +153,114 @@ const PercentileChart = ({
         type: 'rangeArea',
         data: [],
       }));
-  
-    const activePercentiles = shadow.map(obj => obj.name);
-    const visibleAreas = confidenceAreaData.filter((s) => activePercentiles.includes(s.name))
+
+    const activePercentiles = shadow.map((obj) => obj.name);
+    const visibleAreas = confidenceAreaData.filter((s) =>
+      activePercentiles.includes(s.name),
+    );
     const ranges = visibleAreas.map((s) => ({
-      name: s.name + " ci",
+      name: `${s.name} ci`,
       type: 'rangeArea',
       data: s.lower.map((modelDisplay, idx) => ({
         x: modelDisplay.year,
-        y: [modelDisplay.value, s.upper[idx]?.value]
-      }))
+        y: [modelDisplay.value, s.upper[idx]?.value],
+      })),
     }));
 
-    return [
-      ...ranges,
-      ...shadow,
-    ];
+    return [...ranges, ...shadow];
   }, [confidenceAreaData, data, inactiveSeries]);
 
-  const options: ApexOptions = useMemo(() => ({
-    chart: {
-      id: 'ci-line',
-      animations: {
-        enabled: true,
-        dynamicAnimation: {
+  const options: ApexOptions = useMemo(
+    () => ({
+      chart: {
+        id: 'ci-line',
+        animations: {
           enabled: true,
+          dynamicAnimation: {
+            enabled: true,
+          },
         },
-      },
-      events: {
-        zoomed: (_ctx, { xaxis }) => {
-          setZoomRange((prev) =>
-            prev?.min === xaxis.min
-              ? { min: xMin, max: xMax }
-              : { min: xaxis.min, max: xaxis.max },
-          );
-        },
-        legendClick: (ctx) => {
-          requestAnimationFrame(() => {
+        events: {
+          zoomed: (_ctx, { xaxis }) => {
+            setZoomRange((prev) =>
+              prev?.min === xaxis.min
+                ? { min: xMin, max: xMax }
+                : { min: xaxis.min, max: xaxis.max },
+            );
+          },
+          legendClick: (ctx) => {
+            requestAnimationFrame(() => {
+              const globals = ctx?.w?.globals;
+              if (!globals) return;
+
+              const collapsedIndices = globals.collapsedSeriesIndices;
+              setInactiveSeries([...collapsedIndices]);
+            });
+          },
+          updated: (ctx) => {
             const globals = ctx?.w?.globals;
             if (!globals) return;
 
-            const collapsedIndices = globals.collapsedSeriesIndices;
-            setInactiveSeries([...collapsedIndices]);
-          });
-        },
-        updated: (ctx) => {
-          const globals = ctx?.w?.globals;
-          if (!globals) return;
-
-          setYMax(globals.maxY);
+            setYMax(globals.maxY);
+          },
         },
       },
-    },
-    annotations: {
-      xaxis: getAnnotations(),
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: 'straight',
-      width: lineSeries.map((_, idx) => {
-        if (idx < data.length) return 5;
-        return 0;
-      }),
-    },
-    fill: {
-      opacity: lineSeries.map((_, idx) => {
-        if (idx < data.length) return 1;
-        return 0;
-      }),
-    },
-    title: {
-      text: `${title ?? ''}`,
-      align: 'left',
-    },
-    xaxis: {
+      annotations: {
+        xaxis: getAnnotations(),
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: 'straight',
+        width: lineSeries.map((_, idx) => {
+          if (idx < data.length) return 5;
+          return 0;
+        }),
+      },
+      fill: {
+        opacity: lineSeries.map((_, idx) => {
+          if (idx < data.length) return 1;
+          return 0;
+        }),
+      },
       title: {
-        text: `${xTitle ?? ''}`,
+        text: `${title ?? ''}`,
+        align: 'left',
       },
-      tickAmount: 21,
-      min: zoomRange?.min,
-      max: zoomRange?.max,
-    },
-    tooltip: {
-      inverseOrder: true,
-      x: {
-        formatter(val) {
-          return parseFloat(val.toFixed(3)).toString();
+      xaxis: {
+        title: {
+          text: `${xTitle ?? ''}`,
+        },
+        tickAmount: 21,
+        min: zoomRange?.min,
+        max: zoomRange?.max,
+      },
+      tooltip: {
+        inverseOrder: true,
+        x: {
+          formatter(val) {
+            return parseFloat(val.toFixed(3)).toString();
+          },
         },
       },
-    },
-    yaxis: {
-      title: {
-        text: `${yTitle ?? ''}`,
-      },
-      labels: {
-        formatter(val) {
-          return (val ?? 0).toFixed(2);
+      yaxis: {
+        title: {
+          text: `${yTitle ?? ''}`,
+        },
+        labels: {
+          formatter(val) {
+            return (val ?? 0).toFixed(2);
+          },
         },
       },
-    },
-    colors: lineSeries.map((_, i) => {
-      if (i < data.length) return SERIES_COLORS[i % SERIES_COLORS.length];
-      return 'grey';
+      colors: lineSeries.map((_, i) => {
+        if (i < data.length) return SERIES_COLORS[i % SERIES_COLORS.length];
+        return 'grey';
+      }),
     }),
-  }), [zoomRange, lineSeries]);
+    [zoomRange, lineSeries],
+  );
 
   const rangeAreaOptions: ApexOptions = {
     chart: {
@@ -280,7 +281,10 @@ const PercentileChart = ({
       width: 0,
     },
     fill: {
-      opacity: [...confidenceAreaData.map(() => 0.2), ...lineSeries.map(() => 0)],
+      opacity: [
+        ...confidenceAreaData.map(() => 0.2),
+        ...lineSeries.map(() => 0),
+      ],
     },
     title: {
       text: `${title ?? ''}`,

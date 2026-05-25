@@ -123,7 +123,7 @@ export const WellsAndUrfData = ({
   lastSelectedRegions,
 }: WellsAndUrfDataProps) => {
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
   const [persistData, setPersistData] = useState(false);
   const [data, setData] = useState<UrfData[]>([]);
 
@@ -167,7 +167,7 @@ export const WellsAndUrfData = ({
 
   const handleTabChange = (tab: string) => {
     // reset region selections, since different mapTypes have regions with the same id
-    setSelected([]);
+    setSelectedRegions([]);
     onSelectRegions([]);
 
     setMapType(parseInt(tab, 10));
@@ -175,7 +175,7 @@ export const WellsAndUrfData = ({
 
   // handle change to the dropdown list
   const onListChange = (selectedIds: number[]) => {
-    setSelected(selectedIds);
+    setSelectedRegions(selectedIds);
 
     const regions = selectedIds
       .map((id: number) => {
@@ -188,7 +188,7 @@ export const WellsAndUrfData = ({
 
   // handle change to the dropdown list, particurlarly insertions
   const onListSelect = (v: number) => {
-    const selectedIds = [...selected, v];
+    const selectedIds = [...selectedRegions, v];
     onListChange(selectedIds);
   };
 
@@ -214,7 +214,7 @@ export const WellsAndUrfData = ({
         showSearch
         placeholder={[]}
         optionFilterProp="children"
-        value={selected}
+        value={selectedRegions}
         onSelect={onListSelect}
         onChange={onListChange}
         mode="multiple"
@@ -228,9 +228,9 @@ export const WellsAndUrfData = ({
           </Option>
         ))}
       </Select>
+
       <div
         style={{
-          height: '500px',
           width: '100%',
           marginTop: 20,
           borderRadius: 6,
@@ -241,7 +241,7 @@ export const WellsAndUrfData = ({
           wells={wells}
           wellProperty={wellProperty}
           onSelectWell={onSelectWell}
-          selectedRegions={selected}
+          selectedRegions={selectedRegions}
           path={getMap()?.map((region: Region) => configureData(region)) ?? []}
           regionsEditable={!disableRegionSelection}
           onEachFeature={
@@ -253,17 +253,17 @@ export const WellsAndUrfData = ({
                   layer.on({
                     click: () => {
                       // toggle selection (if a region is not in selectedRegions, add it, else remove it)
-                      let selectedRegions = selected;
+                      let newSelection = selectedRegions;
                       if (
                         selectedRegions.indexOf(feature.properties.id) === -1
                       ) {
-                        selectedRegions = [
+                        newSelection = [
                           ...selectedRegions,
                           feature.properties.id,
                         ];
                       } else {
                         // deselect
-                        selectedRegions = [
+                        newSelection = [
                           ...selectedRegions.slice(
                             0,
                             selectedRegions.indexOf(feature.properties.id),
@@ -275,10 +275,10 @@ export const WellsAndUrfData = ({
                       }
 
                       // update Regions dropdown
-                      setSelected(selectedRegions);
+                      setSelectedRegions(newSelection);
 
                       // update parent, through onSelectRegions function
-                      const regions = selectedRegions
+                      const regions = newSelection
                         .map((id: number) => {
                           return (
                             getMap()?.find((region) => region.id === id) ??

@@ -13,8 +13,8 @@ import type { Well } from '@/types/well/WellExplorer';
 import BoxPlot from '../charts/BoxPlot/BoxPlot';
 import Histogram from '../charts/Histogram/Histogram';
 import CustomSlider from '../custom/CustomSlider/CustomSlider';
-import { StandardText } from '../custom/StandardText/StandardText';
 import { HBox } from '../custom/HBox/Hbox';
+import { StandardText } from '../custom/StandardText/StandardText';
 
 const WellsMap = dynamic(() => import('../maps/WellsMap'), {
   ssr: false,
@@ -77,7 +77,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     customModelDetail,
   });
   const [wellProperty, setWellProperty] = useState<
-    'depth' | 'unsat' | 'slmod' | 'wt2t'
+    'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping'
   >('depth');
   const [displayData, setDisplayData] = useState<null | Well[]>(null);
   const [selectChart, setSelectChart] = useState('Well Depths Histogram');
@@ -91,11 +91,11 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   };
 
   const histData = (
-    wellProperty: 'depth' | 'unsat' | 'slmod' | 'wt2t',
+    dataIndex: 'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping',
     title: string,
   ) => {
-    const allVals = allWells.map((well: Well) => well[wellProperty]);
-    if (allVals.length == 0) return [{ name: title, data: [], binSize: 0 }];
+    const allVals = allWells.map((well: Well) => well[dataIndex]);
+    if (allVals.length === 0) return [{ name: title, data: [], binSize: 0 }];
     const minVal = 0;
     const maxVal = Math.max(...allVals);
     const numBins = 20;
@@ -136,8 +136,19 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     [allWells],
   );
 
-  function getBoxPlotData(wellProperty: 'depth' | 'unsat' | 'slmod' | 'wt2t') {
-    const values = allWells.map((well: Well) => well[wellProperty]);
+  function getMedian(arr: number[]) {
+    if (arr.length === 0) return 0;
+    const mid = Math.floor(arr.length / 2);
+    if (arr.length % 2 === 0) {
+      return (arr[mid - 1] ?? 0 + arr[mid]!) / 2;
+    }
+    return arr[mid];
+  }
+
+  function getBoxPlotData(
+    dataIndex: 'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping',
+  ) {
+    const values = allWells.map((well: Well) => well[dataIndex]);
     if (values.length === 0) return [];
 
     const sorted = [...values].sort((a, b) => a - b);
@@ -152,15 +163,6 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     const max = sorted[sorted.length - 1];
 
     return [min, q1, median, q3, max];
-  }
-
-  function getMedian(arr: number[]) {
-    if (arr.length == 0) return 0;
-    const mid = Math.floor(arr.length / 2);
-    if (arr.length % 2 === 0) {
-      return (arr[mid - 1] ?? 0 + arr[mid]!) / 2;
-    }
-    return arr[mid];
   }
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -186,16 +188,21 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   return (
     <Row gutter={[24, 16]}>
       <Col span={12}>
-        <div style={{ width: '100%', height: 500 }}>
-          <WellsMap
-            path={regions.map((region: Region) => configureData(region))}
-            selectedRegions={regions.map((region: Region) => region.id)}
-            wellProperty={wellProperty}
-            wells={displayData || allWells}
-          />
-        </div>
+        <WellsMap
+          path={regions.map((region: Region) => configureData(region))}
+          selectedRegions={regions.map((region: Region) => region.id)}
+          wellProperty={wellProperty}
+          wells={displayData || allWells}
+        />
       </Col>
-      <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <Col
+        span={12}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Card style={{ width: '100%' }} title="Results">
           <Card.Grid
             style={{
@@ -235,9 +242,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
             }}
           >
             <HBox>
-              <StandardText variant="h5">
-                Filter By Age Fraction
-              </StandardText>
+              <StandardText variant="h5">Filter By Age Fraction</StandardText>
               <div>
                 Displaying {displayData?.length ?? allWells.length} of{' '}
                 {allWells.length} fetched Wells
@@ -268,7 +273,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
 
       <Col span={24}>
         <Card
-          size='small'
+          size="small"
           extra={
             <Dropdown menu={selectChartMenuProps}>
               <Button>
@@ -344,7 +349,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
                 },
               ]}
               title="Boxplot"
-              variant='standard'
+              variant="standard"
             />
           )}
         </Card>
