@@ -108,6 +108,7 @@ const Scatterplot = ({ data, title, xTitle, yTitle }: LineChartProps) => {
                     y: point[1] ?? 0,
                   })),
                 }))}
+                chartTitle={title ?? `${xTitle} vs ${yTitle}`}
                 xTitle={xTitle ?? 'x'}
                 yTitle={yTitle ?? 'y'}
               />

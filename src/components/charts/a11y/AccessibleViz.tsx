@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
+import { generateAccessibleChartDescription } from '@/logic/chartAltText';
 
 type DataPoint = {
   x: number;
@@ -11,11 +12,17 @@ type DataPoint = {
 
 interface Props {
   data: { name: string; data: DataPoint[] }[];
+  chartTitle: string;
   xTitle: string;
   yTitle: string;
 }
 
-export default function AccessibleViz({ data, xTitle, yTitle }: Props) {
+export default function AccessibleViz({
+  data,
+  chartTitle,
+  xTitle,
+  yTitle,
+}: Props) {
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   const columns = [
     {
@@ -117,11 +124,23 @@ export default function AccessibleViz({ data, xTitle, yTitle }: Props) {
         />
       )}
 
+      <StandardText variant="h5" style={{marginTop: 0}}>Long Description:</StandardText>
+      <p>
+        {
+          generateAccessibleChartDescription(
+            displayData,
+            chartTitle,
+            xTitle,
+            yTitle,
+          ).description
+        }
+      </p>
+
       <Form
         form={form}
         name="control-hooks"
         onFinish={onFinish}
-        style={{ marginBottom: 20 }}
+        style={{ marginBottom: 20, marginTop: 20 }}
       >
         <Card
           title="Table View Options"
