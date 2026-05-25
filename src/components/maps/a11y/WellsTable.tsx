@@ -1,6 +1,6 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
-import { Button, Form, InputNumber, Space, Table, Tooltip } from 'antd';
+import { Button, Card, Form, InputNumber, Space, Table, Tooltip } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 
 import type { Well } from '@/types/well/WellExplorer';
@@ -187,70 +187,100 @@ export default function WellsTable({
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 20,
-          marginBottom: 20,
-        }}
-      >
-        <StandardText>Set reference point:</StandardText>
-        <Tooltip title="This will filter wells that are nearby to the selected latitude, longitude">
-          <QuestionCircleOutlined />
-        </Tooltip>
-      </div>
-
       <Form
         form={form}
         name="control-hooks"
         onFinish={onFinish}
         style={{ marginBottom: 20 }}
       >
-        <Space>
-          <Form.Item name="lat" label="Latitude">
-            <InputNumber min={-90} max={90} />
-          </Form.Item>
-          <Form.Item name="lon" label="Longitude">
-            <InputNumber min={-180} max={180} />
-          </Form.Item>
-          <Form.Item name="radius" label="Bounding radius (km)">
-            <InputNumber min={0} max={100} defaultValue={20} />
-          </Form.Item>
-        </Space>
+        <Card style={{ width: '100%' }} title="Table View Options">
+          <Card.Grid
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              paddingTop: 10,
+              gap: 20,
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 5,
+                marginTop: 20,
+              }}
+            >
+              <StandardText variant="h5" style={{ marginTop: 0 }}>
+                Set reference point
+              </StandardText>
+              <Tooltip title="This will filter wells that are nearby to the selected latitude, longitude">
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </div>
+            <Space>
+              <Form.Item name="lat" label="Latitude">
+                <InputNumber min={-90} max={90} />
+              </Form.Item>
+              <Form.Item name="lon" label="Longitude">
+                <InputNumber min={-180} max={180} />
+              </Form.Item>
+              <Form.Item name="radius" label="Bounding radius (km)">
+                <InputNumber min={0} max={100} defaultValue={20} />
+              </Form.Item>
+            </Space>
+          </Card.Grid>
 
+          <Card.Grid
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              paddingTop: 10,
+              gap: 20,
+            }}
+          >
+            <StandardText variant="h5">Filter by well property:</StandardText>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                columnGap: 20,
+              }}
+            >
+              <Form.Item name="depth" label="Minimum Depth">
+                <InputNumber min={0} />
+              </Form.Item>
+              <Form.Item name="wt2t" label="Minimum Water Table to Top">
+                <InputNumber min={0} />
+              </Form.Item>
+              <Form.Item name="unsat" label="Minimum Unsaturated Depth">
+                <InputNumber min={0} />
+              </Form.Item>
+              <Form.Item name="slmod" label="Minimum Screen Length">
+                <InputNumber min={0} />
+              </Form.Item>
+              <Form.Item name="pumping" label="Minimum Pumping">
+                <InputNumber min={0} />
+              </Form.Item>
+            </div>
+          </Card.Grid>
+        </Card>
         <div
           style={{
             display: 'flex',
-            flexDirection: 'row',
-            gap: 20,
-            marginBottom: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 20,
           }}
         >
-          <StandardText>Filter by well property:</StandardText>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Apply
+            </Button>
+          </Form.Item>
         </div>
-        <Space>
-          <Form.Item name="depth" label="Minimum Depth">
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item name="wt2t" label="Minimum Water Table to Top">
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item name="unsat" label="Minimum Unsaturated Depth">
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item name="slmod" label="Minimum Screen Length">
-            <InputNumber min={0} />
-          </Form.Item>
-          <Form.Item name="pumping" label="Minimum Pumping">
-            <InputNumber min={0} />
-          </Form.Item>
-        </Space>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
       </Form>
 
       <Table<Well>

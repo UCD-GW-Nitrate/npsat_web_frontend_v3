@@ -1,6 +1,6 @@
 import { DownOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd';
-import { Button, Card, Col, Dropdown, Row, Space } from 'antd';
+import { Button, Card, Col, Collapse, Dropdown, Row, Space, Tabs } from 'antd';
 import dynamic from 'next/dynamic';
 import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
@@ -207,12 +207,42 @@ export default function WellExplorerMap({
           </Card>
         </Col>
       </Row>
-      <WellsTable
-        wells={displayData}
-        wellProperty={wellProperty}
-        onSelectWell={setEid}
+
+      <Collapse
+        items={[
+          {
+            key: '1',
+            label: 'Results Data Table View',
+            children: (
+              <>
+                <Tabs
+                  items={[
+                    {
+                      label: 'Well Results',
+                      key: '1',
+                      children: (
+                        <WellsTable
+                          wells={displayData}
+                          wellProperty={wellProperty}
+                          onSelectWell={setEid}
+                        />
+                      ),
+                    },
+                    {
+                      label: 'Well Streampoints Results',
+                      key: '2',
+                      children: <UrfDataTable urfData={urfData} />,
+                    },
+                  ]}
+                />
+              </>
+            ),
+          },
+        ]}
+        bordered
+        defaultActiveKey={['1']}
+        style={{ marginTop: 15 }}
       />
-      <UrfDataTable urfData={urfData} />
     </Card>
   );
 }
