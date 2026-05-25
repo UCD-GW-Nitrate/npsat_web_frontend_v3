@@ -1,21 +1,8 @@
 'use client';
 
-import { DownOutlined, ExportOutlined } from '@ant-design/icons';
+import { ExportOutlined } from '@ant-design/icons';
 import type { TourProps } from 'antd';
-import {
-  Button,
-  Card,
-  Col,
-  Dropdown,
-  Empty,
-  Form,
-  message,
-  Row,
-  Space,
-  Tour,
-  Typography,
-} from 'antd';
-import dynamic from 'next/dynamic';
+import { Col, Empty, Form, message, Row, Tour, Typography } from 'antd';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
@@ -23,12 +10,11 @@ import type { FieldValues } from 'react-hook-form';
 import LineChart from '@/components/charts/LineChart/LineChart';
 import Scatterplot from '@/components/charts/Scatterplot/Scatterplot';
 import AppLayout from '@/components/custom/AppLayout/AppLayout';
-import CustomSlider from '@/components/custom/CustomSlider/CustomSlider';
 import ExploreWellsSteps from '@/components/custom/ExploreWellsSteps/ExploreWellsSteps';
-import { HBox } from '@/components/custom/HBox/Hbox';
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
+import WellExplorerMap from '@/components/maps/WellExplorerMap';
 import useWells, { useWellsUrfData } from '@/hooks/useWellsUrfData';
 import { ADEurf } from '@/logic/ExploreModelWells/ADEurf';
 import {
@@ -36,28 +22,15 @@ import {
   useUpdateUserPreferencesMutation,
 } from '@/store/apis/userApi';
 import type { Region } from '@/types/region/Region';
-import type {
-  Well,
-  WellExplorerRequestDetail,
-} from '@/types/well/WellExplorer';
-import {
-  wellPropertyDropdownItems,
-  wellPropertyDropdownLabels,
-} from '@/utils/constants';
-
-const WellsAndUrfData = dynamic(
-  () => import('@/components/maps/WellsAndUrfData'),
-  {
-    ssr: false,
-  },
-);
+import type { WellExplorerRequestDetail } from '@/types/well/WellExplorer';
 
 const ExploreWellsPage = () => {
-  const accesible = true;
-
-  // state variables related to the page header, to select params to fetch wells
+  // use a form to track in-progress param-selections until Fetch Wells is pressed
   const [form] = Form.useForm();
+  // allows user to toggle between well selection and region selection on map
   const [mapEditing, setMapEditing] = useState(true);
+
+  // final params which will be set with form-values during onFormSuubmit
   const [regions, setRegions] = useState<Region[]>([]);
   const [requestDetail, setRequestDetail] = useState<WellExplorerRequestDetail>(
     {
@@ -66,26 +39,12 @@ const ExploreWellsPage = () => {
       wType: 'Irrigation',
     },
   );
+
   const {
     allWells,
     loading: allWellsLoading,
     getWellsByAgeThres,
   } = useWells({ regions, requestDetail });
-
-  // state variables related to the Results box to the right of the map
-  const [displayData, setDisplayData] = useState<Well[]>([]);
-  const [wellProperty, setWellProperty] = useState<
-    'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping'
-  >('depth');
-  const [ageThres, setAgeThres] = useState(0);
-  const [porosity, setPorosity] = useState(0.2);
-
-  // state variables related to the action of selecting a well on the map
-  const [eid, setEid] = useState<number | null>(null);
-  const { urfData, loading: urfDataLoading } = useWellsUrfData({
-    eid,
-    requestDetail,
-  });
 
   const [messageApi, contextHolder] = message.useMessage();
   const error = () => {
@@ -123,13 +82,15 @@ const ExploreWellsPage = () => {
     }
   };
 
-  // set up props to pass into dropdown in Results section
-  const menuProps = {
-    items: wellPropertyDropdownItems,
-    onClick: (e) => {
-      setWellProperty(e.key);
-    },
-  };
+  // param used to filter wells by ageThres and also graph depth vs age
+  const [porosity, setPorosity] = useState(0.2);
+
+  // state variables related to the action of selecting a well on the map
+  const [eid, setEid] = useState<number | null>(null);
+  const { urfData, loading: urfDataLoading } = useWellsUrfData({
+    eid,
+    requestDetail,
+  });
 
   // create charts when new urf data has been fetched (after a diff well was clicked) or porosity changed
   const [depthAgeChart, ecdfChart, urfChart] = useMemo(() => {
@@ -165,27 +126,19 @@ const ExploreWellsPage = () => {
     return [depthAgeSeries, ecdfSeries, urfSeries];
   }, [urfData, porosity]);
 
-  // set display data (wells shown on the map)
-  useEffect(() => {
-    async function updateDisplayWells() {
-      if (ageThres === 0) {
-        setDisplayData(allWells);
-      } else {
-        setDisplayData((await getWellsByAgeThres(ageThres, porosity)) ?? []);
-      }
-    }
-
-    if (!allWellsLoading) {
-      updateDisplayWells();
-    }
-  }, [allWells, ageThres, porosity]);
-
+  // fetch user preferences, which contain if the user has visited this page before
   const { data: userPreferences, refetch } = useGetUserPreferencesQuery();
+
+  // function to toggle user preferences once tour is completed for the first time
   const [updateUserPreferences] = useUpdateUserPreferencesMutation();
+
+  // references to the 4 components of the Tour
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
   const ref4 = useRef(null);
+
+  // state variables related to displaying the Tour
   const [open, setOpen] = useState<boolean>(false);
   const [current, setCurrent] = useState<number>(0);
   const steps: TourProps['steps'] = [
@@ -226,6 +179,7 @@ const ExploreWellsPage = () => {
     },
   ];
 
+  // check if user has already landed on this page, if not, start the Tour
   useEffect(() => {
     if (userPreferences && !userPreferences.expl_wells_tour_complete) {
       setOpen(true);
@@ -255,137 +209,19 @@ const ExploreWellsPage = () => {
       </div>
 
       <VBox spacing="large">
-        <Card>
-          <Row
-            gutter={[24, 8]}
-            style={{ width: '100%', justifySelf: 'center' }}
-          >
-            <Col span={accesible ? 24 : 12} style={{ padding: 0 }} ref={ref2}>
-              <StandardText variant="h4" style={{ marginTop: 0 }}>
-                Select Region(s) From Map
-              </StandardText>
-              <div style={{ width: '100%' }}>
-                <WellsAndUrfData
-                  onSelectRegions={(selectedRegions: Region[]) => {
-                    if (selectedRegions.length > 0)
-                      form.setFields([
-                        { name: 'select_regions', errors: undefined },
-                      ]);
-                    form.setFieldValue('regions', selectedRegions);
-                  }}
-                  wellProperty={wellProperty}
-                  wells={displayData}
-                  onSelectWell={setEid}
-                  urfData={urfData}
-                  disableRegionSelection={!mapEditing}
-                />
-              </div>
-            </Col>
-
-            {!accesible && (
-              <Col
-                span={12}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Card style={{ width: '100%' }} title="Results" ref={ref3}>
-                  <Card.Grid
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      paddingTop: 10,
-                    }}
-                  >
-                    <StandardText variant="h5">Display Settings</StandardText>
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                        padding: 0,
-                      }}
-                    >
-                      <p style={{ width: 250, paddingRight: 20 }}>
-                        Color wells by:
-                      </p>
-                      <Dropdown menu={menuProps}>
-                        <Button>
-                          {wellPropertyDropdownLabels[wellProperty]}
-                          <Space>
-                            <DownOutlined />
-                          </Space>
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </Card.Grid>
-                  <Card.Grid
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      paddingTop: 10,
-                    }}
-                  >
-                    <HBox>
-                      <StandardText variant="h5">
-                        Filter By Age Fraction
-                      </StandardText>
-                      <div>
-                        Displaying {displayData.length ?? allWells.length} of{' '}
-                        {allWells.length} fetched Wells
-                      </div>
-                    </HBox>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <p style={{ width: 250, paddingRight: 20 }}>
-                        Minimum Age Threshold [years]:
-                      </p>
-                      <CustomSlider
-                        value={ageThres}
-                        onAfterChange={async (val) => {
-                          setAgeThres(val);
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-start',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <p style={{ width: 250, paddingRight: 20 }}>Porosity:</p>
-                      <CustomSlider
-                        value={porosity}
-                        onAfterChange={async (val) => {
-                          setPorosity(val);
-                        }}
-                        maxValue={0.9}
-                      />
-                    </div>
-                  </Card.Grid>
-                </Card>
-              </Col>
-            )}
-          </Row>
-        </Card>
+        <WellExplorerMap
+          mapEditing={mapEditing}
+          allWells={allWells}
+          allWellsLoading={allWellsLoading}
+          getWellsByAgeThres={getWellsByAgeThres}
+          form={form}
+          porosity={porosity}
+          setPorosity={setPorosity}
+          setEid={setEid}
+          urfData={urfData}
+          mapRef={ref2}
+          mapFiltersRef={ref3}
+        />
 
         <div ref={ref4}>
           <InfoContainer title="Well Streampoints Data">
