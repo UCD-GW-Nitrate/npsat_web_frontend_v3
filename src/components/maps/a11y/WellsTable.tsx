@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { Well } from '@/types/well/WellExplorer';
 
-import { StandardText } from '../custom/StandardText/StandardText';
+import { StandardText } from '../../custom/StandardText/StandardText';
 
 export interface MapProps {
   wells: Well[];
@@ -64,7 +64,7 @@ const columns: TableColumnsType<Well> = [
   },
 ];
 
-export default function AccessibleWellsMap({
+export default function WellsTable({
   wells,
   wellProperty,
   onSelectWell,

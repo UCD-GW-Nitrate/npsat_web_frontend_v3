@@ -17,8 +17,6 @@ import type { Geometry, Region } from '@/types/region/Region';
 import type { UrfData, Well } from '@/types/well/WellExplorer';
 import { mapTabs, REGION_MACROS } from '@/utils/constants';
 
-import { StandardText } from '../custom/StandardText/StandardText';
-import AccessibleWellsAndUrfData from './WellsAndUrfData.a11y';
 import WellsMap from './WellsMap';
 
 const { Option } = Select;
@@ -124,8 +122,6 @@ export const WellsAndUrfData = ({
   disableRegionSelection,
   lastSelectedRegions,
 }: WellsAndUrfDataProps) => {
-  const accessible = true;
-
   const [mapType, setMapType] = useState<number>(REGION_MACROS.CENTRAL_VALLEY);
   const [selectedRegions, setSelectedRegions] = useState<number[]>([]);
   const [persistData, setPersistData] = useState(false);
@@ -232,11 +228,7 @@ export const WellsAndUrfData = ({
           </Option>
         ))}
       </Select>
-      {accessible && (
-        <StandardText variant="h4" style={{}}>
-          Well Results
-        </StandardText>
-      )}
+
       <div
         style={{
           width: '100%',
@@ -309,26 +301,22 @@ export const WellsAndUrfData = ({
             />
           }
         >
-          {!accessible && (
-            <LayerGroup>
-              {data.map((reactionPoint) => (
-                <CircleMarker
-                  key={reactionPoint.sid}
-                  center={[reactionPoint.lat, reactionPoint.lon]}
-                  pathOptions={{
-                    color: 'yellow',
-                    fillColor: 'yellow',
-                    fillOpacity: 1,
-                  }}
-                  radius={5}
-                />
-              ))}
-            </LayerGroup>
-          )}
+          <LayerGroup>
+            {data.map((reactionPoint) => (
+              <CircleMarker
+                key={reactionPoint.sid}
+                center={[reactionPoint.lat, reactionPoint.lon]}
+                pathOptions={{
+                  color: 'yellow',
+                  fillColor: 'yellow',
+                  fillOpacity: 1,
+                }}
+                radius={5}
+              />
+            ))}
+          </LayerGroup>
         </WellsMap>
       </div>
-
-      {accessible && <AccessibleWellsAndUrfData urfData={urfData} />}
     </>
   );
 };

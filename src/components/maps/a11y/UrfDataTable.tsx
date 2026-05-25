@@ -21,8 +21,6 @@ const columns: TableColumnsType<UrfData> = [
   },
 ];
 
-export default function AccessibleWellsAndUrfData({
-  urfData,
-}: WellsAndUrfDataProps) {
+export default function UrfDataTable({ urfData }: WellsAndUrfDataProps) {
   return <Table<UrfData> columns={columns} dataSource={urfData} />;
 }

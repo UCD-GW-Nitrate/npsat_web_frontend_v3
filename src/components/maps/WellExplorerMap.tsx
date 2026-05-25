@@ -15,6 +15,8 @@ import {
 import CustomSlider from '../custom/CustomSlider/CustomSlider';
 import { HBox } from '../custom/HBox/Hbox';
 import { StandardText } from '../custom/StandardText/StandardText';
+import UrfDataTable from './a11y/UrfDataTable';
+import WellsTable from './a11y/WellsTable';
 
 const WellsAndUrfData = dynamic(
   () => import('@/components/maps/WellsAndUrfData'),
@@ -205,6 +207,12 @@ export default function WellExplorerMap({
           </Card>
         </Col>
       </Row>
+      <WellsTable
+        wells={displayData}
+        wellProperty={wellProperty}
+        onSelectWell={setEid}
+      />
+      <UrfDataTable urfData={urfData} />
     </Card>
   );
 }

@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import type { Geometry } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
 
-import AccessibleWellsMap from './WellsMap.a11y';
+import AccessibleWellsMap from './a11y/WellsTable';
 import VisualWellsMap from './WellsMap.visual';
 
 export interface MapProps {
@@ -38,7 +38,7 @@ const WellsMap = ({
   setPolygonCoords,
   setNumWellsContained,
 }: MapProps) => {
-  const accessible = true;
+  const accessible = false;
 
   if (accessible) {
     return (
