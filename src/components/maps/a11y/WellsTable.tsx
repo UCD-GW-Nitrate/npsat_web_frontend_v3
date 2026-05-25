@@ -193,7 +193,16 @@ export default function WellsTable({
         onFinish={onFinish}
         style={{ marginBottom: 20 }}
       >
-        <Card style={{ width: '100%' }} title="Table View Options">
+        <Card
+          style={{ width: 900, justifySelf: 'center' }}
+          title="Table View Options"
+          size="small"
+          extra={
+            <p>
+              Displaying {data.length} of {wells.length} fetched Wells
+            </p>
+          }
+        >
           <Card.Grid
             style={{
               width: '100%',

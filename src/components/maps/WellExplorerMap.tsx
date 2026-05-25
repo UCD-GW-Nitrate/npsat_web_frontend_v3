@@ -240,7 +240,6 @@ export default function WellExplorerMap({
           },
         ]}
         bordered
-        defaultActiveKey={['1']}
         style={{ marginTop: 15 }}
       />
     </Card>

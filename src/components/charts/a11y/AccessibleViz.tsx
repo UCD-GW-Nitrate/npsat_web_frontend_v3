@@ -124,7 +124,9 @@ export default function AccessibleViz({
         />
       )}
 
-      <StandardText variant="h5" style={{marginTop: 0}}>Long Description:</StandardText>
+      <StandardText variant="h5" style={{ marginTop: 0 }}>
+        Long Description:
+      </StandardText>
       <p>
         {
           generateAccessibleChartDescription(
@@ -149,6 +151,7 @@ export default function AccessibleViz({
               Displaying {displayData.length} of {seriesData.length} data points
             </p>
           }
+          size="small"
         >
           <StandardText>{xTitle} Range</StandardText>
           <RangeFormItem
