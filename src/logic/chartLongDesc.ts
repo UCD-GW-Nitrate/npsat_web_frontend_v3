@@ -1,159 +1,81 @@
-import {
-  ExponentialRegression,
-  PolynomialRegression,
-  PowerRegression,
-  SimpleLinearRegression,
-} from 'ml-regression';
-
 type DataPoint = {
   x: number;
   y: number;
 };
-const MAX_SAMPLE_SIZE = 2000;
-const MAX_POLYNOMIAL_DEGREE = 5;
 
-// Use a max of 2000 data points to determine shape
-function downsample(data: DataPoint[], maxSize: number): DataPoint[] {
-  if (data.length <= maxSize) {
-    return data;
+function interpretMilestones(
+  start: number,
+  mid: number,
+  end: number,
+  threshold: number,
+): string {
+  const diff1 = mid - start; // Movement from Start to Middle
+  const diff2 = end - mid; // Movement from Middle to End
+
+  // Case 1: Both segments go up
+  if (diff1 > threshold && diff2 > threshold) {
+    // If the second jump is much bigger than the first, it's accelerating (Exponential)
+    if (diff2 > diff1 * 1.5) {
+      return 'starts with a gradual rise and then shoots up sharply in an exponential curve.';
+    }
+    return 'follows a steady, rising linear trend from left to right.';
   }
 
-  const step = Math.ceil(data.length / maxSize);
+  // Case 2: Both segments go down
+  if (diff1 < -threshold && diff2 < -threshold) {
+    return 'follows a steady, downward declining trend from left to right.';
+  }
 
-  return data.filter((_, index) => index % step === 0);
+  // Case 3: Up then Down (Your Gaussian / Parabolic shape!)
+  if (diff1 > threshold && diff2 < -threshold) {
+    return 'forms an arch-like curve, rising initially, peaking in the middle, and then falling toward the end.';
+  }
+
+  // Case 4: Down then Up (U-Shape)
+  if (diff1 < -threshold && diff2 > threshold) {
+    return 'forms a U-shaped valley curve, dropping initially before bottoming out and rising at the end.';
+  }
+
+  // Case 5: Flat, then changes at the end
+  if (Math.abs(diff1) <= threshold && diff2 > threshold) {
+    return 'remains relatively flat across the first half, before curving upward sharply at the end.';
+  }
+  if (Math.abs(diff1) <= threshold && diff2 < -threshold) {
+    return 'remains flat across the first half, before dropping off toward the end.';
+  }
+
+  // Fallback: No significant structural movement
+  return 'is relatively flat with minor fluctuations, maintaining a consistent baseline.';
 }
 
-function r2(
-  model: { predict(x: number): number },
-  testX: number[],
-  testY: number[],
-): number {
-  if (testX.length !== testY.length) return 0;
+export function describeVisualShape(data: DataPoint[]): string {
+  if (data.length < 3) return 'contains too few points to establish a trend.';
 
-  const mean = testY.reduce((a, b) => a + b, 0) / testY.length;
+  // Sort data by X-axis to ensure chronological order
+  const sorted = [...data].sort((a, b) => a.x - b.x);
 
-  let ssRes = 0;
-  let ssTot = 0;
+  // Split into 3 equal chronological buckets
+  const chunkSize = Math.floor(sorted.length / 3);
+  const firstChunk = sorted.slice(0, chunkSize);
+  const secondChunk = sorted.slice(chunkSize, chunkSize * 2);
+  const thirdChunk = sorted.slice(chunkSize * 2);
 
-  for (let i = 0; i < testX.length; i += 1) {
-    const predicted = model.predict(testX[i]!);
-    ssRes += (testY[i]! - predicted) ** 2;
-    ssTot += (testY[i]! - mean) ** 2;
-  }
+  // Helper to get average Y of a chunk
+  const avgY = (points: DataPoint[]) =>
+    points.reduce((sum, p) => sum + p.y, 0) / points.length;
 
-  return 1 - ssRes / ssTot;
-}
+  const yStart = avgY(firstChunk);
+  const yMid = avgY(secondChunk);
+  const yEnd = avgY(thirdChunk);
 
-function chooseBestModel(candidates: { type: string; score: number }[]) {
-  const best = candidates[0]!;
+  // Determine the overall total range to calculate a significance threshold
+  const yValues = data.map((p) => p.y);
+  const yRange = Math.max(...yValues) - Math.min(...yValues);
 
-  // Simplicity bias:
-  // if linear is within 0.02 R² of winner, use linear.
+  // A change matters only if it moves by more than 15% of the total visual variance
+  const threshold = yRange * 0.15;
 
-  const linear = candidates.find((c) => c.type === 'linear');
-
-  if (linear && best.score - linear.score < 0.02) {
-    return linear;
-  }
-
-  return best;
-}
-
-function describeTrend(data: DataPoint[]): string {
-  if (data.length < 5) {
-    return `There is not enough data to programatically determine a trend.`;
-  }
-
-  const sampled = downsample(data, MAX_SAMPLE_SIZE);
-  const shuffled = [...sampled].sort(() => Math.random() - 0.5);
-  const splitIndex = Math.floor(shuffled.length * 0.8);
-
-  const train = shuffled.slice(0, splitIndex);
-  const test = shuffled.slice(splitIndex);
-
-  const trainX = train.map((p) => p.x);
-  const trainY = train.map((p) => p.y);
-
-  const testX = test.map((p) => p.x);
-  const testY = test.map((p) => p.y);
-
-  const candidates: {
-    type: string;
-    model: any;
-    score: number;
-  }[] = [];
-
-  // Linear
-  const linModel = new SimpleLinearRegression(trainX, trainY);
-  candidates.push({
-    type: 'linear',
-    model: linModel,
-    score: r2(linModel, testX, testY),
-  });
-
-  // Polynomial
-  for (let degree = 2; degree <= MAX_POLYNOMIAL_DEGREE; degree += 1) {
-    const polyModel = new PolynomialRegression(trainX, trainY, degree);
-    candidates.push({
-      type: `${degree}${degree === 2 ? 'nd' : 'th'}-degree-polynomial`,
-      model: polyModel,
-      score: r2(polyModel, testX, testY),
-    });
-  }
-
-  // Logarithmic
-  const logModel = new SimpleLinearRegression(
-    trainX.map((x) => [Math.log(x)]),
-    trainY,
-  );
-  candidates.push({
-    type: 'logarithmic',
-    model: logModel,
-    score: r2(
-      logModel,
-      testX.map((x) => Math.log(x)),
-      testY,
-    ),
-  });
-
-  // Exponential
-  const expModel = new ExponentialRegression(trainX, trainY);
-  candidates.push({
-    type: 'exponential',
-    model: expModel,
-    score: r2(expModel, testX, testY),
-  });
-
-  // Power law
-  const powModel = new PowerRegression(trainX, trainY);
-  candidates.push({
-    type: 'power',
-    model: powModel,
-    score: r2(powModel, testX, testY),
-  });
-
-  candidates.sort((a, b) => b.score - a.score);
-
-  console.log('GRAPH ', candidates);
-
-  if (!candidates.length) {
-    return `Error programmatically fitting the data to a trend.`;
-  }
-
-  const best = chooseBestModel(candidates);
-
-  const parts: string[] = [];
-
-  parts.push(`The data best fits a ${best.type} trend.`);
-
-  if (best.score > 0.95) parts.push('Points closely follow the overall trend.');
-  else if (best.score > 0.85)
-    parts.push('Points generally follow the trend with little variation.');
-  else if (best.score > 0.5)
-    parts.push('The trend is noticeable but substantial variation exists.');
-  else parts.push('The trend is weak and points are widely dispersed.');
-
-  return parts.join(' ');
+  return `The chart ${interpretMilestones(yStart, yMid, yEnd, threshold)}`;
 }
 
 export function generateAccessibleChartDescription(
@@ -171,7 +93,7 @@ export function generateAccessibleChartDescription(
   );
 
   if (data.length > 3) {
-    parts.push(describeTrend(data));
+    parts.push(describeVisualShape(data));
 
     const y = data.map((d) => d.y);
     const minY = Math.min(...y);
