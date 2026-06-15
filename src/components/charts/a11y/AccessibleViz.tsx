@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
-import { generateAccessibleChartDescription } from '@/logic/chartAltText';
+import { generateAccessibleChartDescription } from '@/logic/chartLongDesc';
 
 type DataPoint = {
   x: number;
@@ -128,14 +128,12 @@ export default function AccessibleViz({
         Long Description:
       </StandardText>
       <p>
-        {
-          generateAccessibleChartDescription(
-            displayData,
-            chartTitle,
-            xTitle,
-            yTitle,
-          ).description
-        }
+        {generateAccessibleChartDescription(
+          displayData,
+          chartTitle,
+          xTitle,
+          yTitle,
+        )}
       </p>
 
       <Form
