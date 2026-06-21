@@ -127,7 +127,11 @@ const ModelDifferenceHeatmap = ({
           </Col>
         </Row>
       </Form>
-      <DifferenceHeatmap data={aggregate(plotData, bucketSize)} />
+      <DifferenceHeatmap
+        data={aggregate(plotData, bucketSize)}
+        xTitle="Year Ranges"
+        yTitle="Percentile"
+      />
     </>
   );
 };

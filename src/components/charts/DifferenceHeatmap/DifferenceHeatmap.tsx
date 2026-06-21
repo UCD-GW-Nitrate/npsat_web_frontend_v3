@@ -1,5 +1,8 @@
+import { Collapse } from 'antd';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+
+import HeatmapA11y from '../a11y/HeatmapA11y';
 
 const options: ApexOptions = {
   chart: {
@@ -31,17 +34,43 @@ const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
 
 interface DifferenceHeatmapProps {
   data: ApexAxisChartSeries;
+  title?: string;
+  xTitle: string;
+  yTitle: string;
 }
 
-const DifferenceHeatmap = ({ data }: DifferenceHeatmapProps) => {
+const DifferenceHeatmap = ({
+  data,
+  title,
+  xTitle,
+  yTitle,
+}: DifferenceHeatmapProps) => {
   return (
-    <ChartNoSSR
-      options={options}
-      series={data}
-      type="heatmap"
-      width="100%"
-      height={500}
-    />
+    <>
+      <ChartNoSSR
+        options={options}
+        series={data}
+        type="heatmap"
+        width="100%"
+        height={500}
+      />
+      <Collapse
+        items={[
+          {
+            key: '1',
+            label: 'Trend Description',
+            children: (
+              <HeatmapA11y
+                data={data}
+                chartTitle={title ?? `${xTitle} vs ${yTitle}`}
+                xTitle={xTitle ?? 'x'}
+                yTitle={yTitle ?? 'y'}
+              />
+            ),
+          },
+        ]}
+      />
+    </>
   );
 };
 

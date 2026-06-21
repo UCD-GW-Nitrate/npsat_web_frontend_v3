@@ -1,9 +1,12 @@
+import { Collapse } from 'antd';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 
 import { PRIMARY_COLOR } from '@/components/theme';
 import type { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
+
+import AccessibleViz from '../a11y/AccessibleViz';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -351,34 +354,59 @@ const PercentileChart = ({
   };
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        height: 500,
-      }}
-    >
-      <ChartNoSSR
-        type="rangeArea"
-        options={rangeAreaOptions}
-        series={rangeSeries}
-        width="100%"
-        height={500}
+    <>
+      <div
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
+          position: 'relative',
+          height: 500,
         }}
+      >
+        <ChartNoSSR
+          type="rangeArea"
+          options={rangeAreaOptions}
+          series={rangeSeries}
+          width="100%"
+          height={500}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        />
+        <ChartNoSSR
+          type="line"
+          options={options}
+          series={lineSeries}
+          width="100%"
+          height={500}
+        />
+      </div>
+      <Collapse
+        style={{ marginTop: 20 }}
+        items={[
+          {
+            key: '1',
+            label: 'Data Table View',
+            children: (
+              <AccessibleViz
+                data={lineSeries.map((s, i) => ({
+                  name: s.name ?? `Line chart ${i}`,
+                  data: s.data.map((point) => ({
+                    x: point.x ?? 0,
+                    y: point.y ?? 0,
+                  })),
+                }))}
+                chartTitle={title ?? `Year vs ${yTitle}`}
+                xTitle={xTitle ?? 'Year'}
+                yTitle={yTitle ?? 'y'}
+              />
+            ),
+          },
+        ]}
       />
-      <ChartNoSSR
-        type="line"
-        options={options}
-        series={lineSeries}
-        width="100%"
-        height={500}
-      />
-    </div>
+    </>
   );
 };
 
