@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
-import { generateAccessibleChartDescription } from '@/logic/chartLongDesc';
+import { generateAccessibleChartDescription } from '@/logic/chartDesc';
 
 type DataPoint = {
   x: number;
@@ -163,6 +163,7 @@ export default function AccessibleViz({
               step: 5,
               maxIdentifier: false,
             }}
+            hideConversion
           />
 
           <StandardText>{yTitle} Range</StandardText>
@@ -177,6 +178,7 @@ export default function AccessibleViz({
               step: 5,
               maxIdentifier: false,
             }}
+            hideConversion
           />
         </Card>
 

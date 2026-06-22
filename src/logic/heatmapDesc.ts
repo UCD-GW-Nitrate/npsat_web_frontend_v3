@@ -25,8 +25,10 @@ export interface HeatmapSummary {
 
 export function generateHeatmapSummary(
   series: HeatmapSeries[],
+  chartTitle: string,
   xAxisLabel: string,
   yAxisLabel: string,
+  legendLabel: string,
 ): HeatmapSummary {
   if (!series.length) {
     return {
@@ -170,20 +172,21 @@ export function generateHeatmapSummary(
   // --------------------------------------------------
 
   let summary =
-    `This heatmap contains ${allPoints.length} data points and shows how ${yAxisLabel.toLowerCase()} varies across ${xAxisLabel}. ` +
-    `${yAxisLabel} values range from ${minPoint.y.toFixed(
+    `${chartTitle}. ` +
+    `This heatmap contains ${allPoints.length} data points and shows how ${legendLabel} varies across ${xAxisLabel} and ${yAxisLabel}. ` +
+    `${legendLabel} values range from ${minPoint.y.toFixed(
       1,
     )} at ${minPoint.percentile} (${minPoint.x}) to ${maxPoint.y.toFixed(
       1,
     )} at ${maxPoint.percentile} (${maxPoint.x}). ` +
-    `Overall, ${yAxisLabel} ${overallTrend} as ${xAxisLabel} increases.`;
+    `Overall, ${legendLabel} ${overallTrend} as ${xAxisLabel} increases.`;
 
   if (hotspots.length > 0) {
     const hotspotText = hotspots
       .map((spot) => `${spot.percentile} (${spot.x})`)
       .join(', ');
 
-    summary += ` The highest ${yAxisLabel} values occur around ${hotspotText}.`;
+    summary += ` The highest values occur around ${hotspotText}.`;
   }
 
   return {

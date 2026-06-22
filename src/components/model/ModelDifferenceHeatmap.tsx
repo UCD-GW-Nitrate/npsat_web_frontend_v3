@@ -129,8 +129,10 @@ const ModelDifferenceHeatmap = ({
       </Form>
       <DifferenceHeatmap
         data={aggregate(plotData, bucketSize)}
+        title="Heatmap of Subtracted Difference Between Base and Custom Models' Nitrate-N"
         xTitle="Year Ranges"
         yTitle="Percentile"
+        legendTitle="Nitrate-N Difference [mg/L]"
       />
     </>
   );

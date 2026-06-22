@@ -120,19 +120,19 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   };
 
   const depthChart = useMemo(
-    () => histData('depth', 'Percentage of Wells'),
+    () => histData('depth', 'Well Depths Histogram'),
     [allWells],
   );
   const unsatChart = useMemo(
-    () => histData('unsat', 'Percentage of Wells'),
+    () => histData('unsat', 'Well Unsaturated Zone Depths Histogram'),
     [allWells],
   );
   const slChart = useMemo(
-    () => histData('slmod', 'Percentage of Wells'),
+    () => histData('slmod', 'Screen Lengths Histogram'),
     [allWells],
   );
   const wt2tChart = useMemo(
-    () => histData('wt2t', 'Percentage of Wells'),
+    () => histData('wt2t', 'Water Table to Top Histogram'),
     [allWells],
   );
 
@@ -296,7 +296,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               key={depthChart[0]?.binSize ?? 0}
               data={depthChart}
               xTitle="Depth [m]"
-              yTitle="%"
+              yTitle="Percentage of Wells [%]"
               binSize={depthChart[0]?.binSize}
               title="Well Depths Histogram"
             />
@@ -307,7 +307,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               key={unsatChart[0]?.binSize ?? 0}
               data={unsatChart}
               xTitle="Unsaturated zone depth [m]"
-              yTitle="%"
+              yTitle="Percentage of Wells [%]"
               binSize={unsatChart[0]?.binSize}
               title="Well Unsaturated Zone Depths Histogram"
             />
@@ -318,7 +318,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               key={wt2tChart[0]?.binSize ?? 0}
               data={wt2tChart}
               xTitle="Water table to top [m]"
-              yTitle="%"
+              yTitle="Percentage of Wells [%]"
               binSize={wt2tChart[0]?.binSize}
               title="Water Table to Top Histogram"
             />
@@ -329,7 +329,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               key={slChart[0]?.binSize ?? 0}
               data={slChart}
               xTitle="Screen length [m]"
-              yTitle="%"
+              yTitle="Percentage of Wells [%]"
               binSize={slChart[0]?.binSize}
               title="Screen Lengths Histogram"
             />

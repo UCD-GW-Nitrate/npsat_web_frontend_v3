@@ -37,6 +37,7 @@ interface DifferenceHeatmapProps {
   title?: string;
   xTitle: string;
   yTitle: string;
+  legendTitle?: string;
 }
 
 const DifferenceHeatmap = ({
@@ -44,6 +45,7 @@ const DifferenceHeatmap = ({
   title,
   xTitle,
   yTitle,
+  legendTitle,
 }: DifferenceHeatmapProps) => {
   return (
     <>
@@ -65,6 +67,7 @@ const DifferenceHeatmap = ({
                 chartTitle={title ?? `${xTitle} vs ${yTitle}`}
                 xTitle={xTitle ?? 'x'}
                 yTitle={yTitle ?? 'y'}
+                legendTitle={legendTitle ?? 'magnitude'}
               />
             ),
           },

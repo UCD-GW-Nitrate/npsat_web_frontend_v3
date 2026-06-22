@@ -8,6 +8,7 @@ interface HeatmapProps {
   chartTitle: string;
   xTitle: string;
   yTitle: string;
+  legendTitle: string;
 }
 
 export default function HeatmapA11y({
@@ -15,9 +16,16 @@ export default function HeatmapA11y({
   chartTitle,
   xTitle,
   yTitle,
+  legendTitle,
 }: HeatmapProps) {
   const { summary, percentileTrends } = useMemo(() => {
-    return generateHeatmapSummary(data, xTitle, yTitle);
+    return generateHeatmapSummary(
+      data,
+      chartTitle,
+      xTitle,
+      yTitle,
+      legendTitle,
+    );
   }, [data]);
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
   return (
