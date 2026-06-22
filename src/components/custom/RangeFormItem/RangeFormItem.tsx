@@ -14,6 +14,7 @@ interface RangeFormItemProps {
   onChangeMin?: (input: number) => void;
   onChangeMax?: (input: number) => void;
   rangeConfig: RangeConfig;
+  hideConversion?: boolean;
 }
 
 /**
@@ -31,6 +32,7 @@ const RangeFormItem = ({
   onChangeMin,
   onChangeMax,
   rangeConfig,
+  hideConversion,
 }: RangeFormItemProps) => {
   const { max, min, step, maxIdentifier = true } = rangeConfig;
   const [low, setLow] = useState<number>(valueLow || min);
@@ -129,7 +131,7 @@ const RangeFormItem = ({
           max={maxIdentifier ? max + 1 : max}
           min={min}
         />
-        <span> /{(low * 3.28).toFixed(0)}(ft)</span>
+        {!hideConversion && <span> /{(low * 3.28).toFixed(0)}(ft)</span>}
       </Col>
       <Col>
         max:{' '}
@@ -142,7 +144,7 @@ const RangeFormItem = ({
           min={min}
           formatter={maxIdentifierFormatter}
         />
-        <span> /{(high * 3.28).toFixed(0)}(ft)</span>
+        {!hideConversion && <span> /{(high * 3.28).toFixed(0)}(ft)</span>}
       </Col>
     </Row>
   );

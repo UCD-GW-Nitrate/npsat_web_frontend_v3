@@ -20,7 +20,7 @@ const BoxPlot = ({
   reductionEndYear,
   reductionStartYear,
   title,
-  variant='default',
+  variant = 'default',
 }: BoxPlotProps) => {
   const getAnnotations = (): XAxisAnnotations[] => {
     const annotations: XAxisAnnotations[] = [];
@@ -69,22 +69,22 @@ const BoxPlot = ({
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {
         const yValues = w.config.series[seriesIndex].data[dataPointIndex].y;
-        const labels = variant==='default' ? 
-          ["5th Percentile", "Q1", "Median", "Q3", "95th Percentile"] 
-          : ["Minimum", "Q1", "Median", "Q3", "Maximum"];
+        const labels =
+          variant === 'default'
+            ? ['5th Percentile', 'Q1', 'Median', 'Q3', '95th Percentile']
+            : ['Minimum', 'Q1', 'Median', 'Q3', 'Maximum'];
 
         return `
           <div class="apexcharts-tooltip-boxplot" style="padding: 8px; padding-bottom: 0px">
-            ${
-              yValues.map(
+            ${yValues
+              .map(
                 (val, i) =>
-                  `<div style="margin-bottom: 8px;">${labels[i]}: <span style="font-weight:bold">${val}</span></div>`
+                  `<div style="margin-bottom: 8px;">${labels[i]}: <span style="font-weight:bold">${val}</span></div>`,
               )
-              .join("")
-            }
+              .join('')}
           </div>
         `;
-      }
+      },
     },
     xaxis: {
       type: 'category',
@@ -120,9 +120,9 @@ const BoxPlot = ({
     },
   };
 
-  const transformedData = data.map(series => ({
-  ...series,
-    data: series.data.map(point => ({
+  const transformedData = data.map((series) => ({
+    ...series,
+    data: series.data.map((point) => ({
       y: point!.y,
       x: String(point!.x),
     })),

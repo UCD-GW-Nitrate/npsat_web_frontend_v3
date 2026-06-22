@@ -128,14 +128,12 @@ export default function AccessibleViz({
         Long Description:
       </StandardText>
       <p>
-        {
-          generateAccessibleChartDescription(
-            displayData,
-            chartTitle,
-            xTitle,
-            yTitle,
-          ).description
-        }
+        {generateAccessibleChartDescription(
+          displayData,
+          chartTitle,
+          xTitle,
+          yTitle,
+        )}
       </p>
 
       <Form
@@ -165,6 +163,7 @@ export default function AccessibleViz({
               step: 5,
               maxIdentifier: false,
             }}
+            hideConversion
           />
 
           <StandardText>{yTitle} Range</StandardText>
@@ -179,6 +178,7 @@ export default function AccessibleViz({
               step: 5,
               maxIdentifier: false,
             }}
+            hideConversion
           />
         </Card>
 

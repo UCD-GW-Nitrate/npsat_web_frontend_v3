@@ -1,5 +1,8 @@
+import { Collapse } from 'antd';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+
+import HistogramA11y from '../a11y/HistogramA11y';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -35,20 +38,19 @@ const Histogram = ({
     tooltip: {
       inverseOrder: true,
       x: {
-        formatter: (value) : string => {
-          if (binSize && binSize!=0) { 
-            return (value-binSize/2).toString() + ' - ' + (value+binSize/2).toString();
-          } else {
-            return value.toString();
+        formatter: (value): string => {
+          if (binSize && binSize !== 0) {
+            return `${(value - binSize / 2).toString()} - ${(value + binSize / 2).toString()}`;
           }
+          return value.toString();
         },
       },
       y: {
-        formatter: val => `${val.toFixed(5)}%`
+        formatter: (val) => `${val.toFixed(5)}%`,
       },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     xaxis: {
       title: {
@@ -95,13 +97,39 @@ const Histogram = ({
   };
 
   return (
-    <ChartNoSSR
-      type="bar"
-      options={options}
-      series={data}
-      width="100%"
-      height={500}
-    />
+    <>
+      <ChartNoSSR
+        type="bar"
+        options={options}
+        series={data}
+        width="100%"
+        height={500}
+      />
+      <Collapse
+        items={[
+          {
+            key: '1',
+            label: 'Distribution Description',
+            children: (
+              <HistogramA11y
+                data={data.map((s, i) => ({
+                  name: s.name ?? `Histogram ${i}`,
+                  data: s.data.map((point) => ({
+                    x:
+                      point!.x && binSize && binSize !== 0
+                        ? `${(point.x - binSize / 2).toString()}-${(point.x + binSize / 2).toString()}`
+                        : point.x ?? '',
+                    y: point.y ?? 0,
+                  })),
+                }))}
+                xTitle={xTitle ?? 'x'}
+                yTitle={yTitle ?? 'y'}
+              />
+            ),
+          },
+        ]}
+      />
+    </>
   );
 };
 
