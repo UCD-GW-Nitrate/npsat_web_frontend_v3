@@ -84,8 +84,8 @@ function detectPlateau(data: DataPoint[], slopes: number[]): Plateau[] {
 
   let startIndex: number | null = null;
 
-  for (let i = 0; i < slopes.length; i++) {
-    const isFlat = Math.abs(slopes[i]) < threshold;
+  for (let i = 0; i < slopes.length; i += 1) {
+    const isFlat = Math.abs(slopes[i]!) < threshold;
 
     if (isFlat && startIndex === null) {
       startIndex = i;
@@ -151,12 +151,14 @@ function describeShape(
   }
 
   if (plateau) {
-    const label =
-      plateau.position === 'early'
-        ? 'early'
-        : plateau.position === 'late'
-          ? 'late'
-          : 'middle';
+    let label;
+    if (plateau.position === 'early') {
+      label = 'early';
+    } else if (plateau.position === 'late') {
+      label = 'late';
+    } else {
+      label = 'middle';
+    }
 
     return `${trend.includes('increasing') ? 'increasing' : 'decreasing'} curve with a ${label}-range plateau`;
   }
@@ -177,12 +179,9 @@ export function generateAccessibleChartDescription(
   name: string,
   xTitle: string,
   yTitle: string,
-): Result {
+): string {
   if (data.length < 3) {
-    return {
-      description: `${name} has insufficient data for analysis.`,
-      trend: 'unknown',
-    };
+    return `${name} has insufficient data for analysis.`;
   }
 
   const sorted = sortData(data);
@@ -199,8 +198,8 @@ export function generateAccessibleChartDescription(
   const minY = Math.min(...y);
   const maxY = Math.max(...y);
 
-  const start = y[0];
-  const end = y[y.length - 1];
+  const start = y[0]!;
+  const end = y[y.length - 1]!;
 
   const parts: string[] = [];
 
@@ -219,7 +218,7 @@ export function generateAccessibleChartDescription(
   );
 
   if (plateaus.length > 0) {
-    const p = plateaus[0];
+    const p = plateaus[0]!;
 
     parts.push(
       `A noticeable plateau occurs in the ${p.position} portion of the chart (approximately x = ${p.startX.toFixed(
@@ -228,8 +227,5 @@ export function generateAccessibleChartDescription(
     );
   }
 
-  return {
-    description: parts.join(' '),
-    trend,
-  };
+  return parts.join(' ');
 }

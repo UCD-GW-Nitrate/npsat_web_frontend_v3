@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import RangeFormItem from '@/components/custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
-import { generateAccessibleChartDescription } from '@/logic/chartDesc';
+import { generateAccessibleChartDescription } from '@/logic/chartAltText';
 
 type DataPoint = {
   x: number;
