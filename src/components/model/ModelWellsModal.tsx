@@ -1,4 +1,4 @@
-import { Collapse, Divider, message, Modal } from 'antd';
+import { Card, Collapse, Divider, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -7,6 +7,7 @@ import type { ModelRun } from '@/types/model/ModelRun';
 import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
 
+import DynamicForm from '../custom/DynamicForm/DynamicForm';
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '../custom/StandardText/StandardText';
 
@@ -48,7 +49,7 @@ export interface ModalProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   regions: Region[];
   customModelDetail: ModelRun;
-  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
+  setPolygonCoords: React.Dispatch<React.SetStateAction<[number, number][]>>;
   range: [number, number];
   setRange: React.Dispatch<React.SetStateAction<[number, number]>>;
   minDepth: number;
@@ -161,9 +162,7 @@ const ModelWellsModal = ({
         Filter by Bounding Polygon:
       </StandardText>
 
-      <div
-        style={{ width: '100%', height: 450, marginTop: 15, marginBottom: 25 }}
-      >
+      <div style={{ width: '100%', marginTop: 15, marginBottom: 25 }}>
         <WellsMap
           path={regions.map((region: Region) => configureData(region))}
           selectedRegions={regions.map((region: Region) => region.id)}
@@ -181,6 +180,10 @@ const ModelWellsModal = ({
           { key: '1', label: 'Instructions', children: <Instructions /> },
         ]}
       />
+
+      <Card title="Selection Summary">
+        <DynamicForm setPolygonCoords={setPolygonCoords} />
+      </Card>
     </Modal>
   );
 };
