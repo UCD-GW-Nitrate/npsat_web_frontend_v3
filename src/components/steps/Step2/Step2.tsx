@@ -229,7 +229,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       let porosity: number | null = null;
       let waterContent: number | null = null;
       setErr(false);
-      
+
       selected.forEach((regionId: number) => {
         const regions = getRegionData(mapType)?.filter(
           (region) => region.id === regionId,
@@ -279,11 +279,11 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
               tempWaterContent = row?.[0]?.WaterContent!;
             }
           });
-          if (porosity && porosity != tempPorosity) {
+          if (porosity && porosity !== tempPorosity) {
             setErr(true);
           }
           porosity = tempPorosity;
-          if (waterContent && waterContent != tempWaterContent) {
+          if (waterContent && waterContent !== tempWaterContent) {
             setErr(true);
           }
           waterContent = tempWaterContent;
@@ -446,7 +446,12 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
               )}
             </div>
           }
-          style={{ width: err ? 700 : 600, padding: 10, marginRight: 'auto', marginLeft: 'auto' }}
+          style={{
+            width: err ? 700 : 600,
+            padding: 10,
+            marginRight: 'auto',
+            marginLeft: 'auto',
+          }}
         />
       )}
       <Tabs

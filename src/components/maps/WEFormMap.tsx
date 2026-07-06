@@ -25,7 +25,7 @@ const WellsAndUrfData = dynamic(
   },
 );
 
-export interface MapProps {
+export interface FormMapProps {
   mapEditing: boolean;
   allWells: Well[];
   allWellsLoading: boolean;
@@ -39,7 +39,7 @@ export interface MapProps {
   mapFiltersRef: MutableRefObject<null>;
 }
 
-export default function WellExplorerMap({
+export default function WEFormMap({
   mapEditing,
   allWells,
   allWellsLoading,
@@ -51,7 +51,7 @@ export default function WellExplorerMap({
   urfData,
   mapRef,
   mapFiltersRef,
-}: MapProps) {
+}: FormMapProps) {
   const [displayData, setDisplayData] = useState<Well[]>([]);
 
   // value of age thres slider
