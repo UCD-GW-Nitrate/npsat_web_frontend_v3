@@ -1,7 +1,9 @@
+import { Collapse } from 'antd';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
 
 import { PRIMARY_COLOR } from '@/components/theme';
+import { generateBoxPlotDescription } from '@/logic/boxplotDesc';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -129,13 +131,34 @@ const BoxPlot = ({
   }));
 
   return (
-    <ChartNoSSR
-      type="boxPlot"
-      options={options}
-      series={transformedData}
-      width="100%"
-      height={500}
-    />
+    <>
+      <ChartNoSSR
+        type="boxPlot"
+        options={options}
+        series={transformedData}
+        width="100%"
+        height={500}
+      />
+
+      <Collapse
+        items={[
+          {
+            key: '1',
+            label: 'Trend Description',
+            children: (
+              <p>
+                {variant === 'default'
+                  ? generateBoxPlotDescription(
+                      transformedData,
+                      'Year vs Nitrate-N [mg/L]',
+                    )
+                  : 'Categorical boxplot'}
+              </p>
+            ),
+          },
+        ]}
+      />
+    </>
   );
 };
 
