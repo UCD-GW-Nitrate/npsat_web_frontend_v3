@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { PRIMARY_COLOR } from '@/components/theme';
 import { generateBoxPlotDescription } from '@/logic/boxplotDesc';
+import { generateCategoricalBoxPlotDescription } from '@/logic/catBoxplotDesc';
 
 const ChartNoSSR = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -152,7 +153,10 @@ const BoxPlot = ({
                       transformedData,
                       'Year vs Nitrate-N [mg/L]',
                     )
-                  : 'Categorical boxplot'}
+                  : transformedData.length > 0 &&
+                    generateCategoricalBoxPlotDescription(
+                      transformedData[0].data,
+                    )}
               </p>
             ),
           },
