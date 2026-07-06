@@ -1,4 +1,4 @@
-import { Card, Collapse, Divider, message, Modal } from 'antd';
+import { Collapse, Divider, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -16,15 +16,25 @@ const WellsMap = dynamic(() => import('../maps/WellsMap'), {
 
 const Instructions = () => {
   return (
-    <div style={{ marginInline: 20, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+    <div
+      style={{
+        marginInline: 20,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
       <StandardText variant="h5" color="description">
         Filter by Bounding Polygon:
       </StandardText>
       <StandardText color="description">
-        Draw a polygon on the map to include wells inside the area. Use the tools to the top right of map to create, delete, and update polygons, be sure to click Save after using each action.
+        Draw a polygon on the map to include wells inside the area. Use the
+        tools to the top right of map to create, delete, and update polygons, be
+        sure to click Save after using each action.
       </StandardText>
       <StandardText color="description">
-        In order to improve statistical analysis, polygons should contain at least 10 wells.
+        In order to improve statistical analysis, polygons should contain at
+        least 10 wells.
       </StandardText>
       <StandardText color="description">
         Note: Displayed wells align with selected depth range.
@@ -58,7 +68,9 @@ const ModelWellsModal = ({
 }: ModalProps) => {
   const { allWells } = useModelWells({ regions, customModelDetail });
   const [displayData, setDisplayData] = useState<Well[]>([]);
-  const [numWellsContained, setNumWellsContained] = useState<number | null>(null);
+  const [numWellsContained, setNumWellsContained] = useState<number | null>(
+    null,
+  );
   const [messageApi, contextHolder] = message.useMessage();
 
   const configureData = (region: Region): Geometry => {
@@ -90,7 +102,7 @@ const ModelWellsModal = ({
       closable={{ 'aria-label': 'Custom Close Button' }}
       open={open}
       onOk={() => {
-        if (numWellsContained && numWellsContained<10) {
+        if (numWellsContained && numWellsContained < 10) {
           warning();
         } else {
           setOpen(false);
@@ -113,8 +125,19 @@ const ModelWellsModal = ({
           alignItems: 'center',
         }}
       >
-        <div style={{ paddingRight: 20, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
-          <StandardText variant='h5' style={{ marginTop: 0, }}>Filter by </StandardText>
+        <div
+          style={{
+            paddingRight: 20,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 5,
+          }}
+        >
+          <StandardText variant="h5" style={{ marginTop: 0 }}>
+            Filter by{' '}
+          </StandardText>
           <p>Well Depth Range (m):</p>
         </div>
 
@@ -134,9 +157,13 @@ const ModelWellsModal = ({
         </div>
       </div>
 
-      <StandardText variant='h5' style={{ marginTop: 0, }}>Filter by Bounding Polygon:</StandardText>
+      <StandardText variant="h5" style={{ marginTop: 0 }}>
+        Filter by Bounding Polygon:
+      </StandardText>
 
-      <div style={{ width: '100%', height: 450, marginTop: 15, marginBottom: 25 }}>
+      <div
+        style={{ width: '100%', height: 450, marginTop: 15, marginBottom: 25 }}
+      >
         <WellsMap
           path={regions.map((region: Region) => configureData(region))}
           selectedRegions={regions.map((region: Region) => region.id)}
@@ -150,7 +177,9 @@ const ModelWellsModal = ({
 
       <Collapse
         size="small"
-        items={[{ key: '1', label: 'Instructions', children: <Instructions /> }]}
+        items={[
+          { key: '1', label: 'Instructions', children: <Instructions /> },
+        ]}
       />
     </Modal>
   );

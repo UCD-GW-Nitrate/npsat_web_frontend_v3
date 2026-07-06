@@ -14,7 +14,7 @@ import ExploreWellsSteps from '@/components/custom/ExploreWellsSteps/ExploreWell
 import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
-import WellExplorerMap from '@/components/maps/WellExplorerMap';
+import WEFormMap from '@/components/maps/WEFormMap';
 import useWells, { useWellsUrfData } from '@/hooks/useWellsUrfData';
 import { ADEurf } from '@/logic/ExploreModelWells/ADEurf';
 import {
@@ -209,7 +209,7 @@ const ExploreWellsPage = () => {
       </div>
 
       <VBox spacing="large">
-        <WellExplorerMap
+        <WEFormMap
           mapEditing={mapEditing}
           allWells={allWells}
           allWellsLoading={allWellsLoading}
