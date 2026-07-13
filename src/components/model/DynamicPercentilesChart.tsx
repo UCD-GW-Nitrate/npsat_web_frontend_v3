@@ -12,10 +12,10 @@ import type { MantisResultPercentile } from '@/types/model/MantisResult';
 import type { ModelRun } from '@/types/model/ModelRun';
 
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
+import { StandardText } from '../custom/StandardText/StandardText';
 import ComparisonChart from './ComparisonChart';
 import ModelChart from './ModelChart';
 import ModelWellsModal from './ModelWellsModal';
-import { StandardText } from '../custom/StandardText/StandardText';
 
 interface DynamicPercentilesChartProps {
   percentiles: MantisResultPercentile[];
@@ -62,9 +62,9 @@ const DynamicPercentilesChart = ({
   const [stagedPercentiles, setStagedPercentiles] = useState<number[] | null>(
     null,
   );
-  const [selectedPercentiles, setSelectedPercentiles] = useState<number[] | null>(
-    null,
-  );
+  const [selectedPercentiles, setSelectedPercentiles] = useState<
+    number[] | null
+  >(null);
 
   const { ciData, loading: ciLoading } = usePercentileConfidence({
     customModelDetail,
@@ -100,15 +100,9 @@ const DynamicPercentilesChart = ({
 
   // mutate useDynamicPercentiles params on submit
   const handleFilterSubmit = () => {
-    if (setDepthRangeMin) {
-      setDepthRangeMin(range[0]);
-    }
-    if (setDepthRangeMax) {
-      setDepthRangeMax(range[1]);
-    }
-    if (setPolygonCoords) {
-      setPolygonCoords(polygons);
-    }
+    setDepthRangeMin(range[0]);
+    setDepthRangeMax(range[1]);
+    setPolygonCoords(polygons);
   };
 
   // initialize depthRangeMin and depthRangeMax to the entire well depth range
@@ -278,9 +272,7 @@ const DynamicPercentilesChart = ({
             </Card>
           </div>
           <div style={{ width: 500 }}>
-            <Card
-              size="small"
-            >
+            <Card size="small">
               <div
                 style={{
                   width: '100%',
@@ -291,11 +283,15 @@ const DynamicPercentilesChart = ({
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <StandardText variant='h5' style={{ margin: 0}}>Fetch Confidence Intervals</StandardText>
+                  <StandardText variant="h5" style={{ margin: 0 }}>
+                    Fetch Confidence Intervals
+                  </StandardText>
                   <Tooltip
                     title={
                       <div>
-                        Confidence intervals estimate the uncertainty of model results. Here, they are calculated using a process called {' '}
+                        Confidence intervals estimate the uncertainty of model
+                        results. Here, they are calculated using a process
+                        called{' '}
                         <a
                           target="_blank"
                           href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)"
@@ -308,9 +304,12 @@ const DynamicPercentilesChart = ({
                     <InfoCircleOutlined />
                   </Tooltip>
                 </div>
-                {!comparisonChartModels && <p>
-                  Select up to 3 percentiles to fetch their confidence intervals
-                </p>}
+                {!comparisonChartModels && (
+                  <p>
+                    Select up to 3 percentiles to fetch their confidence
+                    intervals
+                  </p>
+                )}
                 <div
                   style={{
                     width: '100%',
@@ -322,22 +321,34 @@ const DynamicPercentilesChart = ({
                   }}
                 >
                   {contextHolder}
-                  {ciLoading && <p style={{ color: 'grey' }}>This can take up to a minute.</p>}
-                  <Button 
-                    type="primary" 
+                  {ciLoading && (
+                    <p style={{ color: 'grey' }}>
+                      This can take up to a minute.
+                    </p>
+                  )}
+                  <Button
+                    type="primary"
                     onClick={() => {
                       if (stagedPercentiles && stagedPercentiles?.length > 3) {
                         error();
                         return;
                       }
-                      setSelectedPercentiles(stagedPercentiles)
+                      setSelectedPercentiles(stagedPercentiles);
                     }}
                     disabled={ciLoading}
                     loading={ciLoading}
                   >
                     Fetch
                   </Button>
-                  <Button type='link' style={{ padding: 0}} onClick={() => { setSelectedPercentiles(null) }}>Clear</Button>
+                  <Button
+                    type="link"
+                    style={{ padding: 0 }}
+                    onClick={() => {
+                      setSelectedPercentiles(null);
+                    }}
+                  >
+                    Clear
+                  </Button>
                 </div>
               </div>
             </Card>

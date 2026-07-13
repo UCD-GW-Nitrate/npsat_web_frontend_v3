@@ -1,4 +1,3 @@
-import { SwitcherOutlined } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
 import { Image, Radio } from 'antd';
 import type { GeoJsonObject } from 'geojson';
@@ -46,11 +45,7 @@ const TileMapOptions = ({
         }}
         onMouseEnter={() => setShowOptions(true)}
       >
-        <Image
-          src="/images/layers.svg"
-          width={20}
-          alt="Tile maps"
-        />
+        <Image src="/images/layers.svg" width={20} alt="Tile maps" />
       </div>
       {showOptions && (
         <div
