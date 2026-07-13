@@ -31,116 +31,90 @@ export default function DynamicForm({
 
   const onFinish = (values: any) => {
     const errors = [];
+    const polygon: [number, number][] = [];
 
-    values.polygons.forEach((poly, idx) => {
-      if (poly.points.length < 3) {
-        errors.push({
-          name: ['polygons', idx],
-          errors: ['At least 3 points are required'],
-        });
-      }
-      for (let i = 0; i < poly.points.length; i += 1) {
-        if (!poly.points[i].lat || !poly.points[i].lng) {
+    // Clear any previous errors
+    form.setFields(
+      form.getFieldsError().map(({ name }) => ({
+        name,
+        errors: [],
+      })),
+    );
+
+    if (values.points.length < 3) {
+      errors.push({
+        name: ['points'],
+        errors: ['At least 3 points are required'],
+      });
+    }
+
+    values.points.forEach(
+      (point: { lat: number; lng: number }, idx: number) => {
+        if (!point.lat) {
           errors.push({
-            name: ['polygons', idx, 'points', i],
+            name: ['points', idx, 'lat'],
+            errors: ['Lat and Lng are required'],
+          });
+
+          // If there is also a lng error, highlight it but don't duplicate error message
+          if (!point.lng) {
+            errors.push({
+              name: ['points', idx, 'lng'],
+              errors: [''],
+            });
+          }
+        } else if (!point.lng) {
+          errors.push({
+            name: ['points', idx, 'lng'],
             errors: ['Lat and Lng are required'],
           });
         }
-      }
-    });
+        polygon.push([point.lat, point.lng]);
+      },
+    );
 
     if (errors.length > 0) {
-      console.log('Errors ', errors);
       form.setFields(errors);
       return;
     }
 
-    if (values.polygons.length > 0) {
-      const polygon: [number, number][] = values.polygons[0].points.map((p) => {
-        return [p.lat, p.lng];
-      });
-
-      setPolygonCoords(polygon);
-    }
-
-    console.log('Received values of form:', values.polygons[0]);
+    setPolygonCoords(polygon);
   };
 
   return (
     <Form
-      name="dynamic_form_item"
+      name="dynamic_form"
       {...formItemLayout}
       onFinish={onFinish}
       style={{ maxWidth: 600 }}
       form={form}
     >
-      <Form.List name="polygons">
+      <StandardText variant="h5" style={{ marginTop: 0 }}>
+        Adding polygon
+      </StandardText>
+
+      <Form.List name="points">
         {(fields, { add, remove }, { errors }) => (
           <>
             {fields.map((field, index) => (
-              <Form.Item
-                {...formItemLayout}
-                label={undefined}
-                required={false}
-                key={field.key}
-              >
-                <Flex gap="large">
-                  <StandardText variant="h5" style={{ marginTop: 0 }}>
-                    Polygon {index + 1}
-                  </StandardText>
-                  <MinusCircleOutlined
-                    className="dynamic-delete-button"
-                    onClick={() => remove(field.name)}
-                  />
+              <Form.Item key={field.key}>
+                <Flex gap="small" align="center">
+                  <p>(</p>
+
+                  <Form.Item name={[field.name, 'lat']} noStyle required>
+                    <InputNumber placeholder="Lat" />
+                  </Form.Item>
+
+                  <p>,</p>
+
+                  <Form.Item name={[field.name, 'lng']} noStyle required>
+                    <InputNumber placeholder="Lng" />
+                  </Form.Item>
+
+                  <p>)</p>
+
+                  <MinusCircleOutlined onClick={() => remove(field.name)} />
                 </Flex>
-                <Form.List name={[field.name, 'points']}>
-                  {(
-                    fields_latLng,
-                    { add: addLatLng, remove: removeLatLng },
-                    { errors: errorsLatLng },
-                  ) => (
-                    <>
-                      {fields_latLng.map((fieldLatLng) => (
-                        <Flex gap="small" align="center" key={fieldLatLng.key}>
-                          <p>(</p>
-
-                          <Form.Item name={[fieldLatLng.name, 'lat']} noStyle>
-                            <InputNumber
-                              placeholder="Lat"
-                              style={{ width: 100 }}
-                            />
-                          </Form.Item>
-
-                          <p>,</p>
-
-                          <Form.Item name={[fieldLatLng.name, 'lng']} noStyle>
-                            <InputNumber
-                              placeholder="Lng"
-                              style={{ width: 100 }}
-                            />
-                          </Form.Item>
-
-                          <p>)</p>
-
-                          <MinusCircleOutlined
-                            onClick={() => removeLatLng(fieldLatLng.name)}
-                          />
-                        </Flex>
-                      ))}
-                      <Form.Item>
-                        <Button
-                          type="dashed"
-                          onClick={() => addLatLng()}
-                          style={{ width: '60%' }}
-                          icon={<PlusOutlined />}
-                        >
-                          Add point
-                        </Button>
-                        <Form.ErrorList errors={errorsLatLng} />
-                      </Form.Item>
-                    </>
-                  )}
-                </Form.List>
               </Form.Item>
             ))}
             <Form.Item>
@@ -150,8 +124,11 @@ export default function DynamicForm({
                 style={{ width: '60%' }}
                 icon={<PlusOutlined />}
               >
-                Add polygon
+                Add point
               </Button>
+            </Form.Item>
+
+            <Form.Item>
               <Form.ErrorList errors={errors} />
             </Form.Item>
           </>
@@ -159,7 +136,7 @@ export default function DynamicForm({
       </Form.List>
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Submit
+          Create polygon
         </Button>
       </Form.Item>
     </Form>
