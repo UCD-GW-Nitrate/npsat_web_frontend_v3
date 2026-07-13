@@ -7,7 +7,7 @@ import type { ModelRun } from '@/types/model/ModelRun';
 import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
 
-import DynamicForm from '../custom/DynamicForm/DynamicForm';
+import PolygonForm from '../custom/PolygonForm/PolygonForm';
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '../custom/StandardText/StandardText';
 
@@ -182,7 +182,7 @@ const ModelWellsModal = ({
       />
 
       <Card title="Selection Summary">
-        <DynamicForm setPolygonCoords={setPolygonCoords} />
+        <PolygonForm setPolygonCoords={setPolygonCoords} />
       </Card>
     </Modal>
   );
