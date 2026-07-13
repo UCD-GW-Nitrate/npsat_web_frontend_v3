@@ -6,10 +6,12 @@ export default function PolygonForm({
   initialPoints,
   editing,
   setPolygonCoords,
+  handleCancel,
 }: {
   initialPoints?: [number, number][];
   editing?: boolean;
   setPolygonCoords: (polyCoords: [number, number][]) => void;
+  handleCancel: () => void;
 }) {
   const [form] = Form.useForm();
 
@@ -129,6 +131,13 @@ export default function PolygonForm({
           )}
         </Form.List>
         <Form.Item style={{ alignSelf: 'flex-end', margin: 0 }}>
+          <Button
+            type="default"
+            onClick={handleCancel}
+            style={{ marginRight: 10 }}
+          >
+            Cancel
+          </Button>
           <Button type="primary" htmlType="submit">
             {!editing ? 'Add' : 'Update'}
           </Button>

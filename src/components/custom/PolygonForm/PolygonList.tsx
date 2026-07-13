@@ -3,14 +3,16 @@ import { Button, Card, List } from 'antd';
 import { useState } from 'react';
 
 import PolygonForm from './PolygonForm';
+import { index } from 'mathjs';
 
 export default function PolygonList() {
   const [editPolygonIdx, setEditPolygonIdx] = useState(-1);
-  const addPolygon = true;
+  const [addPolygon, setAddPolygon] = useState(false);
   const [polygons, setPolygons] = useState<[number, number][][]>([]);
 
   function handleAddPolygon(polyCoords: [number, number][]) {
     setPolygons([...polygons, polyCoords]);
+    setAddPolygon(false);
   }
 
   function handleEditPolygon(polyCoords: [number, number][]) {
@@ -23,8 +25,9 @@ export default function PolygonList() {
   }
 
   return (
-    <Card title="Selection Summary">
+    <Card title="Selection Summary" size="small">
       <List
+        style={{ marginTop: 0, marginBottom: 20 }}
         itemLayout="horizontal"
         dataSource={polygons}
         renderItem={(item, index) => (
@@ -53,12 +56,22 @@ export default function PolygonList() {
                 initialPoints={item}
                 editing
                 setPolygonCoords={handleEditPolygon}
+                handleCancel={() => setEditPolygonIdx(-1)}
               />
             )}
           </>
         )}
       />
-      {addPolygon && <PolygonForm setPolygonCoords={handleAddPolygon} />}
+      {addPolygon ? (
+        <PolygonForm
+          setPolygonCoords={handleAddPolygon}
+          handleCancel={() => setAddPolygon(false)}
+        />
+      ) : (
+        <Button type="primary" onClick={() => setAddPolygon(true)}>
+          Add Polygon
+        </Button>
+      )}
     </Card>
   );
 }
