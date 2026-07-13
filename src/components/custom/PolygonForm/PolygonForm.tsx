@@ -5,7 +5,7 @@ import React from 'react';
 export default function PolygonForm({
   setPolygonCoords,
 }: {
-  setPolygonCoords: React.Dispatch<React.SetStateAction<[number, number][]>>;
+  setPolygonCoords: (polyCoords: [number, number][]) => void;
 }) {
   const [form] = Form.useForm();
 
@@ -62,7 +62,7 @@ export default function PolygonForm({
   };
 
   return (
-    <Card style={{ maxWidth: 600 }} size="small" title="Adding polygon">
+    <Card size="small" title="Adding polygon">
       <Form
         name="dynamic_form"
         onFinish={onFinish}
