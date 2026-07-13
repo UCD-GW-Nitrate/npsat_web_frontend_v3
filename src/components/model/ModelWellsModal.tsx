@@ -10,6 +10,7 @@ import type { Well } from '@/types/well/WellExplorer';
 import PolygonForm from '../custom/PolygonForm/PolygonForm';
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '../custom/StandardText/StandardText';
+import PolygonList from '../custom/PolygonForm/PolygonList';
 
 const WellsMap = dynamic(() => import('../maps/WellsMap'), {
   ssr: false,
@@ -181,9 +182,7 @@ const ModelWellsModal = ({
         ]}
       />
 
-      <Card title="Selection Summary">
-        <PolygonForm setPolygonCoords={setPolygonCoords} />
-      </Card>
+      <PolygonList />
     </Modal>
   );
 };

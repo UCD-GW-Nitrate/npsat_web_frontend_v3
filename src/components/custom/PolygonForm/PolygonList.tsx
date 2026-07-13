@@ -30,6 +30,9 @@ export default function PolygonList() {
         style={{ marginTop: 0, marginBottom: 20 }}
         itemLayout="horizontal"
         dataSource={polygons}
+        locale={{
+          emptyText: 'No polygons have been added yet.',
+        }}
         renderItem={(item, index) => (
           <>
             {editPolygonIdx !== index ? (
