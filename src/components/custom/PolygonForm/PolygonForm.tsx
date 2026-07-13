@@ -1,13 +1,28 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, Form, InputNumber } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function PolygonForm({
+  initialPoints,
+  editing,
   setPolygonCoords,
 }: {
+  initialPoints?: [number, number][];
+  editing?: boolean;
   setPolygonCoords: (polyCoords: [number, number][]) => void;
 }) {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (!initialPoints) return;
+
+    form.setFieldsValue({
+      points: initialPoints.map(([lat, lng]) => ({
+        lat,
+        lng,
+      })),
+    });
+  }, [initialPoints, form]);
 
   const onFinish = (values: any) => {
     const errors = [];
@@ -62,7 +77,7 @@ export default function PolygonForm({
   };
 
   return (
-    <Card size="small" title="Adding polygon">
+    <Card size="small" title={!editing ? 'Adding polygon' : 'Editing polygon'}>
       <Form
         name="dynamic_form"
         onFinish={onFinish}
@@ -115,7 +130,7 @@ export default function PolygonForm({
         </Form.List>
         <Form.Item style={{ alignSelf: 'flex-end', margin: 0 }}>
           <Button type="primary" htmlType="submit">
-            Add
+            {!editing ? 'Add' : 'Update'}
           </Button>
         </Form.Item>
       </Form>

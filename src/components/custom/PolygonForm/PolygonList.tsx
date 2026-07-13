@@ -13,6 +13,15 @@ export default function PolygonList() {
     setPolygons([...polygons, polyCoords]);
   }
 
+  function handleEditPolygon(polyCoords: [number, number][]) {
+    setPolygons([
+      ...polygons.slice(0, editPolygonIdx),
+      polyCoords,
+      ...polygons.slice(editPolygonIdx + 1),
+    ]);
+    setEditPolygonIdx(-1);
+  }
+
   return (
     <Card title="Selection Summary">
       <List
@@ -40,7 +49,11 @@ export default function PolygonList() {
                 />
               </List.Item>
             ) : (
-              <p>Editing</p>
+              <PolygonForm
+                initialPoints={item}
+                editing
+                setPolygonCoords={handleEditPolygon}
+              />
             )}
           </>
         )}
