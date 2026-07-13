@@ -22,7 +22,7 @@ export interface Props {
   customModelDetail: ModelRun | null;
   depthRangeMin: number | null;
   depthRangeMax: number | null;
-  polygonCoords: [number, number][] | null;
+  polygonCoords: [number, number][][] | null;
   dynamicPercentilesLoading?: boolean;
   percentiles?: number[] | null;
   baseModelId?: number | null;
@@ -59,7 +59,7 @@ export default function useDynamicPercentiles({
             model_id: modelId,
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
-            polygonCoords: polygonCoords ?? [],
+            polygonCoords: polygonCoords?.length ? polygonCoords[0] : [],
             base_model_id: baseModelId,
           }),
           headers: {

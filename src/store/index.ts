@@ -9,6 +9,7 @@ import { userApi } from './apis/userApi';
 import { wellApi } from './apis/wellApi';
 import authReducer from './slices/authSlice';
 import { modelReducer } from './slices/modelSlice';
+import { polygonsReducer } from './slices/polygonSlice';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     [wellApi.reducerPath]: wellApi.reducer,
     auth: authReducer,
     model: modelReducer,
+    polygons: polygonsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()

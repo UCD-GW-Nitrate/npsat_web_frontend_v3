@@ -8,6 +8,8 @@ import { CircleMarker, LayerGroup, Pane, Tooltip } from 'react-leaflet';
 
 import type { Geometry } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
+import { useSelector } from 'react-redux';
+import { selectCurrentPolygons } from '@/store/slices/polygonSlice';
 
 export interface MapProps {
   path: Geometry[];
@@ -22,7 +24,6 @@ export interface MapProps {
   mapUI?: ReactNode;
   // params passed by ModelWellsModal parent component:
   allowDraw?: boolean;
-  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
   setNumWellsContained?: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
@@ -65,11 +66,10 @@ export default function VisualWellsMap({
   children,
   mapUI,
   allowDraw,
-  setPolygonCoords,
   setNumWellsContained,
 }: MapProps) {
   const [selected, setSelected] = useState<null | number>(null);
-  const [polygonCoords, setPolygons] = useState<[number, number][]>([]);
+  const polygonCoords = useSelector(selectCurrentPolygons);
 
   const minValue = useMemo(() => {
     if (wells.length === 0) {
@@ -110,11 +110,12 @@ export default function VisualWellsMap({
   );
 
   useEffect(() => {
-    if (setPolygonCoords && setNumWellsContained) {
-      if (polygonCoords.length > 0) {
+    if (allowDraw && polygonCoords && setNumWellsContained) {
+      let numWellsContained = 0;
+      polygonCoords.forEach((pnts) => {
         const closedPolygon: [number, number][] = [
-          ...polygonCoords,
-          polygonCoords[0]!,
+          ...pnts,
+          pnts[0]!,
         ];
         const inside = wells.filter((well) =>
           booleanPointInPolygon(
@@ -122,14 +123,11 @@ export default function VisualWellsMap({
             polygon([closedPolygon]),
           ),
         );
-        setNumWellsContained(inside.length);
-      } else {
-        setNumWellsContained(null);
-      }
+        numWellsContained += inside.length;
+      });
 
-      setPolygonCoords(polygonCoords);
-    }
-  }, [polygonCoords]);
+      setNumWellsContained(numWellsContained);
+  }}, [polygonCoords]);
 
   return (
     <RegionsMapNoSSR
@@ -138,7 +136,6 @@ export default function VisualWellsMap({
       onEachFeature={onEachFeature}
       interactive={regionsEditable}
       allowDraw={allowDraw}
-      setPolygonCoords={setPolygons}
     >
       <Pane name="markers-layer" style={{ zIndex: 650 }}>
         <LayerGroup>

@@ -1,4 +1,4 @@
-import { Card, Collapse, Divider, message, Modal } from 'antd';
+import {  Collapse, Divider, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
@@ -7,7 +7,6 @@ import type { ModelRun } from '@/types/model/ModelRun';
 import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
 
-import PolygonForm from '../custom/PolygonForm/PolygonForm';
 import RangeFormItem from '../custom/RangeFormItem/RangeFormItem';
 import { StandardText } from '../custom/StandardText/StandardText';
 import PolygonList from '../custom/PolygonForm/PolygonList';
@@ -50,7 +49,6 @@ export interface ModalProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   regions: Region[];
   customModelDetail: ModelRun;
-  setPolygonCoords: React.Dispatch<React.SetStateAction<[number, number][]>>;
   range: [number, number];
   setRange: React.Dispatch<React.SetStateAction<[number, number]>>;
   minDepth: number;
@@ -62,7 +60,6 @@ const ModelWellsModal = ({
   setOpen,
   regions,
   customModelDetail,
-  setPolygonCoords,
   range,
   setRange,
   minDepth,
@@ -118,6 +115,7 @@ const ModelWellsModal = ({
     >
       {contextHolder}
       <Divider style={{ marginTop: 0 }} />
+      
       <div
         style={{
           width: '100%',
@@ -163,26 +161,26 @@ const ModelWellsModal = ({
         Filter by Bounding Polygon:
       </StandardText>
 
-      <div style={{ width: '100%', marginTop: 15, marginBottom: 25 }}>
+      <div style={{ width: '100%', marginTop: 15, marginBottom: 15 }}>
         <WellsMap
           path={regions.map((region: Region) => configureData(region))}
           selectedRegions={regions.map((region: Region) => region.id)}
           wellProperty="depth"
           wells={displayData}
           allowDraw
-          setPolygonCoords={setPolygonCoords}
           setNumWellsContained={setNumWellsContained}
         />
       </div>
+
+      <PolygonList />
 
       <Collapse
         size="small"
         items={[
           { key: '1', label: 'Instructions', children: <Instructions /> },
         ]}
+        style={{ marginTop: 25 }}
       />
-
-      <PolygonList />
     </Modal>
   );
 };

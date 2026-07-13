@@ -16,6 +16,8 @@ import { StandardText } from '../custom/StandardText/StandardText';
 import ComparisonChart from './ComparisonChart';
 import ModelChart from './ModelChart';
 import ModelWellsModal from './ModelWellsModal';
+import { useSelector } from 'react-redux';
+import { selectCurrentPolygons } from '@/store/slices/polygonSlice';
 
 interface DynamicPercentilesChartProps {
   percentiles: MantisResultPercentile[];
@@ -40,7 +42,7 @@ const DynamicPercentilesChart = ({
   // params to pass into useDynamicPercentiles
   const [depthRangeMin, setDepthRangeMin] = useState<number | null>(null);
   const [depthRangeMax, setDepthRangeMax] = useState<number | null>(null);
-  const [polygonCoords, setPolygonCoords] = useState<[number, number][] | null>(
+  const [polygonCoords, setPolygonCoords] = useState<[number, number][][] | null>(
     null,
   );
 
@@ -96,8 +98,8 @@ const DynamicPercentilesChart = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
   const [range, setRange] = useState<[number, number]>([0, 200]);
-  const [polygons, setPolygons] = useState<[number, number][]>([]);
-
+  const polygons = useSelector(selectCurrentPolygons);
+  
   // mutate useDynamicPercentiles params on submit
   const handleFilterSubmit = () => {
     setDepthRangeMin(range[0]);
@@ -362,7 +364,6 @@ const DynamicPercentilesChart = ({
           setOpen={setIsModalOpen}
           regions={regions}
           customModelDetail={customModelDetail}
-          setPolygonCoords={setPolygons}
           range={range}
           setRange={setRange}
           minDepth={minDepth}

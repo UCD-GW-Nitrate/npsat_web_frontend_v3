@@ -9,6 +9,8 @@ import { GeoJSON, MapContainer, Pane, TileLayer } from 'react-leaflet';
 import type { Geometry } from '@/types/region/Region';
 
 import { DrawControl } from './DrawControl';
+import { useDispatch } from 'react-redux';
+import { setPolygons } from '@/store/slices/polygonSlice';
 
 const TileMapOptions = ({
   setTileMap,
@@ -82,7 +84,6 @@ export interface MapProps {
   selected?: number[];
   interactive?: boolean;
   allowDraw?: boolean;
-  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
   children?: ReactNode; // allows the injection of markers (ex. well markers) into the component
 }
 
@@ -97,12 +98,14 @@ const RegionsMap = ({
   selected,
   interactive = true,
   allowDraw = false,
-  setPolygonCoords,
   children,
 }: MapProps) => {
   const map = useRef<L.Map | null>(null);
-  const [polygonsDict, setPolygons] = useState<PolygonsDict>({});
+  const [polygonsDict, setPolygonsDict] = useState<PolygonsDict>({});
   const [tileMap, setTileMap] = useState(1);
+
+  const dispatch = useDispatch();
+  const setPolygonCoords = (polygons: [number, number][][]) => dispatch(setPolygons(polygons));
 
   useEffect(() => {
     if (!map.current) return;
@@ -120,10 +123,10 @@ const RegionsMap = ({
   }, [interactive]);
 
   useEffect(() => {
-    if (!setPolygonCoords) return;
+    if (!allowDraw) return;
     if (Object.keys(polygonsDict).length > 0) {
       const polygons = Object.values(polygonsDict);
-      setPolygonCoords(polygons[0] ?? []);
+      setPolygonCoords(polygons ?? []);
     } else {
       setPolygonCoords([]);
     }
@@ -137,7 +140,7 @@ const RegionsMap = ({
         newPoly.push([latLng.lat, latLng.lng]);
       }
     }
-    setPolygons((prevPolygons) => ({
+    setPolygonsDict((prevPolygons) => ({
       ...prevPolygons,
       [e.layer._leaflet_id]: newPoly,
     }));
@@ -145,7 +148,7 @@ const RegionsMap = ({
 
   const handlePolygonEdited = (e) => {
     console.log('Edited:', e.layers);
-    setPolygons((prevPolygons) => {
+    setPolygonsDict((prevPolygons) => {
       const temp = { ...prevPolygons };
 
       for (const layer of Object.values(e.layers._layers)) {
@@ -169,7 +172,7 @@ const RegionsMap = ({
 
   const handlePolygonDeleted = (e) => {
     console.log('Deleted:', e.layers);
-    setPolygons((prevPolygons) => {
+    setPolygonsDict((prevPolygons) => {
       const temp = { ...prevPolygons };
 
       for (const key in e.layers._layers) {
