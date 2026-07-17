@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import { HBox } from '@/components/custom/HBox/Hbox';
+import type { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
 import type {
   ModelDisplay,
   PercentileResultMap,
@@ -11,7 +12,6 @@ import { useModelResults } from '@/hooks/useModelResults';
 import type { MantisResultPercentile } from '@/types/model/MantisResult';
 
 import LineChartWithConfidence from '../charts/LineChart/PercentileChart';
-import { ConfidenceIntervalResult } from '@/hooks/useDynamicPercentiles';
 
 interface ModelChartProps {
   percentiles: MantisResultPercentile[];
