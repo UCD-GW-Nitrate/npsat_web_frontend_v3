@@ -93,17 +93,20 @@ export function DrawControl({
     Object.entries(initialPolygons).forEach(([stringId, polyData]) => {
       const polygonId = Number(stringId);
 
-      const alreadyExists = !!drawnItems.getLayer(polygonId);
+      const existingLayer = drawnItems.getLayer(polygonId) as
+        | L.Polygon
+        | undefined;
 
-      if (!alreadyExists) {
-        const polygon = L.polygon(polyData, {
+      if (!existingLayer) {
+        const polygon = L.polygon(polyData as L.LatLngExpression[], {
           color: '#3388ff',
           weight: 4,
         });
 
         (polygon as any)._leaflet_id = polygonId;
-
         drawnItems.addLayer(polygon);
+      } else {
+        existingLayer.setLatLngs(polyData as L.LatLngExpression[]);
       }
     });
   }, [initialPolygons, map]);
