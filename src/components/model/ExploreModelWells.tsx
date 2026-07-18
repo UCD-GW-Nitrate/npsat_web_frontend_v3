@@ -187,7 +187,11 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
 
   return (
     <Row gutter={[24, 16]}>
-      <Col span={12}>
+      <Col
+        span={12}
+        aria-label="map displaying scenario wells"
+        aria-describedby="Map displays well locations with color-coding. Use the accessible table below to view the well data."
+      >
         <WellsMap
           path={regions.map((region: Region) => configureData(region))}
           selectedRegions={regions.map((region: Region) => region.id)}
@@ -203,7 +207,11 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
           alignItems: 'center',
         }}
       >
-        <Card style={{ width: '100%' }} title="Results">
+        <Card
+          style={{ width: '100%' }}
+          title="Results"
+          aria-label="filter and colorcode fetched well results"
+        >
           <Card.Grid
             style={{
               width: '100%',
@@ -275,7 +283,7 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         <Card
           size="small"
           extra={
-            <Dropdown menu={selectChartMenuProps}>
+            <Dropdown menu={selectChartMenuProps} aria-label="choose a chart">
               <Button>
                 {selectChart}
                 <Space>
@@ -290,6 +298,8 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
             flexDirection: 'column',
             paddingTop: 10,
           }}
+          aria-label="charts summarizing well data"
+          aria-describedby="Charts contain options for export. Trend descriptions are provided below charts."
         >
           {selectChart === 'Well Depths Histogram' && (
             <Histogram

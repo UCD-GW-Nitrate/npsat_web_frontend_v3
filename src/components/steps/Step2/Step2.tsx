@@ -485,6 +485,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
             key: `${REGION_MACROS.TOWNSHIPS}`,
           },
         ]}
+        aria-label="select subdivision level of California map"
       />
       <Form
         {...formItemLayout}

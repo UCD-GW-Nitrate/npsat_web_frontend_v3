@@ -46,6 +46,7 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
         mode="multiple"
         allowClear
         style={{ width: '100%' }}
+        aria-label="dropdown for region selection"
       >
         {data.map((county) => (
           <Option value={county.id} key={county.id}>
@@ -61,6 +62,7 @@ export const FormMap = ({ data, onSelectRegion, selected }: FormMapProps) => {
           borderRadius: 6,
           overflow: 'hidden',
         }}
+        aria-label="map for region selection"
       >
         <RegionsMapNoSSR
           selected={selected}
