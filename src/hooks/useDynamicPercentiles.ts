@@ -14,7 +14,7 @@ import type { ModelDisplay, PercentileResultMap } from './useModelResults';
 
 export interface ConfidenceIntervalResult {
   name: string;
-  lower: ModelDisplay[]; 
+  lower: ModelDisplay[];
   upper: ModelDisplay[];
 }
 
@@ -22,7 +22,7 @@ export interface Props {
   customModelDetail: ModelRun | null;
   depthRangeMin: number | null;
   depthRangeMax: number | null;
-  polygonCoords: [number, number][] | null;
+  polygonCoords: [number, number][][] | null;
   dynamicPercentilesLoading?: boolean;
   percentiles?: number[] | null;
   baseModelId?: number | null;
@@ -59,7 +59,7 @@ export default function useDynamicPercentiles({
             model_id: modelId,
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
-            polygonCoords: polygonCoords ?? [],
+            polygonCoords: polygonCoords?.length ? polygonCoords[0] : [],
             base_model_id: baseModelId,
           }),
           headers: {
@@ -168,43 +168,58 @@ export function usePercentileConfidence({
 
       const customCIData = data.data;
 
-      let formatted = Object.entries(customCIData).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
-        name: `${baseModelId ? 'custom ' : ''}${key}th percentile`,
-        lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
-          year: 1945 + index,
-          value,
-          percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
-        })),
-        upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
-          year: 1945 + index,
-          value,
-          percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
-        })),
-      }));
+      let formatted = Object.entries(customCIData).map(
+        ([key, obj]): {
+          name: string;
+          lower: ModelDisplay[];
+          upper: ModelDisplay[];
+        } => ({
+          name: `${baseModelId ? 'custom ' : ''}${key}th percentile`,
+          lower: (obj as { lower: number[]; upper: number[] }).lower.map(
+            (value: number, index: number) => ({
+              year: 1945 + index,
+              value,
+              percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
+            }),
+          ),
+          upper: (obj as { lower: number[]; upper: number[] }).upper.map(
+            (value: number, index: number) => ({
+              year: 1945 + index,
+              value,
+              percentile: `${baseModelId ? 'custom ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
+            }),
+          ),
+        }),
+      );
 
       const baseCIData = data.base_data;
       if (baseCIData) {
-        let baseCIDataFormatted = Object.entries(baseCIData).map(([key, obj]): { name: string; lower: ModelDisplay[]; upper: ModelDisplay[] } => ({
-          name: `${baseModelId ? 'bau ' : ''}${key}th percentile`,
-          lower: (obj as { lower: number[]; upper: number[] }).lower.map((value: number, index: number) => ({
-            year: 1945 + index,
-            value,
-            percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
-          })),
-          upper: (obj as { lower: number[]; upper: number[] }).upper.map((value: number, index: number) => ({
-            year: 1945 + index,
-            value,
-            percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
-          })),
-        }));
-        formatted = [
-          ...baseCIDataFormatted,
-          ...formatted
-        ]
+        const baseCIDataFormatted = Object.entries(baseCIData).map(
+          ([key, obj]): {
+            name: string;
+            lower: ModelDisplay[];
+            upper: ModelDisplay[];
+          } => ({
+            name: `${baseModelId ? 'bau ' : ''}${key}th percentile`,
+            lower: (obj as { lower: number[]; upper: number[] }).lower.map(
+              (value: number, index: number) => ({
+                year: 1945 + index,
+                value,
+                percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile lower confidence interval`,
+              }),
+            ),
+            upper: (obj as { lower: number[]; upper: number[] }).upper.map(
+              (value: number, index: number) => ({
+                year: 1945 + index,
+                value,
+                percentile: `${baseModelId ? 'bau ' : ''}${ordinalSuffix(Number(key))} percentile upper confidence interval`,
+              }),
+            ),
+          }),
+        );
+        formatted = [...baseCIDataFormatted, ...formatted];
       }
-      setCIData(
-        formatted
-      );
+      setCIData(formatted);
 
       setLoading(false);
     }
@@ -219,7 +234,8 @@ export function usePercentileConfidence({
       modelId &&
       depthRangeMin &&
       depthRangeMax &&
-      percentiles && percentiles.length &&
+      percentiles &&
+      percentiles.length &&
       !dynamicPercentilesLoading
     ) {
       setLoading(true);

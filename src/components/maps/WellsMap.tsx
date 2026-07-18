@@ -20,7 +20,6 @@ export interface MapProps {
   mapUI?: ReactNode;
   // params passed by ModelWellsModal parent component:
   allowDraw?: boolean;
-  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
   setNumWellsContained?: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
@@ -35,7 +34,6 @@ const WellsMap = ({
   children,
   mapUI,
   allowDraw,
-  setPolygonCoords,
   setNumWellsContained,
 }: MapProps) => {
   const accessible = false;
@@ -46,9 +44,6 @@ const WellsMap = ({
         wells={wells}
         wellProperty={wellProperty}
         onSelectWell={onSelectWell}
-        allowDraw={allowDraw}
-        setPolygonCoords={setPolygonCoords}
-        setNumWellsContained={setNumWellsContained}
       />
     );
   }
@@ -65,7 +60,6 @@ const WellsMap = ({
         onSelectWell={onSelectWell}
         mapUI={mapUI}
         allowDraw={allowDraw}
-        setPolygonCoords={setPolygonCoords}
         setNumWellsContained={setNumWellsContained}
       >
         {children}

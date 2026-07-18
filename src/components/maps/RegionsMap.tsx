@@ -1,4 +1,3 @@
-import { SwitcherOutlined } from '@ant-design/icons';
 import type { RadioChangeEvent } from 'antd';
 import { Image, Radio } from 'antd';
 import type { GeoJsonObject } from 'geojson';
@@ -6,7 +5,13 @@ import type { Layer } from 'leaflet';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GeoJSON, MapContainer, Pane, TileLayer } from 'react-leaflet';
+import { useDispatch, useSelector } from 'react-redux';
 
+import {
+  deletePolygon,
+  selectCurrentPolygonsDict,
+  upsertPolygon,
+} from '@/store/slices/polygonSlice';
 import type { Geometry } from '@/types/region/Region';
 
 import { DrawControl } from './DrawControl';
@@ -46,11 +51,7 @@ const TileMapOptions = ({
         }}
         onMouseEnter={() => setShowOptions(true)}
       >
-        <Image
-          src="/images/layers.svg"
-          width={20}
-          alt="Tile maps"
-        />
+        <Image src="/images/layers.svg" width={20} alt="Tile maps" />
       </div>
       {showOptions && (
         <div
@@ -87,7 +88,6 @@ export interface MapProps {
   selected?: number[];
   interactive?: boolean;
   allowDraw?: boolean;
-  setPolygonCoords?: React.Dispatch<React.SetStateAction<[number, number][]>>;
   children?: ReactNode; // allows the injection of markers (ex. well markers) into the component
 }
 
@@ -102,12 +102,16 @@ const RegionsMap = ({
   selected,
   interactive = true,
   allowDraw = false,
-  setPolygonCoords,
   children,
 }: MapProps) => {
   const map = useRef<L.Map | null>(null);
-  const [polygonsDict, setPolygons] = useState<PolygonsDict>({});
   const [tileMap, setTileMap] = useState(1);
+
+  const dispatch = useDispatch();
+  const polygonsDict = useSelector(selectCurrentPolygonsDict);
+  const addOrUpdatePolygon = (id: number, polygon: [number, number][]) =>
+    dispatch(upsertPolygon({ id, polygon }));
+  const removePolygon = (id: number) => dispatch(deletePolygon(id));
 
   useEffect(() => {
     if (!map.current) return;
@@ -124,16 +128,6 @@ const RegionsMap = ({
     }
   }, [interactive]);
 
-  useEffect(() => {
-    if (!setPolygonCoords) return;
-    if (Object.keys(polygonsDict).length > 0) {
-      const polygons = Object.values(polygonsDict);
-      setPolygonCoords(polygons[0] ?? []);
-    } else {
-      setPolygonCoords([]);
-    }
-  }, [polygonsDict]);
-
   const handlePolygonCreated = (e) => {
     console.log('Created:', e.layer);
     const newPoly: [number, number][] = [];
@@ -142,47 +136,30 @@ const RegionsMap = ({
         newPoly.push([latLng.lat, latLng.lng]);
       }
     }
-    setPolygons((prevPolygons) => ({
-      ...prevPolygons,
-      [e.layer._leaflet_id]: newPoly,
-    }));
+    addOrUpdatePolygon(e.layer._leaflet_id, newPoly);
   };
 
   const handlePolygonEdited = (e) => {
-    console.log('Edited:', e.layers);
-    setPolygons((prevPolygons) => {
-      const temp = { ...prevPolygons };
-
-      for (const layer of Object.values(e.layers._layers)) {
-        const newPoly: [number, number][] = [];
-        if (layer._latlngs) {
-          for (const latLng of layer._latlngs[0]) {
-            newPoly.push([latLng.lat, latLng.lng]);
-          }
-
-          const key = layer._leaflet_id;
-
-          if (key && temp[key]) {
-            temp[key] = newPoly;
-          }
+    console.log('Edited:', e);
+    for (const layer of Object.values(e.layers._layers)) {
+      const newPoly: [number, number][] = [];
+      if (layer._latlngs) {
+        for (const latLng of layer._latlngs[0]) {
+          newPoly.push([latLng.lat, latLng.lng]);
         }
-      }
 
-      return temp;
-    });
+        const key = layer._leaflet_id;
+
+        addOrUpdatePolygon(key, newPoly);
+      }
+    }
   };
 
   const handlePolygonDeleted = (e) => {
     console.log('Deleted:', e.layers);
-    setPolygons((prevPolygons) => {
-      const temp = { ...prevPolygons };
-
-      for (const key in e.layers._layers) {
-        delete temp[key];
-      }
-
-      return temp;
-    });
+    for (const key in e.layers._layers) {
+      removePolygon(key);
+    }
   };
 
   return (
@@ -226,6 +203,7 @@ const RegionsMap = ({
           onCreated={handlePolygonCreated}
           onEdited={handlePolygonEdited}
           onDeleted={handlePolygonDeleted}
+          initialPolygons={polygonsDict}
         />
       )}
       {tileMap === 1 ? (

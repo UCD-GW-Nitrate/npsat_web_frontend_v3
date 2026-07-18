@@ -4,9 +4,9 @@ import { Button, Flex, Result, Spin } from 'antd';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { useGetModelStatusQuery } from '@/store';
 import { modelRunStatus } from '@/utils/constants';
-import { StandardText } from '@/components/custom/StandardText/StandardText';
 
 interface Step5Props {
   ids: any;
@@ -32,16 +32,14 @@ const Step5 = ({ ids, onCreateNewScenario }: Step5Props) => {
       >
         View scenario run
       </Button>
-      <Button
-        onClick={() => onCreateNewScenario()}
-      >
+      <Button onClick={() => onCreateNewScenario()}>
         Create another scenario
       </Button>
     </>
   );
 
   return (
-    <div>  
+    <div>
       {!(
         data &&
         data.results[0] &&
@@ -65,11 +63,22 @@ const Step5 = ({ ids, onCreateNewScenario }: Step5Props) => {
           }
           title={`Simulator status: ${modelRunStatus[data?.results[0]?.status ?? 0]}`}
           subTitle={
-            <Flex justify='center' vertical>
-              {data?.results[0]?.status === 1 && (data?.results[0]?.queue_position ?? -1) > 0 && <StandardText variant='h5'>Position in the queue: {data?.results[0]?.queue_position}</StandardText>}
-              {data?.results[0]?.status === 1 && (data?.results[0]?.queue_position ?? -1) === 0 && <StandardText variant='h5'>Preparing to run next</StandardText>}
+            <Flex justify="center" vertical>
+              {data?.results[0]?.status === 1 &&
+                (data?.results[0]?.queue_position ?? -1) > 1 && (
+                  <StandardText variant="h5">
+                    Position in the queue: {data?.results[0]?.queue_position}
+                  </StandardText>
+                )}
+              {data?.results[0]?.status === 1 &&
+                (data?.results[0]?.queue_position ?? -1) === 1 && (
+                  <StandardText variant="h5">
+                    Preparing to run next
+                  </StandardText>
+                )}
               <p style={{ width: 300, textWrap: 'wrap', alignSelf: 'center' }}>
-                Processing may take a moment. You can safely return <a href='/'>home</a> while you wait.
+                Processing may take a moment. You can safely return{' '}
+                <a href="/">home</a> while you wait.
               </p>
             </Flex>
           }

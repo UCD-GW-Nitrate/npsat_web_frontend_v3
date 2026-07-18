@@ -119,7 +119,12 @@ export default function WEFormMap({
             alignItems: 'center',
           }}
         >
-          <Card style={{ width: '100%' }} title="Results" ref={mapFiltersRef}>
+          <Card
+            style={{ width: '100%' }}
+            title="Results"
+            ref={mapFiltersRef}
+            aria-label="filter and colorcode fetched well results"
+          >
             <Card.Grid
               style={{
                 width: '100%',

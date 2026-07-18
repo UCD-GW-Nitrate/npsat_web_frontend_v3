@@ -129,6 +129,8 @@ export default function ExploreWellsSteps({
                     ]);
                   }}
                   style={{ width: 120 }}
+                  aria-label="disables region selection on map"
+                  aria-describedby="map appears below input params section"
                 >
                   Cancel Edit Mode
                 </Button>
@@ -137,6 +139,8 @@ export default function ExploreWellsSteps({
                   type="link"
                   onClick={() => setMapEditing((prev) => !prev)}
                   style={{ width: 120 }}
+                  aria-label="enables region selection on map"
+                  aria-describedby="map appears below input params section"
                 >
                   Edit Selection
                   <EditOutlined />
@@ -177,10 +181,12 @@ export default function ExploreWellsSteps({
               <Form.Item
                 name="wType"
                 rules={defaultRules('Please select a well type')}
-                style={{ marginRight: 0}}
+                style={{ marginRight: 0 }}
               >
                 <Select style={{ width: '100%' }} placeholder="Well Type">
-                  <Option value="Irrigation">Irrigation and public supply</Option>
+                  <Option value="Irrigation">
+                    Irrigation and public supply
+                  </Option>
                   <Option value="Domestic">Domestic</Option>
                 </Select>
               </Form.Item>

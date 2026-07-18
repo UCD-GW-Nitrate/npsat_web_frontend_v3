@@ -208,6 +208,7 @@ export const WellsAndUrfData = ({
         activeKey={`${mapType}`}
         onChange={handleTabChange}
         items={mapTabs}
+        aria-label="select subdivision level of California map"
       />
 
       <Select
@@ -221,6 +222,7 @@ export const WellsAndUrfData = ({
         allowClear
         style={{ width: '100%' }}
         disabled={disableRegionSelection}
+        aria-label="dropdown for region selection"
       >
         {getMap()?.map((region) => (
           <Option value={region.id} key={region.id}>
@@ -236,6 +238,8 @@ export const WellsAndUrfData = ({
           borderRadius: 6,
           overflow: 'hidden',
         }}
+        aria-label="map for region selection and displaying fetched results"
+        aria-describedby="Interactive map showing fetched well locations by color. Use the accessible table below to view the well data. Selecting a well highlights the associated stream points on the map."
       >
         <WellsMap
           wells={wells}
@@ -312,6 +316,13 @@ export const WellsAndUrfData = ({
                   fillOpacity: 1,
                 }}
                 radius={5}
+                eventHandlers={{
+                  add: (e) => {
+                    if (e.target._path) {
+                      e.target._path.setAttribute('tabindex', '-1');
+                    }
+                  },
+                }}
               />
             ))}
           </LayerGroup>
