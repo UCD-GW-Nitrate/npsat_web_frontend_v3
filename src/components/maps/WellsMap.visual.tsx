@@ -156,6 +156,11 @@ export default function VisualWellsMap({
                 radius={5}
                 eventHandlers={{
                   click: () => handleClick(well),
+                  add: (e) => {
+                    if (e.target._path) {
+                      e.target._path.setAttribute('tabindex', '-1');
+                    }
+                  },
                 }}
               >
                 <Tooltip

@@ -312,6 +312,13 @@ export const WellsAndUrfData = ({
                   fillOpacity: 1,
                 }}
                 radius={5}
+                eventHandlers={{
+                  add: (e) => {
+                    if (e.target._path) {
+                      e.target._path.setAttribute('tabindex', '-1');
+                    }
+                  },
+                }}
               />
             ))}
           </LayerGroup>
