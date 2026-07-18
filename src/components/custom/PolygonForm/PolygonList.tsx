@@ -1,31 +1,37 @@
 import { EditOutlined } from '@ant-design/icons';
 import { Button, Card, List } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import type { PolygonsDict } from '@/store/slices/polygonSlice';
+import {
+  selectCurrentPolygonsDict,
+  setPolygons,
+} from '@/store/slices/polygonSlice';
 
 import PolygonForm from './PolygonForm';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentPolygons, setPolygons } from '@/store/slices/polygonSlice';
 
 export default function PolygonList() {
-  const [editPolygonIdx, setEditPolygonIdx] = useState(-1);
+  const [editPolygonId, setEditPolygonId] = useState<string | null>(null);
   const [addPolygon, setAddPolygon] = useState(false);
 
-  const polygons = useSelector(selectCurrentPolygons);
+  const polygonsDict = useSelector(selectCurrentPolygonsDict);
   const dispatch = useDispatch();
-  const setPolygonCoords = (polygons: [number, number][][]) => dispatch(setPolygons(polygons));
+  const setPolygonCoords = (newPolygonsDict: PolygonsDict) =>
+    dispatch(setPolygons(newPolygonsDict));
 
   function handleAddPolygon(polyCoords: [number, number][]) {
-    setPolygonCoords([...polygons, polyCoords]);
+    const shortId = Date.now().toString();
+    setPolygonCoords({ ...polygonsDict, [shortId]: polyCoords });
     setAddPolygon(false);
   }
 
-  function handleEditPolygon(polyCoords: [number, number][]) {
-    setPolygonCoords([
-      ...polygons.slice(0, editPolygonIdx),
-      polyCoords,
-      ...polygons.slice(editPolygonIdx + 1),
-    ]);
-    setEditPolygonIdx(-1);
+  function handleEditPolygon(polyCoords: [number, number][], id: string) {
+    setPolygonCoords({
+      ...polygonsDict,
+      [id]: polyCoords,
+    });
+    setEditPolygonId(null);
   }
 
   return (
@@ -33,20 +39,20 @@ export default function PolygonList() {
       <List
         style={{ marginTop: 0, marginBottom: 20 }}
         itemLayout="horizontal"
-        dataSource={polygons}
+        dataSource={Object.entries(polygonsDict)}
         locale={{
           emptyText: 'No polygons have been added yet.',
         }}
-        renderItem={(item, index) => (
+        renderItem={([id, item], index) => (
           <>
-            {editPolygonIdx !== index ? (
+            {editPolygonId !== id ? (
               <List.Item
                 actions={[
                   <Button
                     color="default"
                     variant="filled"
                     key={index}
-                    onClick={() => setEditPolygonIdx(index)}
+                    onClick={() => setEditPolygonId(id)}
                   >
                     Edit <EditOutlined />
                   </Button>,
@@ -62,8 +68,10 @@ export default function PolygonList() {
               <PolygonForm
                 initialPoints={item}
                 editing
-                setPolygonCoords={handleEditPolygon}
-                handleCancel={() => setEditPolygonIdx(-1)}
+                setPolygonCoords={(polygonCoords) =>
+                  handleEditPolygon(polygonCoords, id)
+                }
+                handleCancel={() => setEditPolygonId(null)}
               />
             )}
           </>

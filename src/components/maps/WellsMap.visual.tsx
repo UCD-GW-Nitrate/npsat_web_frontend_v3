@@ -5,11 +5,11 @@ import dynamic from 'next/dynamic';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { CircleMarker, LayerGroup, Pane, Tooltip } from 'react-leaflet';
+import { useSelector } from 'react-redux';
 
+import { selectCurrentPolygons } from '@/store/slices/polygonSlice';
 import type { Geometry } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
-import { useSelector } from 'react-redux';
-import { selectCurrentPolygons } from '@/store/slices/polygonSlice';
 
 export interface MapProps {
   path: Geometry[];
@@ -113,10 +113,7 @@ export default function VisualWellsMap({
     if (allowDraw && polygonCoords && setNumWellsContained) {
       let numWellsContained = 0;
       polygonCoords.forEach((pnts) => {
-        const closedPolygon: [number, number][] = [
-          ...pnts,
-          pnts[0]!,
-        ];
+        const closedPolygon: [number, number][] = [...pnts, pnts[0]!];
         const inside = wells.filter((well) =>
           booleanPointInPolygon(
             point([well.lat, well.lon]),
@@ -127,7 +124,8 @@ export default function VisualWellsMap({
       });
 
       setNumWellsContained(numWellsContained);
-  }}, [polygonCoords]);
+    }
+  }, [polygonCoords]);
 
   return (
     <RegionsMapNoSSR
