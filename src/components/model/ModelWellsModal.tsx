@@ -2,7 +2,7 @@ import {  Collapse, Divider, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
-import useModelWells from '@/hooks/useModelWells';
+import useModelWells from '@/hooks/useRegionWells';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';

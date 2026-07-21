@@ -173,8 +173,8 @@ export default function ExploreWellsSteps({
                 rules={defaultRules('Please select a scenario')}
               >
                 <Select style={{ width: '100%' }} placeholder="Scenario">
-                  <Option value="Pump adjusted">Pump adjusted</Option>
-                  <Option value="Recharge adjusted">Recharge adjusted</Option>
+                  <Option value="Padj">Pump adjusted</Option>
+                  <Option value="Radj">Recharge adjusted</Option>
                 </Select>
               </Form.Item>
 
@@ -184,10 +184,8 @@ export default function ExploreWellsSteps({
                 style={{ marginRight: 0 }}
               >
                 <Select style={{ width: '100%' }} placeholder="Well Type">
-                  <Option value="Irrigation">
-                    Irrigation and public supply
-                  </Option>
-                  <Option value="Domestic">Domestic</Option>
+                  <Option value="VI">Irrigation and public supply</Option>
+                  <Option value="VD">Domestic</Option>
                 </Select>
               </Form.Item>
             </Flex>

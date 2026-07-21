@@ -15,14 +15,15 @@ import { InfoContainer } from '@/components/custom/InfoContainer/InfoContainer';
 import { StandardText } from '@/components/custom/StandardText/StandardText';
 import { VBox } from '@/components/custom/VBox/VBox';
 import WEFormMap from '@/components/maps/WEFormMap';
-import useWells, { useWellsUrfData } from '@/hooks/useWellsUrfData';
+import useRegionWells from '@/hooks/useRegionWells';
+import { useWellsUrfData } from '@/hooks/useWellURFs';
 import { ADEurf } from '@/logic/ExploreModelWells/ADEurf';
 import {
   useGetUserPreferencesQuery,
   useUpdateUserPreferencesMutation,
 } from '@/store/apis/userApi';
 import type { Region } from '@/types/region/Region';
-import type { WellExplorerRequestDetail } from '@/types/well/WellExplorer';
+import type { WERequestDetail } from '@/types/well/WellExplorer';
 
 const ExploreWellsPage = () => {
   // use a form to track in-progress param-selections until Fetch Wells is pressed
@@ -32,19 +33,17 @@ const ExploreWellsPage = () => {
 
   // final params which will be set with form-values during onFormSuubmit
   const [regions, setRegions] = useState<Region[]>([]);
-  const [requestDetail, setRequestDetail] = useState<WellExplorerRequestDetail>(
-    {
-      flow: 'C2VSim',
-      scen: 'Pump adjusted',
-      wType: 'Irrigation',
-    },
-  );
+  const [requestDetail, setRequestDetail] = useState<Partial<WERequestDetail>>({
+    flow_model: 'C2VSim',
+    rch_type: 'Padj',
+    well_type: 'VI',
+  });
 
   const {
     allWells,
     loading: allWellsLoading,
     getWellsByAgeThres,
-  } = useWells({ regions, requestDetail });
+  } = useRegionWells({ regions, requestDetail });
 
   const [messageApi, contextHolder] = message.useMessage();
   const error = () => {
@@ -62,9 +61,9 @@ const ExploreWellsPage = () => {
     }
 
     setRequestDetail({
-      flow: formData.flow,
-      scen: formData.scen,
-      wType: formData.wType,
+      flow_model: formData.flow,
+      rch_type: formData.scen,
+      well_type: formData.wType,
     });
 
     if (
@@ -105,13 +104,14 @@ const ExploreWellsPage = () => {
     const ages: number[] = [];
 
     for (const reactionPoint of urfData) {
-      const age = reactionPoint.ageA * porosity + reactionPoint.ageB;
+      const age = reactionPoint.age_a * porosity + reactionPoint.age_b;
+
       ages.push(age);
       depthAgeValues.push([reactionPoint.wt2d, age]);
       urfSeries.push({
         name: reactionPoint.sid.toString(),
         type: 'line',
-        data: ADEurf(reactionPoint.len, age, 500),
+        data: ADEurf(reactionPoint.length, age, 500),
       });
     }
 

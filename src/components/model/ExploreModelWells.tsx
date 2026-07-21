@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-import useModelWells from '@/hooks/useModelWells';
+import useModelWells from '@/hooks/useRegionWells';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
@@ -271,7 +271,12 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               <CustomSlider
                 value={0}
                 onAfterChange={async (val) => {
-                  setDisplayData((await getWellsByAgeThres(val)) ?? null);
+                  setDisplayData(
+                    (await getWellsByAgeThres(
+                      val,
+                      customModelDetail.porosity / 100,
+                    )) ?? null,
+                  );
                 }}
               />
             </div>
