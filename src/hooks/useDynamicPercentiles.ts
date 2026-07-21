@@ -59,7 +59,7 @@ export default function useDynamicPercentiles({
             model_id: modelId,
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
-            polygonCoords: polygonCoords?.length ? polygonCoords[0] : [],
+            polygonCoords: polygonCoords?.length ? polygonCoords : [],
             base_model_id: baseModelId,
           }),
           headers: {
@@ -151,7 +151,7 @@ export function usePercentileConfidence({
             model_id: modelId,
             depth_range_min: depthRangeMin,
             depth_range_max: depthRangeMax,
-            polygonCoords: polygonCoords ?? [],
+            polygonCoords: polygonCoords?.length ? polygonCoords : [],
             percentiles,
             base_model_id: baseModelId,
           }),
