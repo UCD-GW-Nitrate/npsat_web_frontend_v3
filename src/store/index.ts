@@ -59,6 +59,7 @@ export {
   useGetModelResultsQuery,
   useGetModelStatusQuery,
   useGetModificationDetailQuery,
+  useGetPaginatedModelRunsQuery,
   usePatchModelMutation,
   usePutModelMutation,
   useRunModelMutation,

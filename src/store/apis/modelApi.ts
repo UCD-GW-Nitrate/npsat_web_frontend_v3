@@ -1,11 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import apiRoot from '@/config/apiRoot';
+import type { PlotModel } from '@/types/feed/Feed';
 import type { FormModel } from '@/types/model/FormModel';
 import type { MantisResult } from '@/types/model/MantisResult';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { ModelStatus } from '@/types/model/ModelStatus';
 import { mantisVersion } from '@/utils/constants';
+import { mapModelRunToPlotModel } from '@/utils/utils';
 
 import getAuth from '../getAuth';
 import { paramsSerializer } from './paramsSerializer';
@@ -50,6 +52,39 @@ const modelApi = createApi({
             method: 'DELETE',
           };
         },
+      }),
+      getPaginatedModelRuns: builder.query<
+        {
+          count: number;
+          next: string | null;
+          previous: string | null;
+          results: PlotModel[];
+        },
+        { limit: number; offset: number; scenarios?: number | null }
+      >({
+        query: ({ limit, offset, scenarios }) => {
+          // public=false & isBase=false restrict this to only the logged-in
+          // user's own scenarios (origin defaults to true server-side) -
+          // otherwise the backend defaults to including every public
+          // scenario from every user. excludeBase additionally hard-excludes
+          // the user's own auto-generated BAU models, which isBase=false
+          // alone doesn't do (it only stops OTHER users' base models from
+          // being pulled in via the OR-based inclusion logic).
+          let url = `api/model_run/?limit=${limit}&offset=${offset}&public=false&isBase=false&excludeBase=true`;
+          if (scenarios) {
+            url += `&scenarios=${scenarios}`;
+          }
+          return { url, method: 'GET' };
+        },
+        transformResponse: (response: {
+          count: number;
+          next: string | null;
+          previous: string | null;
+          results: ModelRun[];
+        }) => ({
+          ...response,
+          results: response.results.map(mapModelRunToPlotModel),
+        }),
       }),
       getAllModelDetail: builder.query<ModelRun[], number>({
         query: () => ({
@@ -117,6 +152,7 @@ export const {
   useGetModificationDetailQuery,
   usePutModelMutation,
   useGetAllModelDetailQuery,
+  useGetPaginatedModelRunsQuery,
   useGetModelDetailByIdsQuery,
   useGetModelStatusQuery,
 } = modelApi;

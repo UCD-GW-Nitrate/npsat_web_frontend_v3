@@ -18,8 +18,13 @@ import { useScenarioGroups } from '@/hooks/useScenarioGroups';
 import {
   useDeleteModelMutation,
   useFetchFeedQuery,
+  useGetPaginatedModelRunsQuery,
   usePatchModelMutation,
 } from '@/store';
+import {
+  useGetUserPreferencesQuery,
+  useUpdateUserPreferencesMutation,
+} from '@/store/apis/userApi';
 import { clearModel } from '@/store/slices/modelSlice';
 import type { PlotModel } from '@/types/feed/Feed';
 
@@ -28,9 +33,17 @@ import { COLUMNS } from '../utils/constants';
 const Index = () => {
   const { data, error, refetch, isFetching } = useFetchFeedQuery();
   const [patchModel] = usePatchModelMutation();
-  const [displayData, setDisplayData] = useState<PlotModel[]>(
-    data?.recentModels ?? [],
-  );
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [scenarioFilter, setScenarioFilter] = useState<number | null>(null);
+  const { data: userPreferences } = useGetUserPreferencesQuery();
+  const [updateUserPreferences] = useUpdateUserPreferencesMutation();
+  const { data: paginatedModelRuns, refetch: refetchModelRuns } =
+    useGetPaginatedModelRunsQuery({
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+      scenarios: scenarioFilter,
+    });
   const [pendingModelIds, setPendingModelIds] = useState<number[]>(
     data?.pending_model_ids ?? [],
   );
@@ -47,9 +60,14 @@ const Index = () => {
   } = useScenarioGroups();
 
   useEffect(() => {
-    setDisplayData(data?.recentModels ?? displayData);
     setPendingModelIds(data?.pending_model_ids ?? pendingModelIds);
   }, [data]);
+
+  useEffect(() => {
+    if (userPreferences?.feed_size) {
+      setPageSize(userPreferences.feed_size);
+    }
+  }, [userPreferences]);
 
   useEffect(() => {
     dispatch(clearModel());
@@ -67,19 +85,9 @@ const Index = () => {
     }
   }, [hydrated, isFetching]);
 
-  const filterScenarios = (filter: string | null) => {
-    if (filter) {
-      const newData = (data?.recentModels ?? []).filter(
-        (d) =>
-          d.flowScenario === filter ||
-          d.unsatScenario === filter ||
-          d.wellTypeScenario === filter ||
-          d.loadScenario === filter,
-      );
-      setDisplayData(newData);
-    } else {
-      setDisplayData(data?.recentModels ?? []);
-    }
+  const handleFilterChange = (scenarioId: number | null) => {
+    setScenarioFilter(scenarioId);
+    setPage(1);
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -117,32 +125,32 @@ const Index = () => {
             optionFilterProp="children"
             allowClear
             style={{ width: 500 }}
-            onChange={filterScenarios}
+            onChange={handleFilterChange}
           >
             <Select.OptGroup label="Flow Scenario">
               {flowScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.name}>
+                <Select.Option key={item.id} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}
             </Select.OptGroup>
             <Select.OptGroup label="Load Scenario">
               {loadScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.name}>
+                <Select.Option key={item.id} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}
             </Select.OptGroup>
             <Select.OptGroup label="Unsat Scenario">
               {unsatScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.name}>
+                <Select.Option key={item.id} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}
             </Select.OptGroup>
             <Select.OptGroup label="Well Type Scenario">
               {welltypeScenarioOptions.map((item) => (
-                <Select.Option key={item.id} value={item.name}>
+                <Select.Option key={item.id} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}
@@ -173,7 +181,7 @@ const Index = () => {
           scroll={{ x: 'max-content' }}
           rowSelection={rowSelection}
           columns={COLUMNS}
-          dataSource={displayData}
+          dataSource={paginatedModelRuns?.results ?? []}
           rowKey={(model) => model.id}
           updateCallback={async (m) => {
             await patchModel({
@@ -182,10 +190,12 @@ const Index = () => {
               description: m.description,
             });
             await refetch();
+            await refetchModelRuns();
           }}
           deleteCallback={async (id) => {
             await deleteModel(id);
             await refetch();
+            await refetchModelRuns();
           }}
           onRow={(record) => {
             return {
@@ -195,6 +205,20 @@ const Index = () => {
             };
           }}
           pendingModelIds={pendingModelIds}
+          pagination={{
+            current: page,
+            pageSize,
+            total: paginatedModelRuns?.count ?? 0,
+            onChange: (newPage, newPageSize) => {
+              if (newPageSize !== pageSize) {
+                updateUserPreferences({ feed_size: newPageSize });
+                setPageSize(newPageSize);
+                setPage(1);
+              } else {
+                setPage(newPage);
+              }
+            },
+          }}
         />
       </VBox>
     </AppLayout>
