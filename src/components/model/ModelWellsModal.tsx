@@ -1,8 +1,14 @@
 import {  Collapse, Divider, message, Modal } from 'antd';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import useModelWells from '@/hooks/useRegionWells';
+import type { PolygonsDict } from '@/store/slices/polygonSlice';
+import {
+  selectCurrentPolygonsDict,
+  setPolygons,
+} from '@/store/slices/polygonSlice';
 import type { ModelRun } from '@/types/model/ModelRun';
 import type { Geometry, Region } from '@/types/region/Region';
 import type { Well } from '@/types/well/WellExplorer';
@@ -66,6 +72,11 @@ const ModelWellsModal = ({
   maxDepth,
 }: ModalProps) => {
   const { allWells } = useModelWells({ regions, customModelDetail });
+  const dispatch = useDispatch();
+  const polygonsDict = useSelector(selectCurrentPolygonsDict);
+  const [polygonSnapshot, setPolygonSnapshot] = useState<PolygonsDict | null>(
+    null,
+  );
   const [displayData, setDisplayData] = useState<Well[]>([]);
   const [numWellsContained, setNumWellsContained] = useState<number | null>(
     null,
@@ -88,6 +99,16 @@ const ModelWellsModal = ({
     );
   }, [allWells, range]);
 
+  // Snapshot the current polygon selection each time the modal opens, so
+  // Cancel can restore it. Deliberately depends only on `open`, not
+  // `polygonsDict` - otherwise this would keep re-snapshotting the very
+  // edits made while the modal is open, defeating the point.
+  useEffect(() => {
+    if (open) {
+      setPolygonSnapshot(polygonsDict);
+    }
+  }, [open]);
+
   const warning = () => {
     messageApi.open({
       type: 'error',
@@ -108,6 +129,9 @@ const ModelWellsModal = ({
         }
       }}
       onCancel={() => {
+        if (polygonSnapshot) {
+          dispatch(setPolygons(polygonSnapshot));
+        }
         setOpen(false);
       }}
       width={1000}

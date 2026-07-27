@@ -1,10 +1,11 @@
-import { EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Button, Card, List } from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { PolygonsDict } from '@/store/slices/polygonSlice';
 import {
+  deletePolygon,
   selectCurrentPolygonsDict,
   setPolygons,
 } from '@/store/slices/polygonSlice';
@@ -34,6 +35,10 @@ export default function PolygonList() {
     setEditPolygonId(null);
   }
 
+  function handleDeletePolygon(id: string) {
+    dispatch(deletePolygon(id as unknown as number));
+  }
+
   return (
     <Card title="Selection Summary" size="small">
       <List
@@ -51,10 +56,18 @@ export default function PolygonList() {
                   <Button
                     color="default"
                     variant="filled"
-                    key={index}
+                    key={`edit-${index}`}
                     onClick={() => setEditPolygonId(id)}
                   >
                     Edit <EditOutlined />
+                  </Button>,
+                  <Button
+                    color="danger"
+                    variant="filled"
+                    key={`delete-${index}`}
+                    onClick={() => handleDeletePolygon(id)}
+                  >
+                    Delete <DeleteOutlined />
                   </Button>,
                 ]}
               >
