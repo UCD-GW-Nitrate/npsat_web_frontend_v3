@@ -1,16 +1,12 @@
-import { DownOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd';
-import { Button, Card, Col, Collapse, Dropdown, Row, Space, Tabs } from 'antd';
+import { Card, Col, Collapse, Row, Select, Tabs } from 'antd';
 import dynamic from 'next/dynamic';
 import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 
 import type { Region } from '@/types/region/Region';
 import type { UrfData, Well } from '@/types/well/WellExplorer';
-import {
-  wellPropertyDropdownItems,
-  wellPropertyDropdownLabels,
-} from '@/utils/constants';
+import { wellPropertyDropdownItems } from '@/utils/constants';
 
 import CustomSlider from '../custom/CustomSlider/CustomSlider';
 import { HBox } from '../custom/HBox/Hbox';
@@ -61,14 +57,6 @@ export default function WEFormMap({
   const [wellProperty, setWellProperty] = useState<
     'depth' | 'unsat' | 'slmod' | 'wt2t' | 'pumping'
   >('depth');
-
-  // menu props for well property dropdown in Results section
-  const menuProps = {
-    items: wellPropertyDropdownItems,
-    onClick: (e) => {
-      setWellProperty(e.key);
-    },
-  };
 
   // set display data (wells shown on the map) based on filters in Results section
   useEffect(() => {
@@ -145,14 +133,15 @@ export default function WEFormMap({
                 }}
               >
                 <p style={{ width: 250, paddingRight: 20 }}>Color wells by:</p>
-                <Dropdown menu={menuProps}>
-                  <Button>
-                    {wellPropertyDropdownLabels[wellProperty]}
-                    <Space>
-                      <DownOutlined />
-                    </Space>
-                  </Button>
-                </Dropdown>
+                <Select
+                  value={wellProperty}
+                  onChange={setWellProperty}
+                  options={wellPropertyDropdownItems.map(({ key, label }) => ({
+                    value: key,
+                    label,
+                  }))}
+                  style={{ width: 250 }}
+                />
               </div>
             </Card.Grid>
             <Card.Grid

@@ -1,6 +1,5 @@
-import { DownOutlined, ExportOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Button, Card, Col, Dropdown, Row, Space } from 'antd';
+import { ExportOutlined } from '@ant-design/icons';
+import { Card, Col, Row, Select } from 'antd';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -66,10 +65,6 @@ const selectChartItems = [
     key: 'Boxplot',
   },
 ];
-
-const dropdownLabels = Object.fromEntries(
-  dropdownItems.map((item) => [item.key, item.label]),
-);
 
 const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
   const { allWells, loading, getWellsByAgeThres } = useModelWells({
@@ -165,26 +160,6 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
     return [min, q1, median, q3, max];
   }
 
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
-    console.log('click', e);
-    setWellProperty(e.key);
-  };
-
-  const menuProps = {
-    items: dropdownItems,
-    onClick: handleMenuClick,
-  };
-
-  const handleSelectChartMenuClick: MenuProps['onClick'] = (e) => {
-    console.log('click', e);
-    setSelectChart(e.key);
-  };
-
-  const selectChartMenuProps = {
-    items: selectChartItems,
-    onClick: handleSelectChartMenuClick,
-  };
-
   return (
     <Row gutter={[24, 16]}>
       <Col
@@ -231,14 +206,15 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
               }}
             >
               <p style={{ width: 250, paddingRight: 20 }}>Color wells by:</p>
-              <Dropdown menu={menuProps}>
-                <Button>
-                  {dropdownLabels[wellProperty]}
-                  <Space>
-                    <DownOutlined />
-                  </Space>
-                </Button>
-              </Dropdown>
+              <Select
+                value={wellProperty}
+                onChange={setWellProperty}
+                options={dropdownItems.map(({ key, label }) => ({
+                  value: key,
+                  label,
+                }))}
+                style={{ width: 250 }}
+              />
             </div>
           </Card.Grid>
           <Card.Grid
@@ -288,14 +264,16 @@ const ExploreModelWells = ({ regions, customModelDetail }: MapProps) => {
         <Card
           size="small"
           extra={
-            <Dropdown menu={selectChartMenuProps} aria-label="choose a chart">
-              <Button>
-                {selectChart}
-                <Space>
-                  <DownOutlined />
-                </Space>
-              </Button>
-            </Dropdown>
+            <Select
+              value={selectChart}
+              onChange={setSelectChart}
+              options={selectChartItems.map(({ key, label }) => ({
+                value: key,
+                label,
+              }))}
+              style={{ width: 260 }}
+              aria-label="choose a chart"
+            />
           }
           style={{
             width: '100%',
