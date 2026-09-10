@@ -69,6 +69,13 @@ const modelSlice = createSlice({
     setModelDepthRangeMax(state, action: PayloadAction<number>) {
       return { ...state, depth_range_max: action.payload };
     },
+    setModelMaxConc(state, action: PayloadAction<number>) {
+      return { ...state, max_conc: action.payload };
+    },
+    setModelPixelRadius(state, action: PayloadAction<number>) {
+      return { ...state, pixel_radius: action.payload };
+    },
+
     setModelModifications(state, action: PayloadAction<CropModification[]>) {
       return { ...state, modifications: action.payload };
     },
@@ -112,6 +119,8 @@ export const {
   setDefaultWaterContent,
   clearModel,
   createNewModel,
+  setModelMaxConc,
+  setModelPixelRadius,
 } = modelSlice.actions;
 export const modelReducer = modelSlice.reducer;
 export const selectCurrentModel = (state: RootState) => state.model;

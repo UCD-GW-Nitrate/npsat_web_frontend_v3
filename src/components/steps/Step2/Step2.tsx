@@ -9,6 +9,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { type FieldValues } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+
 import { PageAdvancementButtons } from '@/components/custom/PageAdvancementButtons/PageAdvancementButtons';
 import { FormMap } from '@/components/maps/FormMap';
 import C2VSimDefaults from '@/logic/DefaultTableData/C2VSim_Defaults_MAR16';
@@ -31,6 +32,8 @@ import {
   setModelUnsatRangeMax,
   setModelUnsatRangeMin,
   setModelWaterContent,
+  setModelMaxConc,
+  setModelPixelRadius,
 } from '@/store/slices/modelSlice';
 import type { ModelRegion } from '@/types/model/ModelRegion';
 import type { Region } from '@/types/region/Region';
@@ -42,6 +45,7 @@ import defaultRules from '../util/defaultRules';
 import Step2Instructions from './Step2Instructions';
 import WellFilterRange from './WellFilterRange';
 import WellNumber from './WellNumber';
+import MantisParamInput from './MantisParamInput';
 
 interface RegionDict {
   [key: number]: ModelRegion;
@@ -64,6 +68,11 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
   );
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(
     model.applied_simulation_filter ?? false,
+  );
+
+  const [maxConc, setMaxConc] = useState<number>(model.max_conc ?? 250);
+  const [pixelRadius, setPixelRadius] = useState<number>(
+    model.pixel_radius ?? 0,
   );
   const [selected, setSelected] = useState<number[]>(
     model.regions?.map((region) => region.id) ?? [],
@@ -150,6 +159,8 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
       dispatch(setModelDepthRangeMin(selectedDepthMin));
       dispatch(setModelUnsatRangeMin(selectedUnsatMin));
       dispatch(setModelUnsatRangeMax(selectedUnsatMax));
+      dispatch(setModelMaxConc(maxConc));
+      dispatch(setModelPixelRadius(pixelRadius));
       if (model.default_porosity) {
         // user should have chosen at least one region on submit, so default por and water content should be defined
         dispatch(setModelPorosity(defaultPorosity!));
@@ -410,6 +421,7 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           name="unsat_range"
           type="unsat"
         />
+
       </>
     ),
     [selected.length],
@@ -524,6 +536,26 @@ const Step2 = ({ onPrev, onNext }: StepBase) => {
           />
         </Form.Item>
         {showAdvancedFilter ? wellFilter : null}
+        {showAdvancedFilter && (
+          <>
+            <MantisParamInput
+              label="Max Concentration"
+              value={maxConc}
+              onChange={setMaxConc}
+              min={0}
+              step={10}
+              help="Caps loading before convolution. 0 disables the cap. Mantis default: 250."
+            />
+            <MantisParamInput
+              label="Pixel Radius"
+              value={pixelRadius}
+              onChange={setPixelRadius}
+              min={0}
+              step={1}
+              // help="Not yet implemented in Mantis - this value is currently ignored."
+            />
+          </>
+        )}
         <Form.Item
           wrapperCol={{
             xs: {
