@@ -24,6 +24,25 @@ export const DENIT_DEFAULTS = {
   FRACTION_REMOVED: 0.7,
 };
 
+// low resolution preview of each denitrification map, keyed by scenario name
+export const DENIT_RASTERS: Record<string, string> = {
+  'Denitrification map (DO 0.5 mg/L TD 150 ft)':
+    '/rasters/preds_DO_0.5mgL_TD150ft_low_res.tif',
+};
+
+// colours of the denitrification raster layers, as [r, g, b]
+export const DENIT_COLORS = {
+  // viridis, evenly spaced from map value 0 to 1
+  RAMP: [
+    [68, 1, 84],
+    [59, 82, 139],
+    [33, 145, 140],
+    [94, 201, 98],
+    [253, 231, 37],
+  ] as [number, number, number][],
+  ABOVE_THRESHOLD: [33, 102, 172] as [number, number, number],
+};
+
 export const COLUMNS: any[] = [
   { dataIndex: 'name', title: 'Scenario Name', width: 150, isEditable: true },
   {

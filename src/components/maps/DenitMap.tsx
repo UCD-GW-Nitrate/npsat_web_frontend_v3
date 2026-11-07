@@ -1,14 +1,16 @@
 import type { GeoJsonObject } from 'geojson';
 import { geoJSON } from 'leaflet';
-import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { GeoJSON, MapContainer, Pane, TileLayer, useMap } from 'react-leaflet';
 
 import type { Geometry } from '@/types/region/Region';
 
+import DenitRasterLayers from './DenitRasterLayers';
+
 export interface DenitMapProps {
   regions: Geometry[]; // regions selected in the previous step
-  children?: ReactNode; // raster layers drawn underneath the region outlines
+  rasterUrl?: string; // preview of the selected map, drawn under the outlines
+  threshold: number;
 }
 
 // zoom the map to the selected regions whenever they change
@@ -24,11 +26,11 @@ const FitToRegions = ({ regions }: { regions: Geometry[] }) => {
   return null;
 };
 
-const DenitMap = ({ regions, children }: DenitMapProps) => {
+const DenitMap = ({ regions, rasterUrl, threshold }: DenitMapProps) => {
   return (
     <MapContainer center={[37.58, -119.4179]} zoom={6} maxZoom={18}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {children}
+      {rasterUrl && <DenitRasterLayers url={rasterUrl} threshold={threshold} />}
       {/* outline only, so the denitrification rasters underneath stay visible */}
       <Pane name="denit-regions-layer" style={{ zIndex: 650 }}>
         <GeoJSON

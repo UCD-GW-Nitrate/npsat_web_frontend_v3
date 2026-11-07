@@ -16,7 +16,10 @@ const StepDenitInstructions = () => {
       </StandardText>
       <StandardText color="description">
         Choose a denitrification map. The map shows its values from 0 to 1, with
-        the regions selected in the previous step outlined in red.
+        the regions selected in the previous step outlined in red. Use the layer
+        list in the top-right corner of the map to switch the full map and the
+        highlighted areas on or off. The map is a 1 km preview; the model itself
+        uses the full-resolution map.
       </StandardText>
       <StandardText variant="h5" color="description">
         Threshold and fraction removed:

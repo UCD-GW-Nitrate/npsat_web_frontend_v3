@@ -23,13 +23,20 @@ import {
   setModelDenitThreshold,
 } from '@/store/slices/modelSlice';
 import type { Geometry, Region } from '@/types/region/Region';
-import { DENIT_DEFAULTS, REGION_MACROS } from '@/utils/constants';
+import {
+  DENIT_COLORS,
+  DENIT_DEFAULTS,
+  DENIT_RASTERS,
+  REGION_MACROS,
+} from '@/utils/constants';
 
 import type StepBase from '../StepBase';
 import defaultRules from '../util/defaultRules';
 import StepDenitInstructions from './StepDenitInstructions';
 
 const sliderMarks = { 0: '0', 0.5: '0.5', 1: '1' };
+
+const rgb = ([r, g, b]: [number, number, number]) => `rgb(${r}, ${g}, ${b})`;
 
 const StepDenit = ({ onPrev, onNext }: StepBase) => {
   const model = useSelector(selectCurrentModel);
@@ -44,6 +51,12 @@ const StepDenit = ({ onPrev, onNext }: StepBase) => {
   );
   const threshold = Form.useWatch('denit_threshold', form);
   const fractionRemoved = Form.useWatch('denit_fraction_removed', form);
+  const selectedMapId = Form.useWatch('denit_map', form);
+  const rasterUrl =
+    DENIT_RASTERS[
+      denitScenarios.find((scenario) => scenario.id === selectedMapId)?.name ??
+        ''
+    ];
 
   const { data: b118BasinData } = useFetchB118BasinQuery();
   const { data: basinData } = useFetchBasinQuery();
@@ -186,11 +199,46 @@ const StepDenit = ({ onPrev, onNext }: StepBase) => {
               }}
               aria-label="map of denitrification areas"
             >
-              <DenitMapNoSSR regions={selectedRegions} />
+              <DenitMapNoSSR
+                regions={selectedRegions}
+                rasterUrl={rasterUrl}
+                threshold={appliedThreshold}
+              />
             </div>
-            <p style={{ marginTop: 0, marginBottom: 24 }}>
-              Highlighted areas: map value above {appliedThreshold.toFixed(2)}
-            </p>
+            {rasterUrl ? (
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: 24,
+                }}
+              >
+                <span>0</span>
+                <span
+                  style={{
+                    width: 120,
+                    height: 12,
+                    background: `linear-gradient(to right, ${DENIT_COLORS.RAMP.map(rgb).join(', ')})`,
+                  }}
+                />
+                <span>1</span>
+                <span
+                  style={{
+                    width: 12,
+                    height: 12,
+                    marginLeft: 16,
+                    background: rgb(DENIT_COLORS.ABOVE_THRESHOLD),
+                  }}
+                />
+                <span>Map value above {appliedThreshold.toFixed(2)}</span>
+              </div>
+            ) : (
+              <p style={{ marginTop: 0, marginBottom: 24 }}>
+                No map preview is available for this denitrification map.
+              </p>
+            )}
             <Form.Item
               name="denit_threshold"
               label="Threshold"
