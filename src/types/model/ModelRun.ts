@@ -28,6 +28,10 @@ export interface ModelRun {
   flow_scenario: Scenario;
   unsat_scenario: Scenario;
   welltype_scenario: Scenario;
+  // null when denitrification is not applied; decimals arrive as strings, e.g. "0.800"
+  denit_scenario: Scenario | null;
+  denit_threshold: string | null;
+  denit_fraction_removed: string | null;
   applied_simulation_filter: boolean;
   depth_range_min: number;
   depth_range_max: number;

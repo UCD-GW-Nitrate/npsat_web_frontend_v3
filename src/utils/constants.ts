@@ -18,6 +18,12 @@ export const REGION_MACROS = {
   C2V_SIM_SUBREGIONS: 6,
 };
 
+// starting slider values for the denitrification step
+export const DENIT_DEFAULTS = {
+  THRESHOLD: 0.8,
+  FRACTION_REMOVED: 0.7,
+};
+
 export const COLUMNS: any[] = [
   { dataIndex: 'name', title: 'Scenario Name', width: 150, isEditable: true },
   {

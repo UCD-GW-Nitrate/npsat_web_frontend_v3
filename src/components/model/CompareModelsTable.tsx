@@ -42,6 +42,19 @@ const CompareModelsTable = ({ data }: CompareModelsTableProps) => {
       width: 200,
     },
     {
+      title: 'Denitrification',
+      dataIndex: 'denit_scenario',
+      render: (v, record) =>
+        v
+          ? `${v.name} (threshold ${Number(record.denit_threshold).toFixed(
+              2,
+            )}, ${(Number(record.denit_fraction_removed) * 100).toFixed(
+              0,
+            )}% removed)`
+          : 'Not applied',
+      width: 250,
+    },
+    {
       title: 'Regions',
       dataIndex: 'regions',
       render: (value) => value.map((regions: any) => regions.name).join(','),

@@ -14,6 +14,10 @@ export interface FormModel {
   load_scenario?: Scenario;
   unsat_scenario?: Scenario;
   welltype_scenario?: Scenario;
+  // denitrification is optional: no denit_scenario means it is not applied
+  denit_scenario?: Scenario | null;
+  denit_threshold?: number | null;
+  denit_fraction_removed?: number | null;
   regions?: ModelRegion[];
   public?: boolean;
   is_base?: boolean;

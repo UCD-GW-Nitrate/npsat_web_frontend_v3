@@ -9,6 +9,7 @@ export const SCENARIO_MACROS = {
   TYPE_UNSAT: 2,
   TYPE_LOAD: 3,
   TYPE_WELLTYPE: 4,
+  TYPE_DENIT: 5,
 };
 
 export interface ScenarioResponse {
@@ -23,6 +24,7 @@ export const useScenarioGroups = () => {
   const [loadScenarios, setLoadScenarios] = useState<Scenario[]>([]);
   const [unsatScenarios, setUnsatScenarios] = useState<Scenario[]>([]);
   const [welltypeScenarios, setWelltypeScenarios] = useState<Scenario[]>([]);
+  const [denitScenarios, setDenitScenarios] = useState<Scenario[]>([]);
 
   const getScenarios = (
     type: number,
@@ -55,6 +57,9 @@ export const useScenarioGroups = () => {
     getScenarios(SCENARIO_MACROS.TYPE_WELLTYPE, (response: ScenarioResponse) =>
       setWelltypeScenarios(response.results),
     );
+    getScenarios(SCENARIO_MACROS.TYPE_DENIT, (response: ScenarioResponse) =>
+      setDenitScenarios(response.results),
+    );
   }, []);
 
   return {
@@ -62,5 +67,6 @@ export const useScenarioGroups = () => {
     loadScenarios,
     unsatScenarios,
     welltypeScenarios,
+    denitScenarios,
   };
 };

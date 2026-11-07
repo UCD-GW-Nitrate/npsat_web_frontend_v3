@@ -45,6 +45,15 @@ const modelSlice = createSlice({
     setModelWelltypeScenario(state, action: PayloadAction<Scenario>) {
       return { ...state, welltype_scenario: action.payload };
     },
+    setModelDenitScenario(state, action: PayloadAction<Scenario | null>) {
+      return { ...state, denit_scenario: action.payload };
+    },
+    setModelDenitThreshold(state, action: PayloadAction<number | null>) {
+      return { ...state, denit_threshold: action.payload };
+    },
+    setModelDenitFractionRemoved(state, action: PayloadAction<number | null>) {
+      return { ...state, denit_fraction_removed: action.payload };
+    },
     setModelRegions(state, action: PayloadAction<ModelRegion[]>) {
       return { ...state, regions: action.payload };
     },
@@ -99,6 +108,9 @@ export const {
   setModelLoadScenario,
   setModelUnsatScenario,
   setModelWelltypeScenario,
+  setModelDenitScenario,
+  setModelDenitThreshold,
+  setModelDenitFractionRemoved,
   setModelRegions,
   setModelPublic,
   setModelIsBase,

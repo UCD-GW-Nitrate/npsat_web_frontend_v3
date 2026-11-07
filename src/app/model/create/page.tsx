@@ -24,12 +24,14 @@ import Step2 from '../../../components/steps/Step2/Step2';
 import Step3 from '../../../components/steps/Step3/Step3';
 import Step4 from '../../../components/steps/Step4/Step4';
 import Step5 from '../../../components/steps/Step5/Step5';
+import StepDenit from '../../../components/steps/StepDenit/StepDenit';
 
 const { Step } = Steps;
 
 const steps = [
   'Select Settings',
   'Select Regions',
+  'Denitrification',
   'Select Crops',
   'Enter Scenario Meta',
   'Results',
@@ -113,20 +115,24 @@ const CreateModelPage = () => {
             onChange={handleStep}
             style={{ marginBottom: 20 }}
           >
-            <Step title={steps[0]} disabled={activeStep >= 4} />
+            <Step title={steps[0]} disabled={activeStep >= 5} />
             <Step
               title={steps[1]}
-              disabled={activeStep < 1 || activeStep >= 4}
+              disabled={activeStep < 1 || activeStep >= 5}
             />
             <Step
               title={steps[2]}
-              disabled={activeStep < 2 || activeStep >= 4}
+              disabled={activeStep < 2 || activeStep >= 5}
             />
             <Step
               title={steps[3]}
-              disabled={activeStep < 3 || activeStep >= 4}
+              disabled={activeStep < 3 || activeStep >= 5}
             />
-            <Step title={steps[4]} disabled />
+            <Step
+              title={steps[4]}
+              disabled={activeStep < 4 || activeStep >= 5}
+            />
+            <Step title={steps[5]} disabled />
           </Steps>
 
           {activeStep === 0 && (
@@ -136,16 +142,19 @@ const CreateModelPage = () => {
             <Step2 onPrev={handleBack} onNext={handleCompleteStep} />
           )}
           {activeStep === 2 && (
-            <Step3 onPrev={handleBack} onNext={handleCompleteStep} />
+            <StepDenit onPrev={handleBack} onNext={handleCompleteStep} />
           )}
           {activeStep === 3 && (
+            <Step3 onPrev={handleBack} onNext={handleCompleteStep} />
+          )}
+          {activeStep === 4 && (
             <Step4
               onPrev={handleBack}
               onNext={handleCompleteStep}
               onComplete={handleCompleteModel}
             />
           )}
-          {activeStep === 4 && !modelDataLoading && modelData?.id && (
+          {activeStep === 5 && !modelDataLoading && modelData?.id && (
             <Step5 ids={modelData?.id} onCreateNewScenario={() => {setActiveStep(0)}} />
           )}
         </InfoContainer>

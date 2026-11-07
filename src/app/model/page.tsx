@@ -163,6 +163,15 @@ const ModelPage = () => {
           load_scenario: customModelDetail.load_scenario,
           unsat_scenario: customModelDetail.unsat_scenario,
           welltype_scenario: customModelDetail.welltype_scenario,
+          denit_scenario: customModelDetail.denit_scenario,
+          denit_threshold:
+            customModelDetail.denit_threshold !== null
+              ? Number(customModelDetail.denit_threshold)
+              : null,
+          denit_fraction_removed:
+            customModelDetail.denit_fraction_removed !== null
+              ? Number(customModelDetail.denit_fraction_removed)
+              : null,
           regions: customModelDetail.regions,
           modifications: customModelDetail.modifications,
           public: true,

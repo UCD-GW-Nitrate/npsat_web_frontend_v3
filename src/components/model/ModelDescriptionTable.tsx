@@ -55,6 +55,15 @@ const ModelDescriptionTable = ({
           ? modelDetail?.unsat_scenario.name || ''
           : ''}
       </Descriptions.Item>
+      <Descriptions.Item label="Denitrification">
+        {modelDetail?.denit_scenario
+          ? `${modelDetail.denit_scenario.name} (threshold ${Number(
+              modelDetail.denit_threshold,
+            ).toFixed(2)}, ${(
+              Number(modelDetail.denit_fraction_removed) * 100
+            ).toFixed(0)}% removed)`
+          : 'Not applied'}
+      </Descriptions.Item>
       <Descriptions.Item label="Water content">
         {modelDetail
           ? `${((modelDetail?.water_content ?? 0) * 100).toFixed(0)}%`
